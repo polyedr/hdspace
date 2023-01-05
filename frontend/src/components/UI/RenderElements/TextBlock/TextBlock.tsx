@@ -28,9 +28,7 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
       contentEditableSettings.events,
     );
 
-    const formatText = (str: string) => {
-      return str.replace(/&nbsp;|<br>/g, '');
-    };
+    const formatText = (str: string) => str.replace(/&nbsp;|<br>/g, '');
 
     const history = useHistory();
     const isProtoMode = useSelector(selectIsPrototypeMode);

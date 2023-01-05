@@ -13,7 +13,7 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   columnCount?: React.CSSProperties['columnCount'];
   columnWidth?: React.CSSProperties['columnWidth'];
   columnGap?: React.CSSProperties['columnGap'];
@@ -21,7 +21,7 @@ type Props = {
   columnRuleStyle?: React.CSSProperties['columnRuleStyle'];
   columnRuleColor?: React.CSSProperties['columnRuleColor'];
   columnRuleWidth?: React.CSSProperties['columnRuleWidth'];
-};
+}
 
 const NativeColumnsControls: React.FC<
   Props & PropertiesChangeProps<LibraryElement<Entity>>

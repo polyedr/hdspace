@@ -24,7 +24,7 @@ const PSEUDO_CLASS_VALUES = [
   'focus-within',
 ];
 
-const PseudoSelectorsSection = () => {
+function PseudoSelectorsSection() {
   const dispatch = useDispatch();
   const enabledPseudoClass = useSelector(selectEnabledPseudoClass);
   const classes = useStyles();
@@ -52,16 +52,14 @@ const PseudoSelectorsSection = () => {
           );
         }}
       >
-        {PSEUDO_CLASS_VALUES.map((value) => {
-          return (
-            <MenuItem value={value} key={value}>
-              {value}
-            </MenuItem>
-          );
-        })}
+        {PSEUDO_CLASS_VALUES.map((value) => (
+          <MenuItem value={value} key={value}>
+            {value}
+          </MenuItem>
+        ))}
       </StyledTextField>
     </FormControl>
   );
-};
+}
 
 export default PseudoSelectorsSection;

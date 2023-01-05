@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`VIA Right Panel should render VIA Right Panel component 1`] = `
+exports[`VIA Right Panel > should render VIA Right Panel component 1`] = `
 <div>
   <div
     class="makeStyles-root-1"

@@ -1,11 +1,11 @@
 import React from 'react';
 
-type Props = {
+interface Props {
   giphyState: boolean;
   onCommandClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-};
+}
 
-export const LightningBolt = (props: Props) => {
+export function LightningBolt(props: Props) {
   const { giphyState, onCommandClick } = props;
 
   return (
@@ -25,4 +25,4 @@ export const LightningBolt = (props: Props) => {
       </svg>
     </div>
   );
-};
+}

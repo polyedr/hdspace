@@ -13,16 +13,16 @@ export enum ModalAction {
   Edit = 'Edit',
 }
 
-export type ConfigType = {
+export interface ConfigType {
   headers: { Authorization: string };
-};
+}
 
 export enum Alignments {
   Horizontal = 'row',
   Vertical = 'column',
 }
 
-type ScreenBase = {
+interface ScreenBase {
   id: number;
   name: string;
   status: string; // compare with entity on backend!
@@ -31,18 +31,18 @@ type ScreenBase = {
   screenscenario: number[];
   buoyancy: number;
   element: string;
-};
+}
 
-type ProjectBase = {
+interface ProjectBase {
   id: number;
   name: string;
   status: string;
   projectLoader: boolean;
   created: Date;
   updated: Date;
-  tags: Array<string>;
-};
-type MarketplaceBase = {
+  tags: string[];
+}
+interface MarketplaceBase {
   id: number;
   preview?: string;
   name: string;
@@ -50,8 +50,8 @@ type MarketplaceBase = {
   TemplateLoader: boolean;
   created: Date;
   updated: Date;
-  tags: Array<string>;
-};
+  tags: string[];
+}
 
 export type PropertyName = keyof React.CSSProperties;
 
@@ -59,41 +59,40 @@ export type Normalized<T extends { id: string | number }> = {
   [id in string | number]: T;
 };
 
-export type Result<T = any> = {
+export interface Result<T = any> {
   result?: T;
   error?: string;
-};
+}
 
-export type Data<T = any> = {
+export interface Data<T = any> {
   data?: T;
   error?: string;
-};
+}
 
-export type PaginatedResponse<T> = {
+export interface PaginatedResponse<T> {
   next: string | null;
   previous: string | null;
   results: T[];
-};
+}
 
-export type PaginatedSubscriptionData<T> = {
+export interface PaginatedSubscriptionData<T> {
   data: T[];
-};
+}
 
-export type PaginatedBase<T> = {
+export interface PaginatedBase {
   next: string | null;
   previous: string | null;
   pageSize: number;
   loading: boolean;
-};
+}
 
-export type PaginatedArray<T> = PaginatedBase<T> & {
+export type PaginatedArray<T> = PaginatedBase & {
   results: T[];
 };
 
-export type PaginatedData<T extends { id: string | number }> =
-  PaginatedBase<T> & {
-    results: Normalized<T>;
-  };
+export type PaginatedData<T extends { id: string | number }> = PaginatedBase & {
+  results: Normalized<T>;
+};
 
 export enum ElementGroup {
   CONTAINERS = 'containers',
@@ -107,22 +106,22 @@ export enum ElementGroup {
   UNDEFINED = 'UNDEFINED',
 }
 
-export type FreeCanvasElementParams = {
+export interface FreeCanvasElementParams {
   left?: number;
   top?: number;
   zIndex?: number;
   width?: number;
   height?: number;
-};
+}
 
-export type BaseElementParams = {
+export interface BaseElementParams {
   layouts: Layout[];
   freeCanvas: FreeCanvasElementParams;
   group: ElementGroup;
   parentId?: string;
   link?: string;
   isLink?: boolean;
-};
+}
 
 export enum UpdateDataActionType {
   REPLACE = 'replace',
@@ -130,11 +129,11 @@ export enum UpdateDataActionType {
   DELETE = 'delete',
 }
 
-export type ServerElement<
+export interface ServerElement<
   Type extends Entity,
   Children = any[],
   Params = BaseElementParams,
-> = {
+> {
   id: number | string;
   name: string;
   scenario?: number | undefined | null;
@@ -149,12 +148,12 @@ export type ServerElement<
   styles: {
     classNames: string[];
     ownStyles: React.CSSProperties;
-    pseudoClassStyles: { [className: string]: React.CSSProperties };
+    pseudoClassStyles: Record<string, React.CSSProperties>;
   };
   children: Children;
   shared?: boolean;
   listOfUnsupportedElement?: string[];
-};
+}
 
 export type NNServerElement<
   Type extends Entity,
@@ -167,11 +166,11 @@ export type NNServerElement<
 export type RootServerElement = ServerElement<'root', []>;
 export type SectionServerElement = ServerElement<
   'section',
-  ServerElement<Entity>[]
+  Array<ServerElement<Entity>>
 >;
 export type ContainerServerElement = ServerElement<
   'container',
-  ServerElement<Entity>[]
+  Array<ServerElement<Entity>>
 >;
 export type DivBlockServerElement = ServerElement<'divBlock'>;
 export type PageTemplateServerElement = ServerElement<
@@ -181,7 +180,7 @@ export type PageTemplateServerElement = ServerElement<
 export type GridServerElement = ServerElement<'grid', GridItemServerElement[]>;
 export type GridItemServerElement = ServerElement<
   'gridItem',
-  ServerElement<Entity>[]
+  Array<ServerElement<Entity>>
 >;
 export type ColumnServerElement = ServerElement<'column', any>;
 export type NativeColumnsServerElement = ServerElement<'nativeColumns', any>;
@@ -192,15 +191,15 @@ export type ColumnsServerElement = ServerElement<
 >;
 export type SubscribeFormServerElement = ServerElement<
   'subscribeForm',
-  ServerElement<Entity>[]
+  Array<ServerElement<Entity>>
 >;
 export type CardsSectionServerElement = ServerElement<
   'cardsSection',
-  ServerElement<Entity>[]
+  Array<ServerElement<Entity>>
 >;
 export type FeatureSectionServerElement = ServerElement<
   'featureSection',
-  ServerElement<Entity>[]
+  Array<ServerElement<Entity>>
 >;
 
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
@@ -368,30 +367,30 @@ export type ElementsGroupServerElement = ServerElement<
   ElementsGroupParameters
 >;
 
-export type ServerRecursiveElement = {
+export interface ServerRecursiveElement {
   id: number;
   name: string;
   children: [];
-};
+}
 
-export type RecursiveElement = {
+export interface RecursiveElement {
   id: string;
   name: string;
-  children: Array<string>;
-};
+  children: string[];
+}
 
-export type RecursiveServerElement = {
+export interface RecursiveServerElement {
   id: number;
   name: string;
-  children: Array<number>;
-};
+  children: number[];
+}
 
-export type LibraryElement<
+export interface LibraryElement<
   Type extends Entity,
   Children = any[],
   Params = any,
-  OwnStyles = {},
-> = {
+  OwnStyles = React.CSSProperties,
+> {
   id: string;
   name: string;
   type: Type;
@@ -400,7 +399,7 @@ export type LibraryElement<
   styles: {
     classNames: string[];
     ownStyles: OwnStyles;
-    pseudoClassStyles: { [className: string]: React.CSSProperties };
+    pseudoClassStyles: Record<string, React.CSSProperties>;
     pseudoClassViewStyles?: React.CSSProperties | null;
   };
   children: Children;
@@ -416,9 +415,9 @@ export type LibraryElement<
     columns?: number;
   } & Params;
   shared?: boolean;
-};
+}
 
-export type LibraryElementPatch<Type extends Entity, Params = any> = {
+export interface LibraryElementPatch<Type extends Entity, Params = any> {
   name?: string;
   type?: Type;
   scenario?: number;
@@ -428,7 +427,7 @@ export type LibraryElementPatch<Type extends Entity, Params = any> = {
   styles?: {
     classNames: string[];
     ownStyles: React.CSSProperties;
-    pseudoClassStyles: { [className: string]: React.CSSProperties };
+    pseudoClassStyles: Record<string, React.CSSProperties>;
   };
   parameters?: {
     group?: string;
@@ -437,13 +436,13 @@ export type LibraryElementPatch<Type extends Entity, Params = any> = {
     size?: string;
   } & Params;
   children?: string[];
-};
+}
 
-export type UpdateElementData<T extends Entity> = {
+export interface UpdateElementData<T extends Entity> {
   elementID: string;
   data: LibraryElementPatch<T>;
   active?: boolean;
-};
+}
 
 export type RootElement = LibraryElement<'root', []>;
 export type ContainerElement = LibraryElement<'container', []>;
@@ -454,7 +453,7 @@ export type PageTemplateElement = LibraryElement<
 >;
 export type SubscribeFormElement = LibraryElement<
   'subscribeForm',
-  LibraryElement<Entity>[]
+  Array<LibraryElement<Entity>>
 >;
 export type CardsSectionElement = LibraryElement<
   'cardsSection',
@@ -466,7 +465,7 @@ export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
 // Generator Elements
 export type ButtonGeneratorElement = ServerElement<
   'buttonGenerator',
-  ServerElement<Entity>[]
+  Array<ServerElement<Entity>>
 >;
 
 export type TextinputElement = LibraryElement<
@@ -568,7 +567,7 @@ export type DropdownItemElement = LibraryElement<
 
 export type FeatureSectionElement = LibraryElement<
   'featureSection',
-  LibraryElement<Entity>[]
+  Array<LibraryElement<Entity>>
 >;
 
 export type LibraryElementUnion =
@@ -603,9 +602,9 @@ export type LibraryElementUnion =
   | FeatureSectionElement
   | HTMLLibraryElement;
 
-type InteractiveElementParams = {
+interface InteractiveElementParams {
   events: ElementEvent[];
-};
+}
 
 export enum EventType {
   Click = 'Click',
@@ -825,14 +824,14 @@ export type MapParameters = BaseElementParams & {
   };
 };
 
-export type VideoSettingsType = {
+export interface VideoSettingsType {
   link: string;
   autoplay: boolean;
   start: number;
   end: number;
   loop: boolean;
   rel: boolean;
-};
+}
 
 export type VideoParameters = BaseElementParams & {
   videoSettings: VideoSettingsType;
@@ -840,7 +839,7 @@ export type VideoParameters = BaseElementParams & {
 
 export type HTMLElementParameters = BaseElementParams & {
   tag: string;
-  attributes: HTMLAttributes<HTMLElement> & { [name: string]: string };
+  attributes: HTMLAttributes<HTMLElement> & Record<string, string>;
 };
 
 export type DropdownParameters = BaseElementParams & {
@@ -860,16 +859,16 @@ export type ElementsGroupParameters = BaseElementParams & {
   sourceElementId?: string | null;
 };
 
-export type CreatedServerProject = {
+export interface CreatedServerProject {
   name: string;
   status: string;
   project_data_text: string;
   projectscreen: number[];
   project_data_json: string;
   project_data_trello_json: string;
-};
+}
 
-export type ServerProjectWithScreens = {
+export interface ServerProjectWithScreens {
   id: number;
   name: string;
   status: string;
@@ -880,10 +879,10 @@ export type ServerProjectWithScreens = {
   project_data_trello_json: string;
   project_data_json: string;
   project_data_text: string;
-  tags: Array<string>;
-};
+  tags: string[];
+}
 
-export type ServerProject = {
+export interface ServerProject {
   id: number;
   favicon?: null | string;
   preview?: string;
@@ -897,9 +896,9 @@ export type ServerProject = {
   project_data_activity_json?: string;
   project_data_json: string;
   project_data_text: string;
-  tags: Array<string>;
-};
-export type ServerMarketplace = {
+  tags: string[];
+}
+export interface ServerMarketplace {
   id: number;
   favicon?: null | string;
   preview?: string;
@@ -913,37 +912,37 @@ export type ServerMarketplace = {
   project_data_activity_json?: string;
   project_data_json: string;
   project_data_text: string;
-  tags: Array<string>;
-};
+  tags: string[];
+}
 export type ServerScreen = ScreenBase & {
   screen_data_json: any;
 };
 
-export type ProjectClass = {
+export interface ProjectClass {
   className: string;
   supportedElement: Entity;
   rules: React.CSSProperties;
-};
+}
 
-export type LayoutData = {
+export interface LayoutData {
   value: Layout;
   rotated: boolean;
-};
+}
 
-export type ProjectData = {
+export interface ProjectData {
   classes: ProjectClass[];
   defaultStyles: DefaultStyles;
   layout: LayoutData;
   uiFramework: UIFramework;
-};
-export type MarketplaceData = {
+}
+export interface MarketplaceData {
   classes: ProjectClass[];
   defaultStyles: DefaultStyles;
   layout: LayoutData;
   uiFramework: UIFramework;
-};
+}
 
-export type DefaultStyles = {
+export interface DefaultStyles {
   accentColor: AccentColor;
   border: BorderRadius;
   borderColor: BorderColor;
@@ -954,37 +953,37 @@ export type DefaultStyles = {
   indents: Indents;
   screenBackgroundColor: ScreenBackgroundColor;
   typography: Typography;
-};
+}
 
-export type ColorStyle = {
+export interface ColorStyle {
   color?: string;
-};
+}
 
-export type ElementsBackgroundColor = {
+export interface ElementsBackgroundColor {
   'background-color'?: string;
-};
+}
 
-export type ScreenBackgroundColor = {
+export interface ScreenBackgroundColor {
   background?: string;
-};
+}
 
-export type AccentColor = {
+export interface AccentColor {
   'accent-color'?: string;
-};
+}
 
-export type BorderColor = {
+export interface BorderColor {
   'border-color'?: string;
-};
+}
 
-export type BorderRadius = {
+export interface BorderRadius {
   borderRadius?: string;
-};
+}
 
-export type HeadingSize = {
+export interface HeadingSize {
   fontSize?: string;
-};
+}
 
-export type Typography = {
+export interface Typography {
   color?: string;
   fontFamily?: string;
   fontSize?: string;
@@ -992,9 +991,9 @@ export type Typography = {
   fontWeight?: number;
   textAlign?: string;
   verticalAlign?: string;
-};
+}
 
-export type Indents = {
+export interface Indents {
   marginTop?: string | number;
   marginLeft?: string | number;
   marginBottom?: string | number;
@@ -1003,7 +1002,7 @@ export type Indents = {
   paddingLeft?: string | number;
   paddingBottom?: string | number;
   paddingRight?: string | number;
-};
+}
 
 export type FlexConstraints = Indents & {
   flexDirection: React.CSSProperties['flexDirection'];
@@ -1031,7 +1030,7 @@ export type ProjectWithScreens = ProjectBase & {
   user: UserData;
 };
 
-export type StateElement = {
+export interface StateElement {
   id: string;
   name: string;
   type: Entity | 'none';
@@ -1042,7 +1041,7 @@ export type StateElement = {
   styles: {
     classNames: string[];
     ownStyles: React.CSSProperties;
-    pseudoClassStyles: { [className: string]: React.CSSProperties };
+    pseudoClassStyles: Record<string, React.CSSProperties>;
     pseudoClassViewStyles?: React.CSSProperties | null;
   };
   parameters: {
@@ -1053,33 +1052,32 @@ export type StateElement = {
     [k: string]: any;
   };
   shared?: boolean;
-};
+}
 
-export type StateElementsToAdd<T extends Entity> = {
-  elements: LibraryElement<any>[];
+export interface StateElementsToAdd<T extends Entity> {
+  elements: Array<LibraryElement<T>>;
   parentId: string;
   index?: number;
-};
+}
 
-export type DropTargetParams = {
+export interface DropTargetParams {
   id: string;
   position?: DropPosition;
-};
+}
 
-export type Indices = {
+export interface Indices {
   newIndex: number;
   oldIndex: number;
-};
+}
 
-export type ElementsIndices = {
-  [id: string]: number;
-};
+export type ElementsIndices = Record<string, number>;
 
-export type SavedElementsValues = {
-  [elementID: string]: { id: number; savedValue: string | boolean };
-};
+export type SavedElementsValues = Record<
+  string,
+  { id: number; savedValue: string | boolean }
+>;
 
-export type CreatedElement = {
+export interface CreatedElement {
   id?: string;
   type: Entity | string;
   name: string;
@@ -1088,30 +1086,28 @@ export type CreatedElement = {
   styles?: {
     classNames: string[];
     ownStyles: React.CSSProperties;
-    pseudoClassStyles: { [className: string]: React.CSSProperties };
+    pseudoClassStyles: Record<string, React.CSSProperties>;
   };
   parameters?: any;
-};
+}
 
-export type CreateElementsData = {
+export interface CreateElementsData {
   createdElements: CreatedElement[];
   parentId: string;
   index?: number;
-};
+}
 
-export type ItemToCopyInfo = {
+export interface ItemToCopyInfo {
   id: string;
   screenID: number;
-};
+}
 
-export type DuplicateElementsData = {
+export interface DuplicateElementsData {
   itemsToCopyInfo: ItemToCopyInfo[];
   targetParent: LibraryElement<Entity>;
-};
+}
 
-export type FreeCanvasOffset = {
-  [parentId: string]: number;
-};
+export type FreeCanvasOffset = Record<string, number>;
 
 export interface ICenterProp {
   lat: number;
@@ -1125,31 +1121,34 @@ export interface IMapProps {
   apiKey: string;
 }
 
-export type Option = { name: string; value: any };
+export interface Option {
+  name: string;
+  value: any;
+}
 
-export type ListItem = {
+export interface ListItem {
   textContent: string;
   isLink: boolean;
   link: string;
-};
-export type BreadcrumbItem = {
+}
+export interface BreadcrumbItem {
   textContent: string;
   isLink: boolean;
-};
-export type PaginationItem = {
+}
+export interface PaginationItem {
   textContent: string;
-};
-export type CarouselItem = {
+}
+export interface CarouselItem {
   link: string;
   alt: string;
-};
-export type NavbarItem = {
+}
+export interface NavbarItem {
   link: string;
   itemName: string;
-};
+}
 export type ServerStructType = Entity;
 
-export type ElementParameters = {
+export interface ElementParameters {
   group?: string;
   placeholder?: string;
   url?: string;
@@ -1171,7 +1170,7 @@ export type ElementParameters = {
   link?: string;
   isOpen?: boolean;
   videoSettings?: VideoSettingsType;
-};
+}
 
 export interface ScenarioItem {
   // compare with entity on backend
@@ -1190,7 +1189,7 @@ export interface ScenarioItem {
   styles: React.CSSProperties;
 }
 
-export type ScreenMetaData = {
+export interface ScreenMetaData {
   title: string;
   description: string;
   keywords: string;
@@ -1198,39 +1197,39 @@ export type ScreenMetaData = {
   author: string;
   refresh: string;
   faviconUrl: string;
-};
+}
 
-export type ScreenData = {
+export interface ScreenData {
   meta?: ScreenMetaData;
   nnResult?: {
-    fdict: { [key: string]: VIAFile };
-    fordict: { [key: string]: VIAFile };
-    opencvdict: { [key: string]: VIAFile };
-    cnndict: { [key: string]: VIAFile };
+    fdict: Record<string, VIAFile>;
+    fordict: Record<string, VIAFile>;
+    opencvdict: Record<string, VIAFile>;
+    cnndict: Record<string, VIAFile>;
   };
   uiFramework: UIFramework;
   freeCanvas: boolean;
-  editableScreenUser: Array<EditableScreenUser> | [];
-};
-export type EditableScreenUser = {
+  editableScreenUser: EditableScreenUser[] | [];
+}
+export interface EditableScreenUser {
   idUser: number;
   firstName: string;
-};
-export type EditScreenData = {
+}
+export interface EditScreenData {
   name?: string;
   data?: Partial<ScreenData>;
-};
+}
 
 export type Screen = ScreenBase & {
   screenData: ScreenData;
 };
 
-export type UploadedImageInfo = {
+export interface UploadedImageInfo {
   imageURL: string;
   screenID: number;
-};
+}
 
-export type ElementData = {
+export interface ElementData {
   key: string;
   id?: string;
   type: Entity;
@@ -1239,24 +1238,24 @@ export type ElementData = {
   custom: boolean;
   parameters?: any;
   category?: string;
-};
+}
 
-export type CustomElementsCategory = {
-  bigBlocks: Array<ElementData>;
-  mediumBlocks: Array<ElementData>;
-  smallBlocks: Array<ElementData>;
-  htmlElements: Array<ElementData>;
-  otherElements: Array<ElementData>;
-};
+export interface CustomElementsCategory {
+  bigBlocks: ElementData[];
+  mediumBlocks: ElementData[];
+  smallBlocks: ElementData[];
+  htmlElements: ElementData[];
+  otherElements: ElementData[];
+}
 
 export type ErrorResponse = [];
 
-export type ColorElementIcon = {
+export interface ColorElementIcon {
   squareTopLeft: string;
   squareTopRight: string;
-};
+}
 
-export type ElementsHierarchy = {
+export interface ElementsHierarchy {
   elements: {
     layout: {
       [elementName in Entity]: ElementData;
@@ -1285,43 +1284,43 @@ export type ElementsHierarchy = {
       [elementName in Entity]: ElementData;
     };
   };
-};
+}
 
-export type ParentIds = {
+export interface ParentIds {
   oldParentId: string;
   newParentId: string;
-};
+}
 
-export type ElementsToCreate<T extends Entity> = {
-  elements: ServerElement<T>[];
+export interface ElementsToCreate<T extends Entity> {
+  elements: Array<ServerElement<T>>;
   parent: LibraryElement<Entity>;
   index?: number;
-};
+}
 
-export type TokenPair = {
+export interface TokenPair {
   access: string;
   refresh: string;
   streamchat?: string;
-};
-export type ViewTokenPair = {
+}
+export interface ViewTokenPair {
   access: string;
   refresh: string;
   streamchat?: string;
-};
-export type LoginFormData = {
+}
+export interface LoginFormData {
   username: string;
   password: string;
-};
+}
 
-export type SignupFormData = {
+export interface SignupFormData {
   username: string;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-};
+}
 
-export type ServerProfileData = {
+export interface ServerProfileData {
   avatar: null | string;
   hourly_rate: number;
   approved: boolean;
@@ -1329,9 +1328,9 @@ export type ServerProfileData = {
   id: number;
   experienced: Experience;
   parameters: ProfileDataParameters;
-};
+}
 
-export type ServerUserData = {
+export interface ServerUserData {
   date_joined: string;
   email: string;
   password: string;
@@ -1341,9 +1340,9 @@ export type ServerUserData = {
   id: number;
   is_active: boolean;
   profile: ServerProfileData;
-};
+}
 
-export type ProfileData = {
+export interface ProfileData {
   avatar: null | string;
   approved: boolean;
   role: string;
@@ -1351,16 +1350,16 @@ export type ProfileData = {
   id: number;
   experienced: Experience;
   parameters: ProfileDataParameters;
-};
+}
 
-export type ProfileDataParameters = {
+export interface ProfileDataParameters {
   avatarCrop: string;
   profileDataParameters: ProfileDataUIParameters;
-};
-export type ProfileDataUIParameters = {
+}
+export interface ProfileDataUIParameters {
   autoSwitchTabs: boolean;
   dropTargetBordersMode: boolean;
-};
+}
 export enum UserProjectPermission {
   ADD_PROJECT = 'add_project',
   DELETE_PROJECT = 'delete_project',
@@ -1369,22 +1368,22 @@ export enum UserProjectPermission {
   CHANGE_PROJECT = 'change_project',
 }
 
-export type PermissionsUserData = {
+export interface PermissionsUserData {
   permissions: UserProjectPermission[];
   userData: UserData;
-};
+}
 
-export type ServerPermissionsUserData = {
+export interface ServerPermissionsUserData {
   permissions: UserProjectPermission[];
   userdata: ServerUserData;
-};
+}
 
 export enum Experience {
   BEGINNER = 'BEGINNER',
   EXPERIENCED = 'EXPERIENCED',
 }
 
-export type UserData = {
+export interface UserData {
   id: number;
   username: string;
   email: string;
@@ -1394,7 +1393,7 @@ export type UserData = {
   isActive: boolean;
   password: string;
   profile: ProfileData;
-};
+}
 
 export type UserSubscriptionsData = [];
 export type UnsafeReturnType<T> = T extends (...args: any[]) => infer R
@@ -1407,14 +1406,14 @@ export type ReturnPromisedType<T extends (...args: any[]) => any> = T extends (
   ? R
   : ReturnType<T>;
 
-export type SyntheticGlobalElement<T, P> = {
+export interface SyntheticGlobalElement<T, P> {
   type: string;
   original?: T;
   canDrop?: (monitor: DropTargetMonitor, collectedParams?: P) => boolean;
   drop?: (monitor: DropTargetMonitor, collectedParams?: P) => void;
   hover?: (monitor: DropTargetMonitor, collectedParams?: P) => boolean;
   collect?: (monitor: DropTargetMonitor, collectedParams?: P) => void;
-};
+}
 
 export type ElementEntity = keyof ElementsToAdd;
 export type ChildEntity = keyof ChildrenElements;
@@ -1426,75 +1425,76 @@ export type AvailableControls = {
 };
 
 export type AvailableChildren = {
-  [P in Entity | 'custom']: {
-    [key: string]: {
+  [P in Entity | 'custom']: Record<
+    string,
+    {
       min: number;
       max: number;
-    };
-  };
+    }
+  >;
 };
 
-export type SyntheticElement<T> = {
+export interface SyntheticElement<T> {
   original: T;
   parent?: StateElement;
   type: ElementType;
-};
+}
 
 export type Params<T extends LibraryElement<Entity>> = Partial<T['parameters']>;
 
-export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
+export interface PropertiesChangeProps<T extends LibraryElement<Entity>> {
   element: StateElement;
-  removeStyles(cssPropertiesNames: string[]): void;
-  updateStyles(
-    payload: React.CSSProperties | { [key: string]: React.CSSProperties },
-  ): void;
-  updateParams(payload: Params<T>, updatedItemID?: string): void;
-  replaceStyles(payload: React.CSSProperties): void;
+  removeStyles: (cssPropertiesNames: string[]) => void;
+  updateStyles: (
+    payload: React.CSSProperties | Record<string, React.CSSProperties>,
+  ) => void;
+  updateParams: (payload: Params<T>, updatedItemID?: string) => void;
+  replaceStyles: (payload: React.CSSProperties) => void;
   masterScreenEnabled?: boolean;
   canEdit: boolean;
   editableStyles: string;
-};
+}
 
 export type ActionType = 'external-link' | 'internal-link' | 'button';
 
-export type WithActionProps = {
+export interface WithActionProps {
   actionLink: string;
   actionType: ActionType;
-  onClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
-};
+  onClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
+}
 
 export type MyAxiosProps = {
   access?: string;
   contentType?: string;
 } & Partial<AxiosRequestConfig>;
 
-export type Node = {
+export interface Node {
   id: string;
   data: { title: string; type: Entity | 'none' };
   hasChildren: boolean;
   isExpanded: boolean;
   children: string[];
-};
+}
 
-export type BoundingStyles = {
+export interface BoundingStyles {
   top: number;
   bottom: number;
   right: number;
   left: number;
   width: number;
   height: number;
-};
+}
 
-export type StyleProps = {
+export interface StyleProps {
   top?: number;
   left?: number;
   bottom?: number;
   right?: number;
   width?: number;
   height?: number;
-};
+}
 
-export type ChildrenElements = {
+export interface ChildrenElements {
   option: () => OptionServerElement;
   listItem: () => ListItemServerElement;
   dropdownMenu: () => DropdownMenuServerElement;
@@ -1507,9 +1507,9 @@ export type ChildrenElements = {
   carouselItem: () => CarouselItemServerElement;
   navbarItem: () => NavbarItemServerElement;
   image: () => ImageServerElement;
-};
+}
 
-export type ElementsToAdd = {
+export interface ElementsToAdd {
   root: () => RootServerElement;
   container: () => ContainerServerElement;
   divBlock: () => DivBlockServerElement;
@@ -1557,30 +1557,28 @@ export type ElementsToAdd = {
   hyperlink: () => LabelServerElement;
   switch: () => SwitchServerElement;
   imagesList: () => ImagesListServerElement;
-};
+}
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
 
-export type AssetsList = {
+export interface AssetsList {
   id: string;
   name: string;
   created: Date;
   modified: Date;
   projectId: string;
-};
+}
 
-export type Asset = {
+export interface Asset {
   id: string;
   image: string | null;
   created: Date;
   modified: Date;
 
   listId: string | null;
-};
+}
 
-export type AssetResults = {
-  [listId: string]: PaginatedArray<Asset>;
-};
+export type AssetResults = Record<string, PaginatedArray<Asset>>;
 
 export const enum NNBlockType {
   HEADER = 'headers',
@@ -1716,10 +1714,10 @@ export enum ProjectsSearchParameter {
   tags = 'tags',
 }
 
-export type DateRange = {
+export interface DateRange {
   from: Date | null;
   to: Date | null;
-};
+}
 
 export enum TemplatesSearchParameter {
   name = 'name',
@@ -1729,15 +1727,18 @@ export enum TemplatesSearchParameter {
   created = 'created',
   tags = 'tags',
 }
-export type PostUrlResponse = { wpname: string; owner: any };
+export interface PostUrlResponse {
+  wpname: string;
+  owner: any;
+}
 
-export type PostURLCheckRobots = {
+export interface PostURLCheckRobots {
   asterisk_fetch: boolean;
   filename: string;
   wget_fetch: boolean;
-};
+}
 
-export type VIARegionWithoutId = {
+export interface VIARegionWithoutId {
   shape_attributes: {
     name: string;
     x: number;
@@ -1748,21 +1749,21 @@ export type VIARegionWithoutId = {
   region_attributes: {
     'HTML element': Entity;
   };
-};
+}
 
 export type VIARegion = VIARegionWithoutId & {
   id: string;
   layer: number;
 };
 
-export type VIAFile = {
+export interface VIAFile {
   filename: string;
   size: number | string;
   regions: VIARegionWithoutId[];
   file_attributes: Record<string, any>;
-};
+}
 
-export type VIAData = {
+export interface VIAData {
   fdict: {
     key: string;
     value: Omit<VIAFile, 'regions'>;
@@ -1779,28 +1780,28 @@ export type VIAData = {
     key: string;
     value: Omit<VIAFile, 'regions'>;
   };
-};
+}
 
-export type VIARegions = {
+export interface VIARegions {
   fdict: Normalized<VIARegion>;
   fordict: Normalized<VIARegion>;
   opencvdict: Normalized<VIARegion>;
   cnndict: Normalized<VIARegion>;
-};
+}
 
-export type IFrameMessage = {
+export interface IFrameMessage {
   type: string;
   payload: any;
-};
+}
 
-export type FrameworkLink = {
+export interface FrameworkLink {
   key: string;
   link: string;
   crossOrigin?: string;
   integrity?: string;
-};
+}
 
-export type ScreenMeta = {
+export interface ScreenMeta {
   description: string;
   keywords: string;
   title: string;
@@ -1808,66 +1809,65 @@ export type ScreenMeta = {
   author: string;
   refresh: string;
   faviconUrl: string;
-};
+}
 
 export type FrameworkName = 'bootstrap' | 'material' | 'not_selected';
 export type NNModelName = 'fdict' | 'fordict' | 'opencvdict' | 'cnndict';
 
-export type FrameworkVersion = {
+export interface FrameworkVersion {
   name: string;
   styleSheetsData: FrameworkLink[];
   scriptsData: FrameworkLink[];
-};
+}
 
-export type Framework = {
+export interface Framework {
   name: FrameworkName;
   version: FrameworkVersion | null;
-};
+}
 
-export type UIFrameworkVariables = {
-  [name: string]: { label: string; value: string };
-};
+export type UIFrameworkVariables = Record<
+  string,
+  { label: string; value: string }
+>;
 
 export type UIFramework = Framework & {
-  themeVariables: {
-    [name: string]: string;
-  };
+  themeVariables: Record<string, string>;
 };
 
-export type FrameworkSelection = {
+export interface FrameworkSelection {
   name: string;
   label: string;
   versions?: FrameworkVersion[];
-};
+}
 
-export type NNModelSelection = {
+export interface NNModelSelection {
   name: string;
   label: string;
-};
+}
 
-export type ElementProps = {
+export interface ElementProps {
   uiFramework: UIFramework;
-};
+}
 
 export type FrameworkComponentSettings = Record<FrameworkName, React.FC<any>>;
 
-export type FileToUpload = {
+export interface FileToUpload {
   file: File;
   name: string;
   imgPreviewUrl?: string;
   stylesOn?: boolean;
-};
+}
 
 export const CONTROLS_NOT_ALLOW_LINK = ['html'] as const;
 export const CONTROLS_NOT_ALLOW_RICHTEXTBOX = ['checkbox'] as const;
 
-export type canvasData = {
+export interface canvasData {
   imageElements?: StateElement[];
   imageFiles?: File[];
   element?: LibraryElement<any, any[], any, {}> | undefined;
-};
+}
 
-export type importData = {
+export interface importData {
   notSupportedTag: string | null | undefined;
   canvasData: canvasData;
   importSuccessRawData: {
@@ -1878,17 +1878,17 @@ export type importData = {
     totalCssFiles?: number | null | undefined;
   };
   error: boolean;
-};
+}
 
-export type FreeDraggableStylesProps = {
+export interface FreeDraggableStylesProps {
   isActive: boolean;
   zIndex: number;
   includesActiveElement: boolean;
-};
+}
 
-export type ParsedImagePalette = {
-  parsedImagePalette: Array<Array<number>>;
-};
+export interface ParsedImagePalette {
+  parsedImagePalette: number[][];
+}
 
 export enum KeyCode {
   BackSpace = 8,

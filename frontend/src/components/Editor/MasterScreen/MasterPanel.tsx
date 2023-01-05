@@ -23,7 +23,7 @@ const useStyles = makeStyles({
   },
 });
 
-const MasterPanel = () => {
+function MasterPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const activeElement = useSelector(selectActiveElement);
@@ -77,6 +77,6 @@ const MasterPanel = () => {
       </Scrollbar>
     </div>
   );
-};
+}
 
 export default MasterPanel;

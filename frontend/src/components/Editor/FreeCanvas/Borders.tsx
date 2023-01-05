@@ -76,11 +76,11 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   element: StateElement;
   hover: boolean;
   isActive: boolean;
-};
+}
 
 const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
   const {

@@ -346,7 +346,6 @@ function* sendResetPasswordMailSaga(
 
     openSignScreen('signin');
   } catch (e) {
-    // @ts-ignore
     yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));

@@ -24,13 +24,12 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from '../../client';
 
-type InputProps = {
+interface InputProps {
   channelName: string;
   setChannelName: (value: React.SetStateAction<string>) => void;
-};
+}
 
 const InputWrapper = styled(FormControl)({
   position: 'relative',
@@ -120,11 +119,11 @@ const ChannelNameInput: React.FC<InputProps> = (props) => {
   );
 };
 
-type Props = {
+interface Props {
   createType: string;
   filters: ChannelFilters[];
   setIsCreating: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 export const CreateChannel: React.FC<Props> = (props) => {
   const { createType, filters, setIsCreating } = props;
@@ -137,8 +136,7 @@ export const CreateChannel: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const projectId = useSelector(selectCurrentProjectId);

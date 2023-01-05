@@ -8,46 +8,48 @@ import {
 } from './converters/assetList/fromResponse';
 import { handleError } from './helper';
 
-export const apiGetAssetLists = (
+export const apiGetAssetLists = async (
   props: MyAxiosProps & { projectId: string },
 ) => {
   const { projectId, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     method: 'GET',
     params: {
       ...(axiosProps.params || {}),
       project: projectId,
     },
-    url: `/projects/illustrations/`,
+    url: '/projects/illustrations/',
   })
     .then(convertResponseToPaginatedAssetLists)
     .catch(handleError);
 };
 
-export const apiCreateAssetList = (
+export const apiCreateAssetList = async (
   props: MyAxiosProps & { projectId: string; name: string },
 ) => {
   const { projectId, name, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     method: 'POST',
-    url: `projects/illustrations/`,
+    url: 'projects/illustrations/',
     data: {
       ...props.data,
       project: projectId,
       name,
     },
   })
-    .then((response: AxiosResponse<ServerAssetList>) => {
-      return convertResponseToAssetList(response);
-    })
+    .then((response: AxiosResponse<ServerAssetList>) =>
+      convertResponseToAssetList(response),
+    )
     .catch(handleError);
 };
 
-export const apiDeleteAssetList = (props: MyAxiosProps & { id: string }) => {
+export const apiDeleteAssetList = async (
+  props: MyAxiosProps & { id: string },
+) => {
   const { id, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     method: 'DELETE',
     url: `/projects/illustrations/${id}`,

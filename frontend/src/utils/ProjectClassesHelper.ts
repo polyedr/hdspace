@@ -5,47 +5,42 @@ export const updateProjectClasses = (
   project: Project,
   className: string,
   styles: CSSProperties,
-): Project => {
-  return {
-    ...project,
-    projectData: {
-      ...project.projectData,
-      classes: project.projectData.classes.map((cssClass) =>
-        cssClass.className === className
-          ? { ...cssClass, rules: { ...cssClass.rules, ...styles } }
-          : cssClass,
-      ),
-    },
-  };
-};
+): Project => ({
+  ...project,
+  projectData: {
+    ...project.projectData,
+    classes: project.projectData.classes.map((cssClass) =>
+      cssClass.className === className
+        ? { ...cssClass, rules: { ...cssClass.rules, ...styles } }
+        : cssClass,
+    ),
+  },
+});
 
 export const updateDefaultStyles = (
   project: Project,
   classNames: string[],
   styles: CSSProperties,
   controlKey: string,
-): Project => {
-  return {
-    ...project,
-    projectData: {
-      ...project.projectData,
-      defaultStyles: {
-        ...project.projectData.defaultStyles,
-        [controlKey]: {
-          ...project.projectData.defaultStyles[controlKey],
-          ...styles,
-        },
+): Project => ({
+  ...project,
+  projectData: {
+    ...project.projectData,
+    defaultStyles: {
+      ...project.projectData.defaultStyles,
+      [controlKey]: {
+        ...project.projectData.defaultStyles[controlKey],
+        ...styles,
       },
-      classes: project.projectData.classes.map((cssClass) => {
-        return classNames.find(
-          (className) => className === cssClass.className,
-        ) !== undefined
-          ? { ...cssClass, rules: { ...cssClass.rules, ...styles } }
-          : cssClass;
-      }),
     },
-  };
-};
+    classes: project.projectData.classes.map((cssClass) =>
+      classNames.find((className) => className === cssClass.className) !==
+      undefined
+        ? { ...cssClass, rules: { ...cssClass.rules, ...styles } }
+        : cssClass,
+    ),
+  },
+});
 
 export const removeProjectStyles = (
   project: Project,
@@ -62,8 +57,8 @@ export const removeProjectStyles = (
     ...project,
     projectData: {
       ...project.projectData,
-      classes: project.projectData.classes.map((cssClass) => {
-        return cssClass.className === className
+      classes: project.projectData.classes.map((cssClass) =>
+        cssClass.className === className
           ? {
               ...cssClass,
               rules:
@@ -81,8 +76,8 @@ export const removeProjectStyles = (
                       {},
                     ),
             }
-          : cssClass;
-      }),
+          : cssClass,
+      ),
     },
   };
 };
@@ -92,15 +87,13 @@ export const addProjectStyles = (
   className: string,
   elementType: Entity,
   styles: Required<React.CSSProperties>,
-): Project => {
-  return {
-    ...project,
-    projectData: {
-      ...project.projectData,
-      classes: [
-        ...project.projectData.classes,
-        { className, supportedElement: elementType, rules: styles },
-      ],
-    },
-  };
-};
+): Project => ({
+  ...project,
+  projectData: {
+    ...project.projectData,
+    classes: [
+      ...project.projectData.classes,
+      { className, supportedElement: elementType, rules: styles },
+    ],
+  },
+});

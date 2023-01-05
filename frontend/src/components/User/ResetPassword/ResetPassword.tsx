@@ -31,10 +31,10 @@ import padlock from '../../../assets/images/padlock.png';
 import logo from '../../../assets/images/logo.png';
 import bigimg from '../../../assets/images/bigimg2.png';
 
-type FormData = {
+interface FormData {
   newPassword: string;
   reNewPassword: string;
-};
+}
 
 const mapState = ({ user: { isLoading, error } }: AppReduxState) => ({
   isLoading,

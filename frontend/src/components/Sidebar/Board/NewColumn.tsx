@@ -60,7 +60,7 @@ const StyledInputAdornment = styled(InputAdornment)({
   },
 });
 
-export const NewColumn = ({ open, projectId, onClose }) => {
+export function NewColumn({ open, projectId, onClose }) {
   const dispatch = useDispatch();
 
   const handleCreateColumn = useCallback(
@@ -188,4 +188,4 @@ export const NewColumn = ({ open, projectId, onClose }) => {
       />
     </StyledDialog>
   );
-};
+}

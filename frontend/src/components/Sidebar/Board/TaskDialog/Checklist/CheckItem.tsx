@@ -89,7 +89,7 @@ interface Props {
   task: BoardTask;
 }
 
-const CheckItem = ({ item, task }: Props) => {
+function CheckItem({ item, task }: Props) {
   const [value, setValue] = useState(item.text);
   const [editing, setEditing] = useState(false);
   const [confirmDelete, showConfirmDelete] = useState(false);
@@ -105,9 +105,10 @@ const CheckItem = ({ item, task }: Props) => {
     );
   }, [item, task]);
 
-  const handleSetEditing = useCallback((editing: boolean) => {
-    return () => setEditing(editing);
-  }, []);
+  const handleSetEditing = useCallback(
+    (editing: boolean) => () => setEditing(editing),
+    [],
+  );
 
   const handleSave = useCallback(() => {
     setEditing(false);
@@ -246,6 +247,6 @@ const CheckItem = ({ item, task }: Props) => {
       />
     </>
   );
-};
+}
 
 export default CheckItem;

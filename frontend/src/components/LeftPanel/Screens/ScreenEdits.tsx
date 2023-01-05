@@ -4,10 +4,10 @@ import Avatar from '@material-ui/core/Avatar';
 import React, { useState } from 'react';
 import { EditableScreenUser } from '@Src/types';
 
-type Props = {
-  editingUsers: Array<EditableScreenUser>;
+interface Props {
+  editingUsers: EditableScreenUser[];
   isMinimized: boolean;
-};
+}
 
 const styles = makeStyles((theme: Theme) => ({
   editingUsers: {

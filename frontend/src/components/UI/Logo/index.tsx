@@ -7,7 +7,7 @@ import { Box, BoxProps, Link } from '@material-ui/core';
 import { ExitIcon } from '../Icon';
 import logo from '../../../assets/images/logo.png';
 
-const Logo = ({ width, height, ...rest }: BoxProps) => {
+function Logo({ width, height, ...rest }: BoxProps) {
   const currentScreenId = useSelector(selectCurrentScreenId);
   return (
     <Link href="/">
@@ -28,6 +28,6 @@ const Logo = ({ width, height, ...rest }: BoxProps) => {
       </Box>
     </Link>
   );
-};
+}
 
 export default Logo;

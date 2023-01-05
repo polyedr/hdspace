@@ -18,11 +18,11 @@ const useStyles = makeStyles(({ spacing, shape }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   event: ElementEvent;
   onEdit: (event: ElementEvent) => void;
   onDelete: (eventId: string) => void;
-};
+}
 
 const EventListItem: FC<Props> = ({ event, onEdit, onDelete }) => {
   const classes = useStyles();

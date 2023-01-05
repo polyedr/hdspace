@@ -37,13 +37,13 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   id: string;
   parameters: any;
   updateParams: any;
   isLast: boolean;
   canEdit: boolean;
-};
+}
 
 const SelectOption: React.FC<Props> = ({
   parameters: { name, value },

@@ -48,7 +48,7 @@ const CustomToggleButton = styled(ToggleButton)`
   }
 `;
 
-const ElementsTab = () => {
+function ElementsTab() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
@@ -152,6 +152,6 @@ const ElementsTab = () => {
       )}
     </div>
   );
-};
+}
 
 export default memo(ElementsTab);

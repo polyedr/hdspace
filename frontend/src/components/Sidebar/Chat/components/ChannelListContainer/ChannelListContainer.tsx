@@ -15,13 +15,11 @@ type Props = Omit<ChannelListProps, 'filters'> & {
   filters: ChannelFilters[];
 };
 
-const customChannelTeamFilter = (channels: Channel[]) => {
-  return channels.filter((channel) => channel.type === 'team');
-};
+const customChannelTeamFilter = (channels: Channel[]) =>
+  channels.filter((channel) => channel.type === 'team');
 
-const customChannelMessagingFilter = (channels: Channel[]) => {
-  return channels.filter((channel) => channel.type === 'messaging');
-};
+const customChannelMessagingFilter = (channels: Channel[]) =>
+  channels.filter((channel) => channel.type === 'messaging');
 
 export const ChannelListContainer: React.FC<Props> = (props) => {
   const { filters, options, setCreateType, setIsCreating, setIsEditing, sort } =

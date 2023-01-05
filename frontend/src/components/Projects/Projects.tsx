@@ -159,11 +159,10 @@ const Projects: React.FC = () => {
     (a, b) => b.created.getTime() - a.created.getTime(),
   );
 
-  const handleProjectAdd = () => {
-    return userSubscriptionData === null
+  const handleProjectAdd = () =>
+    userSubscriptionData === null
       ? setShowModal(true)
       : dispatch(createProject('AProject'));
-  };
   const handleModalClose = () => {
     dispatch(setProjectError(null));
     setShowModal(false);

@@ -35,12 +35,12 @@ const Navigator: React.FC = () => {
   const expandParents = useCallback(
     (itemId) => {
       if (itemId === 'root') return;
-      // @ts-ignore
+      // @ts-expect-error
       const parentId = tree.items[itemId]?.parent;
       if (!parentId) return;
-      setTree((prevTree) => {
-        return mutateTree(prevTree, parentId, { isExpanded: true });
-      });
+      setTree((prevTree) =>
+        mutateTree(prevTree, parentId, { isExpanded: true }),
+      );
       expandParents(parentId);
     },
     [tree],

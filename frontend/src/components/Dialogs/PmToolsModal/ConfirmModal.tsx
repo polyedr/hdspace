@@ -47,13 +47,13 @@ const Button = styled(MuiButton)({
   },
 });
 
-type Props = {
+interface Props {
   show: boolean;
   hide: () => void;
   elementText: string;
   action: () => void;
   actionText?: string;
-};
+}
 
 const ConfirmModal: React.FC<Props> = ({
   show,
@@ -76,9 +76,7 @@ const ConfirmModal: React.FC<Props> = ({
           <CloseIcon />
         </IconButton>
       </Stack>
-      <DialogContent>
-        {`Are you sure you want to ${actionText} ${elementText}?`}
-      </DialogContent>
+      <DialogContent>{`Are you sure you want to ${actionText} ${elementText}?`}</DialogContent>
       <DialogActions>
         <Button onClick={hide} variant="text">
           No

@@ -2,32 +2,30 @@ import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps } from '@Src/types';
 
-export const fetchTask = ({ taskId, ...options }) => {
-  return myAxios({
+export const fetchTask = async ({ taskId, ...options }) =>
+  await myAxios({
     url: `/projects/column-tasks/${taskId}/`,
     method: 'get',
     ...options,
   }).catch(handleError);
-};
 
-export const fetchTasks = ({ projectId, ...options }) => {
-  return myAxios({
+export const fetchTasks = async ({ projectId, ...options }) =>
+  await myAxios({
     url: `/projects/column-tasks/?column__project=${projectId}`,
     method: 'get',
     ...options,
   }).catch(handleError);
-};
 
-export const createTask = ({
+export const createTask = async ({
   title,
   columnId,
   ...options
 }: MyAxiosProps & {
   title: string;
   columnId: number;
-}) => {
-  return myAxios({
-    url: `/projects/column-tasks/`,
+}) =>
+  await myAxios({
+    url: '/projects/column-tasks/',
     method: 'post',
     data: {
       title,
@@ -35,47 +33,43 @@ export const createTask = ({
     },
     ...options,
   }).catch(handleError);
-};
 
-export const updateTask = ({
+export const updateTask = async ({
   fields,
   taskId,
   ...options
 }: MyAxiosProps & {
   title: string;
   taskId: number;
-  fields: { [key: string]: string };
-}) => {
-  return myAxios({
+  fields: Record<string, string>;
+}) =>
+  await myAxios({
     url: `/projects/column-tasks/${taskId}/`,
     method: 'patch',
     data: fields,
     ...options,
   }).catch(handleError);
-};
 
-export const updateTasksSequence = ({
+export const updateTasksSequence = async ({
   columnId,
   ...options
 }: MyAxiosProps & {
   columnId: number;
-}) => {
-  return myAxios({
+}) =>
+  await myAxios({
     url: `/projects/column/update_children_order/${columnId}/`,
     method: 'patch',
     ...options,
   }).catch(handleError);
-};
 
-export const deleteColumn = ({
+export const deleteColumn = async ({
   columnId,
   ...options
 }: MyAxiosProps & {
   columnId: number;
-}) => {
-  return myAxios({
+}) =>
+  await myAxios({
     url: `/projects/project-columns/${columnId}/`,
     method: 'delete',
     ...options,
   }).catch(handleError);
-};

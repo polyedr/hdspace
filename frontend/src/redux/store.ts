@@ -45,9 +45,9 @@ const reduxPromiseListener = createReduxPromiseListener();
 
 const composeEnhancers =
   typeof window === 'object' &&
-  process.env.NODE_ENV !== 'production' &&
-  (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(DevToolsOptions)
+  import.meta.env.MODE !== 'production' &&
+  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(DevToolsOptions)
     : compose;
 
 export const rootReducer = combineReducers({

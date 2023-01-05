@@ -70,7 +70,7 @@ const Searchbar: FC = () => {
 
   useEffect(() => {
     dispatch(searchProjects());
-  }, [parameterName, parameterValue]);
+  }, [dispatch, parameterName, parameterValue]);
 
   const handleParameterValueChange = (
     ev: React.ChangeEvent<HTMLInputElement>,

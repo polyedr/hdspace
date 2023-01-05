@@ -3,7 +3,7 @@ import { MyAxiosProps, UserProjectPermission } from '@Src/types';
 import { convertPermissionsUserDataFromResponse } from './converters/permissions/fromResponse';
 import { handleError } from './helper';
 
-export const apiSetUserPermissionsForProject = (
+export const apiSetUserPermissionsForProject = async (
   props: MyAxiosProps & {
     username: string;
     projectId: number;
@@ -11,7 +11,7 @@ export const apiSetUserPermissionsForProject = (
   },
 ) => {
   const { username, projectId, permissions, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     url: '/projects/permissionsmap-projects-assign/',
     method: 'POST',
@@ -25,7 +25,7 @@ export const apiSetUserPermissionsForProject = (
     .catch(handleError);
 };
 
-export const apiSetUsersPermissionsForProject = (
+export const apiSetUsersPermissionsForProject = async (
   props: MyAxiosProps & {
     emails: string[];
     projectId: number;
@@ -33,7 +33,7 @@ export const apiSetUsersPermissionsForProject = (
   },
 ) => {
   const { emails, projectId, permissions, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     url: '/projects/permissionsmaps-projects-assign/',
     method: 'POST',
@@ -47,14 +47,14 @@ export const apiSetUsersPermissionsForProject = (
     .catch(handleError);
 };
 
-export const apiGetPermissionsList = (
+export const apiGetPermissionsList = async (
   props: MyAxiosProps & {
     username: string;
     projectId: number;
   },
 ) => {
   const { username, projectId, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     url: '/projects/permissions-projects-display/',
     method: 'POST',
@@ -67,11 +67,11 @@ export const apiGetPermissionsList = (
     .catch(handleError);
 };
 
-export const apiGetAllUsersPermissionsForProject = (
+export const apiGetAllUsersPermissionsForProject = async (
   props: MyAxiosProps & { projectId: number },
 ) => {
   const { projectId, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     url: '/projects/permissions-allusers-display/',
     method: 'POST',
