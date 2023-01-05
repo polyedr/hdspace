@@ -204,12 +204,10 @@
     "redux-devtools": "^3.7.0",
     "redux-mock-store": "^1.5.4",
     "redux-saga-testing": "^2.0.2",
-    "rollup-plugin-node-builtins": "^2.1.2",
     "sass": "^1.57.1",
     "typescript": "^4.9.4",
     "vite": "^4.0.3",
     "vite-plugin-eslint": "^1.8.1",
-    "vite-plugin-favicon": "^1.0.8",
     "vite-plugin-favicons-inject": "^2.1.0",
     "vitest": "^0.26.2"
   }

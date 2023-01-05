@@ -6,12 +6,9 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  define: {
-    global: {},
-  },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': path.resolve(__dirname, './src'),
       '@Components': path.resolve(__dirname, './src', 'components'),
       '@Constants': path.resolve(__dirname, './src', 'constants'),
       '@Utils': path.resolve(__dirname, './src', 'utils'),
@@ -31,7 +28,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: '@import "@/styles/index.scss";',
+        additionalData: '@import "@Src/styles/index.scss";',
       },
     },
   },
