@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { useDrag } from 'react-dnd';
 import Screen from './Screen';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import { type Item } from './Canvas';
+import { type WireframeScreen } from './Canvas';
 
 interface Props {
-  data: Item;
+  data: WireframeScreen;
   id: string;
 }
 

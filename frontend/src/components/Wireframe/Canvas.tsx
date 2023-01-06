@@ -1,30 +1,49 @@
 import { styled } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import DraggableScreen from './DraggableScreen';
 import { useDrop } from 'react-dnd';
 import DragLayer from './DragLayer';
+import type { Normalized, Screen as ProjectScren } from '@Src/types';
+import Scrollbar from '@Components/UI/Scrollbar';
+import Scrollbars from 'react-custom-scrollbars';
+
+const Wrapper = styled('div')({
+  height: '100%',
+  width: '100%',
+});
 
 const Container = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.grey[100],
-  height: '100%',
+  height: '150%',
+  width: '150%',
   position: 'relative',
+  cursor: 'grab',
 }));
 
-export interface Item {
-  title: string;
-  left: number;
-  top: number;
+export type WireframeScreen = ProjectScren & { left: number; top: number };
+type Screens = Normalized<WireframeScreen>;
+
+function buildScreenData(_screens: Normalized<ProjectScren>): Screens {
+  const screens = {};
+
+  Object.entries(_screens).forEach(([key, screen]) => {
+    screens[key] = { ...screen, left: 10, top: 0 };
+  });
+
+  return screens;
 }
 
-const Canvas: React.FC = () => {
-  const [screens, setScreens] = useState<Record<string, Item>>({
-    a: { title: 'screen 1', left: 10, top: 10 },
-    b: { title: 'screen 2', left: 50, top: 50 },
-  });
+const Canvas: React.FC<{ screens: Normalized<ProjectScren> }> = ({
+  screens: _screens,
+}) => {
+  const [screens, setScreens] = useState<Screens>(buildScreenData(_screens));
+  // const enabledPincAndMove = useRef(false);
+  const scrollbarRef = useRef<Scrollbars>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const [, drop] = useDrop(() => ({
     accept: 'wireframe-screen',
-    drop: (item: Item & { id: string }, monitor) => {
+    drop: (item: WireframeScreen & { id: string }, monitor) => {
       const delta = monitor.getDifferenceFromInitialOffset();
       const left = Math.round(item.left + delta.x);
       const top = Math.round(item.top + delta.y);
@@ -39,13 +58,41 @@ const Canvas: React.FC = () => {
     });
   };
 
+  // const handleMouseMove = useCallback(
+  //   (e: React.MouseEvent<HTMLDivElement>) => {
+  //     if (!enabledPincAndMove.current) return null;
+
+  //     const { x, y } = wrapperRef.current.getBoundingClientRect();
+
+  //     scrollbarRef.current.scrollTop(e.pageY - y);
+  //     scrollbarRef.current.scrollLeft(e.pageX - x);
+  //   },
+  //   [enabledPincAndMove],
+  // );
+
+  // const enablePinchAndMove = useCallback(
+  //   (enable: boolean) => {
+  //     return () => (enabledPincAndMove.current = enable);
+  //   },
+  //   [enabledPincAndMove],
+  // );
+
   return (
-    <Container ref={drop}>
-      {Object.keys(screens).map((key) => (
-        <DraggableScreen key={key} id={key} data={screens[key]} />
-      ))}
-      <DragLayer />
-    </Container>
+    <Wrapper ref={wrapperRef}>
+      <Scrollbar ref={scrollbarRef}>
+        <Container
+          // onMouseDown={enablePinchAndMove(true)}
+          // onMouseUp={enablePinchAndMove(false)}
+          // onMouseMove={handleMouseMove}
+          ref={drop}
+        >
+          {Object.keys(screens).map((key) => (
+            <DraggableScreen key={key} id={key} data={screens[key]} />
+          ))}
+          <DragLayer />
+        </Container>
+      </Scrollbar>
+    </Wrapper>
   );
 };
 

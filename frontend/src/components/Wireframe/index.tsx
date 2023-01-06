@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Stack,
   Box,
@@ -29,6 +29,10 @@ import {
 import Canvas from './Canvas';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { getProject } from '@Redux/project/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { selectScreens } from '@Redux/project/selectors/screen';
 
 interface Props {
   projectId: number;
@@ -89,12 +93,31 @@ const CustomBox = styled(Box)({
   },
 });
 
-const Wireframe: React.FC<Props> = () => {
+interface Props {
+  projectId: number;
+  screenId?: number;
+}
+
+const Wireframe: React.FC<Props> = ({ projectId, screenId: _ }) => {
+  const screens = useSelector(selectScreens);
+  const currentProjectId = useSelector(selectCurrentProjectId);
   const [open, setOpen] = React.useState(false);
+
+  const dispatch = useDispatch();
 
   const handleClick = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    if (currentProjectId !== projectId) {
+      dispatch(getProject(projectId));
+    }
+  }, [dispatch, currentProjectId, projectId]);
+
+  if (!currentProjectId || !screens || Object.keys(screens).length < 1) {
+    return null;
+  }
 
   return (
     <>
@@ -175,7 +198,7 @@ const Wireframe: React.FC<Props> = () => {
           </Grid>
           <Grid item xs={8}>
             <DndProvider backend={HTML5Backend}>
-              <Canvas />
+              <Canvas screens={screens} />
             </DndProvider>
           </Grid>
           <Grid item xs={2}>
