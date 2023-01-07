@@ -9,7 +9,7 @@ import {
 } from '@Redux/project/actions';
 import { selectProjectsSearchParameter } from '@Redux/project/selectors/base';
 import { PROJECT_STATUS_LIST } from '@Constants/defaultParams';
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { DatePicker, LocalizationProvider } from '@mui/lab';
 import DateFnsUtils from '@date-io/date-fns';
 import { startOfDay, endOfDay } from 'date-fns';
 import { makeStyles } from '@mui/styles';
@@ -136,7 +136,7 @@ const Searchbar: FC = () => {
       <form className={classes.form}>
         <div className={classes.form}>
           {isDate && typeof parameterValue === 'object' ? (
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <LocalizationProvider utils={DateFnsUtils}>
               <DatePicker
                 label="From Date"
                 value={parameterValue.from}
@@ -159,7 +159,7 @@ const Searchbar: FC = () => {
                 autoOk
                 clearable
               />
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
           ) : (
             <TextField
               value={parameterValue}

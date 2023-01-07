@@ -31,7 +31,6 @@ export const initialUserState: UserState = {
           autoSwitchTabs: false,
           dropTargetBordersMode: true,
         },
-        passwordZulip: '',
       },
     },
   },
@@ -47,11 +46,5 @@ export const initialUserState: UserState = {
   userGuide: {
     active: false,
   },
-  chat: {
-    apiKey: '',
-    realm: '',
-    username: '',
-  },
-
   subscriptionData: [],
 };

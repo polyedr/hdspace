@@ -159,32 +159,6 @@ export function* updateUserPermissionsForProjectSaga(
       );
       return;
     }
-
-    // let board = yield select(selectBoardData);
-    // if (!board) {
-    //   const boardData = yield call(reqWrapper, apiGetBoard, {
-    //     project: projectId,
-    //   });
-    //   board = JSON.parse(boardData);
-    // }
-    // if (user.profile.parameters.passwordZulip) {
-    //   const { name: streamName } = board;
-    //   permissions.length
-    //     ? yield call(apiAddSubscribeToStream, streamName, user.email)
-    //     : yield call(apiUnsubscribeToStream, streamName, user.email);
-    // }
-
-    // const userTrello = yield call(getUserByEmail, user.email);
-
-    // if (!userTrello.error) {
-    //   permissions.length
-    //     ? yield call(getAddUserToBoard, user.email, board.id)
-    //     : yield call(getRemoveUserToBoard, userTrello.id, board.id);
-    // }
-
-    // const members = yield call(apiGetMembersOfBoard, board.id);
-    // yield put(successFetchMembers(members));
-
     if (permissions && permissions.length) {
       const actionData: ActionTypePM = {
         action: `${user.firstName}'s rights have been changed`,

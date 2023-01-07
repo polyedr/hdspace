@@ -6,11 +6,15 @@ import {
   compose,
   Store,
 } from 'redux';
-import { persistStore, persistReducer } from 'redux-persist';
+import {
+  persistStore,
+  persistReducer,
+  PersistConfig,
+  Persistor,
+} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import createSagaMiddleware from 'redux-saga';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { PersistConfig, Persistor } from 'redux-persist/es/types';
 import createReduxPromiseListener from 'redux-promise-listener';
 import userReducer from './user/reducer';
 import projectReducer from './project/reducers';
@@ -22,7 +26,6 @@ import userSaga from './user/sagas';
 import history from './history';
 import DevToolsOptions from './devtools';
 import activityReducer from './pmtools/activity/reducer';
-import chatReducer from './pmtools/chat/reducer';
 import boardReducer from './pmtools/board/reducer';
 import inviteReducer from './pmtools/invite/reducer';
 import pmToolsSaga from './pmtools/sagas';
@@ -36,7 +39,6 @@ const userPersistConfig: PersistConfig = {
     'tokenPair',
     'userData',
     'isLoggedIn',
-    'chat',
   ],
   storage,
 };
@@ -59,7 +61,6 @@ export const rootReducer = combineReducers({
   notification: notificationReducer,
   permissions: permissionsReducer,
   activity: activityReducer,
-  chat: chatReducer,
   invite: inviteReducer,
   board: boardReducer,
   marketplace: marketplaceReducer,
