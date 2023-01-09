@@ -7,12 +7,12 @@ import {
   DialogTitle,
   InputAdornment,
   TextField,
+  IconButton,
 } from '@mui/material';
 import { Form, Field } from 'react-final-form';
 import { ColorPicker, createColor } from 'material-ui-color';
 import { useDispatch } from 'react-redux';
 import { createColumn } from '@Redux/pmtools/board/actions/columns';
-import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 

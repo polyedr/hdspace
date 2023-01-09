@@ -3,11 +3,11 @@ import React, { useEffect, useCallback, useState, memo } from 'react';
 import { SketchPicker, ColorResult } from 'react-color';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { Popover } from '@material-ui/core';
+import { createStyles, makeStyles } from '@mui/styles';
+import { Popover, Theme } from '@mui/material';
 import transparentBg from '../../../assets/sprites/transparent.png';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       position: 'relative',

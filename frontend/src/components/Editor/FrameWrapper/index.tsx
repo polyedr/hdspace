@@ -15,7 +15,7 @@ import Frame, {
 import { useDispatch, useSelector } from 'react-redux';
 import { DndContext } from 'react-dnd';
 import { setEditorDocument } from '@Redux/project/actions';
-import { themeOld as theme } from '@Src/styles/Theme';
+import { theme } from '@Src/styles/Theme';
 import {
   selectCurrentProjectClasses,
   selectCurrentUIFramework,

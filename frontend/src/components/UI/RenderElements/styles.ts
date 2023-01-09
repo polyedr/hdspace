@@ -1,7 +1,7 @@
 import React from 'react';
-import { Styles } from '@material-ui/core/styles/withStyles';
+import { makeStyles, Styles } from '@mui/styles';
 import { omit } from 'ramda';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material';
 import { RendererProps } from './types';
 
 const getComputedStyle = (
@@ -58,7 +58,7 @@ export const makeComponentStyles: any = (
           pointerEvents: 'none !important',
         },
       },
-      ...(style instanceof Function ? style(theme) : style),
+      // ...(style instanceof Function ? style(theme) : style),
     }),
     { name },
   );

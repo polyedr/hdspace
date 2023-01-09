@@ -1,6 +1,7 @@
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
@@ -45,6 +46,7 @@ const useStyles = makeStyles((theme) =>
       justifyContent: 'center',
       display: 'flex',
       flexDirection: 'column',
+      height: '100%',
     },
     underLogoText: {
       fontSize: '27px !important',
