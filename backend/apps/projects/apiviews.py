@@ -70,8 +70,9 @@ from .serializers import (
     ImageSerializer,
     ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer, ImagePaletteSerializer,
     duplicate_model_with_descendants, copy_element_node, copy_children, ColumnTaskCommentSerializer,
-    ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer, ProjectScreenExportSerializer,
-    ProjectScreenImportSerializer)
+    ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer,# ProjectScreenExportSerializer,
+    ProjectScreenImportSerializer, ScreenScenarioExportSerializer, ScreenScenarioImportSerializer,
+    ProjectImportExportSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -158,6 +159,13 @@ class ProjectWithColumnsViewSet(viewsets.ModelViewSet):
     def filter_queryset(self, queryset):
         # queryset = queryset.filter(user=self.request.user)
         return queryset
+
+
+class ProjectImportExportViewSet(viewsets.ModelViewSet):
+    # permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = Project.objects.all()
+    serializer_class = ProjectImportExportSerializer
+    # filter_backends = [DjangoFilterBackend, filters.ObjectPermissionsFilter]  # Django-Guardian and DjangoFilterBackend
 
 
 class ColumnWithTasksViewSet(viewsets.ModelViewSet):
@@ -301,7 +309,7 @@ class ProjectScreenExportDetail(generics.RetrieveAPIView):
     """
 
     queryset = ProjectScreen.objects.all()
-    serializer_class = ProjectScreenExportSerializer
+    serializer_class = ProjectScreenImportSerializer
 
 
 class ProjectScreenImportDetail(generics.CreateAPIView):
@@ -616,18 +624,7 @@ class ScreeScenarioViewSet(viewsets.ModelViewSet):
 # Scenarios with elements import export
 class ScreeScenarioImportExportViewSet(viewsets.ModelViewSet):
     queryset = ScreenScenario.objects.all()
-    serializer_class = ScreenScenarioSerializer
-
-    def get_queryset(self):
-        return self.get_serializer_class().setup_eager_loading(self.queryset)
-
-    def filter_queryset(self, queryset):
-        screen_id = self.request.query_params.get('screenId')
-
-        if screen_id and screen_id.isdigit():
-            queryset = queryset.filter(screen=screen_id)
-
-        return queryset
+    serializer_class = ScreenScenarioImportSerializer
 
 
 class ScreenScenarioMultipleView(ListBulkCreateUpdateDestroyAPIView):
@@ -1255,6 +1252,3 @@ class TasksReorder(APIView):
             return Response({'affected_rows': affected_rows})
         return Response({}, status.HTTP_204_NO_CONTENT)
 
-
-class ProjectCopyingViewSet(viewsets.ViewSet):
-    pass

@@ -396,6 +396,31 @@ class ScreenScenarioExportSerializer(serializers.ModelSerializer):
         # extra_kwargs = {"elements": {"read_only": True}}
         # fields = "__all__"
 
+'''
+class ScreenScenarioImportSerializer(serializers.ModelSerializer):
+    elements = ScenarioElementSerializer(many=True)
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
+
+    class Meta:
+        model = ScreenScenario
+        fields = (
+            "id",
+            "screen",
+            "name",
+            "parent_id",
+            "type",
+            "struct_type",
+            "direction",
+            "buoyancy",
+            "elements",
+            "parameters",
+            "styles",
+        )
+        # extra_kwargs = {"elements": {"read_only": True}}
+        # fields = "__all__"
+'''
+
 
 class ScreenScenarioImportSerializer(serializers.ModelSerializer):
     elements = ScenarioElementImportSerializer(many=True, required=False, allow_null=True)
@@ -417,9 +442,31 @@ class ScreenScenarioImportSerializer(serializers.ModelSerializer):
             "parameters",
             "styles",
         )
-        # extra_kwargs = {"elements": {"read_only": True}}
-        extra_kwargs = {"id": {"read_only": True}}
-        # fields = "__all__"
+
+    def create(self, validated_data):
+        scenarioelements = validated_data.pop("elements", None)
+        screenscenario = ScreenScenario.objects.create(**validated_data)
+        screenscenario.save()
+
+        for scenarioelement in scenarioelements:
+            children = scenarioelement.pop("children", [])
+            print("parent", self.context.get("id"))
+            print("scenarioelement", scenarioelement)
+            scenarioelement["scenario"] = screenscenario
+            node = ScenarioElement.objects.create(
+                # parent is null only on the root node
+                # parent=self.context.get("parent"),
+                **scenarioelement
+            )
+
+            node.save()
+            # Multiple level of the recursion
+            for child_data in children:
+                s = ScenarioElementSerializer(data=child_data, context={"parent": node}
+                                              )
+                s.is_valid(raise_exception=True)
+                s.save()
+        return screenscenario
 
 
 class ScreenScenarioMultipleSerializer(
@@ -985,6 +1032,7 @@ class ElementCommentSerializer(serializers.ModelSerializer):
         fields = ("text", "element", "user")
 
 
+'''
 class ProjectScreenExportSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
     tags = TagListSerializerField(required=False, allow_null=True)
@@ -1008,17 +1056,17 @@ class ProjectScreenExportSerializer(serializers.ModelSerializer):
             "tags",
         )
         extra_kwargs = {"screenscenario": {"read_only": True}}
+'''
 
 
 class ProjectScreenImportSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
     tags = TagListSerializerField(required=False, allow_null=True)
     screenscenario = ScreenScenarioImportSerializer(many=True, allow_null=True)
-    # screenscenario = ScreenScenarioSerializer(many=True, allow_null=True)
 
     class Meta:
         model = ProjectScreen
-        # fields = ("status", "screen_data", "project", "id", "image")
+
         fields = (
             "status",
             "project",
@@ -1033,7 +1081,7 @@ class ProjectScreenImportSerializer(serializers.ModelSerializer):
             "updated",
             "tags",
         )
-        # extra_kwargs = {"screenscenario": {"read_only": True}}
+
     def create(self, validated_data):
         print("validated_data", validated_data)
         screenscenarios = validated_data.pop("screenscenario", None)
@@ -1041,48 +1089,133 @@ class ProjectScreenImportSerializer(serializers.ModelSerializer):
 
         # Multiple scenarios
         for screenscenario in screenscenarios:
-            # s = ScreenScenarioSerializer(data=screenscenario, context={"projectscreen": node.id})
-
             screenscenario.pop("screen", None)
             scenarioelements = screenscenario.pop("elements", None)
-            '''
-            screenscenario["screen"] = node
-            print("screenscenario", screenscenario)
-            print("scenarioelements: ", scenarioelements)
-            '''
-            '''
-            s = ScreenScenarioImportSerializer(data=screenscenario)
-            s.is_valid(raise_exception=True)
-            s.save()
-            '''
+
             s = ScreenScenario.objects.create(screen=node, **screenscenario)
             s.save()
+
             # Multiple elements
             if scenarioelements:
                 for scenarioelement in scenarioelements:
+                    children = scenarioelement.pop("children", [])
                     print("scenarioelement:", scenarioelement)
                     scenarioelement["scenario"] = s
-                    children = scenarioelement.pop("children", [])
-
                     node_se = ScenarioElement.objects.create(
                         # parent is null only on the root node
                         # parent=self.context.get("parent"),
                         **scenarioelement
                     )
 
-
-                    # node_se = ScenarioElementSerializer(**scenarioelement)
-                    # node_se.is_valid(raise_exception=True)
-                    # node_se.save()
-                    '''
+                    node_se.save()
                     # Multiple level of the recursion
                     for child_data in children:
-                        print("child_data", child_data)
-                        w = ScenarioElement.objects.create(parent=self.context.get("parent"), **child_data)
-                        # w = ScenarioElementImportSerializer(data=child_data, context={"parent": node_se})
-                        # w.is_valid(raise_exception=True)
-                        # ScenarioElement.objects.create(child_data)
+                        w = ScenarioElementSerializer(data=child_data, context={"parent": node_se}                                                      )
+                        w.is_valid(raise_exception=True)
                         w.save()
-                    '''
+
         node.save()
+        return node
+
+'''
+    def create(self, validated_data):
+        scenarioelements = validated_data.pop("elements", None)
+        screenscenario = ScreenScenario.objects.create(**validated_data)
+        screenscenario.save()
+
+        for scenarioelement in scenarioelements:
+            children = scenarioelement.pop("children", [])
+            print("parent", self.context.get("id"))
+            print("scenarioelement", scenarioelement)
+            scenarioelement["scenario"] = screenscenario
+            node = ScenarioElement.objects.create(
+                # parent is null only on the root node
+                # parent=self.context.get("parent"),
+                **scenarioelement
+            )
+
+            node.save()
+            # Multiple level of the recursion
+            for child_data in children:
+                s = ScenarioElementSerializer(data=child_data, context={"parent": node}
+                                              )
+                s.is_valid(raise_exception=True)
+                s.save()
+        return screenscenario
+'''
+
+
+class ProjectImportExportSerializer(TaggitSerializer, serializers.ModelSerializer):
+    # user = UserSerializer()
+    projectscreen = ProjectScreenImportSerializer(many=True)
+    tags = TagListSerializerField(required=False, allow_null=True)
+
+    class Meta:
+        model = Project
+        fields = (
+            "preview",
+            "name",
+            "favicon",
+            "status",
+            "projectscreen",
+            "user",
+            "id",
+            "created",
+            "updated",
+            "tags",
+            "project_data_text",
+            "project_data_json",
+            "project_data_activity_json",
+            "project_data_trello_json",
+        )
+        extra_kwargs = {
+            "preview": {"read_only": True},
+            "created": {"read_only": True},
+            "updated": {"read_only": True},
+        }
+
+    def create(self, validated_data):
+        # print("validated_data", validated_data)
+        projectscreens = validated_data.pop("projectscreen", None)
+        validated_data["user"] = self.context["request"].user
+
+        node = Project.objects.create(**validated_data)
+        node.save()
+
+        for projectscreen in projectscreens:
+            print("projectscreen_data", projectscreen)
+            screenscenarios = projectscreen.pop("screenscenario", None)
+            projectscreen["project"] = node
+            projscreen = ProjectScreen.objects.create(**projectscreen)
+
+            # Multiple scenarios
+            for screenscenario in screenscenarios:
+                screenscenario.pop("screen", None)
+                scenarioelements = screenscenario.pop("elements", None)
+
+                s = ScreenScenario.objects.create(screen=projscreen, **screenscenario)
+                s.save()
+
+                # Multiple elements
+                if scenarioelements:
+                    for scenarioelement in scenarioelements:
+                        children = scenarioelement.pop("children", [])
+                        print("scenarioelement:", scenarioelement)
+                        scenarioelement["scenario"] = s
+                        node_se = ScenarioElement.objects.create(
+                            # parent is null only on the root node
+                            # parent=self.context.get("parent"),
+                            **scenarioelement
+                        )
+
+                        node_se.save()
+                        # Multiple level of the recursion
+                        for child_data in children:
+                            w = ScenarioElementSerializer(data=child_data, context={"parent": node_se}                                                      )
+                            w.is_valid(raise_exception=True)
+                            w.save()
+
+            projscreen.save()
+
+
         return node
