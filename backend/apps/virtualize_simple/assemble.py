@@ -1794,7 +1794,7 @@ def elements_rootblock(
                 scenarioelement_inner_kwargs = {}
                 # A choice for ocr_engine is {"tesseract", "lorem", "googlecloud"}
                 font_size_value, text_elem_ocr, text_width, text_leftc, text_rightc = ocr_recognition(
-                    elem_image, ocr_engine="googlecloud"
+                    elem_image, ocr_engine="tesseract"
                 )
 
             node.styles["text-transform"] = "none"
