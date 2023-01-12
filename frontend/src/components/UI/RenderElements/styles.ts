@@ -21,7 +21,7 @@ export const makeComponentStyles: any = (
   style: Styles<Theme, any, string> = {},
   stylesToOmit?: string[],
 ) =>
-  makeStyles(
+  makeStyles<Theme>(
     (theme) => ({
       ownStyles: (props: RendererProps) => {
         const { element } = props;
@@ -58,7 +58,7 @@ export const makeComponentStyles: any = (
           pointerEvents: 'none !important',
         },
       },
-      // ...(style instanceof Function ? style(theme) : style),
+      ...(style instanceof Function ? style(theme) : style),
     }),
     { name },
   );

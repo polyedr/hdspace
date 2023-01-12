@@ -54,7 +54,9 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     headerText: {
-      fontWeight: 'bold',
+      '&.MuiTypography-root': {
+        fontWeight: 'bold',
+      },
     },
     table: {
       padding: theme.spacing(1),
@@ -63,11 +65,15 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: '#dedede',
     },
     loader: {
-      padding: '1em',
-      textAlign: 'center',
+      '&.MuiTableCell-root': {
+        padding: '1em',
+        textAlign: 'center',
+      },
     },
     createButton: {
-      minWidth: 160,
+      '&.MuiButton-root': {
+        minWidth: 160,
+      },
     },
     cellStatus: {
       width: 200,

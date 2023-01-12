@@ -22,7 +22,7 @@ const useStyles = makeStyles<Theme>(({ spacing }) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',
-    padding: '0 16px',
+    // padding: '0 16px',
   },
   chip: {
     marginRight: '5px',
@@ -51,15 +51,17 @@ const useStyles = makeStyles<Theme>(({ spacing }) => ({
   },
 
   elementsStylesChip: {
-    marginRight: '5px',
-    marginBottom: '5px',
-    color: 'rgba(42, 42, 45, 1)',
-    backgroundColor: 'rgba(243, 244, 246, 0.8)',
-    '&:hover, &:focus': {
-      backgroundColor: 'rgba(243, 244, 246, 1)',
-    },
-    '& .MuiChip-label': {
-      textTransform: 'capitalize',
+    '&.MuiChip-root': {
+      marginRight: '5px',
+      marginBottom: '5px',
+      color: 'rgba(42, 42, 45, 1)',
+      backgroundColor: 'rgba(243, 244, 246, 0.8)',
+      '&:hover, &:focus': {
+        backgroundColor: 'rgba(243, 244, 246, 1)',
+      },
+      '& .MuiChip-label': {
+        textTransform: 'capitalize',
+      },
     },
   },
   chipContainer: {

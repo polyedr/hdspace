@@ -155,7 +155,7 @@ const BackgroundImage: React.FC<Props> = ({ element, canEdit }) => {
         <label htmlFor="upload-image">
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             component="span"
             disabled={!canEdit}
           >
@@ -173,7 +173,7 @@ const BackgroundImage: React.FC<Props> = ({ element, canEdit }) => {
         />
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           component="span"
           style={{
             zIndex: 2,

@@ -39,6 +39,16 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: 'capitalize',
+          color: 'white',
+        },
+      },
+    },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          '&.Mui-checked': {
+            color: 'rgb(26 192 158)',
+          },
         },
       },
     },

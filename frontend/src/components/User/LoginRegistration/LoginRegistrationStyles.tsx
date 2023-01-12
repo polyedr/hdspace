@@ -26,9 +26,10 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: 14,
     },
     button: {
-      height: 54,
-      fontSize: '20px !important',
-      color: 'white !important',
+      '&.MuiButton-root': {
+        height: 54,
+        fontSize: '20px',
+      },
     },
     // input: {
     //   background: '#dee4f0',

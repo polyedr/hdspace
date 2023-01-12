@@ -147,7 +147,7 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
         <label htmlFor="upload-image">
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             component="span"
             disabled={!canEdit}
           >
@@ -165,7 +165,7 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
         />
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           component="span"
           style={{
             zIndex: 2,

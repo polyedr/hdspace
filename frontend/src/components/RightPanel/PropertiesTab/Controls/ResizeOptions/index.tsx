@@ -30,6 +30,7 @@ const ResizeOptionsControl: React.FC<
             checked={keepAspectRatio || false}
             onChange={handleSwitchChange}
             disabled={!canEdit}
+            color={'secondary'}
           />
         }
         label="Keep Aspect Ratio"

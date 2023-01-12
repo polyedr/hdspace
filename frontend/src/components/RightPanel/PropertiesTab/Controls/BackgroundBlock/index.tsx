@@ -475,7 +475,7 @@ const BackgroundBlock: React.FC<Props> = ({
         type="file"
         disabled={!canEdit}
       />
-      <FormControl className={classes.formControl}>
+      {/* <FormControl className={classes.formControl}>
         <InputLabel>Background Type</InputLabel>
         <Select onChange={handleChangeType} value={type}>
           {Object.values(BackgroundType).map((type) => (
@@ -484,7 +484,22 @@ const BackgroundBlock: React.FC<Props> = ({
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
+      </FormControl> */}
+      <StyledTextField
+        fullWidth
+        margin="dense"
+        label="Background Type"
+        value={type}
+        onChange={handleChangeType}
+        select
+        disabled={!canEdit}
+      >
+        {Object.values(BackgroundType).map((type) => (
+          <MenuItem value={type} key={type}>
+            {type}
+          </MenuItem>
+        ))}
+      </StyledTextField>
 
       {renderBackgroundControls()}
     </div>

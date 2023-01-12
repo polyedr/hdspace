@@ -19,7 +19,22 @@ const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
     margin: 0,
   },
   queryInput: {
-    minWidth: 300,
+    '&.MuiTextField-root': {
+      minWidth: 300,
+
+      '& input': {
+        paddingTop: '10.5px',
+        paddingBottom: '10.5px',
+      },
+    },
+
+    '& label': {
+      transform: 'translate(14px, 10px) scale(1)',
+    },
+
+    '& .MuiInputLabel-shrink': {
+      transform: 'translate(14px, -9px) scale(0.75)',
+    },
   },
   form: {
     display: 'flex',
@@ -27,7 +42,14 @@ const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
     gap: '10px',
   },
   parameterInput: {
-    minWidth: 150,
+    '&.MuiTextField-root': {
+      minWidth: 150,
+
+      '& .MuiSelect-select': {
+        paddingTop: '10.5px',
+        paddingBottom: '10.5px',
+      },
+    },
   },
   submit: {
     color: 'white',

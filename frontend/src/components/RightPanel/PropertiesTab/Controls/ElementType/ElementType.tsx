@@ -123,7 +123,7 @@ const ElementType: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '0 16px' }}>
+    <div>
       <StyledTextField
         fullWidth
         margin="dense"

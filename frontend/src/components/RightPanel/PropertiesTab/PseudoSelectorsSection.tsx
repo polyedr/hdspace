@@ -8,9 +8,11 @@ import { setEnabledPseudoClass } from '@Redux/project/actions';
 
 const useStyles = makeStyles({
   root: {
-    padding: '1em',
-    width: '100%',
-    backgroundColor: '#ffffff',
+    '&.MuiFormControl-root': {
+      padding: '1em',
+      width: '100%',
+      backgroundColor: '#ffffff',
+    },
   },
 });
 
