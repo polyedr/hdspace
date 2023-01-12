@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
-import { ButtonGroup, MenuItem, Menu } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { ButtonGroup, MenuItem, Menu } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import ElementButton from './ElementButton';
 import Button from '../../UI/Button';
 
@@ -19,7 +19,7 @@ const useStyles = makeStyles({
     fontSize: '1em',
   },
   elementDropdown: {
-    width: '33%',
+    // width: '33%',
     '& *:first-child': {
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,

@@ -7,13 +7,12 @@ import {
   FormControl,
   MenuItem,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   clearHistoryAction,
   requestGetAction,
 } from '@Redux/pmtools/activity/actions';
 import selectActions from '@Redux/pmtools/activity/selectors';
-import HistoryIcon from '@material-ui/icons/History';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,9 +22,12 @@ import {
   StyledTextField,
 } from '@Components/styledComponents';
 import { ActionTypePM, PlatformActionData } from '@Src/types/pmtools/types';
-import { makeStyles } from '@material-ui/core/styles';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import CachedIcon from '@mui/icons-material/Cached';
+import { makeStyles } from '@mui/styles';
+import {
+  History as HistoryIcon,
+  FilterList as FilterListIcon,
+  Cached as CachedIcon,
+} from '@mui/icons-material';
 import History from './History';
 
 const useStyles = makeStyles({

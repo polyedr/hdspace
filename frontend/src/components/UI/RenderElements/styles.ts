@@ -1,7 +1,7 @@
 import React from 'react';
-import { Styles } from '@material-ui/core/styles/withStyles';
+import { makeStyles, Styles } from '@mui/styles';
 import { omit } from 'ramda';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material';
 import { RendererProps } from './types';
 
 const getComputedStyle = (
@@ -21,7 +21,7 @@ export const makeComponentStyles: any = (
   style: Styles<Theme, any, string> = {},
   stylesToOmit?: string[],
 ) =>
-  makeStyles(
+  makeStyles<Theme>(
     (theme) => ({
       ownStyles: (props: RendererProps) => {
         const { element } = props;

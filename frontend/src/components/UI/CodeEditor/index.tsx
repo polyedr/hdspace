@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import hljs from 'highlight.js/lib/core';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import Scrollbar from '../Scrollbar';
 import CSSValidator from './CSSValidator';
 import { ValidationError, Validator } from './validator';

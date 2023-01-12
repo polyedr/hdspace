@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import { MenuItem as MaterialMenuItem } from '@material-ui/core';
+import { MenuItem as MaterialMenuItem } from '@mui/material';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';

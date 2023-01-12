@@ -15,7 +15,7 @@ import {
   selectIsElementActive,
 } from '@Redux/project/selectors/element';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import Borders from './Borders';
 

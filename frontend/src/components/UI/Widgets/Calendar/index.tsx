@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
 import Calendar from './colorCalendar';
 import './colorCalendar/styles/theme-basic.css';
@@ -14,7 +15,7 @@ interface Props {
   disabled?: boolean;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   calendar: ({ ownStyles }: Props) => ({
     fontFamily: ownStyles?.fontFamily || theme.typography.fontFamily,
   }),

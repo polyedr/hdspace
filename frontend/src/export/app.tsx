@@ -2,13 +2,13 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import ReactDOMServer from 'react-dom/server';
-import { ServerStyleSheets, ThemeProvider } from '@material-ui/core/styles';
+import { ServerStyleSheets, ThemeProvider } from '@mui/styles';
 import {
   ThemeProvider as MuiThemeProvider,
   StyledEngineProvider,
 } from '@mui/material/styles';
 import JSZip from 'jszip';
-import { themeOld as theme } from '@Src/styles/Theme';
+import { theme } from '@Src/styles/Theme';
 // eslint-disable-next-line import/named
 import { store } from '@Redux/store';
 import { AppReduxState } from '@Redux/types';

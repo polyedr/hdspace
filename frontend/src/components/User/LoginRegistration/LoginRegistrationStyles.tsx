@@ -1,6 +1,7 @@
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
@@ -25,9 +26,10 @@ const useStyles = makeStyles((theme) =>
       fontSize: 14,
     },
     button: {
-      height: 54,
-      fontSize: '20px !important',
-      color: 'white !important',
+      '&.MuiButton-root': {
+        height: 54,
+        fontSize: '20px',
+      },
     },
     // input: {
     //   background: '#dee4f0',
@@ -45,6 +47,7 @@ const useStyles = makeStyles((theme) =>
       justifyContent: 'center',
       display: 'flex',
       flexDirection: 'column',
+      height: '100%',
     },
     underLogoText: {
       fontSize: '27px !important',

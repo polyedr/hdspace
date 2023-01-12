@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SnackbarKey, useSnackbar } from 'notistack';
-import CloseIcon from '@material-ui/icons/Close';
-import { IconButton } from '@material-ui/core';
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from '@mui/material';
 import {
   closeSnackbarAction,
   removeSnackbarAction,
