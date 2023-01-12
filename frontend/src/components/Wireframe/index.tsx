@@ -27,12 +27,11 @@ import {
   PropertyAccordionDetails,
 } from '../styledComponents';
 import Canvas from './Canvas';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { getProject } from '@Redux/project/actions';
+import { getProject, updateCurrentUIFramework } from '@Redux/project/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectScreens } from '@Redux/project/selectors/screen';
+import { FRAMEWORKS_LIST, MATERIAL_VERSIONS } from '@Constants/frameworks';
 
 interface Props {
   projectId: number;
@@ -114,6 +113,16 @@ const Wireframe: React.FC<Props> = ({ projectId, screenId: _ }) => {
       dispatch(getProject(projectId));
     }
   }, [dispatch, currentProjectId, projectId]);
+
+  useEffect(() => {
+    dispatch(
+      updateCurrentUIFramework({
+        name: 'material',
+        themeVariables: {},
+        version: MATERIAL_VERSIONS,
+      }),
+    );
+  }, []);
 
   if (!currentProjectId || !screens || Object.keys(screens).length < 1) {
     return null;
@@ -197,9 +206,7 @@ const Wireframe: React.FC<Props> = ({ projectId, screenId: _ }) => {
             </LeftpanelBox>
           </Grid>
           <Grid item xs={8}>
-            <DndProvider backend={HTML5Backend}>
-              <Canvas screens={screens} />
-            </DndProvider>
+            <Canvas screens={screens} />
           </Grid>
           <Grid item xs={2}>
             <RightpanelBox>

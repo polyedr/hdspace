@@ -1,51 +1,37 @@
-import React, { useEffect } from 'react';
-import { useDrag } from 'react-dnd';
+import React from 'react';
+import Draggable, { DraggableEventHandler } from 'react-draggable';
 import Screen from './Screen';
-import { getEmptyImage } from 'react-dnd-html5-backend';
 import { type WireframeScreen } from './Canvas';
+import { Box, SxProps } from '@mui/material';
 
 interface Props {
   data: WireframeScreen;
-  id: string;
+  zoom: number;
+  onDrag?: DraggableEventHandler;
+  onStop?: DraggableEventHandler;
 }
 
-function getStyles(
-  left: number,
-  top: number,
-  isDragging: boolean,
-): React.CSSProperties {
-  const transform = `translate3d(${left}px, ${top}px, 0)`;
-  return {
-    position: 'absolute',
-    transform,
-    WebkitTransform: transform,
-    opacity: isDragging ? 0 : 1,
-    height: isDragging ? 0 : '',
-  };
-}
+const styles: SxProps = {
+  position: 'fixed',
+};
 
-const DraggableScreen: React.FC<Props> = ({ data, id }) => {
-  const { left, top } = data;
-
-  const [{ isDragging }, dragRef, preview] = useDrag(
-    () => ({
-      type: 'wireframe-screen',
-      item: { id, ...data },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-    }),
-    [id, data],
-  );
-
-  useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true });
-  }, []);
+const DraggableScreen: React.FC<Props> = ({ data, zoom, onDrag, onStop }) => {
+  const { y, x } = data.position;
 
   return (
-    <div ref={dragRef} style={getStyles(left, top, isDragging)}>
-      <Screen data={data} />
-    </div>
+    <Draggable
+      defaultPosition={{ x, y }}
+      onDrag={onDrag}
+      onStop={onStop}
+      scale={zoom}
+      handle={`.handle-${data.id}`}
+      // grid={[8 * zoom, 8 * zoom]}
+      bounds="parent"
+    >
+      <Box sx={styles}>
+        <Screen data={data} />
+      </Box>
+    </Draggable>
   );
 };
 
