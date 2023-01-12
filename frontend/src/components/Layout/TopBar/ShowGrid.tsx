@@ -4,7 +4,7 @@ import { toggleGrid } from '@Redux/project/actions';
 import { selectShowingGrid } from '@Redux/project/selectors/base';
 
 import { FormControlLabel, Typography, Checkbox } from '@mui/material';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(() => ({
   title: {

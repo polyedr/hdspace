@@ -1,6 +1,8 @@
 import React, { ReactElement, useRef } from 'react';
-import { IconButtonProps, IconButton, SvgIconTypeMap } from '@material-ui/core';
 import {
+  IconButtonProps,
+  IconButton,
+  SvgIconTypeMap,
   styled as MuiStyled,
   TextField,
   TextFieldProps,
@@ -14,11 +16,12 @@ import {
   Slider,
   SliderProps,
 } from '@mui/material';
+
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
 import ToggleButton from '@mui/material/ToggleButton';
-import { makeStyles } from '@material-ui/core/styles';
-import { OverridableComponent } from '@material-ui/core/OverridableComponent';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import { makeStyles } from '@mui/styles';
+import { OverridableComponent } from '@mui/material/OverridableComponent';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import styled from 'styled-components';
 
 export const PropertyAccordianSummary = MuiStyled(AccordionSummary)({

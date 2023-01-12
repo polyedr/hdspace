@@ -2,7 +2,7 @@ import React from 'react';
 import RemoveStyles from '@Components/RightPanel/PropertiesTab/helperComponents/RemoveStyles';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledSlider, StyledTextField } from '@Components/styledComponents';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { styled } from '@mui/material';
 

@@ -8,7 +8,7 @@ import path from 'path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, 'src'),
       '@Components': path.resolve(__dirname, './src', 'components'),
       '@Constants': path.resolve(__dirname, './src', 'constants'),
       '@Utils': path.resolve(__dirname, './src', 'utils'),

@@ -1,6 +1,6 @@
 import React, { FC, useState, useCallback } from 'react';
-import ShareIcon from '@material-ui/icons/Share';
-import { Button, Popover, Container } from '@material-ui/core';
+import ShareIcon from '@mui/icons-material/Share';
+import { Button, Popover, Container } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -10,7 +10,7 @@ import {
 } from '@Redux/user/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 import { setProjectViewStart } from '@Redux/user/actions';
 import axios from 'axios';

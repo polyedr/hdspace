@@ -5,7 +5,7 @@ import { fireEvent, render, RenderResult } from '@testing-library/react';
 import { mockState, mockVIAState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { themeOld as theme } from '@Src/styles/Theme';
+import { theme } from '@Src/styles/Theme';
 import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
 import TYPES from '@Redux/actionTypes';
 

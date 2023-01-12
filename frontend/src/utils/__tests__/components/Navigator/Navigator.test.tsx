@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Navigator from '../../../../components/LeftPanel/Navigator';
 import { mockState } from '../../test-utils';
-import { themeOld as theme } from '../../../../styles/Theme';
+import { theme } from '../../../../styles/Theme';
 
 describe('Navigator', () => {
   let store;

@@ -1,7 +1,7 @@
-import { ClickAwayListener } from '@material-ui/core';
 import {
   Box as MuiBox,
   Button as MuiButton,
+  ClickAwayListener,
   Stack,
   styled,
 } from '@mui/material';

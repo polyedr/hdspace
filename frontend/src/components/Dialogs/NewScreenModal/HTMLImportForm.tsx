@@ -7,8 +7,9 @@ import {
   CardActions,
   Typography,
   IconButton,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+  Theme,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
@@ -21,13 +22,13 @@ import {
 import prettyBytes from 'pretty-bytes';
 import prevent from '@Utils/preventEvent';
 import { useDebouncedCallback } from 'use-debounce';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 import { selectCanImportSite } from '@Redux/project/selectors/screen';
 import { selectImportValue } from '@Redux/project/selectors/base';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const useStyles = makeStyles(({ palette, shape, spacing }) =>
+const useStyles = makeStyles<Theme>(({ palette, shape, spacing }) =>
   createStyles({
     form: {
       display: 'flex',

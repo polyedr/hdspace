@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Grid } from '@mui/material';
 import ElementButton from './ElementButton';

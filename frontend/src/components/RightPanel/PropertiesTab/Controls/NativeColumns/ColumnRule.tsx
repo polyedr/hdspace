@@ -6,9 +6,9 @@ import {
 } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
-import { FormControlLabel, MenuItem } from '@material-ui/core';
+import { FormControlLabel, MenuItem } from '@mui/material';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   wrapper: {

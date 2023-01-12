@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Switch, FormControlLabel } from '@material-ui/core';
+import { Switch, FormControlLabel } from '@mui/material';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import { ButtonElement, PropertiesChangeProps } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   wrapper: {
