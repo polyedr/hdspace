@@ -41,8 +41,8 @@ const useStyles = makeStyles({
   },
   imageView: {
     position: 'absolute',
-    width: 'auto !important',
-    height: 'auto !important',
+    width: 'auto',
+    height: 'auto',
     zIndex: ({
       isActive,
       zIndex,
