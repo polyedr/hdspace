@@ -1620,14 +1620,14 @@ def elements_rootblock(
     for pre, fill, node in RenderTree(root_block):
         node.styles = {}
         node.parameters = {}
-        if serializing == "freecanvas":
-            node.parameters["freeCanvas"] = {}
+        # if serializing == "freecanvas":
+        node.parameters["freeCanvas"] = {}
 
-            node.parameters["freeCanvas"]["zIndex"] = 0
-            node.parameters["freeCanvas"]["width"] = node_width
-            node.parameters["freeCanvas"]["height"] = node_height
-            node.parameters["freeCanvas"]["left"] = int(node.x1)
-            node.parameters["freeCanvas"]["top"] = int(node.y1)
+        node.parameters["freeCanvas"]["zIndex"] = 0
+        node.parameters["freeCanvas"]["width"] = node_width
+        node.parameters["freeCanvas"]["height"] = node_height
+        node.parameters["freeCanvas"]["left"] = int(node.x1)
+        node.parameters["freeCanvas"]["top"] = int(node.y1)
 
         # Define the node dimensions start
         node_width = int(node.x2 - node.x1)
