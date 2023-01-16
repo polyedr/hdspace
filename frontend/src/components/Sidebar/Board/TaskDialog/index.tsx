@@ -335,7 +335,7 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                         value={storyPoints}
                         onChange={handleChangeStoryPoints}
                         onBlur={() => {
-                          if (JSON.parse(storyPoints) > JSON.parse("2147483647")) {
+                          if (JSON.parse(storyPoints) > 2147483647) {
                             setStoryError("Story point should be less then 2147483647");
                           } else {
                             setStoryError('');
