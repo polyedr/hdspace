@@ -1,8 +1,8 @@
 import React from 'react';
 
-export const SmileyFace = (props: {
+export function SmileyFace(props: {
   openEmojiPicker: React.MouseEventHandler<HTMLSpanElement>;
-}) => {
+}) {
   const { openEmojiPicker } = props;
 
   return (
@@ -24,4 +24,4 @@ export const SmileyFace = (props: {
       </svg>
     </div>
   );
-};
+}

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`ImageRecognizeForm should render properly 1`] = `
+exports[`ImageRecognizeForm > should render properly 1`] = `
 <div>
   <div
     class="makeStyles-wrapper-1"

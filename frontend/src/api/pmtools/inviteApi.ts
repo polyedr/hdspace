@@ -8,12 +8,15 @@ type ToServerActionApi = { data: ServerProject } & MyAxiosProps & {
     project: ServerProject['id'];
   };
 
-export const apiSendEmail = ({ data, ...axiosProps }: ToServerActionApi) =>
-  myAxios({
+export const apiSendEmail = async ({
+  data,
+  ...axiosProps
+}: ToServerActionApi) =>
+  await myAxios({
     ...axiosProps,
     data: { email: data },
     method: 'POST',
-    url: `/invitations/invitations/create-and-send/`,
+    url: '/invitations/invitations/create-and-send/',
   })
     .then((results: AxiosResponse) => results)
     .catch(handleError);

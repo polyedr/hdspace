@@ -16,9 +16,9 @@ import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { WindowContext } from '../FrameWrapper/FrameContext';
 import MasterElement from './MasterElement';
 
-type Props = {
+interface Props {
   scrollRef: React.RefObject<Scrollbars>;
-};
+}
 
 const MasterScreen: React.FC<Props> = ({ scrollRef }: Props) => {
   const rootId = useSelector(selectCurrentRootId);

@@ -1,6 +1,4 @@
-export type ElementsDom = {
-  [id: string]: HTMLElement | null;
-};
+export type ElementsDom = Record<string, HTMLElement | null>;
 
 export class DOMHandler {
   public static readonly INSTANCE = new DOMHandler();
@@ -99,7 +97,7 @@ export class DOMHandler {
 
   private _elementsDom: ElementsDom = {};
   private _visibleElementsIds: string[] = [];
-  private _observer: IntersectionObserver;
-  private _mutationObserver: MutationObserver;
+  private readonly _observer: IntersectionObserver;
+  private readonly _mutationObserver: MutationObserver;
   private _observableNode: Node | null = null;
 }

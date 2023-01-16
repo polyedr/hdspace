@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import Scrollbar from '../../UI/Scrollbar';
 
 const useStyles = makeStyles({
@@ -10,11 +10,11 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   title: string;
   activeSection: string;
   className?: string;
-};
+}
 
 const Section: React.FC<Props> = ({
   activeSection,

@@ -16,7 +16,6 @@ describe('updateProjectSaga', () => {
   const action = Actions.updateProject(mockProject);
   const currentProject = createMockProject();
   describe('under normal behavior', () => {
-    // @ts-expect-error saga type is not compotible with IterableIterator
     const it = sagaHelper(updateProjectSaga(action));
     it('should select current project', (result) => {
       expect(result).toEqual(select(selectCurrentProject));
@@ -40,7 +39,6 @@ describe('updateProjectSaga', () => {
   });
 
   describe('when projectUpdateHelperSaga fails', () => {
-    // @ts-expect-error saga type is not compotible with IterableIterator
     const it = sagaHelper(updateProjectSaga(action));
     it('should select current project', (result) => {
       expect(result).toEqual(select(selectCurrentProject));

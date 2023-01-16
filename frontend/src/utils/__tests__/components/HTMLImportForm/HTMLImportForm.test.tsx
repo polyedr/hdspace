@@ -5,12 +5,13 @@ import { Provider } from 'react-redux';
 import { mockState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import HtmlImportForm from '@Components/Dialogs/NewScreenModal/HTMLImportForm';
+import { vi } from 'vitest';
 // import TYPES from '@Redux/actionTypes';
 
 describe('HTMLImportForm', () => {
   let store: MockStoreEnhanced<AppReduxState>;
   let ui: RenderResult;
-  const closeCallback = jest.fn();
+  const closeCallback = vi.fn();
 
   beforeEach(() => {
     const mockStore = configureStore<AppReduxState>([]);

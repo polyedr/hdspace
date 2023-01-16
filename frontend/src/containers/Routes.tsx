@@ -6,25 +6,35 @@ import MarketplaceLayout from '@Components/Marketplace/components/Layout/index';
 import Layout from '../components/Layout';
 import { selectIsLoggedIn } from '../redux/user/selectors';
 
-const Profile = lazy(() => import('../components/User/Profile'));
-const Signin = lazy(() => import('../components/User/Signin'));
-const Signup = lazy(() => import('../components/User/Signup'));
-const Activation = lazy(() => import('../components/User/Activation'));
-const Success = lazy(() => import('../components/User/Success'));
+const Profile = lazy(async () => await import('../components/User/Profile'));
+const Signin = lazy(async () => await import('../components/User/Signin'));
+const Signup = lazy(async () => await import('../components/User/Signup'));
+const Activation = lazy(
+  async () => await import('../components/User/Activation'),
+);
+const Success = lazy(async () => await import('../components/User/Success'));
 const ResetPasswordEmail = lazy(
-  () => import('../components/User/ResetPassword/ResetPasswordEmail'),
+  async () =>
+    await import('../components/User/ResetPassword/ResetPasswordEmail'),
 );
 const ResetPassword = lazy(
-  () => import('../components/User/ResetPassword/ResetPassword'),
+  async () => await import('../components/User/ResetPassword/ResetPassword'),
 );
-const Projects = lazy(() => import('../components/Projects/Projects'));
-const Project = lazy(() => import('./Project'));
-const SharedProject = lazy(() => import('./SharedProject'));
-const SharedWithLink = lazy(() => import('@Components/User/SharedWithLink'));
+const Projects = lazy(
+  async () => await import('../components/Projects/Projects'),
+);
+const Project = lazy(async () => await import('./Project'));
+const SharedProject = lazy(async () => await import('./SharedProject'));
+const SharedWithLink = lazy(
+  async () => await import('@Components/User/SharedWithLink'),
+);
 const Marketplace = lazy(
-  () => import('@Components/Marketplace/components/MarketPlace/Marketplace'),
+  async () =>
+    await import('@Components/Marketplace/components/MarketPlace/Marketplace'),
 );
-const Team = lazy(() => import('@Components/Marketplace/components/Team/Team'));
+const Team = lazy(
+  async () => await import('@Components/Marketplace/components/Team/Team'),
+);
 
 const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -41,81 +51,79 @@ const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
   );
 };
 
-const Routes: React.FC = () => {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Switch>
-        <Route path={PATH_NAMES.user.signin} component={Signin} />
+const Routes: React.FC = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <Switch>
+      <Route path={PATH_NAMES.user.signin} component={Signin} />
 
-        <Route path={PATH_NAMES.user.signup} component={Signup} />
+      <Route path={PATH_NAMES.user.signup} component={Signup} />
 
-        <Route path={PATH_NAMES.user.activate} component={Activation} />
+      <Route path={PATH_NAMES.user.activate} component={Activation} />
 
-        <Route
-          exact
-          path={PATH_NAMES.user.password}
-          component={ResetPasswordEmail}
-        />
+      <Route
+        exact
+        path={PATH_NAMES.user.password}
+        component={ResetPasswordEmail}
+      />
 
-        <Route
-          exact
-          path={PATH_NAMES.user.passwordRestore}
-          component={ResetPassword}
-        />
+      <Route
+        exact
+        path={PATH_NAMES.user.passwordRestore}
+        component={ResetPassword}
+      />
 
-        <Route path={PATH_NAMES.user.success} component={Success} />
+      <Route path={PATH_NAMES.user.success} component={Success} />
 
-        <Route path="/share/" component={SharedWithLink} exact />
-        <PrivateRoute path="/share/:projectId/:screenId/">
-          {({ match: { params } }: any) => (
-            <Layout>
-              <SharedProject
-                projectId={parseInt(params.projectId)}
-                screenId={parseInt(params.screenId)}
-              />
-            </Layout>
-          )}
-        </PrivateRoute>
-
-        <PrivateRoute path={PATH_NAMES.projects}>
+      <Route path="/share/" component={SharedWithLink} exact />
+      <PrivateRoute path="/share/:projectId/:screenId/">
+        {({ match: { params } }: any) => (
           <Layout>
-            <Projects />
+            <SharedProject
+              projectId={parseInt(params.projectId)}
+              screenId={parseInt(params.screenId)}
+            />
           </Layout>
-        </PrivateRoute>
+        )}
+      </PrivateRoute>
 
-        <PrivateRoute path="/project/:projectId/:screenId?">
-          {({ match: { params } }: any) => (
-            <Layout>
-              <Project
-                projectId={parseInt(params.projectId)}
-                screenId={parseInt(params.screenId)}
-              />
-            </Layout>
-          )}
-        </PrivateRoute>
+      <PrivateRoute path={PATH_NAMES.projects}>
+        <Layout>
+          <Projects />
+        </Layout>
+      </PrivateRoute>
 
-        <PrivateRoute path={PATH_NAMES.profile}>
+      <PrivateRoute path="/project/:projectId/:screenId?">
+        {({ match: { params } }: any) => (
           <Layout>
-            <Profile />
+            <Project
+              projectId={parseInt(params.projectId)}
+              screenId={parseInt(params.screenId)}
+            />
           </Layout>
-        </PrivateRoute>
+        )}
+      </PrivateRoute>
 
-        <PrivateRoute path={PATH_NAMES.marketplace}>
-          <MarketplaceLayout>
-            <Marketplace />
-          </MarketplaceLayout>
-        </PrivateRoute>
+      <PrivateRoute path={PATH_NAMES.profile}>
+        <Layout>
+          <Profile />
+        </Layout>
+      </PrivateRoute>
 
-        <PrivateRoute path={PATH_NAMES.team}>
-          <MarketplaceLayout>
-            <Team />
-          </MarketplaceLayout>
-        </PrivateRoute>
+      <PrivateRoute path={PATH_NAMES.marketplace}>
+        <MarketplaceLayout>
+          <Marketplace />
+        </MarketplaceLayout>
+      </PrivateRoute>
 
-        <Redirect from="/*" to={PATH_NAMES.projects} />
-      </Switch>
-    </Suspense>
-  );
-};
+      <PrivateRoute path={PATH_NAMES.team}>
+        <MarketplaceLayout>
+          <Team />
+        </MarketplaceLayout>
+      </PrivateRoute>
+
+      <Redirect from="/*" to={PATH_NAMES.projects} />
+    </Switch>
+  </Suspense>
+);
 
 export default Routes;

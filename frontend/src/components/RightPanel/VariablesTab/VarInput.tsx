@@ -1,15 +1,15 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { StyledTextField } from '@Components/styledComponents';
 import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
-type Props = {
+interface Props {
   label: string;
   name: string;
   value: string;
   onDelayedChange: (name: string, value: string) => void;
-};
+}
 
 const useStyles = makeStyles({
   var: {

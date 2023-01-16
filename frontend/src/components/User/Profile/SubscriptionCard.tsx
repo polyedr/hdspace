@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { format } from 'date-fns';
 
-export const SubscriptionCard = ({ result }) => {
+export function SubscriptionCard({ result }) {
   const currentDate = new Date();
 
   const handleGoToPricing = useCallback(() => {
@@ -103,4 +103,4 @@ export const SubscriptionCard = ({ result }) => {
       </Box>
     </div>
   );
-};
+}

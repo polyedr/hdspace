@@ -6,10 +6,11 @@ import { mockState, mockVIAState } from '@Utils/__tests__/test-utils';
 import VIA from '@Components/Editor/VIA/';
 import { AppReduxState } from '@Redux/types';
 import TYPES from '@Redux/actionTypes';
+import { vi } from 'vitest';
 
 Object.defineProperty(URL, 'createObjectURL', {
   writable: true,
-  value: jest.fn(),
+  value: vi.fn(),
 });
 
 describe('VIA Region', () => {

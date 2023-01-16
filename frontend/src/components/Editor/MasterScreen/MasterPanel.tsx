@@ -2,7 +2,7 @@ import ControlSection from '@Components/RightPanel/PropertiesTab/helperComponent
 import Scrollbar from '@Components/UI/Scrollbar';
 import CONTROLS from '@Constants/controls';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -23,7 +23,7 @@ const useStyles = makeStyles({
   },
 });
 
-const MasterPanel = () => {
+function MasterPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const activeElement = useSelector(selectActiveElement);
@@ -77,6 +77,6 @@ const MasterPanel = () => {
       </Scrollbar>
     </div>
   );
-};
+}
 
 export default MasterPanel;

@@ -1,6 +1,6 @@
 import React, { LegacyRef } from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { omit } from 'ramda';
 import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import { useSelector } from 'react-redux';

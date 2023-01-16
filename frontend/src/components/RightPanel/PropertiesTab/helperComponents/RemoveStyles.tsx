@@ -1,18 +1,18 @@
 /* eslint-disable react/no-unused-prop-types */
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { Entity } from '@Src/types';
 import ClearIcon from '@mui/icons-material/Clear';
 
-type Props = {
+interface Props {
   propsToRemove?: string[];
-  onClick(propsToRemove: string[] | undefined): void;
+  onClick: (propsToRemove: string[] | undefined) => void;
   type: Entity | 'none';
   editableStyles: string;
-};
+}
 
 const useStyles = makeStyles({
   header: {

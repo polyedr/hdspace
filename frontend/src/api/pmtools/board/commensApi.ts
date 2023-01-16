@@ -2,13 +2,13 @@ import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps } from '@Src/types';
 
-export const createComment = ({
+export const createComment = async ({
   text,
   taskId,
   ...options
-}: MyAxiosProps & { taskId: number; text: string }) => {
-  return myAxios({
-    url: `/projects/columntask-comments/`,
+}: MyAxiosProps & { taskId: number; text: string }) =>
+  await myAxios({
+    url: '/projects/columntask-comments/',
     method: 'post',
     data: {
       text,
@@ -16,14 +16,13 @@ export const createComment = ({
     },
     ...options,
   }).catch(handleError);
-};
 
-export const updateComment = ({
+export const updateComment = async ({
   text,
   commentId,
   ...options
-}: MyAxiosProps & { commentId: number; text: string }) => {
-  return myAxios({
+}: MyAxiosProps & { commentId: number; text: string }) =>
+  await myAxios({
     url: `/projects/columntask_comments/${commentId}/`,
     method: 'patch',
     data: {
@@ -31,15 +30,13 @@ export const updateComment = ({
     },
     ...options,
   }).catch(handleError);
-};
 
-export const deleteComment = ({
+export const deleteComment = async ({
   commentId,
   ...options
-}: MyAxiosProps & { commentId: number }) => {
-  return myAxios({
+}: MyAxiosProps & { commentId: number }) =>
+  await myAxios({
     url: `/projects/columntask_comments/${commentId}/`,
     method: 'delete',
     ...options,
   }).catch(handleError);
-};

@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Button, FormControl } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
+import { Button, FormControl, Box, SxProps, Theme } from '@mui/material';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDispatch } from 'react-redux';
 import { generateImagePalette } from '@Redux/project/actions';
-import { Box, SxProps } from '@mui/material';
 
-const useStyles = makeStyles(({ palette, typography }) => ({
+const useButtonStyles = makeStyles<Theme>(({ palette, typography }) => ({
+  root: {
+    '&.MuiButton-root': {
+      backgroundColor: palette.secondary.main,
+      fontSize: typography.fontSize,
+      marginBottom: 0,
+      width: 'auto !important',
+      minHeight: 'auto !important',
+      padding: '0 !important',
+      color: '#fff',
+      textTransform: 'capitalize',
+
+      '&:hover': {
+        backgroundColor: 'rgba(17, 175, 142, 1) !important',
+      },
+    },
+  },
+}));
+const useStyles = makeStyles<Theme>(() => ({
   title: {
     marginBottom: '10px',
     fontSize: 13,
@@ -28,22 +45,6 @@ const useStyles = makeStyles(({ palette, typography }) => ({
     justifyContent: 'space-around',
     marginBottom: 5,
   },
-  chooseButton: {
-    backgroundColor: palette.secondary.main,
-    fontSize: typography.fontSize,
-    marginBottom: 0,
-    width: 'auto !important',
-    minHeight: 'auto !important',
-    padding: '0 !important',
-
-    '&:hover': {
-      backgroundColor: 'rgba(17, 175, 142, 1) !important',
-    },
-
-    '& span': {
-      color: '#fff !important',
-    },
-  },
   uploadContainer: {
     padding: '10px 25px',
   },
@@ -55,8 +56,9 @@ const containerStyles: SxProps = {
   },
 };
 
-const StyleGenerator = () => {
+function StyleGenerator() {
   const classes = useStyles();
+  const buttonClasses = useButtonStyles();
   const dispatch = useDispatch();
 
   const [url, setUrl] = useState<string>('');
@@ -77,16 +79,12 @@ const StyleGenerator = () => {
             />
           </FormControl>
         </div>
-        <Button
-          size="small"
-          className={classes.chooseButton}
-          onClick={onGenerateClick}
-        >
+        <Button size="small" classes={buttonClasses} onClick={onGenerateClick}>
           <div className={classes.chooseButtonText}>Generate color scheme</div>
         </Button>
       </div>
     </Box>
   );
-};
+}
 
 export default StyleGenerator;

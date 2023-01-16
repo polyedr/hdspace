@@ -7,8 +7,9 @@ import {
   CardActions,
   Typography,
   IconButton,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+  Theme,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
@@ -21,13 +22,13 @@ import {
 import prettyBytes from 'pretty-bytes';
 import prevent from '@Utils/preventEvent';
 import { useDebouncedCallback } from 'use-debounce';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 import { selectCanImportSite } from '@Redux/project/selectors/screen';
 import { selectImportValue } from '@Redux/project/selectors/base';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const useStyles = makeStyles(({ palette, shape, spacing }) =>
+const useStyles = makeStyles<Theme>(({ palette, shape, spacing }) =>
   createStyles({
     form: {
       display: 'flex',
@@ -84,9 +85,9 @@ const useStyles = makeStyles(({ palette, shape, spacing }) =>
   }),
 );
 
-type Props = {
+interface Props {
   onClose: (...args: any) => any;
-};
+}
 
 const allowedMimeTypes = [
   'text/html',
@@ -151,7 +152,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
         enqueueSnackbar({
           message: htmlCount
             ? 'Only one HTML file allowed'
-            : `At least one HTML file required`,
+            : 'At least one HTML file required',
           options: { variant: 'error' },
         }),
       );
@@ -220,7 +221,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
   };
 
   useEffect(() => {
-    if (importSiteUrlErrorStatus === true) {
+    if (importSiteUrlErrorStatus) {
       setOpenPopup(true);
       backButton();
     }
@@ -237,11 +238,11 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
 
   return (
     <div>
-      {openPopup && importSiteUrlErrorStatus === false && (
+      {openPopup && !importSiteUrlErrorStatus && (
         <div>
           <h3>Import Site Summary</h3>
           {Object.keys(importSuccessRawData).length !== 0 &&
-          calculationImportData?.error === false ? (
+          !calculationImportData?.error ? (
             <div>
               <label className={classes.summaryLabel}>
                 {canvasNotSupportedTag

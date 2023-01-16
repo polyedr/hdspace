@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`HTMLImportForm should render properly 1`] = `
+exports[`HTMLImportForm > should render properly 1`] = `
 <div>
   <div>
     <h3>

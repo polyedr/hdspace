@@ -9,6 +9,7 @@ export const kebabToCamel = (str: string) =>
 
 export const extractStyles = (htmlString: string) => {
   const match = [...htmlString.matchAll(/<style.*?>([\s\S]*?)<\/style>/g)];
+  // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
   const styles = match.reduce((acc, curr) => acc + curr[1], '');
   return styles;
 };

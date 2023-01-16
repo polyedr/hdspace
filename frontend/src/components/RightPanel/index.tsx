@@ -7,12 +7,13 @@ import {
 } from '@Src/styles/Theme';
 // import { selectActiveElement } from '@Redux/project/selectors/element';
 import ELEMENT_IDS from '@Constants/elementIds';
-import { makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 // import { isAvailableChild } from '@Utils/AvailableChildrenHelper';
 import PropertiesTab from './PropertiesTab';
 // import ElementsTab from './ElementsTab';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles<Theme>(({ palette }) => ({
   root: {
     width: (props: any) => (props.open ? RIGHT_PANEL_WIDTH : 0),
     display: 'flex',

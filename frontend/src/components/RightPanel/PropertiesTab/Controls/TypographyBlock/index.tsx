@@ -14,8 +14,8 @@ import {
   StyledToggleButtonGroup,
 } from '@Components/styledComponents';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
-import { MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { MenuItem } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useSelector } from 'react-redux';
 import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
 import FONT_WEIGHT from '@Constants/fontWeight';
