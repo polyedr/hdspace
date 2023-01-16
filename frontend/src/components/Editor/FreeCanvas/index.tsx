@@ -25,7 +25,7 @@ import { selectShowingGrid } from '@Redux/project/selectors/base';
 import { useElementClassNames } from './helpers';
 import FreeDraggable from './FreeDraggable';
 
-const FreeCanvas = () => {
+function FreeCanvas() {
   const dispatch = useDispatch();
 
   const ref = useRef<Rnd | null>(null);
@@ -102,9 +102,7 @@ const FreeCanvas = () => {
       const { resizableElement } = ref.current;
       const { id, type, name, custom, parameters } =
         dragSource.original as ElementData;
-      const rect = (
-        resizableElement.current as HTMLElement
-      ).getBoundingClientRect();
+      const rect = resizableElement.current.getBoundingClientRect();
 
       let elementParameter: any = {
         top: offset.y - rect.y,
@@ -178,6 +176,6 @@ const FreeCanvas = () => {
       ))}
     </Rnd>
   );
-};
+}
 
 export default FreeCanvas;

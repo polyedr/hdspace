@@ -201,16 +201,15 @@ const editReducer = produce(
 
         arr.splice(layer, 0, target);
 
-        draft.VIAMode.regions[draft.activeNNModel] = arr.reduce(
-          (acc, curr, i) => {
-            acc[curr.id] = {
-              ...curr,
-              layer: i,
-            };
-            return acc;
-          },
-          {} as Normalized<VIARegion>,
-        );
+        draft.VIAMode.regions[draft.activeNNModel] = arr.reduce<
+          Normalized<VIARegion>
+        >((acc, curr, i) => {
+          acc[curr.id] = {
+            ...curr,
+            layer: i,
+          };
+          return acc;
+        }, {});
 
         break;
       }

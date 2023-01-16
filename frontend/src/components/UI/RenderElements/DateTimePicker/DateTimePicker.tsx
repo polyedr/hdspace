@@ -1,15 +1,15 @@
 import React, { useCallback, useState } from 'react';
 import {
-  KeyboardDateTimePicker,
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-  KeyboardTimePicker,
-} from '@material-ui/pickers';
+  DateTimePicker as MuiDateTimePicker,
+  LocalizationProvider,
+  DatePicker,
+  TimePicker,
+} from '@mui/lab';
 import cn from 'classnames';
 import DateFnsUtils from '@date-io/date-fns';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { DateTimePickerType } from '@Src/types';
-import { TextField, TextFieldProps } from '@material-ui/core';
+import { TextField, TextFieldProps } from '@mui/material';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -42,26 +42,24 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
       disabled: isDisabled,
       disableToolbar: false,
       label,
-      TextFieldComponent: (props: TextFieldProps) => {
-        return (
-          <TextField
-            {...props}
-            inputProps={{
-              className: cn(
-                classes.ownStyles,
-                isDisabled ? classes.disabled : classes.ownPseudoStyles,
-              ),
-            }}
-          />
-        );
-      },
+      TextFieldComponent: (props: TextFieldProps) => (
+        <TextField
+          {...props}
+          inputProps={{
+            className: cn(
+              classes.ownStyles,
+              isDisabled ? classes.disabled : classes.ownPseudoStyles,
+            ),
+          }}
+        />
+      ),
     };
 
     const renderPicker = useCallback(() => {
       switch (type) {
         case DateTimePickerType.Date: {
           return (
-            <KeyboardDatePicker
+            <DatePicker
               {...pickerProps}
               variant="inline"
               inputVariant="outlined"
@@ -74,7 +72,7 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
         }
         case DateTimePickerType.Time: {
           return (
-            <KeyboardTimePicker
+            <TimePicker
               variant="inline"
               {...pickerProps}
               format="hh:mm a"
@@ -87,9 +85,9 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
         }
         case DateTimePickerType.DateTime: {
           return (
-            <KeyboardDateTimePicker
+            <MuiDateTimePicker
               {...pickerProps}
-              format="MM/dd/yyyy hh:mm a"
+              format="MM/dd/yyyy hh:mm"
               variant="inline"
               inputVariant="outlined"
               KeyboardButtonProps={{
@@ -111,9 +109,9 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
         className={cn(className, groupClass)}
         {...eventHandlers}
       >
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <LocalizationProvider utils={DateFnsUtils}>
           {renderPicker()}
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
       </div>
     );
   },

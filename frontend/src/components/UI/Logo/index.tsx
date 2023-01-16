@@ -1,13 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { Box, BoxProps, Link } from '@material-ui/core';
+import { Box, BoxProps, Link } from '@mui/material';
 
 // import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { ExitIcon } from '../Icon';
 import logo from '../../../assets/images/logo.png';
 
-const Logo = ({ width, height, ...rest }: BoxProps) => {
+function Logo({ width, height, ...rest }: BoxProps) {
   const currentScreenId = useSelector(selectCurrentScreenId);
   return (
     <Link href="/">
@@ -28,6 +28,6 @@ const Logo = ({ width, height, ...rest }: BoxProps) => {
       </Box>
     </Link>
   );
-};
+}
 
 export default Logo;

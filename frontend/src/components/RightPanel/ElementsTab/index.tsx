@@ -1,9 +1,9 @@
 import React, { memo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import ToggleButton from '@mui/material/ToggleButton';
-import { ToggleButtonGroup } from '@mui/material';
+import { ToggleButtonGroup, Theme } from '@mui/material';
 import { isLibraryTab } from '@Redux/project/actions';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
 import { selectFreeCanvasMode } from '@Redux/project/selectors/screen';
@@ -16,7 +16,7 @@ import Section from './Section';
 
 const sections = ['elements', 'templates', 'library'];
 
-const useStyles = makeStyles(({ typography }) => ({
+const useStyles = makeStyles<Theme>(({ typography }) => ({
   root: {
     height: '100%',
     display: 'flex',
@@ -48,7 +48,7 @@ const CustomToggleButton = styled(ToggleButton)`
   }
 `;
 
-const ElementsTab = () => {
+function ElementsTab() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
@@ -152,6 +152,6 @@ const ElementsTab = () => {
       )}
     </div>
   );
-};
+}
 
 export default memo(ElementsTab);

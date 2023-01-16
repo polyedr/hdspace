@@ -13,10 +13,10 @@ import { UserProjectPermission } from '@Src/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import DraggableElement from '../Draggable/DraggableElement';
 
-type Props = {
+interface Props {
   scrollRef: React.RefObject<Scrollbars>;
   id: string | undefined;
-};
+}
 
 const PreviewCanvas: React.FC<Props> = ({ scrollRef, id }) => {
   const disableInteractions = useSelector(selectIsPrototypeMode);

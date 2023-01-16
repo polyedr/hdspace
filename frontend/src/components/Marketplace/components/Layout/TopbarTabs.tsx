@@ -57,7 +57,7 @@ const NavBarItem = {
   '/marketplace': 2,
 };
 
-const TopbarTabs = ({ location, history }) => {
+function TopbarTabs({ location, history }) {
   const [value, setValue] = React.useState(NavBarItem[location.pathname]);
   const handleChange = (newValue) => {
     setValue(newValue);
@@ -92,6 +92,6 @@ const TopbarTabs = ({ location, history }) => {
       </CustomTabs>
     </CustomContainer>
   );
-};
+}
 
 export default withRouter(TopbarTabs);

@@ -56,7 +56,9 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
             <button
               type="button"
               id={id}
-              ref={ref as React.MutableRefObject<HTMLButtonElement | null>}
+              ref={
+                ref as unknown as React.MutableRefObject<HTMLButtonElement | null>
+              }
               data-ls-id={id}
               style={{ width: '100%' }}
               className={cn(mainClasses, classes.ownStyles)}
@@ -71,7 +73,9 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
             onClick={() =>
               isProtoMode && !exportScreenFlag ? changeScreen() : ''
             }
-            ref={ref as React.MutableRefObject<HTMLButtonElement | null>}
+            ref={
+              ref as unknown as React.MutableRefObject<HTMLButtonElement | null>
+            }
             data-ls-id={id}
             className={cn(mainClasses, classes.ownStyles)}
             dangerouslySetInnerHTML={{ __html: textContent }}
@@ -97,7 +101,9 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
             <button
               type="button"
               id={id}
-              ref={ref as React.MutableRefObject<HTMLButtonElement | null>}
+              ref={
+                ref as unknown as React.MutableRefObject<HTMLButtonElement | null>
+              }
               data-ls-id={id}
               className={cn(mainClasses, classes.ownStyles)}
               dangerouslySetInnerHTML={{ __html: textContent }}
@@ -108,7 +114,9 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
           <button
             type="button"
             id={id}
-            ref={ref as React.MutableRefObject<HTMLButtonElement | null>}
+            ref={
+              ref as unknown as React.MutableRefObject<HTMLButtonElement | null>
+            }
             data-ls-id={id}
             className={cn(mainClasses, classes.ownStyles)}
             dangerouslySetInnerHTML={{ __html: textContent }}

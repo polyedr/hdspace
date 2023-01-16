@@ -1,14 +1,13 @@
 import React from 'react';
 import cn from 'classnames';
-import { MenuItem as MaterialMenuItem } from '@material-ui/core';
+import { MenuItem as MaterialMenuItem } from '@mui/material';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('menu-item', {
-  menuItem: ({ isDisabled }) => {
-    return !isDisabled ? { '&:hover': 'rgba(0, 0, 0, 0.04)' } : {};
-  },
+  menuItem: ({ isDisabled }) =>
+    !isDisabled ? { '&:hover': 'rgba(0, 0, 0, 0.04)' } : {},
 });
 
 const MenuItem = React.forwardRef<HTMLLIElement, RendererProps>(

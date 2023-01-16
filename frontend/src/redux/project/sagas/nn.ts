@@ -103,7 +103,7 @@ const recognizeImageSaga = compose(
     if (recognizeError) throw new Error(recognizeError);
   } catch (e) {
     logger.error('Could not upload image for NN. Error: ', e.message);
-    if (process.env.NODE_ENV === 'development') {
+    if (process.import.meta.env.MODE === 'development') {
       logger.trace(e);
     }
     yield put(
@@ -317,7 +317,7 @@ const autoAnalyzeImageSaga = compose(
     if (nnError) throw new Error(nnError);
   } catch (e) {
     logger.error('Could not upload image for NN. Error: ', e.message);
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.MODE === 'development') {
       logger.trace(e);
     }
     yield put(

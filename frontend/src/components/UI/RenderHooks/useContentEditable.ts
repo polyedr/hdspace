@@ -6,15 +6,15 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { useDebouncedCallback } from 'use-debounce';
 import { EventHandlers } from '../RenderElements/types';
 
-export type ContentEditableProps = {
+export interface ContentEditableProps {
   contentEditable: boolean;
   tabIndex?: number;
-};
+}
 
-export type ContentEditableConfig<T extends HTMLElement> = {
+export interface ContentEditableConfig<T extends HTMLElement> {
   props: ContentEditableProps;
   events: EventHandlers<T>;
-};
+}
 
 const useContentEditable = <T extends HTMLElement>(
   elementId: string,

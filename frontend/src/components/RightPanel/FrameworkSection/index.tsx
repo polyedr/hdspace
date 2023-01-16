@@ -1,8 +1,8 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import { MenuItem, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 import {
   FRAMEWORKS_LIST,
   NOT_SELECTED_FRAMEWORK,
@@ -17,7 +17,6 @@ import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { FrameworkName, UIFramework, UserProjectPermission } from '@Src/types';
 import { updateCurrentUIFramework } from '@Redux/project/actions';
 import { selectCurrentUIFramework } from '@Redux/project/selectors/base';
-import { Typography } from '@mui/material';
 import styled from 'styled-components';
 
 const useStyles = makeStyles({
@@ -35,7 +34,7 @@ const useStyles = makeStyles({
 const CustomTypography = styled(Typography)`
   font-size: '14px';
 `;
-const FrameworkSection = () => {
+function FrameworkSection() {
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -44,12 +43,14 @@ const FrameworkSection = () => {
   );
   const currentUIFramework = useSelector(selectCurrentUIFramework);
 
-  const availableVersions = useMemo(() => {
-    return currentUIFramework
-      ? FRAMEWORKS_LIST.find((fr) => fr.name === currentUIFramework.name)
-          ?.versions || []
-      : [];
-  }, [currentUIFramework]);
+  const availableVersions = useMemo(
+    () =>
+      currentUIFramework
+        ? FRAMEWORKS_LIST.find((fr) => fr.name === currentUIFramework.name)
+            ?.versions || []
+        : [],
+    [currentUIFramework],
+  );
 
   const [frameworkName, setFrameworkName] = useState<FrameworkName | null>(
     currentUIFramework?.name || null,
@@ -177,6 +178,6 @@ const FrameworkSection = () => {
       </PropertyAccordionDetails>
     </PropertyAccordion>
   );
-};
+}
 
 export default FrameworkSection;

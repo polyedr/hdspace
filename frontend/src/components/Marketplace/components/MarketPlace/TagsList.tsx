@@ -23,7 +23,7 @@ const useStyles = createUseStyles({
     },
   },
 });
-const TagsList = ({ tags }) => {
+function TagsList({ tags }) {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -49,6 +49,6 @@ const TagsList = ({ tags }) => {
       })}
     </div>
   );
-};
+}
 
 export default TagsList;

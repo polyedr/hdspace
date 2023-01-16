@@ -1,15 +1,15 @@
 // import { AppReduxState } from '@Redux/types';
 
-export type Params = {};
+export interface Params {}
 export type MapParams = Params & {
   apiKey: string;
 };
 
-export type ExportedResource<T extends Params> = {
+export interface ExportedResource<T extends Params> {
   type: 'css' | 'script' | 'font';
   links: [string];
   params: T;
-};
+}
 
 /* export const getResources = (state: AppReduxState) => {
   const { elements } = state.project.data;

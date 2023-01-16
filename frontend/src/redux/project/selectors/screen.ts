@@ -15,11 +15,10 @@ export const selectCurrentScreen = createSelector(
 export const selectScreensWithoutMaster = createSelector(
   (state: AppReduxState) => state.project.data.screens,
   (state: AppReduxState) => state.project.edit.masterScreenId,
-  (screens, masterScreenId) => {
-    return Object.values(screens)
+  (screens, masterScreenId) =>
+    Object.values(screens)
       .filter((screen) => screen.id !== masterScreenId)
-      .sort((a, b) => a.buoyancy - b.buoyancy);
-  },
+      .sort((a, b) => a.buoyancy - b.buoyancy),
 );
 
 export const selectScreens = (state: AppReduxState) =>
@@ -62,9 +61,8 @@ export const selectMasterScreen = (state: AppReduxState) => {
 export const selectMasterScreenEnabled = createSelector(
   selectCurrentScreenId,
   selectMasterScreenId,
-  (currentScreenId: number | null, masterScreenId: number | null) => {
-    return currentScreenId === masterScreenId;
-  },
+  (currentScreenId: number | null, masterScreenId: number | null) =>
+    currentScreenId === masterScreenId,
 );
 
 export const selectNewScreenModalOpen = ({ project }: AppReduxState) =>

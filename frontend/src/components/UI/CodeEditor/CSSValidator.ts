@@ -3,7 +3,7 @@ import validateCSS from 'simple-css-validator';
 import { ValidationError, Validator } from './validator';
 
 export default class CSSValidator implements Validator {
-  private static errorRegex = /'[^\\']*(\\'[^\\']*)*'/g;
+  private static readonly errorRegex = /'[^\\']*(\\'[^\\']*)*'/g;
 
   // eslint-disable-next-line class-methods-use-this
   validate(value: string): ValidationError[] {

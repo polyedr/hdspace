@@ -34,13 +34,14 @@ const SelectComponent = React.forwardRef<HTMLDivElement, RendererProps>(
       setIsMenuOpen(isOpen);
     }, [isOpen, setIsMenuOpen]);
 
-    useEffect(() => {
-      return () => {
+    useEffect(
+      () => () => {
         if (select) {
           select.destroy();
         }
-      };
-    }, [select]);
+      },
+      [select],
+    );
 
     useEffect(() => {
       if (select) {

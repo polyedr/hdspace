@@ -10,7 +10,7 @@ import {
 } from '@Redux/project/selectors/element';
 import Tree from '@Components/LeftPanel/Navigator/components/Tree';
 import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { makeTree, updateTree, convertElements } from './utils';
 import {
   StyledAccordion,
@@ -35,12 +35,12 @@ const Navigator: React.FC = () => {
   const expandParents = useCallback(
     (itemId) => {
       if (itemId === 'root') return;
-      // @ts-ignore
+      // @ts-expect-error
       const parentId = tree.items[itemId]?.parent;
       if (!parentId) return;
-      setTree((prevTree) => {
-        return mutateTree(prevTree, parentId, { isExpanded: true });
-      });
+      setTree((prevTree) =>
+        mutateTree(prevTree, parentId, { isExpanded: true }),
+      );
       expandParents(parentId);
     },
     [tree],

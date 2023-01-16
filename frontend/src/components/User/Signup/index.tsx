@@ -49,15 +49,17 @@ const Signup: React.FC = () => {
 
   return (
     <Grid className={classes.root} container>
-      <Info
-        title="AI Assistant for App Development that is excellent for"
-        list={[
-          'Non-technical people to build a full-length web or mobile application',
-          'Developers to quickly generate the most complete front-end code',
-          'Collaborate on your app project with the whole team in a better way',
-        ]}
-        img={bigimg}
-      />
+      <Grid item xs={12} sm={7}>
+        <Info
+          title="AI Assistant for App Development that is excellent for"
+          list={[
+            'Non-technical people to build a full-length web or mobile application',
+            'Developers to quickly generate the most complete front-end code',
+            'Collaborate on your app project with the whole team in a better way',
+          ]}
+          img={bigimg}
+        />
+      </Grid>
       <Grid
         className={classes.rightContainer}
         container

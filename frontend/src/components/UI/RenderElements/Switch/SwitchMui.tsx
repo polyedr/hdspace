@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
 import { useHistory } from 'react-router';
-import Switch from '@material-ui/core/Switch';
+import Switch from '@mui/material/Switch';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -43,15 +43,14 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
     const isScreenLinkInProtoModeOrExportedFlag =
       screenLink && screenName && (isProtoMode || exportScreenFlag);
 
-    const getHref = (screenName) => {
-      return isProtoMode
+    const getHref = (screenName) =>
+      isProtoMode
         ? exportScreenFlag
           ? `../${screenName}/index.html`
           : '#'
         : exportScreenFlag
         ? `../${screenName}/index.html`
         : '';
-    };
 
     return (
       <div
@@ -86,7 +85,9 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
             />
           ) : isScreenLinkInProtoMode ? (
             <label
-              ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
+              ref={
+                ref as unknown as React.MutableRefObject<HTMLLabelElement | null>
+              }
               id={id}
               role="presentation"
               onClick={() =>
@@ -107,7 +108,9 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
             />
           ) : (
             <label
-              ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
+              ref={
+                ref as unknown as React.MutableRefObject<HTMLLabelElement | null>
+              }
               id={id}
               data-ls-id={id}
               dangerouslySetInnerHTML={{ __html: element.parameters.value }}
