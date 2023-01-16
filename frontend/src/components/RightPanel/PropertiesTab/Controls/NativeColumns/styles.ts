@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 // eslint-disable-next-line import/prefer-default-export
 export const useColumnControlStyles = makeStyles({

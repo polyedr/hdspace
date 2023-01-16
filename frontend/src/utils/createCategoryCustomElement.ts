@@ -27,7 +27,7 @@ export const createCategoryCustomElement = (nameElement: string) => {
   return 'Other elements';
 };
 
-export const splitCategory = (array: Array<ElementData>) => ({
+export const splitCategory = (array: ElementData[]) => ({
   bigBlocks: array.filter((item) => item.category === 'Big blocks'),
   mediumBlocks: array.filter((item) => item.category === 'Medium blocks'),
   smallBlocks: array.filter((item) => item.category === 'Small blocks'),
@@ -36,9 +36,9 @@ export const splitCategory = (array: Array<ElementData>) => ({
 });
 
 export const createArrayCustomElements = (
-  libraryElements: LibraryElement<Entity>[],
+  libraryElements: Array<LibraryElement<Entity>>,
 ) => {
-  const elements: Array<ElementData> = libraryElements.map((element) => ({
+  const elements: ElementData[] = libraryElements.map((element) => ({
     key: `custom-element-${element.id}`,
     id: element.id,
     type: element.type,

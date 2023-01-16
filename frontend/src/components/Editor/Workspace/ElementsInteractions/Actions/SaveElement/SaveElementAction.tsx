@@ -1,18 +1,18 @@
 import React, { memo } from 'react';
 import { useDispatch } from 'react-redux';
-import { Popover, IconButton } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
+import { Popover, IconButton } from '@mui/material';
+import SaveIcon from '@mui/icons-material/Save';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import cn from 'classnames';
 import { SAVEABLE_ELEMENTS } from '@Constants/defaultParams';
 import { updateElement } from '@Redux/project/actions';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { StateElement } from '@Src/types';
 import { useButtonStyles } from '../hooks/styles';
 
-type Props = {
+interface Props {
   element: StateElement;
-};
+}
 
 const useStyles = makeStyles({
   content: {
@@ -58,7 +58,9 @@ const SaveElementAction: React.FC<Props> = ({ element }) => {
               vertical: 'top',
               horizontal: 'center',
             }}
-            onEntered={() => inputRef.current!.focus()}
+            TransitionProps={{
+              onEntered: () => inputRef.current.focus(),
+            }}
           >
             <div className={cn(classes.content)}>
               <input
@@ -69,8 +71,8 @@ const SaveElementAction: React.FC<Props> = ({ element }) => {
                 onKeyPress={(event: React.KeyboardEvent) => {
                   if (event.key === 'Enter') {
                     // Enter pressed
-                    const name = inputRef.current!.value;
-                    inputRef.current!.value = '';
+                    const name = inputRef.current.value;
+                    inputRef.current.value = '';
                     popupState.close();
                     dispatch(
                       updateElement<'section'>({

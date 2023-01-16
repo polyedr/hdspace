@@ -1,12 +1,12 @@
 import React from 'react';
 import type { TeamChannelListProps } from '../components/TeamChannelList/TeamChannelList';
 
-export const AddChannel = (
+export function AddChannel(
   props: Pick<
     TeamChannelListProps,
     'setCreateType' | 'setIsCreating' | 'setIsEditing' | 'type'
   >,
-) => {
+) {
   const { setCreateType, setIsCreating, setIsEditing, type } = props;
 
   return (
@@ -47,4 +47,4 @@ export const AddChannel = (
       </svg>
     </>
   );
-};
+}

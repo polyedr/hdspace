@@ -1,11 +1,10 @@
 import React, { FC } from 'react';
-import UndoIcon from '@material-ui/icons/Undo';
-import RedoIcon from '@material-ui/icons/Redo';
+import { Undo as UndoIcon, Redo as RedoIcon } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCanUndo, selectCanRedo } from '@Redux/project/selectors/control';
 import { executeUndoActions, executeRedoActions } from '@Redux/project/actions';
 import { StyledIconButton } from '@Components/styledComponents';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   root: {
@@ -14,10 +13,10 @@ const useStyles = makeStyles({
     color: '#81818E',
     alignItems: 'center',
     flexDirection: 'row',
-    marginRight: '24px',
+    // marginRight: '24px',
   },
   icon: {
-    width: '16px',
+    width: '20px',
   },
 });
 

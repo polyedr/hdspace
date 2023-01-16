@@ -1,11 +1,11 @@
 import React, { memo, useMemo } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import createColorElementIcon from '@Utils/createColorElementIcon';
 import { ColorElementIcon } from '@Src/types';
 
-type Props = {
+interface Props {
   name: string;
-};
+}
 
 const useStyles = makeStyles({
   square: {
@@ -16,22 +16,23 @@ const useStyles = makeStyles({
   },
   squareTopLeft: (colors: ColorElementIcon) => ({
     display: 'inline-block',
-    height: '24px',
+    height: '20px',
     width: '13px',
     backgroundColor: colors.squareTopLeft,
   }),
   squareTopRight: (colors: ColorElementIcon) => ({
     display: 'inline-block',
-    height: '24px',
+    height: '20px',
     width: '13px',
     backgroundColor: colors.squareTopRight,
   }),
 });
 
 const ElementButtonIcon: React.FC<Props> = ({ name }) => {
-  const colors: ColorElementIcon = useMemo(() => {
-    return createColorElementIcon(name);
-  }, [name]);
+  const colors: ColorElementIcon = useMemo(
+    () => createColorElementIcon(name),
+    [name],
+  );
   const classes = useStyles(colors);
   return (
     <>

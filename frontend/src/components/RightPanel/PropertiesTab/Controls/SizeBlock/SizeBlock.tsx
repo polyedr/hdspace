@@ -6,9 +6,9 @@ import { selectActiveElement } from '@Redux/project/selectors/element';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateElement } from '@Redux/project/actions';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
-import { Button, ButtonGroup, MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { capitalize } from '@material-ui/core/utils';
+import { Button, ButtonGroup, MenuItem } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { capitalize } from '@mui/material/utils';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles({
@@ -26,14 +26,14 @@ const useStyles = makeStyles({
   },
 });
 
-const sameSizeElements: (Entity | 'none')[] = ['checkbox', 'radiobutton'];
-const percentSizeElements: (Entity | 'none')[] = ['carousel'];
-const disableWidthElements: (Entity | 'none')[] = [
+const sameSizeElements: Array<Entity | 'none'> = ['checkbox', 'radiobutton'];
+const percentSizeElements: Array<Entity | 'none'> = ['carousel'];
+const disableWidthElements: Array<Entity | 'none'> = [
   'navbar',
   'calendar',
   'clock',
 ];
-const disableHeightElements: (Entity | 'none')[] = [
+const disableHeightElements: Array<Entity | 'none'> = [
   'calendar',
   'calendar',
   'clock',
@@ -49,21 +49,21 @@ type UnitName = keyof typeof Unit;
 
 type MaxMinUnitName = Omit<UnitName, 'auto'>;
 
-type SelectedUnit = {
+interface SelectedUnit {
   width: UnitName;
   height: UnitName;
   minHeight: MaxMinUnitName;
   maxHeight: MaxMinUnitName;
   minWidth: MaxMinUnitName;
   maxWidth: MaxMinUnitName;
-};
+}
 
 type SizeName = keyof SelectedUnit;
 
-type ControlProps = {
+interface ControlProps {
   sizeName: SizeName;
   disabled: boolean;
-};
+}
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+.\d+]/g, '');

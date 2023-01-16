@@ -66,7 +66,9 @@ const BootstrapCheckbox = React.forwardRef<HTMLInputElement, RendererProps>(
           />
         ) : screenLink && screenName && isProtoMode && !exportScreenFlag ? (
           <label
-            ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
+            ref={
+              ref as unknown as React.MutableRefObject<HTMLLabelElement | null>
+            }
             id={id}
             role="presentation"
             onClick={() =>
@@ -95,7 +97,9 @@ const BootstrapCheckbox = React.forwardRef<HTMLInputElement, RendererProps>(
           />
         ) : (
           <label
-            ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
+            ref={
+              ref as unknown as React.MutableRefObject<HTMLLabelElement | null>
+            }
             id={id}
             data-ls-id={id}
             dangerouslySetInnerHTML={{ __html: element.parameters.value }}

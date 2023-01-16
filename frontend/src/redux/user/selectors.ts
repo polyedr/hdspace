@@ -40,5 +40,3 @@ export const selectUserGuideWatched = ({ user }: AppReduxState) =>
 
 export const selectUserGuideActive = ({ user }: AppReduxState) =>
   user.userGuide.active;
-
-export const selectChatCredentials = ({ user }: AppReduxState) => user.chat;

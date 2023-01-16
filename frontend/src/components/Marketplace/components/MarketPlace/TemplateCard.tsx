@@ -126,7 +126,7 @@ const Loader = styled.div`
   position: relative;
   left: 16rem;
 `;
-const TemplateCard = () => {
+function TemplateCard() {
   const [show, setShow] = React.useState({});
   const Template = useSelector(selectMarketplacesData);
   const templateListLoader = useSelector(selectAreTemplatesLoading);
@@ -185,7 +185,14 @@ const TemplateCard = () => {
     <>
       <GridContainer container spacing={4}>
         {sortedTemplateList.map((item, index) => (
-          <Grid item xs={3} sm={6} md={4} style={{ marginTop: 0 }}>
+          <Grid
+            key={item.id.toString()}
+            item
+            xs={3}
+            sm={6}
+            md={4}
+            style={{ marginTop: 0 }}
+          >
             <CustomRoot>
               <CustomCard>
                 <CardActionArea
@@ -235,6 +242,6 @@ const TemplateCard = () => {
       )}
     </>
   );
-};
+}
 
 export default TemplateCard;

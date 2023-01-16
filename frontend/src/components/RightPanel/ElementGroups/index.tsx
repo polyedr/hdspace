@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectElementGroups } from '@Redux/project/selectors/element';
-import Crop169Icon from '@material-ui/icons/Crop169';
+import Crop169Icon from '@mui/icons-material/Crop169';
 import { ElementData } from '@Src/types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   StyledAccordion,
   StyledAccordionDetails,
@@ -33,21 +33,23 @@ const ElementGroupsBlock: React.FC = () => {
   const groups = useSelector(selectElementGroups);
   const classes = useStyles();
 
-  const elementsData = useMemo(() => {
-    return Object.values(groups).map(
-      (group) =>
-        ({
-          id: group.id,
-          type: group.type,
-          name: group.name,
-          custom: false,
-          icon: Crop169Icon,
-          parameters: {
-            isGroup: true,
-          },
-        } as ElementData),
-    );
-  }, [groups]);
+  const elementsData = useMemo(
+    () =>
+      Object.values(groups).map(
+        (group) =>
+          ({
+            id: group.id,
+            type: group.type,
+            name: group.name,
+            custom: false,
+            icon: Crop169Icon,
+            parameters: {
+              isGroup: true,
+            },
+          } as unknown as ElementData),
+      ),
+    [groups],
+  );
 
   return (
     <StyledAccordion defaultExpanded>

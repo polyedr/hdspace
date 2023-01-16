@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyledTextField } from '@Components/styledComponents';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 import {
   updateElement,
   updateElementParameters,
@@ -123,7 +123,7 @@ const ElementType: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '0 16px' }}>
+    <div>
       <StyledTextField
         fullWidth
         margin="dense"

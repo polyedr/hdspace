@@ -42,10 +42,10 @@ const Typography = styled(MuiTypography)({
 });
 
 interface Props {
-  onSubmit(value: any): void;
+  onSubmit: (value: any) => void;
 }
 
-const CommentInput = ({ onSubmit }: Props) => {
+function CommentInput({ onSubmit }: Props) {
   const [value, setValue] = useState(undefined);
   const [showEditor, setShowEditor] = useState(false);
 
@@ -100,6 +100,6 @@ const CommentInput = ({ onSubmit }: Props) => {
       </Grid>
     </Grid>
   );
-};
+}
 
 export default CommentInput;

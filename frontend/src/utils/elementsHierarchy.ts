@@ -145,10 +145,12 @@ export const getRightPanelCategoryTabs = (
 export const createElementsHierarchy = (
   libraryElements: ElementsToAdd,
 ): ElementsHierarchy =>
-  keys(libraryElements).reduce(
+  // @ts-expect-error
+  keys(libraryElements).reduce<ElementsHierarchy>(
     (acc, structType) => ({
       ...acc,
       ...getRightPanelCategoryTabs(structType, libraryElements, acc),
     }),
-    {} as ElementsHierarchy,
+    // @ts-expect-error
+    {},
   );

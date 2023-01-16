@@ -13,7 +13,7 @@ import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import MasterScreen from '@Components/Editor/MasterScreen';
 import TreeCanvas from '@Components/Editor/TreeCanvas';
 import Scrollbars from 'react-custom-scrollbars';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
@@ -80,9 +80,9 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   elementId?: string;
-};
+}
 
 const Workspace: React.FC<Props> = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
@@ -113,8 +113,8 @@ const Workspace: React.FC<Props> = () => {
                   DOMHandler.INSTANCE.watch(scrollbars.view);
                 }}
                 autoHeightMin="100%"
-                onScroll={({ srcElement }) => {
-                  setScrollLeft(srcElement.scrollLeft);
+                onScroll={(event) => {
+                  setScrollLeft(event.currentTarget.scrollLeft);
                 }}
               >
                 {freeCanvasMode ? (
@@ -133,7 +133,6 @@ const Workspace: React.FC<Props> = () => {
                 )}
               </Scrollbar>
             </EditorViewport>
-
             <NNProcessingModal />
           </FrameWrapper>
         </div>

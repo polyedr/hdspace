@@ -1,9 +1,10 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import AssetLists from './AssetLists';
 import DisplayAssets from './DisplayAssets';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   assetsContainer: {
     display: 'flex',
     flexDirection: 'row',

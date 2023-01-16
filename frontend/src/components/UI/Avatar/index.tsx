@@ -8,7 +8,7 @@ interface Props {
   alt: string;
 }
 
-const WrapInToolTip = ({ title, disabled, children }) => {
+function WrapInToolTip({ title, disabled, children }) {
   if (disabled) {
     return children;
   }
@@ -18,7 +18,7 @@ const WrapInToolTip = ({ title, disabled, children }) => {
       {children}
     </Tooltip>
   );
-};
+}
 
 const Avatar = React.forwardRef<never, Props & AvatarProps>(
   ({ uniqueKey, tooltipDisabled = false, ...props }, ref) => {
