@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import TopPanel from './TopPanel';
 
 const useStyles = makeStyles({
@@ -24,7 +24,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Layout = ({ children }) => {
+function Layout({ children }) {
   const classes = useStyles();
   const url = new URL(window.location.href);
   const shortuuid_token = url?.pathname.split('/')[4];
@@ -41,6 +41,6 @@ const Layout = ({ children }) => {
       <div className={classes.content}>{children}</div>
     </div>
   );
-};
+}
 
 export default Layout;

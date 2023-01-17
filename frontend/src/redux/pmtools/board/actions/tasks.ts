@@ -8,10 +8,7 @@ export const fetchTask = (taskId: number) => ({
   taskId,
 });
 
-export const updateTask = (
-  task: BoardTask,
-  fields: { [key: string]: any },
-) => ({
+export const updateTask = (task: BoardTask, fields: Record<string, any>) => ({
   type: TYPES.BOARD_UPDATE_TASK,
   payload: { task, fields },
 });

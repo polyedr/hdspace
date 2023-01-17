@@ -6,9 +6,9 @@ import {
 } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
-import { FormControlLabel, MenuItem } from '@material-ui/core';
+import { FormControlLabel, MenuItem } from '@mui/material';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -43,7 +43,7 @@ const ruleStyles = [
 
 const ruleWidths = ['thin', 'medium', 'thick'];
 
-type Props = {
+interface Props {
   element: StateElement;
   canEdit: boolean;
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
@@ -51,7 +51,7 @@ type Props = {
   ruleWidth: React.CSSProperties['columnRuleWidth'];
   ruleStyle: React.CSSProperties['columnRuleStyle'];
   ruleColor: React.CSSProperties['columnRuleColor'];
-};
+}
 
 const ColumnRule: React.FC<Props> = ({
   removeStyles,

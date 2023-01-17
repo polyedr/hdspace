@@ -81,7 +81,7 @@ export const makeContainer = ({
   buoyancy = 0,
   UID = 'master',
 }: {
-  children?: ServerElement<Entity>[];
+  children?: Array<ServerElement<Entity>>;
   ownStyles?: React.CSSProperties;
   name?: string;
   buoyancy?: number;
@@ -207,9 +207,9 @@ export const makeColumns = (
     ownStyles: {},
     pseudoClassStyles: {},
   },
-  children: Array.from(Array(columnsCount)).map((_undefined, index) => {
-    return makeColumn({ UID: `${index}`, buoyancy: index });
-  }),
+  children: Array.from(Array(columnsCount)).map((_undefined, index) =>
+    makeColumn({ UID: `${index}`, buoyancy: index }),
+  ),
 });
 
 export const makeNativeColumns = (): NativeColumnsServerElement => ({
@@ -235,28 +235,26 @@ export const makeNativeColumns = (): NativeColumnsServerElement => ({
 
 export const makeDivBlock = (
   { textContent, UID = 'master' } = { textContent: 'This is a divBlock' },
-): DivBlockServerElement => {
-  return {
-    id: `divBlock-${UID}`,
-    buoyancy: 0,
-    func_type: 'divBlock',
-    struct_type: 'divBlock',
-    parameters: {
-      layouts: DEFAULT_LAYOUT_LIST,
-      group: ElementGroup.CONTAINERS,
-      freeCanvas: {
-        ...defaultFreeCanvasParams,
-      },
+): DivBlockServerElement => ({
+  id: `divBlock-${UID}`,
+  buoyancy: 0,
+  func_type: 'divBlock',
+  struct_type: 'divBlock',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    group: ElementGroup.CONTAINERS,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
     },
-    styles: {
-      classNames: ['divBlock'],
-      ownStyles: {},
-      pseudoClassStyles: {},
-    },
-    name: 'divBlock',
-    children: [makeParagraph({ textContent, UID: 'divBlock-0' })],
-  };
-};
+  },
+  styles: {
+    classNames: ['divBlock'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'divBlock',
+  children: [makeParagraph({ textContent, UID: 'divBlock-0' })],
+});
 
 export const makeImage = ({
   ownStyles = {},

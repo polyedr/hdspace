@@ -26,10 +26,11 @@ import {
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import Icon from '../../../../UI/Icon';
 
-type Props = {
+interface Props {
   element: StateElement;
   show: boolean;
   currentProjectId: number;
@@ -37,9 +38,9 @@ type Props = {
   styles: BoundingStyles;
   children?: any;
   masterScreenId: number | null;
-};
+}
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   crumb: ({ styles, element, rootId }: Props & { rootId: string }) => ({
     top: element.id === rootId ? styles.top : styles.top + styles.height - 1,
     left: element.id === rootId ? 'auto' : styles.left,
@@ -210,7 +211,7 @@ const BorderCrumb: React.FC<Props> = (props) => {
       >
         {element.name}
       </span>
-      {element.type !== 'root' && element.name.indexOf('Master') < 0 && (
+      {element.type !== 'root' && !element.name.includes('Master') && (
         <>
           <span className={classes.icon} onClick={handleDuplicate}>
             <Icon icon="copy" size={16} color="white" />

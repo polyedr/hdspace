@@ -17,7 +17,7 @@ const Avatar = styled(MuiAvatar)({
 });
 
 const CommentField = styled('div')({
-  border: '1px solid #E4E6EB',
+  border: '1px solid #c4c4c4',
   borderRadius: 4,
   padding: 12,
   marginLeft: 5,
@@ -33,19 +33,23 @@ const CommentField = styled('div')({
 });
 
 const Typography = styled(MuiTypography)({
-  border: '1px solid #E4E6EB',
+  border: '1px solid #c4c4c4',
   padding: '6.5px 12px',
   borderRadius: 4,
-  color: '#81818E',
+  color: '#a2a2a2',
   fontSize: 14,
   marginLeft: 5,
+
+  '&:hover': {
+    border: '1px solid #000000',
+  },
 });
 
 interface Props {
-  onSubmit(value: any): void;
+  onSubmit: (value: any) => void;
 }
 
-const CommentInput = ({ onSubmit }: Props) => {
+function CommentInput({ onSubmit }: Props) {
   const [value, setValue] = useState(undefined);
   const [showEditor, setShowEditor] = useState(false);
 
@@ -100,6 +104,6 @@ const CommentInput = ({ onSubmit }: Props) => {
       </Grid>
     </Grid>
   );
-};
+}
 
 export default CommentInput;

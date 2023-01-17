@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 
 import PATH_NAMES from '@Constants/pathNames';
-import { Alert } from '@material-ui/lab';
+import { Alert } from '@mui/lab';
 import { composeValidators, isRequired, isValidEmail } from '@Utils/validators';
 import { TextField } from '../FormField';
 import Info from '../Info';
@@ -36,14 +36,16 @@ const ResetPassword: React.FC = () => {
 
   return (
     <Grid container className={classes.root}>
-      <Info
-        title={['Did you know?', 'When working with ADEVI, you always can:']}
-        list={[
-          'Visualize and digitalize coded interfaces',
-          'Add charts and widgets',
-        ]}
-        img={bigimg}
-      />
+      <Grid item xs={12} sm={7}>
+        <Info
+          title={['Did you know?', 'When working with ADEVI, you always can:']}
+          list={[
+            'Visualize and digitalize coded interfaces',
+            'Add charts and widgets',
+          ]}
+          img={bigimg}
+        />
+      </Grid>
 
       <Grid
         container

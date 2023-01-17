@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`Searchbar should render a searchbar 1`] = `
+exports[`Searchbar > should render a searchbar 1`] = `
 <div>
   <div>
     <form

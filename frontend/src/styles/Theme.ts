@@ -1,7 +1,5 @@
 import { createTheme, darken, lighten } from '@mui/material/styles';
-import { createTheme as createMuiTheme } from '@material-ui/core/styles';
-
-declare module '@material-ui/core/styles/createPalette' {
+declare module '@mui/material/styles' {
   interface Palette {
     link: Palette['primary'];
     panel: Palette['primary'];
@@ -19,7 +17,7 @@ export const RIGHT_PANEL_WIDTH = 310;
 export const RIGHT_PANEL_WIDTH_MIN = 50;
 export const PANEL_TRANSITION_DURATION = 250;
 
-export const themeOld = createMuiTheme({
+export const theme = createTheme({
   palette: {
     primary: { main: '#5064FF' },
     secondary: { main: 'rgb(26 192 158)' },
@@ -36,43 +34,21 @@ export const themeOld = createMuiTheme({
       contrastText: '#fff',
     },
   },
-  overrides: {
-    MuiButton: {
-      root: {
-        textTransform: 'capitalize',
-      },
-      containedSecondary: {
-        color: '#fff',
-      },
-    },
-    MuiTab: {
-      root: {
-        textTransform: 'capitalize',
-      },
-    },
-  },
-  breakpoints: {},
-  shape: {},
-  typography: {
-    fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
-    fontSize: 14,
-    body1: {
-      fontSize: 14,
-    },
-  },
-  transitions: {},
-});
-
-export const theme = createTheme({
-  palette: {
-    primary: { main: '#5064FF' },
-    secondary: { main: 'rgb(26 192 158)' },
-  },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
           textTransform: 'capitalize',
+          color: 'white',
+        },
+      },
+    },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          '&.Mui-checked': {
+            color: 'rgb(26 192 158)',
+          },
         },
       },
     },

@@ -77,7 +77,7 @@ const StyledForm = styled('div')(() => ({
 const StyledButton = styled(Button)<{ active?: boolean }>(
   ({ active = false, theme }) => ({
     backgroundColor: active ? theme.palette.primary.main : '#F3F4F6',
-    color: active ? `#fff` : '#81818E',
+    color: active ? '#fff' : '#81818E',
     borderRadius: 4,
     boxShadow: 'none',
     textTransform: 'capitalize',
@@ -103,7 +103,7 @@ const PrimaryButton = styled(Button)(({ theme }) => ({
   textTransform: 'capitalize',
 }));
 
-const Board = () => {
+function Board() {
   const [showCreateColumn, setShowCreateColumn] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState<number[]>([]);
   const [searchText, setSearchText] = useState('');
@@ -182,8 +182,8 @@ const Board = () => {
 
     if (filteredUsers.length) {
       filteredColumns = filteredColumns.map((column) => {
-        const tasks = column.tasks.filter(
-          (t) => filteredUsers.indexOf(t.assignee_id ?? 0) !== -1,
+        const tasks = column.tasks.filter((t) =>
+          filteredUsers.includes(t.assignee_id ?? 0),
         );
 
         return {
@@ -238,7 +238,7 @@ const Board = () => {
                 <StyledButton
                   onClick={() => toggleFilteredUsers(activeUserId)}
                   variant="contained"
-                  active={filteredUsers.indexOf(activeUserId) !== -1}
+                  active={filteredUsers.includes(activeUserId)}
                 >
                   Only my tasks
                 </StyledButton>
@@ -301,6 +301,6 @@ const Board = () => {
       />
     </>
   );
-};
+}
 
 export default React.memo(Board);

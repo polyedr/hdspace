@@ -20,7 +20,7 @@ import {
 import Avatar from '@Components/UI/Avatar';
 import { styled } from '@mui/material/styles';
 import { UserData } from '@Src/types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 const InputTitle = styled('p')({
   marginTop: 0,
@@ -83,10 +83,10 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   selected: UserData[];
-  onChange(users: UserData[]): void;
-};
+  onChange: (users: UserData[]) => void;
+}
 
 const filterOptions = (options: UserData[], { inputValue }) =>
   matchSorter(options, inputValue, {
@@ -164,7 +164,7 @@ const InviteUserSearch: React.FC<Props> = ({ onChange, selected }: Props) => {
         loading={usersListLoader}
         filterOptions={filterOptions}
         options={Object.values(users)}
-        onChange={(_, value) => onChange(value)}
+        onChange={(_, value) => onChange(value as unknown as UserData[])}
         value={selected}
         classes={{
           listbox: classes.option,
@@ -194,46 +194,43 @@ const InviteUserSearch: React.FC<Props> = ({ onChange, selected }: Props) => {
             }}
           />
         )}
-        renderTags={(value, getTagProps) => {
-          return value.map((user, index) => {
-            return (
-              <Chip
-                avatar={
-                  <Avatar
-                    alt={user.email}
-                    src={user.profile.avatar ?? undefined}
-                    tooltipDisabled
-                  />
-                }
-                variant="outlined"
-                label={user.email}
-                {...getTagProps({ index })}
-              />
-            );
-          });
-        }}
-        renderOption={(props, user) => {
-          return (
-            <li {...props}>
-              <Stack direction="row" alignItems="center" spacing={1.5}>
+        renderTags={(value, getTagProps) =>
+          value.map((user, index) => (
+            <Chip
+              key={user.id}
+              avatar={
                 <Avatar
                   alt={user.email}
                   src={user.profile.avatar ?? undefined}
                   tooltipDisabled
-                  sx={{ height: 36, width: 36 }}
                 />
-                <Stack>
-                  <TypographyTitle variant="subtitle1">
-                    {user.email}
-                  </TypographyTitle>
-                  <TypographySubTitle variant="subtitle2">
-                    {user.username}
-                  </TypographySubTitle>
-                </Stack>
+              }
+              variant="outlined"
+              label={user.email}
+              {...getTagProps({ index })}
+            />
+          ))
+        }
+        renderOption={(props, user) => (
+          <li {...props}>
+            <Stack direction="row" alignItems="center" spacing={1.5}>
+              <Avatar
+                alt={user.email}
+                src={user.profile.avatar ?? undefined}
+                tooltipDisabled
+                sx={{ height: 36, width: 36 }}
+              />
+              <Stack>
+                <TypographyTitle variant="subtitle1">
+                  {user.email}
+                </TypographyTitle>
+                <TypographySubTitle variant="subtitle2">
+                  {user.username}
+                </TypographySubTitle>
               </Stack>
-            </li>
-          );
-        }}
+            </Stack>
+          </li>
+        )}
       />
     </>
   );

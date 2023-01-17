@@ -9,7 +9,6 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from './client';
 
 const notifyParent = (parent: string) => (message: any) => {
@@ -35,18 +34,17 @@ const [
   'send-message',
 ];
 
-type ChecklistTaskProps = {
+interface ChecklistTaskProps {
   chatClient: StreamChat<
     TeamAttachmentType,
     TeamChannelType,
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >;
   targetOrigin: string;
-};
+}
 
 export const useChecklist = (props: ChecklistTaskProps): void => {
   const { chatClient, targetOrigin } = props;
@@ -61,8 +59,7 @@ export const useChecklist = (props: ChecklistTaskProps): void => {
         TeamCommandType,
         TeamEventType,
         TeamMessageType,
-        TeamReactionType,
-        TeamUserType
+        TeamReactionType
       >,
     ) => {
       const { message, type } = props;

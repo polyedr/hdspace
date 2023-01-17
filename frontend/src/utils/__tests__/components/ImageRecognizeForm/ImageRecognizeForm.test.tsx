@@ -6,17 +6,18 @@ import { mockState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import TYPES from '@Redux/actionTypes';
 import ImageRecognizeForm from '@Components/Dialogs/NewScreenModal/ImageRecognizeForm';
+import { vi } from 'vitest';
 
 Object.defineProperty(URL, 'createObjectURL', {
   writable: true,
-  value: jest.fn(),
+  value: vi.fn(),
 });
 
 describe('ImageRecognizeForm', () => {
   let store: MockStoreEnhanced<AppReduxState>;
 
   let ui: RenderResult;
-  const closeCallback = jest.fn();
+  const closeCallback = vi.fn();
   const file = new File(['(⌐□_□)'], 'chucknorris.png', {
     type: 'image/png',
   });

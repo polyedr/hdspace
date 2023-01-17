@@ -9,7 +9,7 @@ export function username(user) {
   return user.username;
 }
 
-const User = ({ user, active = false, ...options }) => {
+function User({ user, active = false, ...options }) {
   return (
     <Avatar
       sx={{
@@ -25,6 +25,6 @@ const User = ({ user, active = false, ...options }) => {
       {...options}
     />
   );
-};
+}
 
 export default User;

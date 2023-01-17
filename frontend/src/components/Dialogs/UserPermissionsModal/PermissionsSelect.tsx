@@ -6,7 +6,8 @@ import {
   MenuItem,
   Select,
   Input,
-} from '@material-ui/core';
+  SelectChangeEvent,
+} from '@mui/material';
 import * as Actions from '@Redux/permissions/actions';
 import {
   EDITABLE_USER_PERMISSIONS,
@@ -16,10 +17,10 @@ import { selectUserPermissions } from '@Redux/permissions/selectors';
 import { UserProjectPermission } from '@Src/types';
 import { selectUserData } from '@Redux/user/selectors';
 
-type Props = {
+interface Props {
   userId: string;
   projectId: number;
-};
+}
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -59,9 +60,9 @@ const PermissionsSelect: React.FC<Props> = (props: Props) => {
 
   return (
     <Select
-      onChange={(e: React.ChangeEvent<any>) => {
+      onChange={(e: SelectChangeEvent<UserProjectPermission[]>) => {
         handlePermissionManagement(
-          e.target.value as unknown as Array<UserProjectPermission>,
+          e.target.value as unknown as UserProjectPermission[],
         );
       }}
       multiple
@@ -82,27 +83,25 @@ const PermissionsSelect: React.FC<Props> = (props: Props) => {
       placeholder="Not specified"
       disabled={userId === currentUserData.id.toString()}
     >
-      {EDITABLE_USER_PERMISSIONS.map((perm) => {
-        return (
-          <MenuItem
-            key={`permission-${perm}`}
-            value={perm}
+      {EDITABLE_USER_PERMISSIONS.map((perm) => (
+        <MenuItem
+          key={`permission-${perm}`}
+          value={perm}
+          disabled={
+            permissions.includes(UserProjectPermission.CHANGE_PROJECT) &&
+            perm === UserProjectPermission.VIEW_PROJECT
+          }
+        >
+          <Checkbox
+            checked={permissions.includes(perm)}
             disabled={
               permissions.includes(UserProjectPermission.CHANGE_PROJECT) &&
               perm === UserProjectPermission.VIEW_PROJECT
             }
-          >
-            <Checkbox
-              checked={permissions.includes(perm)}
-              disabled={
-                permissions.includes(UserProjectPermission.CHANGE_PROJECT) &&
-                perm === UserProjectPermission.VIEW_PROJECT
-              }
-            />
-            <ListItemText primary={PERMISSION_LABELS[perm]} />
-          </MenuItem>
-        );
-      })}
+          />
+          <ListItemText primary={PERMISSION_LABELS[perm]} />
+        </MenuItem>
+      ))}
     </Select>
   );
 };

@@ -123,16 +123,14 @@ const ProjectMembers: React.FC = () => {
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {filteredUsers.map((userData) => {
-              return (
-                <Member
-                  userData={userData}
-                  permissions={members[userData.id].permissions}
-                  key={`project-user-pm-${userData.id}`}
-                  project={projectId}
-                />
-              );
-            })}
+            {filteredUsers.map((userData) => (
+              <Member
+                userData={userData}
+                permissions={members[userData.id].permissions}
+                key={`project-user-pm-${userData.id}`}
+                project={projectId}
+              />
+            ))}
           </TableBody>
         </StyledTable>
       </TableContainer>
