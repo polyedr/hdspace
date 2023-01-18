@@ -66,3 +66,8 @@ class RobotsView(APIView):
 class WpgSavedView(generics.ListCreateAPIView):
     queryset = WpgSaved.objects.all()
     serializer_class = WpgSavedSerializer
+
+
+class ProjectImageUploadView(generics.CreateAPIView):
+    queryset = ImportExportUpload.objects.all()
+    serializer_class = ImportExportUploadSerializer

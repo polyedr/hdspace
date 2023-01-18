@@ -236,3 +236,69 @@ class WpgSavedSerializer(serializers.ModelSerializer, scrapy.Spider):
     def parse(self, response, validated_data):
         if self.parse_with_splash:
             subprocess.run(["wget", "-p", "-k", response.url])
+
+
+class ImportExportUploadSerializer(serializers.ModelSerializer):
+    name = "crawl"
+    start_urls = []
+    wpname = serializers.URLField()
+    parse_with_splash = serializers.BooleanField(required=False)
+    no_robots = serializers.BooleanField(required=False)
+
+    class Meta:
+        model = WpgSaved
+        fields = ("wpname", "owner", "parse_with_splash", "no_robots")
+        extra_kwargs = {"parse_with_splash": {"read_only": True}, "no_robots": {"read_only": True}}
+
+    def create(self, validated_data):
+        # url = validated_data.pop("wpname", None)
+        url = validated_data["wpname"]
+        self.parse_with_splash = validated_data.pop("parse_with_splash")
+        self.no_robots = validated_data.pop("no_robots")
+        self.start_urls.append(url)
+        # Remove url from the submitted data
+        # validated_data['fileurl'] = ''
+        # Download data from url (requires `requests` module.  Can also be done with urllib)
+        # response = requests.get(url)
+        # Set FileField to binary file
+        '''
+        wpname = urlparse(url).path.split("/")[-1]
+        if not wpname:
+            wpname = urlparse(url).netloc
+        '''
+        # print("wpname=", wpname)
+        # validated_data["wpname"] = UploadedFile(BytesIO(response.content), name=wpname)
+        wpsaved = WpgSaved(id=None, **validated_data)
+
+        wpath = MEDIA_ROOT + "/uploads/"
+
+        os.chdir(wpath)
+
+        fname = urlparse(url).netloc
+        SAVE_DIR = os.path.join(wpath, fname)
+        update_or_create_dir(SAVE_DIR)
+        os.chmod(SAVE_DIR, 0o755)
+        # Clear content at the SAVE_DIR
+        os.chdir(SAVE_DIR)
+        subprocess.run(["rm", "-rf", "*"])
+
+        os.chdir(wpath)
+        if (self.no_robots):
+            subprocess.run(["wget", "-e robots=off", "-p", "-k", url])
+        else:
+            subprocess.run(["wget", "-p", "-k", url])
+        # Archive all the files for a zip directory
+        shutil.make_archive(SAVE_DIR, "zip", SAVE_DIR)
+        zip_archive_name = fname + ".zip"
+
+        # Obtaining the absolute path for the parameters directly. Should change this later.
+        o = urlparse(self.context["request"].build_absolute_uri())
+        t = (
+            "https://" + o.netloc + MEDIA_URL + "uploads/" + zip_archive_name
+        )
+
+        wpsaved.wpname = t
+        wpsaved.save()
+
+        return wpsaved
+
