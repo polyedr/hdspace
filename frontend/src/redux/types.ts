@@ -787,6 +787,10 @@ export type PasteCopiedElement = IPlainAction<
   typeof TYPES.PASTE_COPIED_ELEMENT,
   ElementHistoryMeta
 >;
+export type PasteCopiedElementAtIndex = IPlainAction<
+  typeof TYPES.PASTE_COPIED_ELEMENT_AT_INDEX,
+  ElementMetaIndex
+>;
 export type ResetProjectState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;
 // history actions
 export type StartHistoryRecord = IAction<
@@ -1496,7 +1500,13 @@ export interface HistoryMeta {
 
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
+  index?: number;
 };
+
+export interface ElementMetaIndex {
+  index?: number;
+}
+
 export interface IPlainAction<T, M = HistoryMeta> {
   type: T;
   meta?: M;
