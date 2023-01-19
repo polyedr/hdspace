@@ -178,7 +178,6 @@ const PaginationItem: React.FC<Props> = ({
 
       <StyledAccordionDetails className={classes.details}>
         <StyledTextField
-          variant="outlined"
           defaultValue={textContent}
           onChange={(ev) => debouncedText.callback(ev.target.value)}
           label="Item text"

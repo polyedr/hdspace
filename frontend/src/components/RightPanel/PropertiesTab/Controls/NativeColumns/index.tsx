@@ -9,7 +9,7 @@ import ColumnRule from './ColumnRule';
 
 const useStyles = makeStyles({
   columnControls: {
-    padding: '0 2em',
+    // padding: '0 2em',
   },
 });
 
