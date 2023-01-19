@@ -56,8 +56,6 @@ export const PropertyAccordion = styled(MuiAccordion)({
     margin: '0 !important',
     borderBottom: '1px solid #E4E6EB',
     borderRadius: 0,
-    // paddingBottom: 10,
-
     '&:before': {
       display: 'none',
     },
@@ -68,34 +66,7 @@ export const PropertyAccordion = styled(MuiAccordion)({
   },
 });
 
-export const PropertyAccordionDetails = styled(AccordionDetails)({
-  // '&.MuiAccordionDetails-root': {
-  //   display: 'flex',
-  //   flexFlow: 'row wrap',
-  //   padding: '0',
-  //   justifyContent: 'space-between',
-  //   '& .MuiButton-text ': {
-  //     width: '33%',
-  //     minHeight: '65px',
-  //     paddingTop: '8px',
-  //     '& svg': {
-  //       height: 20,
-  //     },
-  //     '& span': {
-  //       fontSize: 11,
-  //       color: '#81818E',
-  //       fontWeight: 400,
-  //     },
-  //   },
-  //   '& .MuiButton-text:hover': {
-  //     boxShadow: 'none',
-  //     backgroundColor: 'transparent',
-  //     '& span': {
-  //       color: 'black',
-  //     },
-  //   },
-  // },
-});
+export const PropertyAccordionDetails = styled(AccordionDetails)({});
 
 const MuiSlider = styled(Slider)`
   & .MuiSlider-thumb {

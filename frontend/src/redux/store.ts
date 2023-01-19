@@ -21,6 +21,7 @@ import projectReducer from './project/reducers';
 import notificationReducer from './notification/reducer';
 import permissionsReducer from './permissions/reducer';
 import marketplaceReducer from './marketplace/reducers';
+import wireframeReducer from './wireframe/wireframe';
 import projectSaga from './project/sagas';
 import userSaga from './user/sagas';
 import history from './history';
@@ -56,6 +57,7 @@ const composeEnhancers =
 
 export const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
+  wireframe: wireframeReducer,
   project: projectReducer,
   router: connectRouter(history),
   notification: notificationReducer,

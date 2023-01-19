@@ -227,8 +227,19 @@ export interface NotificationState {
   notifications: Notification[];
 }
 
+export interface WireframeConnection {
+  sourceElement: string;
+  destinationScreem: string;
+}
+
+export interface WireframeState {
+  activeScreen?: number;
+  activeElement?: number;
+  connections: WireframeConnection[];
+}
 export interface AppReduxState {
   user: UserState;
+  wireframe: WireframeState;
   project: ProjectState;
   router: RouterState;
   notification: NotificationState;

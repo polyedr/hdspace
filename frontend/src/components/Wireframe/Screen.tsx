@@ -1,24 +1,44 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { type WireframeScreen } from './Canvas';
-import { Card, ThemeProvider } from '@mui/material';
-import { Typography } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { Card as MuiCard, styled, Typography } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectAllElements } from '@Redux/project/selectors/element';
 import RENDERERS from '@Components/UI/RenderElements';
 import useLayout from '@Components/Editor/hooks/useLayout';
-import FrameComponent, { FrameContextConsumer } from 'react-frame-component';
-import { CacheProvider } from '@emotion/react';
-import createCache from '@emotion/cache';
-import { theme } from '@Src/styles/Theme';
+import ScreenFrame from './ScreenFrame';
+import { setActiveElement, setActiveScreen } from '@Redux/wireframe/wireframe';
+import { selectCurrentWireframeElement } from '@Redux/wireframe/selectors';
 
 interface Props {
   data: WireframeScreen;
+  active: boolean;
 }
 
-const RenderElement = ({ elementId, allElements }) => {
+const ElementWrapper = styled('div')<{ active: boolean }>(({ active }) => ({
+  display: 'inline-block',
+  border: `1px solid ${active ? 'blue' : 'white'}`,
+}));
+
+const Card = styled(MuiCard)<{ active: boolean }>(({ active }) => ({
+  // boxShadow: `0 0 1px ${active ? 4 : 1}px rgba(0,0,0,.2)`,
+}));
+
+const RenderElement = ({ elementId, screenId, allElements }) => {
   const element = allElements[elementId];
 
+  const dispatch = useDispatch();
   const isDisplayed = useLayout(element?.parameters.layouts);
+  const activeElement = useSelector(selectCurrentWireframeElement);
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+
+      dispatch(setActiveScreen(screenId));
+      dispatch(setActiveElement(elementId));
+    },
+    [elementId, screenId],
+  );
 
   if (!element || (!isDisplayed && element?.name !== 'Root')) {
     return null;
@@ -32,46 +52,42 @@ const RenderElement = ({ elementId, allElements }) => {
   }
 
   return (
-    <ElementRenderer element={element}>
-      {element.children.map((childId) => (
-        <RenderElement
-          key={childId}
-          elementId={childId}
-          allElements={allElements}
-        />
-      ))}
-    </ElementRenderer>
+    <ElementWrapper active={activeElement === elementId} onClick={handleClick}>
+      <ElementRenderer isDisplayed={isDisplayed} element={element}>
+        {element.children.map((childId: string) => (
+          <RenderElement
+            key={childId}
+            screenId={screenId}
+            elementId={childId}
+            allElements={allElements}
+          />
+        ))}
+      </ElementRenderer>
+    </ElementWrapper>
   );
 };
 
-const Screen: React.FC<Props> = ({ data }) => {
+const Screen: React.FC<Props> = ({ data, active }) => {
   const rootId = data.element;
   const allElements = useSelector(selectAllElements);
+  const dispatch = useDispatch();
+
+  const handleSceeenClick = () => {
+    dispatch(setActiveScreen(data.id));
+  };
 
   return (
-    <Card>
+    <Card active={active} onClick={handleSceeenClick}>
       <Typography variant="h6" className={`handle-${data.id}`}>
         {data.name}
       </Typography>
-      <FrameComponent frameBorder={0} width={400} height={600}>
-        <FrameContextConsumer>
-          {({ document: frameDocument }) => {
-            const cache = createCache({
-              key: 'css',
-              container: frameDocument.head,
-              prepend: true,
-            });
-
-            return (
-              <CacheProvider value={cache}>
-                <ThemeProvider theme={theme}>
-                  <RenderElement elementId={rootId} allElements={allElements} />
-                </ThemeProvider>
-              </CacheProvider>
-            );
-          }}
-        </FrameContextConsumer>
-      </FrameComponent>
+      <ScreenFrame>
+        <RenderElement
+          screenId={data.id}
+          elementId={rootId}
+          allElements={allElements}
+        />
+      </ScreenFrame>
     </Card>
   );
 };
