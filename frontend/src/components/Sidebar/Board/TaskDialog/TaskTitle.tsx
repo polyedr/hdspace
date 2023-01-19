@@ -1,5 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import { Box, IconButton as MuiIconButton, Input } from '@mui/material';
+import {
+  Box,
+  IconButton as MuiIconButton,
+  TextareaAutosize,
+} from '@mui/material';
 import { styled } from '@mui/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
@@ -27,14 +31,14 @@ interface Props {
 
 function TaskTitle({ task, onChange }: Props) {
   const [editMode, setEditMode] = useState(false);
-  const [taskTitle, setTaskTitle] = useState(task.title);
+  const [taskTitle] = useState(task.title);
 
-  const handleChangeTaskTitle = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setTaskTitle(e.target.value);
-    },
-    [],
-  );
+  // const handleChangeTaskTitle = useCallback(
+  //   (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     setTaskTitle(e.target.value);
+  //   },
+  //   [],
+  // );
 
   const handleSetEditMode = useCallback(
     (mode: boolean) => () => setEditMode(mode),
@@ -50,10 +54,16 @@ function TaskTitle({ task, onChange }: Props) {
     <>
       {editMode ? (
         <>
-          <Input
+          <TextareaAutosize
             value={taskTitle}
-            onChange={handleChangeTaskTitle}
-            sx={{ width: 'calc(100% - 90px)' }}
+            // onChange={handleChangeTaskTitle}
+            style={{
+              width: 'calc(100% - 90px)',
+              border: 'none',
+              minHeight: 40,
+              borderBottom: '1px solid #000',
+              outline: 'none',
+            }}
           />
           <Box>
             <IconButton
