@@ -113,6 +113,7 @@ import {
   selectItemToCopyInfo,
   selectScreenRootElement,
   selectScreen,
+  selectParentOfActiveElement,
 } from '../selectors/element';
 import { selectCurrentScreen } from '../selectors/screen';
 import {
@@ -207,7 +208,6 @@ const updateDefaultStylesSaga = compose(
 
   yield call(projectUpdateHelperSaga, newProject);
 
-  // @ts-ignore
   if (!action.meta.useHistory) {
     yield put(
       Actions.addUndoActions(
@@ -218,7 +218,6 @@ const updateDefaultStylesSaga = compose(
 
   const state: Normalized<StateElement> = yield select(selectAllElements);
 
-  // @ts-ignore
   yield put(Actions.updateElementsTree(state, { ...action.meta }));
 });
 
@@ -358,6 +357,75 @@ const duplicateScreenSaga = withRequiredPermissions(
   }
 });
 
+const pasteCopiedElementAtIndexSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* ({ type, meta }: ReturnType<typeof Actions.pasteCopiedElement>) {
+  try {
+    if (!meta) {
+      logger.error(`You have to provide metainformation for action ${type}`);
+      return;
+    }
+    const { screenId, useHistory, index } = meta;
+
+    const activeElementId: string = yield select(selectActiveElementId);
+
+    const activeElement: LibraryElement<any> = yield select(
+      selectElementAsTree(activeElementId),
+    );
+
+    const itemToCopyInfo: ItemToCopyInfo | null = yield select(
+      selectItemToCopyInfo,
+    );
+
+    if (!itemToCopyInfo) {
+      yield put(
+        enqueueSnackbar({
+          message: 'Nothing to paste',
+          options: { variant: 'warning' },
+        }),
+      );
+      return;
+    }
+
+    if (activeElement.type !== 'none') {
+      const rootElementofActiveNode = yield select(selectParentOfActiveElement);
+      const targetParent =
+        meta.index === undefined ? activeElement : rootElementofActiveNode;
+
+      const result = yield call(
+        duplicateElements,
+        { itemsToCopyInfo: [itemToCopyInfo], targetParent },
+        {
+          index,
+          screenId,
+          useHistory,
+        },
+      );
+      if (result) {
+        yield put(
+          enqueueSnackbar({
+            message: 'Element pasted',
+            options: { variant: 'success' },
+          }),
+        );
+      }
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          { message: e.message, options: { variant: 'error' } },
+          e,
+        ),
+      );
+    }
+  }
+});
+
 const pasteCopiedElementSaga = compose(
   withRequiredPermissions(
     UserProjectPermission.VIEW_PROJECT,
@@ -370,7 +438,7 @@ const pasteCopiedElementSaga = compose(
       logger.error(`You have to provide metainformation for action ${type}`);
       return;
     }
-    const { screenId, useHistory } = meta;
+    const { screenId, useHistory, index } = meta;
 
     const activeElementId: string = yield select(selectActiveElementId);
 
@@ -397,6 +465,7 @@ const pasteCopiedElementSaga = compose(
         duplicateElements,
         { itemsToCopyInfo: [itemToCopyInfo], targetParent: activeElement },
         {
+          index,
           screenId,
           useHistory,
         },
@@ -497,6 +566,14 @@ export default function* projectSaga() {
 
   yield takeLatest(TYPES.COPY_ACTIVE_ELEMENT, copyActiveElementSaga);
   yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
+  // yield takeEvery(
+  //   TYPES.PASTE_COPIED_ELEMENT_AT_INDEX,
+  //   pasteCopiedElementAtIndexSaga,
+  // );
+  yield takeEvery(
+    TYPES.PASTE_COPIED_ELEMENT_AT_INDEX,
+    pasteCopiedElementAtIndexSaga,
+  );
 
   yield takeEvery(TYPES.CONVERT_FREE_CANVAS, convertFreeCanvasSaga);
 

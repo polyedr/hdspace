@@ -1,5 +1,5 @@
-import React, { useRef, MutableRefObject, memo } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useRef, memo } from 'react';
+import { makeStyles } from '@mui/styles';
 import { ElementData } from '@Src/types';
 import { useStyles as useElementBlockStyles } from '../ElementsTab/ElementsBlock';
 import ElementButton from '../ElementsTab/ElementButton';
@@ -9,10 +9,10 @@ import {
   StyledAccordionSummary,
 } from '../../styledComponents';
 
-type Props = {
+interface Props {
   name: string;
-  elements: Array<ElementData>;
-};
+  elements: ElementData[];
+}
 
 const useStyles = makeStyles({
   title: {
@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 const CustomElementsBlock: React.FC<Props> = ({ name, elements }) => {
   const classes = useStyles();
   const styles = useElementBlockStyles();
-  const lastElementRef = useRef() as MutableRefObject<HTMLButtonElement>;
+  const lastElementRef = useRef();
 
   return (
     <StyledAccordion defaultExpanded>

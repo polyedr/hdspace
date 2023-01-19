@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
-import SettingsIcon from '@material-ui/icons/Settings';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import {
+  Settings,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+} from '@mui/icons-material';
 import { splitWords } from '@Utils/stringHelper';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { StateElement } from '@Src/types';
-import { Divider, IconButton } from '@material-ui/core';
+import { Divider, IconButton } from '@mui/material';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   crumb: {
@@ -76,11 +78,11 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   element: StateElement;
   hover: boolean;
   isActive: boolean;
-};
+}
 
 const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
   const {
@@ -132,7 +134,7 @@ const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
             className={classes.iconButton}
             title="Settings"
           >
-            <SettingsIcon fontSize="inherit" />
+            <Settings fontSize="inherit" />
           </IconButton>
         </div>
 
@@ -150,7 +152,7 @@ const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
               className={classes.iconButton}
               title="Move element up"
             >
-              <KeyboardArrowUpIcon fontSize="inherit" />
+              <KeyboardArrowUp fontSize="inherit" />
             </IconButton>
 
             <IconButton
@@ -159,7 +161,7 @@ const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
               title="Move element down"
               disabled={(zIndex || 0) <= 0}
             >
-              <KeyboardArrowDownIcon fontSize="inherit" />
+              <KeyboardArrowDown fontSize="inherit" />
             </IconButton>
           </div>
         </div>

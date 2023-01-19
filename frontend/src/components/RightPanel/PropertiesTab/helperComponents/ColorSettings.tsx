@@ -1,12 +1,10 @@
 import React, { memo, useCallback, useState, useEffect } from 'react';
 import { toState } from 'react-color/lib/helpers';
 import { ColorResult } from 'react-color';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import { makeStyles } from '@material-ui/core/styles';
+import { Checkbox, styled, FormControlLabel } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { getPermissibleValue } from '@Utils/NumberHelper';
 import ClearIcon from '@mui/icons-material/Clear';
-import { styled } from '@mui/material';
 import { ColorPicker, normalizeColor, useColor } from '../../../UI/ColorPicker';
 import { StyledTextField } from '../../../styledComponents';
 
@@ -33,18 +31,18 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   currentColor: string;
   currentOpacity?: React.CSSProperties['opacity'];
   activeElementId: string;
-  onChange(color: string): any | void;
+  onChange: (color: string) => any | void;
   disabled?: boolean;
   labelTextStyle?: string;
   updateStyles?: any;
   propsToRemove?: string[];
-  onClick?(propsToRemove: string[] | undefined): void;
+  onClick?: (propsToRemove: string[] | undefined) => void;
   isDefaultStyles?: boolean;
-};
+}
 
 const CheckedFormControl = styled(FormControlLabel)({
   margin: '10px 0 10px -3px',

@@ -1,39 +1,40 @@
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import Popover from '@material-ui/core/Popover';
-import Avatar from '@material-ui/core/Avatar';
+import { Popover, Avatar, Theme } from '@mui/material';
+import { makeStyles, createStyles } from '@mui/styles';
 import React, { useState } from 'react';
 import { EditableScreenUser } from '@Src/types';
 
-type Props = {
-  editingUsers: Array<EditableScreenUser>;
+interface Props {
+  editingUsers: EditableScreenUser[];
   isMinimized: boolean;
-};
+}
 
-const styles = makeStyles((theme: Theme) => ({
-  editingUsers: {
-    fontSize: '14px',
-    color: theme.palette.link.contrastText,
-    marginLeft: '10px',
-    lineHeight: '4px',
-    '& span': {
-      cursor: 'pointer',
-      color: theme.palette.secondary.main,
+const styles = makeStyles((theme: Theme) =>
+  createStyles({
+    editingUsers: {
+      fontSize: '14px',
+      color: theme.palette.link.contrastText,
+      marginLeft: '10px',
+      lineHeight: '4px',
+      '& span': {
+        cursor: 'pointer',
+        color: theme.palette.secondary.main,
+      },
     },
-  },
 
-  popover: {
-    pointerEvents: 'none',
-  },
-  paper: {
-    padding: '8px',
-  },
-  circle: {
-    width: theme.spacing(3),
-    height: theme.spacing(3),
-    color: theme.palette.secondary.main,
-    backgroundColor: theme.palette.link.contrastText,
-  },
-}));
+    popover: {
+      pointerEvents: 'none',
+    },
+    paper: {
+      padding: '8px',
+    },
+    circle: {
+      width: theme.spacing(3),
+      height: theme.spacing(3),
+      color: theme.palette.secondary.main,
+      backgroundColor: theme.palette.link.contrastText,
+    },
+  }),
+);
 
 const ScreenEdits: React.FC<Props> = ({ editingUsers, isMinimized }) => {
   const classes = styles();

@@ -17,18 +17,19 @@ import {
   selectVIAResultId,
 } from '@Redux/project/selectors/via';
 
-import { styled } from '@mui/material';
-import ToggleButton from '@mui/material/ToggleButton';
-
 import {
+  styled,
   AppBar as MUIAppbar,
   Toolbar,
   IconButton,
   Box,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+  Theme,
+} from '@mui/material';
+import ToggleButton from '@mui/material/ToggleButton';
+
+import { makeStyles } from '@mui/styles';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { StyledIconButton } from '@Components/styledComponents';
 import { HELP_LINK } from '@Src/config/settings';
 import Dialog from '../Dialogs/Dialog';
@@ -60,7 +61,7 @@ const Appbar = styled(MUIAppbar)({
   },
 });
 
-const useStyles = makeStyles(({ typography, palette }) => ({
+const useStyles = makeStyles<Theme>(({ typography, palette }) => ({
   toolbar: {
     backgroundColor: 'white',
     color: palette.common.white,
@@ -110,7 +111,7 @@ const useStyles = makeStyles(({ typography, palette }) => ({
   },
 }));
 
-const TopPanel = () => {
+function TopPanel() {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [openEdit, setOpenEdit] = useState(false);
@@ -215,6 +216,6 @@ const TopPanel = () => {
       />
     </Appbar>
   );
-};
+}
 
 export default TopPanel;

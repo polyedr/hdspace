@@ -7,12 +7,12 @@ import {
   DialogTitle,
   InputAdornment,
   TextField,
+  IconButton,
 } from '@mui/material';
 import { Form, Field } from 'react-final-form';
 import { ColorPicker, createColor } from 'material-ui-color';
 import { useDispatch } from 'react-redux';
 import { createColumn } from '@Redux/pmtools/board/actions/columns';
-import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 
@@ -60,7 +60,7 @@ const StyledInputAdornment = styled(InputAdornment)({
   },
 });
 
-export const NewColumn = ({ open, projectId, onClose }) => {
+export function NewColumn({ open, projectId, onClose }) {
   const dispatch = useDispatch();
 
   const handleCreateColumn = useCallback(
@@ -188,4 +188,4 @@ export const NewColumn = ({ open, projectId, onClose }) => {
       />
     </StyledDialog>
   );
-};
+}

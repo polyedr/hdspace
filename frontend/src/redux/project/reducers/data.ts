@@ -79,7 +79,19 @@ const dataReducer = produce(
 
       case TYPES.ADD_STATE_ELEMENTS: {
         const { elements } = action.payload;
-        draft.elements = addMapElements(draft.elements, elements);
+
+        const index = action.meta?.index;
+
+        if (!index) {
+          draft.elements = addMapElements(draft.elements, elements);
+        } else {
+          elements.forEach((element) => {
+            element.index = index;
+          });
+
+          draft.elements = addMapElements(draft.elements, elements);
+        }
+
         break;
       }
 

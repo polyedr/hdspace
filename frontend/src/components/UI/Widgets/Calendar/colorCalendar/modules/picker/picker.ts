@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/prefer-default-export
 export function togglePicker(shouldOpen?: boolean) {
-  if (shouldOpen === true) {
+  if (shouldOpen) {
     this.pickerContainer.style.visibility = 'visible';
     this.pickerContainer.style.opacity = '1';
     if (this.pickerType === 'year') {
@@ -8,7 +8,7 @@ export function togglePicker(shouldOpen?: boolean) {
     }
     this.removeYearPickerSelection();
     this.updateYearPickerSelection(this.currentDate.getFullYear());
-  } else if (shouldOpen === false) {
+  } else if (!shouldOpen) {
     this.pickerContainer.style.visibility = 'hidden';
     this.pickerContainer.style.opacity = '0';
     if (this.monthDisplay && this.yearDisplay) {

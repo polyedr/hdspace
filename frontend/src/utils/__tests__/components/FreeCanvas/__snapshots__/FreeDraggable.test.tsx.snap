@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`Free Draggable should render free draggable component 1`] = `
+exports[`Free Draggable > should render free draggable component 1`] = `
 <div>
   <div
     class="makeStyles-rnd-1 makeStyles-rnd-5 react-draggable"

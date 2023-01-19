@@ -38,7 +38,6 @@ export const DEFAULT_USER_PROFILE: ProfileData = {
       autoSwitchTabs: false,
       dropTargetBordersMode: true,
     },
-    passwordZulip: '',
   },
 };
 
@@ -92,7 +91,7 @@ export const DEFAULT_PROJECT: Project = {
       },
       typography: {
         color: '#323232',
-        fontFamily: `"Arial", sans-serif`,
+        fontFamily: '"Arial", sans-serif',
         fontSize: '14px',
         fontWeight: 100,
         textAlign: 'center',

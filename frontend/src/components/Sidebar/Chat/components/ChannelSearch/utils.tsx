@@ -23,8 +23,7 @@ export type ChannelOrUserType =
       TeamCommandType,
       TeamEventType,
       TeamMessageType,
-      TeamReactionType,
-      TeamUserType
+      TeamReactionType
     >
   | UserResponse<TeamUserType>;
 
@@ -36,8 +35,7 @@ export const isChannel = (
   TeamCommandType,
   TeamEventType,
   TeamMessageType,
-  TeamReactionType,
-  TeamUserType
+  TeamReactionType
 > =>
   (
     channel as Channel<
@@ -46,20 +44,18 @@ export const isChannel = (
       TeamCommandType,
       TeamEventType,
       TeamMessageType,
-      TeamReactionType,
-      TeamUserType
+      TeamReactionType
     >
   ).cid !== undefined;
 
-type Props = {
+interface Props {
   client: StreamChat<
     TeamAttachmentType,
     TeamChannelType,
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >;
   setActiveChannel: (
     newChannel?: Channel<
@@ -68,8 +64,7 @@ type Props = {
       TeamCommandType,
       TeamEventType,
       TeamMessageType,
-      TeamReactionType,
-      TeamUserType
+      TeamReactionType
     >,
     watchers?: {
       limit?: number;
@@ -78,7 +73,7 @@ type Props = {
     event?: React.SyntheticEvent,
   ) => void;
   user: UserResponse<TeamUserType>;
-};
+}
 
 export const channelByUser = async (props: Props) => {
   const { client, setActiveChannel, user } = props;
@@ -86,7 +81,7 @@ export const channelByUser = async (props: Props) => {
   const filters: ChannelFilters = {
     type: 'messaging',
     member_count: 2,
-    members: { $eq: [user.id as string, client.userID || ''] },
+    members: { $eq: [user.id, client.userID || ''] },
   };
 
   const [existingChannel] = await client.queryChannels(filters);
@@ -96,7 +91,7 @@ export const channelByUser = async (props: Props) => {
   }
 
   const newChannel = client.channel('messaging', {
-    members: [user.id as string, client.userID || ''],
+    members: [user.id, client.userID || ''],
   });
   return setActiveChannel(newChannel);
 };

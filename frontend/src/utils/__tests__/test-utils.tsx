@@ -31,6 +31,7 @@ import {
   Layout,
   Marketplace,
 } from '@Src/types';
+import { vi } from 'vitest';
 
 export const mockProject: Project = {
   id: 1,
@@ -145,7 +146,6 @@ export const mockUserData: UserData = {
     id: 888,
     experienced: Experience.EXPERIENCED,
     parameters: {
-      passwordZulip: '',
       avatarCrop: '',
       profileDataParameters: {
         autoSwitchTabs: false,
@@ -229,6 +229,7 @@ export const mockInitialState: AppReduxState = {
     action: 'POP',
     location: {
       hash: '',
+      query: {},
       key: '',
       pathname: '',
       search: '',
@@ -420,8 +421,8 @@ export const projectScreensMock = [
 ];
 
 export const beforeSagaTest = () => {
-  logger.error = jest.fn();
+  logger.error = vi.fn();
   // stub current date and random value generator to pass enqueueSnackbar equality
   MockDate.set('2000-11-22');
-  jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
+  vi.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
 };

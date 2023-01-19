@@ -4,7 +4,7 @@ import { connect, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import * as Actions from '@Redux/user/actions';
 import { AppReduxState } from '@Redux/types';
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@mui/lab/Alert';
 import { selectConfirmMessage } from '@Redux/user/selectors';
 import LoginForm from '../LoginForm';
 import Spinner from '../../UI/Spinner';

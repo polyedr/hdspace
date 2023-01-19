@@ -1,12 +1,16 @@
-/* eslint-disable global-require */
+import prof from '@/assets/sprites/profile_empty.png';
+import logo from '@/assets/sprites/logo.png';
+import imageIcon from '@/assets/images/image-icon.svg';
+import imageIconSmall from '@/assets/images/image-icon-small.svg';
+import youtubeIcon from '@/assets/images/youtube.svg';
 
 const IMAGES = {
   default: null,
-  prof: require('../assets/sprites/profile_empty.png'),
-  logo: require('../assets/sprites/logo.png'),
-  imageIcon: require('../assets/images/image-icon.svg'),
-  imageIconSmall: require('../assets/images/image-icon-small.svg'),
-  youtubeIcon: require('../assets/images/youtube.svg'),
+  prof,
+  logo,
+  imageIcon,
+  imageIconSmall,
+  youtubeIcon,
 };
 
 export default IMAGES;

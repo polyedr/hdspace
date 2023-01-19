@@ -6,14 +6,14 @@ import {
   PropertyAccordion,
 } from '@Components/styledComponents';
 // import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { setImageList } from '@Redux/project/actions';
 import { useDispatch } from 'react-redux';
 
-type Props = {
+interface Props {
   title: string;
   expanded: boolean;
-};
+}
 
 const ControlSection: React.FC<Props> = ({ title, children, expanded }) => {
   const [isCollapse, setIsCollapse] = useState(expanded);
