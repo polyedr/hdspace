@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 import { selectCurrentDropTargetParams } from '@Redux/project/selectors/base';
 import { DropPosition } from '@Constants/dragAndDrop';
+import { Theme } from '@mui/material';
 
 interface Props {
   styles: React.CSSProperties;
   isActive: boolean;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   divider: (isActive) => ({
     position: 'absolute',
     pointerEvents: 'none',

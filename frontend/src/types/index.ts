@@ -1,6 +1,6 @@
 import React, { HTMLAttributes } from 'react';
-import { OverridableComponent } from '@material-ui/core/OverridableComponent';
-import { SvgIconTypeMap } from '@material-ui/core';
+import { OverridableComponent } from '@mui/material/OverridableComponent';
+import { SvgIconTypeMap } from '@mui/material';
 import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
@@ -1355,7 +1355,6 @@ export interface ProfileData {
 export interface ProfileDataParameters {
   avatarCrop: string;
   profileDataParameters: ProfileDataUIParameters;
-  passwordZulip: string;
 }
 export interface ProfileDataUIParameters {
   autoSwitchTabs: boolean;
@@ -1857,12 +1856,6 @@ export interface FileToUpload {
   name: string;
   imgPreviewUrl?: string;
   stylesOn?: boolean;
-}
-
-export interface ChatCredentials {
-  realm: string;
-  username: string;
-  apiKey: string;
 }
 
 export const CONTROLS_NOT_ALLOW_LINK = ['html'] as const;

@@ -13,7 +13,7 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '@Src/types';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   FormControl,
   InputLabel,
@@ -21,7 +21,9 @@ import {
   MenuItem,
   Icon,
   Button,
-} from '@material-ui/core';
+  Theme,
+  SelectChangeEvent,
+} from '@mui/material';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -310,22 +312,22 @@ const BackgroundBlock: React.FC<Props> = ({
   }, []);
 
   const handleChangeBackgroundSize = useCallback(
-    (e: React.ChangeEvent<{ value: unknown }>) => {
-      updateCSS('backgroundSize', e.target.value as string);
+    (e: SelectChangeEvent) => {
+      updateCSS('backgroundSize', e.target.value);
     },
     [element, currentScreenId],
   );
 
   const handleChangeBackgroundClip = useCallback(
-    (e: React.ChangeEvent<{ value: unknown }>) => {
-      updateCSS('backgroundClip', e.target.value as string);
+    (e: SelectChangeEvent) => {
+      updateCSS('backgroundClip', e.target.value);
     },
     [element, currentScreenId],
   );
 
   const handleChangeBackgroundRepeat = useCallback(
-    (e: React.ChangeEvent<{ value: unknown }>) => {
-      updateCSS('backgroundRepeat', e.target.value as string);
+    (e: SelectChangeEvent) => {
+      updateCSS('backgroundRepeat', e.target.value);
     },
     [element, currentScreenId],
   );
@@ -473,7 +475,7 @@ const BackgroundBlock: React.FC<Props> = ({
         type="file"
         disabled={!canEdit}
       />
-      <FormControl className={classes.formControl}>
+      {/* <FormControl className={classes.formControl}>
         <InputLabel>Background Type</InputLabel>
         <Select onChange={handleChangeType} value={type}>
           {Object.values(BackgroundType).map((type) => (
@@ -482,7 +484,22 @@ const BackgroundBlock: React.FC<Props> = ({
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
+      </FormControl> */}
+      <StyledTextField
+        fullWidth
+        margin="dense"
+        label="Background Type"
+        value={type}
+        onChange={handleChangeType}
+        select
+        disabled={!canEdit}
+      >
+        {Object.values(BackgroundType).map((type) => (
+          <MenuItem value={type} key={type}>
+            {type}
+          </MenuItem>
+        ))}
+      </StyledTextField>
 
       {renderBackgroundControls()}
     </div>

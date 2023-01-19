@@ -161,22 +161,6 @@ const setUserGuideActive: ActionHandler<typeof Actions.setUserGuideActive> = (
   },
 });
 
-const setChatCredentials: ActionHandler<typeof Actions.setChatCredentials> = (
-  state,
-  { payload },
-) => ({
-  ...state,
-  chat: {
-    ...state.chat,
-    ...payload,
-  },
-});
-
-const chatLogout: ActionHandler<typeof Actions.chatLogout> = (state) => ({
-  ...state,
-  chat: initialUserState.chat,
-});
-
 const logout: ActionHandler<typeof Actions.logout> = () => ({
   ...initialUserState,
 });
@@ -199,8 +183,6 @@ const handlers: Handlers<UserState> = {
   [TYPES.SET_CONFIRM_MESSAGE]: setConfirmMessage,
   [TYPES.SET_USER_EXPERIENCE]: setUserExperience,
   [TYPES.SET_USER_GUIDE_ACTIVE]: setUserGuideActive,
-  [TYPES.SET_CHAT_CREDENTIALS]: setChatCredentials,
-  [TYPES.CHAT_LOGOUT]: chatLogout,
   [TYPES.SET_SUBSCRIPTION_DATA]: setSubscriptionData,
 } as const;
 

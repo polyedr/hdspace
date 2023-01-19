@@ -9,7 +9,7 @@ import {
 } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
 
 interface StateProps {

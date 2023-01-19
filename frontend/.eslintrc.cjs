@@ -8,6 +8,7 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'standard-with-typescript',
     'plugin:prettier/recommended',
+    'plugin:import/recommended',
   ],
   overrides: [],
   parserOptions: {
@@ -20,6 +21,9 @@ module.exports = {
     react: {
       version: 'detect',
     },
+    'import/resolver': {
+      typescript: true
+    }
   },
   rules: {
     'prettier/prettier': 'error',
@@ -36,7 +40,7 @@ module.exports = {
     'react/display-name': 'off',
     '@typescript-eslint/restrict-template-expressions': 'warn',
     'array-callback-return': 'warn',
-    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/prefer-nullish-coalescing': 'off',
     '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
     '@typescript-eslint/consistent-type-assertions': 'off',

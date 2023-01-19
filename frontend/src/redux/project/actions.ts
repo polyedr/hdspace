@@ -1753,14 +1753,6 @@ export const setSidebarHost = (host: string): SetSidebarHost => ({
   payload: host,
 });
 
-export const sidebarLogout = () => ({
-  type: TYPES.SIDEBAR_LOGOUT,
-});
-
-export const sidebarLogoutSuccess = () => ({
-  type: TYPES.SIDEBAR_LOGOUT_SUCCESS,
-});
-
 export const updateUISettingsParameters = (
   uiParameters: Partial<ProfileDataUIParameters>,
 ): UpdateUISettingsParameters => ({

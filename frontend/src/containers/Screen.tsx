@@ -15,7 +15,8 @@ import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
 import { activateScreen, loadAssetLists } from '@Redux/project/actions';
 import ELEMENT_IDS from '@Constants/elementIds';
 import Tour, { ReactourStep } from 'reactour';
-import { useTheme, makeStyles } from '@material-ui/core/styles';
+import { useTheme, makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import { selectUserGuideActive } from '@Redux/user/selectors';
 import {
   setUserGuideActive,
@@ -150,7 +151,7 @@ const Screen: React.FC<Props> = ({ screenId }) => {
   }, [assetLists, dispatch, currentProjectId, assetListsLoading]);
 
   const userGuideActive = useSelector(selectUserGuideActive);
-  const { shape } = useTheme();
+  const { shape } = useTheme<Theme>();
 
   return (
     <div className={classes.screen}>

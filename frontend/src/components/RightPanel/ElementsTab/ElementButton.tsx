@@ -19,8 +19,8 @@ import {
 } from '@Redux/project/selectors/element';
 import { ElementType } from '@Constants/dragAndDrop';
 import { ElementData } from '@Src/types';
-import { Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import Scrollbars from 'react-custom-scrollbars';
 import PreviewCanvas from '@Components/Editor/PreviewCanvas/index';
 import ElementButtonIcon from './ElementButtonIcon';
@@ -33,64 +33,54 @@ interface Props {
 
 const useButtonStyles = makeStyles(() => ({
   root: {
-    width: '33%',
-    minHeight: '65px',
-    paddingTop: '8px',
-    alignItems: 'flex-start',
-    '& svg': {
-      height: 30,
-    },
-    '& span': {
-      fontSize: 11,
-      color: '#81818E',
-      fontWeight: 400,
-    },
-    '&:hover': {
-      backgroundColor: 'transparent',
-      '& span': {
+    '&.MuiButton-root': {
+      width: '100%',
+      minHeight: '65px',
+      padding: '2px 8px',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      textTransform: 'capitalize',
+
+      '&:hover': {
         color: 'black',
+        backgroundColor: 'transparent',
+
+        '& span': {
+          color: 'black',
+        },
+
+        '& svg': {
+          fill: 'black',
+        },
       },
     },
   },
-  text: {
-    padding: '2px 8px',
-  },
-  label: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textTransform: 'capitalize',
-    fontSize: '0.8em',
-    height: '100%',
-  },
 }));
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   iconSection: {
     display: 'flex',
-    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'flex-start',
     width: '100%',
 
     '& svg': {
       height: 30,
+      fill: '#81818E',
     },
   },
   nameSection: (props: Props) => ({
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'flex-start',
     lineHeight: 1.5,
     width: '100%',
     height: props.elementData.icon ? '55%' : '100%',
-    textAlign: 'center',
   }),
   name: {
-    fontSize: theme.typography.fontSize,
+    fontSize: theme.typography.fontSize - 3,
     fontFamily: theme.typography.fontFamily,
     lineHeight: 1.2,
+    color: '#81818E',
+    fontWeight: 400,
   },
 }));
 

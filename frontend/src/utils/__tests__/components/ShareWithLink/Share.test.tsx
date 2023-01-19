@@ -13,7 +13,6 @@ import Share from '@Components/Layout/TopBar/actions/Share';
 import { vi } from 'vitest';
 
 const mockWriteText = vi.fn();
-vi.mock('axios');
 
 Object.assign(navigator, {
   clipboard: {

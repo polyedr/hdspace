@@ -1,8 +1,7 @@
 import { styled } from '@mui/material/styles';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
+import { Box, Chip, Stack } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { differenceInDays, format } from 'date-fns';
 import { BoardTask } from '@Redux/pmtools/types';
@@ -93,9 +92,11 @@ const Task: React.FC<Props> = ({ task, index }) => {
               spacing={1}
               mb={2}
               justifyContent="space-between"
-              alignItems="center"
+              alignItems="flex-start"
             >
-              {task.title}
+              <Box sx={{ width: 'calc(100% - 20px)', textAlign: 'justify' }}>
+                {task.title}
+              </Box>
               <BarIcon priority={task.priority} />
             </Stack>
             <Stack direction="row" spacing={0.2} mb={2} flexWrap="wrap">

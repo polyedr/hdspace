@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { TextField, MenuItem } from '@material-ui/core';
+import { TextField, MenuItem, Theme } from '@mui/material';
 import cn from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateRange, ProjectsSearchParameter } from '@Src/types';
@@ -9,17 +9,32 @@ import {
 } from '@Redux/project/actions';
 import { selectProjectsSearchParameter } from '@Redux/project/selectors/base';
 import { PROJECT_STATUS_LIST } from '@Constants/defaultParams';
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { DatePicker, LocalizationProvider } from '@mui/lab';
 import DateFnsUtils from '@date-io/date-fns';
 import { startOfDay, endOfDay } from 'date-fns';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
   input: {
     margin: 0,
   },
   queryInput: {
-    minWidth: 300,
+    '&.MuiTextField-root': {
+      minWidth: 300,
+
+      '& input': {
+        paddingTop: '10.5px',
+        paddingBottom: '10.5px',
+      },
+    },
+
+    '& label': {
+      transform: 'translate(14px, 10px) scale(1)',
+    },
+
+    '& .MuiInputLabel-shrink': {
+      transform: 'translate(14px, -9px) scale(0.75)',
+    },
   },
   form: {
     display: 'flex',
@@ -27,7 +42,14 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     gap: '10px',
   },
   parameterInput: {
-    minWidth: 150,
+    '&.MuiTextField-root': {
+      minWidth: 150,
+
+      '& .MuiSelect-select': {
+        paddingTop: '10.5px',
+        paddingBottom: '10.5px',
+      },
+    },
   },
   submit: {
     color: 'white',
@@ -136,7 +158,7 @@ const Searchbar: FC = () => {
       <form className={classes.form}>
         <div className={classes.form}>
           {isDate && typeof parameterValue === 'object' ? (
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <LocalizationProvider utils={DateFnsUtils}>
               <DatePicker
                 label="From Date"
                 value={parameterValue.from}
@@ -159,7 +181,7 @@ const Searchbar: FC = () => {
                 autoOk
                 clearable
               />
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
           ) : (
             <TextField
               value={parameterValue}

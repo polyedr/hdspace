@@ -1,13 +1,14 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { lighten, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { FRAMEWORK_VARIABLES } from '@Constants/frameworks/variables';
 import Scrollbar from '@Components/UI/Scrollbar';
 import { updateCurrentUIFrameworkVariables } from '@Redux/project/actions';
 import { selectCurrentUIFramework } from '@Redux/project/selectors/base';
 import VarInput from './VarInput';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles<Theme>(({ palette }) => ({
   root: {
     textTransform: 'none',
     '&.Mui-selected': {

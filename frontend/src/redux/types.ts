@@ -42,7 +42,6 @@ import {
   VIAFile,
   VIAData,
   FileToUpload,
-  ChatCredentials,
   UIFramework,
   ElementData,
   NNModelName,
@@ -208,7 +207,6 @@ export interface UserState {
   userGuide: {
     active: boolean;
   };
-  chat: ChatCredentials;
   subscriptionData: UserSubscriptionsData;
 }
 

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 8080 --open",
+    "dev": "vite --open --port 8080",
     "build:staging": "tsc && vite build --mode staging",
     "build:production": "tsc && vite build",
     "preview": "vite preview --port 8080",
@@ -39,8 +39,9 @@
     "@material/menu": "^11.0.0",
     "@material/select": "^11.0.0",
     "@mui/icons-material": "^5.10.3",
+    "@mui/lab": "^5.0.0-alpha.114",
     "@mui/material": "^5.10.3",
-    "@mui/styles": "^5.10.3",
+    "@mui/styles": "^5.11.1",
     "@mui/x-date-pickers": "^5.0.0",
     "@react-hook/resize-observer": "^1.1.0",
     "@sentry/react": "^7.17.3",
@@ -209,13 +210,11 @@
     "redux-mock-store": "^1.5.4",
     "redux-saga-testing": "^2.0.2",
     "sass": "^1.57.1",
-    "ts-css-modules-vite-plugin": "^1.0.20",
     "typescript": "^4.9.4",
     "vite": "^4.0.3",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-favicon": "^1.0.8",
     "vite-plugin-favicons-inject": "^2.1.0",
-    "vite-plugin-sass-dts": "^1.2.9",
     "vitest": "^0.26.2"
   }
 }

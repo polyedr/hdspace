@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import Popover from '@material-ui/core/Popover';
+import Popover from '@mui/material/Popover';
 
 interface Props {
   name: string;

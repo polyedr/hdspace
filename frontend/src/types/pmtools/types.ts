@@ -10,19 +10,6 @@ export interface ActionTypePM {
   action: string;
 }
 
-// Chat
-export interface AuthParams {
-  apiKey?: string;
-  realm: string;
-  username: string;
-  password?: string;
-}
-
-export type IStream = any;
-export type IMessageZulip = any;
-
-export type ChatClient = any;
-
 // React D&D
 export interface DestinationType {
   index: number;

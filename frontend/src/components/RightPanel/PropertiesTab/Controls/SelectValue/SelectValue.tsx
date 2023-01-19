@@ -7,7 +7,7 @@ import {
   selectActiveElementParams,
 } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 
 const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
   updateParams,
