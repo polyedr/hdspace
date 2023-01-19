@@ -9,6 +9,7 @@
 import math
 import os
 import shutil
+from zipfile import ZipFile
 
 import cv2
 import uuid
@@ -42,6 +43,12 @@ SCRIPT_DIR = os.getcwd()
 HTML_DIR = os.path.join(SCRIPT_DIR, "layout_data")
 
 config_tesseract = "-l eng --oem 1 --psm 3"
+
+
+def extract_zip(input_zip):
+    input_zip=ZipFile(input_zip)
+    # print(input_zip.namelist())
+    return {name: input_zip.read(name) for name in input_zip.namelist()}
 
 
 def isRectangleOverlap(R1, R2):

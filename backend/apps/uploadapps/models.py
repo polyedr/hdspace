@@ -46,3 +46,14 @@ class WpgSaved(models.Model):
         null=True,
         related_name="owned_wpgs",
     )
+
+
+class ObjectsMove(models.Model):
+    wpname = models.CharField(max_length=250, null=True, blank=True)
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="owned_objects_moved",
+    )
