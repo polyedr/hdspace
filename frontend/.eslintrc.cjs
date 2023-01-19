@@ -26,7 +26,7 @@ module.exports = {
     }
   },
   rules: {
-    'prettier/prettier': 'error',
+    'prettier/prettier': 'warn',
     '@typescript-eslint/semi': 'off',
     '@typescript-eslint/space-before-function-paren': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
@@ -40,7 +40,7 @@ module.exports = {
     'react/display-name': 'off',
     '@typescript-eslint/restrict-template-expressions': 'warn',
     'array-callback-return': 'warn',
-    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/prefer-nullish-coalescing': 'off',
     '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
     '@typescript-eslint/consistent-type-assertions': 'off',

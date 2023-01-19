@@ -89,6 +89,15 @@ const useStyles = makeStyles({
     fontSize: '12px',
     letterSpacing: '145%',
   },
+  rightEmptyPanel: {
+    color: '#fff',
+    height: '100%',
+    display: 'flex',
+    overflow: 'hidden',
+    transition: 'width 250ms ease',
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+  },
   toggleButton: {
     color: '#81818E',
     fontWeight: 'bold',
@@ -442,7 +451,7 @@ const PropertiesTab: React.FC = () => {
     !activeElement ||
     [masterCoreElementId, masterGroupsElementId].includes(activeElement.id)
   ) {
-    return null;
+    return <div className={classes.rightEmptyPanel}></div>;
   }
 
   const collapseAll = () => {
