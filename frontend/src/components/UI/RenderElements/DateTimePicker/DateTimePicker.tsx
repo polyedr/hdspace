@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   DateTimePicker as MuiDateTimePicker,
   LocalizationProvider,
@@ -34,27 +34,17 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
 
     const { type, label } = element.parameters;
 
-    const pickerProps = {
-      ampm: false,
-      style: { width: '100%' },
-      id: element.id,
-      value: date,
-      onChange: handleChange,
-      disabled: isDisabled,
-      disableToolbar: false,
-      label,
-      TextFieldComponent: (props: TextFieldProps) => (
-        <TextField
-          {...props}
-          inputProps={{
-            className: cn(
-              classes.ownStyles,
-              isDisabled ? classes.disabled : classes.ownPseudoStyles,
-            ),
-          }}
-        />
-      ),
-    };
+    const pickerProps = useMemo(() => {
+      return {
+        ampm: false,
+        id: element.id,
+        value: date,
+        onChange: handleChange,
+        disabled: isDisabled,
+        disableToolbar: false,
+        label,
+      };
+    }, [label, isDisabled, handleChange, element.id, date]);
 
     const renderPicker = useCallback(() => {
       switch (type) {
@@ -62,8 +52,7 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
           return (
             <DatePicker
               {...pickerProps}
-              label="change date"
-              renderInput={(pickerProps) => <TextField {...pickerProps} />}
+              renderInput={(params) => <TextField fullWidth {...params} />}
             />
           );
         }
@@ -71,8 +60,7 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
           return (
             <TimePicker
               {...pickerProps}
-              label="change time"
-              renderInput={(pickerProps) => <TextField {...pickerProps} />}
+              renderInput={(params) => <TextField fullWidth {...params} />}
             />
           );
         }
@@ -80,8 +68,7 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
           return (
             <MuiDateTimePicker
               {...pickerProps}
-              renderInput={(pickerProps) => <TextField {...pickerProps} />}
-              label="change date time"
+              renderInput={(params) => <TextField fullWidth {...params} />}
             />
           );
         }
@@ -92,16 +79,16 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
     }, [pickerProps, type, label]);
 
     return (
-      <div
-        ref={ref}
-        data-ls-id={element.id}
-        className={cn(className, groupClass)}
-        {...eventHandlers}
-      >
-        <LocalizationProvider utils={DateFnsUtils} dateAdapter={AdapterDateFns}>
+      <LocalizationProvider utils={DateFnsUtils} dateAdapter={AdapterDateFns}>
+        <div
+          ref={ref}
+          data-ls-id={element.id}
+          className={cn(className, groupClass, classes.ownStyles)}
+          {...eventHandlers}
+        >
           {renderPicker()}
-        </LocalizationProvider>
-      </div>
+        </div>
+      </LocalizationProvider>
     );
   },
 );

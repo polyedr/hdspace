@@ -22,7 +22,7 @@ export default defineConfig({
   plugins: [
     react(),
     splitVendorChunkPlugin(),
-    eslint(),
+    // eslint(),
     vitePluginFaviconsInject('./src/assets/sprites/favicon.png'),
   ],
   css: {
