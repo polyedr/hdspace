@@ -16,8 +16,10 @@ import json
 
 from project.settings import MEDIA_ROOT, MEDIA_URL, BASE_DIR
 from apps.utils.fset1 import update_or_create_dir, extract_zip
-from apps.projects.models import ProjectImage, ProjectIllustrationSet
-from apps.projects.serializers import ImageSerializer, IllustrationSetSerializer
+from apps.projects.models import ProjectImage, ProjectIllustrationSet, ScreenScenario, ProjectScreen, Project
+from apps.projects.serializers import ImageSerializer, IllustrationSetSerializer, ScreenScenarioSerializer, \
+    ScreenScenarioExportSerializer, ScreenScenarioImportSerializer, ProjectImportExportSerializer, \
+    ProjectScreenImportSerializer
 
 
 class FileSerializer(serializers.ModelSerializer):
@@ -294,11 +296,14 @@ class ObjectsMoveSerializer(serializers.ModelSerializer):
         t = ""
         if (self.action == "export"):
             self.object_id = validated_data.pop("object_id")
+            images = []
             if (self.object_type == "projectimage"):
                 queryset = ProjectImage.objects.get(pk=self.object_id)
                 serializer = ImageSerializer(queryset)
                 json_response = serializer.data
+                # The image full path
                 image = BASE_DIR + serializer.data["image"]
+                images.append(image)
                 print("base dir path", BASE_DIR)
                 print(json_response)
                 print(image)
@@ -307,7 +312,53 @@ class ObjectsMoveSerializer(serializers.ModelSerializer):
                 queryset = ProjectIllustrationSet.objects.get(pk=self.object_id)
                 serializer = IllustrationSetSerializer(queryset)
                 json_response = serializer.data
+                imgdatas = serializer.data["images"]
+                # Take non-empty images
+                for imgdata in imgdatas:
+                    if imgdata["image"]:
+                        image = BASE_DIR + imgdata["image"]
+                        images.append(image)
+                print("base dir path", BASE_DIR)
+                print(json_response)
+                # print(image)
+                print("images", serializer.data["images"])
+
+            if (self.object_type == "scenario"):
+                queryset = ScreenScenario.objects.get(pk=self.object_id)
+                serializer = ScreenScenarioExportSerializer(queryset)
+                json_response = serializer.data
+                # The image full path
                 # image = BASE_DIR + serializer.data["image"]
+                # images.append(image)
+                print("base dir path:", BASE_DIR)
+                print("json_response:", json_response)
+
+                # Take non-empty images
+                for element in json_response["elements"]:
+                    for key in element["parameters"]:
+                        if key == "imageURL":
+                            o = urlparse(element["parameters"]["imageURL"])
+                            image = BASE_DIR + o.path
+                            images.append(image)
+
+            if (self.object_type == "screen"):
+                queryset = ProjectScreen.objects.get(pk=self.object_id)
+                serializer = ProjectScreenImportSerializer(queryset)
+                json_response = serializer.data
+                # The image full path
+                # image = BASE_DIR + serializer.data["image"]
+                # images.append(image)
+                print("base dir path", BASE_DIR)
+                print(json_response)
+                # print(image)
+
+            if (self.object_type == "project"):
+                queryset = Project.objects.get(pk=self.object_id)
+                serializer = ProjectImportExportSerializer(queryset)
+                json_response = serializer.data
+                # The image full path
+                # image = BASE_DIR + serializer.data["image"]
+                # images.append(image)
                 print("base dir path", BASE_DIR)
                 print(json_response)
                 # print(image)
@@ -323,12 +374,13 @@ class ObjectsMoveSerializer(serializers.ModelSerializer):
             os.chdir(SAVE_DIR)
             subprocess.run(['rm -rf *'], shell=True)
 
-            try:
+            for image in images:
                 # Copying images to the object pre-archived folder
-                # for ProjectImages
-                shutil.copy2(image, SAVE_DIR)
-            except Exception:
-                pass
+                # for ProjectImage, ProjectImageSet
+                try:
+                    shutil.copy2(image, SAVE_DIR)
+                except Exception:
+                    pass
 
             # Write a file
             with open('objectjson.json', 'w') as outfile:
@@ -349,53 +401,99 @@ class ObjectsMoveSerializer(serializers.ModelSerializer):
 
         if (self.action == "import"):
             if (self.object_type == "projectimage"):
-
                 self.archive = validated_data.pop("archive")
                 # Read the archive
                 files = extract_zip(self.archive)
-                # print(files.namelist())
-                # print(type(files["50723_jira_reactos_org_login_jsp_os__1_qe6wKpw.png"]))
                 o_data = json.loads(files["objectjson.json"])
+
                 # Clear the illustration set (parent object) value
                 o_data["illustration_set"] = None
+
                 print("io", o_data["image"], os.path.basename(o_data["image"]))
 
                 imgname = os.path.basename(o_data["image"])
-                o_data["image"] = UploadedFile(
-                    BytesIO(files[imgname]), name=imgname
-                )
+                o_data["image"] = UploadedFile(BytesIO(files[imgname]), name=imgname)
+
                 del o_data["fileurl"]
                 del o_data["id"]
-                # print(o_data)
-                print(os.path.abspath(os.getcwd()))
+
                 projectimage = ProjectImage(**o_data)
-                # projectimage.image = files["50723_jira_reactos_org_login_jsp_os__1_qe6wKpw.png"]
                 projectimage.save()
                 object_id = projectimage.id
 
             if (self.object_type == "projectimageset"):
-
                 self.archive = validated_data.pop("archive")
                 # Read the archive
                 files = extract_zip(self.archive)
-                # print(files.namelist())
-                # print(type(files["50723_jira_reactos_org_login_jsp_os__1_qe6wKpw.png"]))
                 o_data = json.loads(files["objectjson.json"])
                 # Clear the project (parent object) value
                 del o_data["project"]
-                # print("io", o_data["image"], os.path.basename(o_data["image"]))
+                # print("io", o_data["images"], BASE_DIR)
+                imagedatas = o_data.pop("images")
+                projectimages = []
+                for imagedata in imagedatas:
+                    if imagedata["image"]:
+                        print(imagedata)
+                        del imagedata["illustration_set"]
+                        del imagedata["fileurl"]
+                        del imagedata["id"]
+                        projectimage = ProjectImage(**imagedata)
+                        projectimage.save()
+                        projectimages.append(projectimage)
 
                 # imgname = os.path.basename(o_data["image"])
                 # o_data["image"] = UploadedFile(BytesIO(files[imgname]), name=imgname)
-                del o_data["images"]
+                # del o_data["images"]
                 del o_data["id"]
                 # print(o_data)
                 print(os.path.abspath(os.getcwd()))
                 projectimageset = ProjectIllustrationSet(**o_data)
-                # projectimage.image = files["50723_jira_reactos_org_login_jsp_os__1_qe6wKpw.png"]
                 projectimageset.save()
+                # Adding images
+                for projectimage in projectimages:
+                    projectimage.illustration_set = projectimageset
+                    projectimage.save()
+
                 object_id = projectimageset.id
 
+            if (self.object_type == "scenario"):
+                self.archive = validated_data.pop("archive")
+                # Read the archive
+                files = extract_zip(self.archive)
+                o_data = json.loads(files["objectjson.json"])
+
+                # Clear the screen (parent object) value
+                o_data["screen"] = None
+
+                serializer = ScreenScenarioImportSerializer(data=o_data)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+
+            if (self.object_type == "screen"):
+                self.archive = validated_data.pop("archive")
+                # Read the archive
+                files = extract_zip(self.archive)
+                o_data = json.loads(files["objectjson.json"])
+
+                # Clear the project (parent object) value
+                o_data["project"] = None
+
+                serializer = ProjectScreenImportSerializer(data=o_data)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+
+            if (self.object_type == "project"):
+                self.archive = validated_data.pop("archive")
+                # Read the archive
+                files = extract_zip(self.archive)
+                o_data = json.loads(files["objectjson.json"])
+
+                # Clear the screen (parent object) value
+                # o_data["screen"] = None
+
+                serializer = ProjectImportExportSerializer(data=o_data, context={'request': self.context['request']})
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
 
         # Create a record for the object move
         wpsaved = WpgSaved(id=None, **validated_data)
