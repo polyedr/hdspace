@@ -31,14 +31,14 @@ interface Props {
 
 function TaskTitle({ task, onChange }: Props) {
   const [editMode, setEditMode] = useState(false);
-  const [taskTitle] = useState(task.title);
+  const [taskTitle, setTaskTitle] = useState(task.title);
 
-  // const handleChangeTaskTitle = useCallback(
-  //   (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     setTaskTitle(e.target.value);
-  //   },
-  //   [],
-  // );
+  const handleChangeTaskTitle = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setTaskTitle(e.target.value);
+    },
+    [],
+  );
 
   const handleSetEditMode = useCallback(
     (mode: boolean) => () => setEditMode(mode),
@@ -56,7 +56,7 @@ function TaskTitle({ task, onChange }: Props) {
         <>
           <TextareaAutosize
             value={taskTitle}
-            // onChange={handleChangeTaskTitle}
+            onChange={handleChangeTaskTitle}
             style={{
               width: 'calc(100% - 90px)',
               border: 'none',
