@@ -45,12 +45,6 @@ HTML_DIR = os.path.join(SCRIPT_DIR, "layout_data")
 config_tesseract = "-l eng --oem 1 --psm 3"
 
 
-def extract_zip(input_zip):
-    input_zip=ZipFile(input_zip)
-    # print(input_zip.namelist())
-    return {name: input_zip.read(name) for name in input_zip.namelist()}
-
-
 def isRectangleOverlap(R1, R2):
     if (R1[0] >= R2[2]) or (R1[2] <= R2[0]) or (R1[3] <= R2[1]) or (R1[1] >= R2[3]):
         return False
@@ -700,3 +694,29 @@ def change_permissions_recursive(path, mode):
             os.chmod(dir, mode)
     for file in [os.path.join(root, f) for f in files]:
             os.chmod(file, mode)
+
+
+def item_generator(json_input, lookup_key):
+    if isinstance(json_input, dict):
+        for k, v in json_input.items():
+            if k == lookup_key:
+                yield v
+            else:
+                yield from item_generator(v, lookup_key)
+    elif isinstance(json_input, list):
+        for item in json_input:
+            yield from item_generator(item, lookup_key)
+
+def extract_zip(input_zip):
+    input_zip=ZipFile(input_zip)
+    # print(input_zip.namelist())
+    return {name: input_zip.read(name) for name in input_zip.namelist()}
+
+def recursive_lookup(k, d):
+    if k in d:
+        return d[k]
+    for v in d.values():
+        if isinstance(v, dict):
+            return recursive_lookup(k, v)
+    return None
+

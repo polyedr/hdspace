@@ -6,6 +6,8 @@ from urllib.parse import urlparse
 from io import BytesIO
 from django.core.files.uploadedfile import UploadedFile
 from rest_framework import serializers
+from rest_framework.renderers import JSONRenderer
+
 from apps.uploadapps.models import Fileupload, WebpageSaved, WpgSaved
 import subprocess
 import shutil
@@ -15,7 +17,7 @@ import urllib.robotparser
 import json
 
 from project.settings import MEDIA_ROOT, MEDIA_URL, BASE_DIR
-from apps.utils.fset1 import update_or_create_dir, extract_zip
+from apps.utils.fset1 import update_or_create_dir, extract_zip, item_generator, recursive_lookup
 from apps.projects.models import ProjectImage, ProjectIllustrationSet, ScreenScenario, ProjectScreen, Project
 from apps.projects.serializers import ImageSerializer, IllustrationSetSerializer, ScreenScenarioSerializer, \
     ScreenScenarioExportSerializer, ScreenScenarioImportSerializer, ProjectImportExportSerializer, \
@@ -330,8 +332,8 @@ class ObjectsMoveSerializer(serializers.ModelSerializer):
                 # The image full path
                 # image = BASE_DIR + serializer.data["image"]
                 # images.append(image)
-                print("base dir path:", BASE_DIR)
-                print("json_response:", json_response)
+                # print("base dir path:", BASE_DIR)
+                # print("json_response:", json_response)
 
                 # Take non-empty images
                 for element in json_response["elements"]:
@@ -345,12 +347,36 @@ class ObjectsMoveSerializer(serializers.ModelSerializer):
                 queryset = ProjectScreen.objects.get(pk=self.object_id)
                 serializer = ProjectScreenImportSerializer(queryset)
                 json_response = serializer.data
+
+                # Read the json
+                content_json = json.loads(JSONRenderer().render(json_response))
                 # The image full path
                 # image = BASE_DIR + serializer.data["image"]
                 # images.append(image)
                 print("base dir path", BASE_DIR)
-                print(json_response)
-                # print(image)
+                # print(json_response)
+                print(content_json)
+                # Find image urls recursively. They are at elements parameters usually. Take non-empty images
+                imageurls = item_generator(content_json, "imageURL")
+                print(imageurls)
+                for imageurl in imageurls:
+                    # print(imageurl)
+                    o = urlparse(imageurl)
+                    image = BASE_DIR + o.path
+                    print(image)
+                    images.append(image)
+
+                '''
+                # Take non-empty images
+                for element in json_response["screenscenario"][0]["elements"]:
+                    for key in element["parameters"]:
+                        print(key)
+                        if key == "imageURL":
+                            o = urlparse(element["parameters"]["imageURL"])
+                            image = BASE_DIR + o.path
+                            print(image)
+                            images.append(image)
+                '''
 
             if (self.object_type == "project"):
                 queryset = Project.objects.get(pk=self.object_id)
@@ -400,12 +426,23 @@ class ObjectsMoveSerializer(serializers.ModelSerializer):
             # wpsaved.wpname = t
 
         if (self.action == "import"):
-            if (self.object_type == "projectimage"):
-                self.archive = validated_data.pop("archive")
-                # Read the archive
-                files = extract_zip(self.archive)
-                o_data = json.loads(files["objectjson.json"])
+            self.archive = validated_data.pop("archive")
+            # Read the archive
+            files = extract_zip(self.archive)
+            o_data = json.loads(files["objectjson.json"])
 
+            # Create the upload directory
+            UPLOAD_FOLDER = MEDIA_URL + "uploads/" + self.context['request'].user.username + "/" + os.path.splitext(str(self.archive))[0]
+            UPLOAD_DIR = MEDIA_ROOT + "/uploads/" + self.context['request'].user.username + "/" + os.path.splitext(str(self.archive))[0]
+            # update_or_create_dir(UPLOAD_DIR)
+            os.makedirs(UPLOAD_DIR, exist_ok=True)
+            os.chmod(UPLOAD_DIR, 0o755)
+            # Enter the UPLOAD_DIR
+            os.chdir(UPLOAD_DIR)
+            # Extract files to the upload directory
+            ZipFile(self.archive).extractall()
+
+            if (self.object_type == "projectimage"):
                 # Clear the illustration set (parent object) value
                 o_data["illustration_set"] = None
 
@@ -422,10 +459,6 @@ class ObjectsMoveSerializer(serializers.ModelSerializer):
                 object_id = projectimage.id
 
             if (self.object_type == "projectimageset"):
-                self.archive = validated_data.pop("archive")
-                # Read the archive
-                files = extract_zip(self.archive)
-                o_data = json.loads(files["objectjson.json"])
                 # Clear the project (parent object) value
                 del o_data["project"]
                 # print("io", o_data["images"], BASE_DIR)
@@ -457,37 +490,68 @@ class ObjectsMoveSerializer(serializers.ModelSerializer):
                 object_id = projectimageset.id
 
             if (self.object_type == "scenario"):
-                self.archive = validated_data.pop("archive")
-                # Read the archive
-                files = extract_zip(self.archive)
-                o_data = json.loads(files["objectjson.json"])
-
                 # Clear the screen (parent object) value
                 o_data["screen"] = None
+
+                # Re-write non-empty images for elements parameters
+                for element in o_data["elements"]:
+                    for key in element["parameters"]:
+                        if key == "imageURL":
+                            imgname = urlparse(element["parameters"]["imageURL"]).path.split("/")[-1]
+                            o = urlparse(self.context['request'].build_absolute_uri())
+                            imageURL = "https://" + o.netloc + UPLOAD_FOLDER + "/" + imgname
+                            element["parameters"]["imageURL"] = imageURL
 
                 serializer = ScreenScenarioImportSerializer(data=o_data)
                 serializer.is_valid(raise_exception=True)
                 serializer.save()
 
             if (self.object_type == "screen"):
-                self.archive = validated_data.pop("archive")
-                # Read the archive
-                files = extract_zip(self.archive)
-                o_data = json.loads(files["objectjson.json"])
-
                 # Clear the project (parent object) value
                 o_data["project"] = None
+                print(type(o_data), type(files["objectjson.json"]))
+                # input()
+                #
+                # for value, key in o_data.items():
+                #     print(value, key)
+                #     if key == 'imageURL':
+                #         print("value=", value)
 
+                relookup = recursive_lookup("imageURL", o_data)
+                print(relookup)
+
+                # print(o_data)
+                input()
+
+                '''
+                    # from export
+                    o = urlparse(imageurl)
+                    if o.scheme:
+                        image = BASE_DIR + o.path
+                        imgname = o.path.split("/")[-1]
+                        o1 = urlparse(self.context['request'].build_absolute_uri())
+                        imageURL = "https://" + o1.netloc + UPLOAD_FOLDER + "/" + imgname
+                        imageurl = imageURL                     
+                        input()
+                    
+                    o = urlparse(imageurl)
+                    image = BASE_DIR + o.path
+                    print(image)
+                    images.append(image)
+                '''
+                '''
+                imageurls = item_generator(o_data, "imageURL")
+                for imageurl in imageurls:
+                    print("Q", imageurl)
+                    imageurl = "ASDFGHJK"
+                    print("W", imageurl)
+                    input()
+                '''
                 serializer = ProjectScreenImportSerializer(data=o_data)
                 serializer.is_valid(raise_exception=True)
                 serializer.save()
 
             if (self.object_type == "project"):
-                self.archive = validated_data.pop("archive")
-                # Read the archive
-                files = extract_zip(self.archive)
-                o_data = json.loads(files["objectjson.json"])
-
                 # Clear the screen (parent object) value
                 # o_data["screen"] = None
 
