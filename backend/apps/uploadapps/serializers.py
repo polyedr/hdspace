@@ -550,7 +550,7 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
                 for screen in o_data["projectscreen"]:
                     moved_indices_project = screen.pop("project", None)
                     for screenscenario in screen:
-                        moved_indices_screen = screen.pop("screen", None)
+                        moved_indices_screen = screenscenario.pop("screen", None)
 
                 serializer = ProjectImportExportSerializer(
                     data=o_data, context={"request": self.context["request"]}
