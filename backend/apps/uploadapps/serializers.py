@@ -339,28 +339,29 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
                     print(image)
                     images.append(image)
 
-                '''
-                # Take non-empty images
-                for element in json_response["screenscenario"][0]["elements"]:
-                    for key in element["parameters"]:
-                        print(key)
-                        if key == "imageURL":
-                            o = urlparse(element["parameters"]["imageURL"])
-                            image = BASE_DIR + o.path
-                            print(image)
-                            images.append(image)
-                '''
 
             if (self.object_type == "project"):
                 queryset = Project.objects.get(pk=self.object_id)
                 serializer = ProjectImportExportSerializer(queryset)
                 json_response = serializer.data
+
+                # Read the json
+                content_json = json.loads(JSONRenderer().render(json_response))
                 # The image full path
                 # image = BASE_DIR + serializer.data["image"]
                 # images.append(image)
                 print("base dir path", BASE_DIR)
-                print(json_response)
-                # print(image)
+                # print(json_response)
+                print(content_json)
+                # Find image urls recursively. They are at elements parameters usually. Take non-empty images
+                imageurls = item_generator(content_json, "imageURL")
+                print(imageurls)
+                for imageurl in imageurls:
+                    # print(imageurl)
+                    o = urlparse(imageurl)
+                    image = BASE_DIR + o.path
+                    print(image)
+                    images.append(image)
 
             wpath = MEDIA_ROOT + "/uploads/"
             os.chdir(wpath)
@@ -505,12 +506,15 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
                 object_id = object.id
 
             if (self.object_type == "project"):
-                # Clear the screen (parent object) value
-                # o_data["screen"] = None
+                # Re-write non-empty images for elements parameters. Elements are recursive.
+                o = urlparse(self.context['request'].build_absolute_uri())
+                pre_imageURL = "https://" + o.netloc + UPLOAD_FOLDER + "/"
+                update_nested(o_data, "imageURL", pre_imageURL)
 
                 serializer = ProjectImportExportSerializer(data=o_data, context={'request': self.context['request']})
                 serializer.is_valid(raise_exception=True)
-                serializer.save()
+                object = serializer.save()
+                object_id = object.id
 
         # Create a record for the object move
         objectmove = ObjectMove(id=None, **validated_data)
