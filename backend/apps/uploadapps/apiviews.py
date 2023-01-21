@@ -7,10 +7,10 @@ from rest_framework import status, permissions, generics
 from apps.uploadapps.serializers import (
     FileSerializer,
     WpgSavedSerializer,
-    RobotsSerializer, ObjectsMoveSerializer,
+    RobotsSerializer, ObjectMoveSerializer,
 )
 from project.settings import MEDIA_URL
-from apps.uploadapps.models import WpgSaved
+from apps.uploadapps.models import WpgSaved, ObjectMove
 
 
 class FileUploadView(APIView):
@@ -69,5 +69,5 @@ class WpgSavedView(generics.ListCreateAPIView):
 
 
 class ObjectsMoveView(generics.CreateAPIView):
-    queryset = WpgSaved.objects.all()
-    serializer_class = ObjectsMoveSerializer
+    queryset = ObjectMove.objects.all()
+    serializer_class = ObjectMoveSerializer

@@ -8,7 +8,7 @@ from django.core.files.uploadedfile import UploadedFile
 from rest_framework import serializers
 from rest_framework.renderers import JSONRenderer
 
-from apps.uploadapps.models import Fileupload, WebpageSaved, WpgSaved
+from apps.uploadapps.models import Fileupload, WebpageSaved, WpgSaved, ObjectMove
 import subprocess
 import shutil
 import scrapy
@@ -247,55 +247,23 @@ class WpgSavedSerializer(serializers.ModelSerializer, scrapy.Spider):
             subprocess.run(["wget", "-p", "-k", response.url])
 
 
-class ObjectsMoveSerializer(serializers.ModelSerializer):
-    EXPORT = "export"
-    IMPORT = "import"
-    ACTION_TYPE = (
-        (EXPORT, "EXPORT"),
-        (IMPORT, "IMPORT"),
-    )
-
-    SCENARIO = "scenario"
-    SCREEN = "screen"
-    PROJECT = "project"
-    PROJECTIMAGE = "projectimage"
-    PROJECTIMAGESET = "projectimageset"
-    OBJECT_TYPE = (
-        (SCENARIO, "SCENARIO"),
-        (SCREEN, "SCREEN"),
-        (PROJECT, "PROJECT"),
-        (PROJECTIMAGE, "PROJECTIMAGE"),
-        (PROJECTIMAGESET, "PROJECTIMAGESET"),
-    )
-
-    action = serializers.ChoiceField(
-        choices=ACTION_TYPE, default=EXPORT
-    )
-
-    object_type = serializers.ChoiceField(
-        choices=OBJECT_TYPE, default=SCENARIO
-    )
-
-    wpname = serializers.URLField(required=False)
+class ObjectMoveSerializer(serializers.ModelSerializer):
     archive = serializers.FileField(required=False)
-    object_id = serializers.IntegerField(required=False)
-    # no_robots = serializers.BooleanField(required=False)
 
     class Meta:
         model = WpgSaved
-        fields = ("wpname", "owner", "archive", "action", "object_type", "object_id")
-        extra_kwargs = {"action": {"read_only": True}, "object_type": {"read_only": True}, "object_id": {"read_only": True}, "archive": {"read_only": True}}
+        fields = ("owner", "archive", "action", "object_type", "object_id")
+        # extra_kwargs = {"action": {"read_only": True}, "object_type": {"read_only": True}, "object_id": {"read_only": True}, "archive": {"read_only": True}}
+        extra_kwargs = {"archive": {"read_only": True}}
 
     def create(self, validated_data):
-        # url = validated_data.pop("wpname", None)
-        wpname = validated_data["wpname"]
         self.action = validated_data.pop("action")
         self.object_type = validated_data.pop("object_type")
         print(self.object_type)
 
         json_response = {}
 
-        t = ""
+        # t = ""
         if (self.action == "export"):
             self.object_id = validated_data.pop("object_id")
             images = []
@@ -560,12 +528,12 @@ class ObjectsMoveSerializer(serializers.ModelSerializer):
                 serializer.save()
 
         # Create a record for the object move
-        wpsaved = WpgSaved(id=None, **validated_data)
-        wpsaved.wpname = t
+        objectmove = ObjectMove(id=None, **validated_data)
+        # wpsaved.wpname = t
         try:
-            wpsaved.object_id = object_id
+            objectmove.object_id = object_id
         except Exception:
             pass
-        wpsaved.save()
-        return wpsaved
+        objectmove.save()
+        return objectmove
 
