@@ -549,7 +549,7 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
                 # Nulling parent ids for screens and scenarios
                 for screen in o_data["projectscreen"]:
                     moved_indices_project = screen.pop("project", None)
-                    for screenscenario in screen:
+                    for screenscenario in screen["screenscenario"]:
                         moved_indices_screen = screenscenario.pop("screen", None)
 
                 serializer = ProjectImportExportSerializer(
