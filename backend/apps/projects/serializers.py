@@ -17,8 +17,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
 from rest_framework_recursive.fields import RecursiveField
 
-from taggit_serializer.serializers import (TagListSerializerField,
-                                           TaggitSerializer)
+from taggit_serializer.serializers import TagListSerializerField, TaggitSerializer
+
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
 from apps.accounts.models import User
 from apps.accounts.serializers import UserSerializer, UserSimpleSerializer
@@ -38,13 +38,22 @@ from .models import (
     ScenarioElement,
     Element,
     Scenario,
-    ElementComment, ProjectImage, ProjectIllustrationSet, ProjectColumn, ColumnTask, ColumnTaskComment,
-    ColumnTaskCheckitem, ColumnTaskLabel)
+    ElementComment,
+    ProjectImage,
+    ProjectIllustrationSet,
+    ProjectColumn,
+    ColumnTask,
+    ColumnTaskComment,
+    ColumnTaskCheckitem,
+    ColumnTaskLabel,
+)
 
 from collections import OrderedDict
 
 
-def copy_element_node(instance: ScenarioElement, plan: int = None, parent: ScenarioElement = None) -> ScenarioElement:
+def copy_element_node(
+    instance: ScenarioElement, plan: int = None, parent: ScenarioElement = None
+) -> ScenarioElement:
     """
     Copy the attribute of the `element` and return new instance without `parent`
     :param instance:
@@ -60,7 +69,12 @@ def copy_element_node(instance: ScenarioElement, plan: int = None, parent: Scena
 counter = 0
 
 
-def copy_children(target_branch: ScenarioElement, parent: ScenarioElement = None, new_node: bool = False, counter=1) -> None:
+def copy_children(
+    target_branch: ScenarioElement,
+    parent: ScenarioElement = None,
+    new_node: bool = False,
+    counter=1,
+) -> None:
     """
     :param target_branch: The original
     :return:
@@ -105,7 +119,7 @@ def duplicate_model_with_descendants(obj, whitelist, _new_parent_pk=None):
                 pass
         elif field.many_to_one:
             if _new_parent_pk:
-                kwargs[field.name + '_id'] = _new_parent_pk
+                kwargs[field.name + "_id"] = _new_parent_pk
         elif field.concrete:
             kwargs[field.name] = getattr(obj, field.name)
         else:
@@ -115,7 +129,9 @@ def duplicate_model_with_descendants(obj, whitelist, _new_parent_pk=None):
     for ky in children_to_clone.keys():
         child_collection = getattr(new_instance, ky)
         for child in children_to_clone[ky]:
-            child_collection.add(duplicate_model_with_descendants(child, whitelist=whitelist))
+            child_collection.add(
+                duplicate_model_with_descendants(child, whitelist=whitelist)
+            )
     return new_instance
 
 
@@ -337,7 +353,9 @@ class ScenarioElementMultipleRecursiveSerializer(
         )
         for child_data in children:
             # child_data['scenario'] = child_data['scenario'].pk
-            s = ScenarioElementSerializerRecursive(data=child_data, context={"parent": node})
+            s = ScenarioElementSerializerRecursive(
+                data=child_data, context={"parent": node}
+            )
             s.is_valid(raise_exception=True)
             s.save()
         return node
@@ -396,7 +414,8 @@ class ScreenScenarioExportSerializer(serializers.ModelSerializer):
         # extra_kwargs = {"elements": {"read_only": True}}
         # fields = "__all__"
 
-'''
+
+"""
 class ScreenScenarioImportSerializer(serializers.ModelSerializer):
     elements = ScenarioElementSerializer(many=True)
     parameters = serializers.JSONField()
@@ -419,11 +438,13 @@ class ScreenScenarioImportSerializer(serializers.ModelSerializer):
         )
         # extra_kwargs = {"elements": {"read_only": True}}
         # fields = "__all__"
-'''
+"""
 
 
 class ScreenScenarioImportSerializer(serializers.ModelSerializer):
-    elements = ScenarioElementImportSerializer(many=True, required=False, allow_null=True)
+    elements = ScenarioElementImportSerializer(
+        many=True, required=False, allow_null=True
+    )
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
 
@@ -462,8 +483,7 @@ class ScreenScenarioImportSerializer(serializers.ModelSerializer):
             node.save()
             # Multiple level of the recursion
             for child_data in children:
-                s = ScenarioElementSerializer(data=child_data, context={"parent": node}
-                                              )
+                s = ScenarioElementSerializer(data=child_data, context={"parent": node})
                 s.is_valid(raise_exception=True)
                 s.save()
         return screenscenario
@@ -496,11 +516,14 @@ class ScreenScenarioMultipleSerializer(
 
 # DRF-Guardian Test
 from rest_framework_guardian.serializers import ObjectPermissionsAssignmentMixin
+
 # from django.contrib.auth.models import Group
 # from rest_framework import permissions
 
 
-class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, serializers.ModelSerializer):
+class ProjectSerializer(
+    TaggitSerializer, ObjectPermissionsAssignmentMixin, serializers.ModelSerializer
+):
     user = UserSerializer(read_only=True)
     projectscreen = serializers.PrimaryKeyRelatedField(
         many=True, queryset=ProjectScreen.objects.all()
@@ -540,9 +563,9 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             # 'view_project': [current_user, readers],
             # 'change_project': [current_user],
             # 'delete_project': [current_user, supervisors]
-            'view_project': [current_user],
-            'change_project': [current_user],
-            'delete_project': [current_user]
+            "view_project": [current_user],
+            "change_project": [current_user],
+            "delete_project": [current_user],
         }
 
     def create(self, validated_data):
@@ -593,7 +616,9 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
         dt_obj_w_tz = datetime.datetime.now()
         user_time_now = dt_obj_w_tz.replace(tzinfo=datetime.timezone.utc)
         # A free trial period is defined here
-        user_free_trial = (user_time_now - user_date_joined) < datetime.timedelta(days=14)
+        user_free_trial = (user_time_now - user_date_joined) < datetime.timedelta(
+            days=14
+        )
 
         if user_free_trial:
             projects_max = 3  # A number of the available project for the free trial
@@ -611,7 +636,9 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
 
             try:
                 # A Stream chat connection
-                schat_users = schat_client.query_users({"id": {"$in": [str(current_user.id)]}})
+                schat_users = schat_client.query_users(
+                    {"id": {"$in": [str(current_user.id)]}}
+                )
 
                 # extract teams array if exists
                 teams = []
@@ -629,12 +656,30 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
                 else:
                     teams.append(str(project.id))
 
-                if (schat_users["users"]):
+                if schat_users["users"]:
                     schat_client.update_user_partial(
-                        {"id": str(current_user.id), "set": {"role": "admin", "name": username, "image": avatar, "teams": teams}}
+                        {
+                            "id": str(current_user.id),
+                            "set": {
+                                "role": "admin",
+                                "name": username,
+                                "image": avatar,
+                                "teams": teams,
+                            },
+                        }
                     )
                 else:
-                    schat_client.update_user({"id": str(current_user.id), "set": {"role": "admin", "name": username, "image": avatar, "teams": teams}})
+                    schat_client.update_user(
+                        {
+                            "id": str(current_user.id),
+                            "set": {
+                                "role": "admin",
+                                "name": username,
+                                "image": avatar,
+                                "teams": teams,
+                            },
+                        }
+                    )
             except Exception:
                 pass
             return project
@@ -662,7 +707,9 @@ class ProjectcopySerializer:
     pass
 
 
-class ProjectPermissionsSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSerializer):
+class ProjectPermissionsSerializer(
+    ObjectPermissionsAssignmentMixin, serializers.ModelSerializer
+):
     pass
 
 
@@ -768,7 +815,15 @@ class ColumnTaskCommentSerializer(serializers.ModelSerializer):
 class ColumnTaskCheckitemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColumnTaskCheckitem
-        fields = ("id", "text", "created", "modified", "status", "buyoancy", "columntask")
+        fields = (
+            "id",
+            "text",
+            "created",
+            "modified",
+            "status",
+            "buyoancy",
+            "columntask",
+        )
         extra_kwargs = {
             "id": {"read_only": True},
             "created": {"read_only": True},
@@ -780,10 +835,7 @@ class ColumnTaskLabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColumnTaskLabel
         fields = ("id", "text", "colour", "columntask", "project")
-        extra_kwargs = {
-            "id": {"read_only": True},
-            "columntask": {"required": False},
-        }
+        extra_kwargs = {"id": {"read_only": True}, "columntask": {"required": False}}
 
 
 class ProjectInvitationSerializer(serializers.ModelSerializer):
@@ -794,16 +846,15 @@ class ProjectInvitationSerializer(serializers.ModelSerializer):
 
 class ProjectMemberSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='user', read_only=False)
+    user_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source="user", read_only=False
+    )
 
     class Meta:
         model = ProjectMember
         fields = ("id", "role", "status", "project", "user", "user_id")
 
-    extra_kwargs = {
-        "author": {"read_only": True},
-        "user": {"read_only": True},
-    }
+    extra_kwargs = {"author": {"read_only": True}, "user": {"read_only": True}}
 
 
 class SubColumnTaskSerializer(serializers.ModelSerializer):
@@ -819,23 +870,72 @@ class ColumnTaskSerializer(WritableNestedModelSerializer, serializers.ModelSeria
     checklist = ColumnTaskCheckitemSerializer(many=True, read_only=True)
     # related_task = ColumnTaskSerializer(many=True, required=False)
     related_tasks = SubColumnTaskSerializer(many=True, required=False)
-    project_id = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), source='column.project', required=False)
-    label_ids = serializers.PrimaryKeyRelatedField(many=True, source='labels', required=False, queryset=ColumnTaskLabel.objects.all())
+    project_id = serializers.PrimaryKeyRelatedField(
+        queryset=Project.objects.all(), source="column.project", required=False
+    )
+    label_ids = serializers.PrimaryKeyRelatedField(
+        many=True,
+        source="labels",
+        required=False,
+        queryset=ColumnTaskLabel.objects.all(),
+    )
     author = UserSimpleSerializer(required=False, allow_null=True, read_only=True)
     assignee = UserSimpleSerializer(required=False, allow_null=True, read_only=True)
     responsible = UserSimpleSerializer(required=False, allow_null=True, read_only=True)
-    subscribers = UserSimpleSerializer(required=False, allow_null=True, read_only=True, many=True)
+    subscribers = UserSimpleSerializer(
+        required=False, allow_null=True, read_only=True, many=True
+    )
 
-    author_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='author', required=False)
-    assignee_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), allow_null=True, source='assignee', required=False)
-    responsible_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), allow_null=True, source='responsible', required=False)
-    subscribers_ids = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='subscribers', required=False, many=True)
+    author_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source="author", required=False
+    )
+    assignee_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), allow_null=True, source="assignee", required=False
+    )
+    responsible_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        allow_null=True,
+        source="responsible",
+        required=False,
+    )
+    subscribers_ids = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source="subscribers", required=False, many=True
+    )
 
     colour = serializers.CharField(required=False, allow_null=True)
 
     class Meta:
         model = ColumnTask
-        fields = ("id", "created", "modified", "due_date", "time", "colour", "title", "description", "status", "priority", "buyoancy", "label_ids", "labels", "colour", "story_points", "column", "author", "assignee", "responsible", "author_id", "assignee_id", "responsible_id", "subscribers", "subscribers_ids", "comments", "checklist", "related_tasks", "project_id")
+        fields = (
+            "id",
+            "created",
+            "modified",
+            "due_date",
+            "time",
+            "colour",
+            "title",
+            "description",
+            "status",
+            "priority",
+            "buyoancy",
+            "label_ids",
+            "labels",
+            "colour",
+            "story_points",
+            "column",
+            "author",
+            "assignee",
+            "responsible",
+            "author_id",
+            "assignee_id",
+            "responsible_id",
+            "subscribers",
+            "subscribers_ids",
+            "comments",
+            "checklist",
+            "related_tasks",
+            "project_id",
+        )
         # , "related_task"
         # depth = 2
         extra_kwargs = {
@@ -856,6 +956,7 @@ class ColumnTaskSerializer(WritableNestedModelSerializer, serializers.ModelSeria
         instance.save()
         return instance
     '''
+
 
 class ColumnWithTasksSerializer(serializers.ModelSerializer):
     columntask = ColumnTaskSerializer(many=True, read_only=True)
@@ -879,17 +980,15 @@ class ProjectColumnSerializer(serializers.ModelSerializer):
         fields = ("id", "title", "description", "project", "buyoancy", "colour")
 
 
-class ProjectWithColumnsSerializer(WritableNestedModelSerializer, serializers.ModelSerializer):
+class ProjectWithColumnsSerializer(
+    WritableNestedModelSerializer, serializers.ModelSerializer
+):
     tasklabels = ColumnTaskLabelSerializer(many=True)
     projectcolumn = ProjectColumnSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project
-        fields = (
-            "projectcolumn",
-            "tasklabels",
-            "id",
-        )
+        fields = ("projectcolumn", "tasklabels", "id")
 
     @staticmethod
     def setup_eager_loading(qs):
@@ -941,7 +1040,15 @@ class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectImage
-        fields = ("id", "image", "image_url", "created", "modified", "illustration_set", "fileurl",)
+        fields = (
+            "id",
+            "image",
+            "image_url",
+            "created",
+            "modified",
+            "illustration_set",
+            "fileurl",
+        )
         extra_kwargs = {
             "image_url": {"read_only": True},
             "fileurl": {"write_only": True},
@@ -968,7 +1075,16 @@ class ImagePaletteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectImage
-        fields = ("id", "image", "image_url", "created", "modified", "illustration_set", "fileurl", "palette",)
+        fields = (
+            "id",
+            "image",
+            "image_url",
+            "created",
+            "modified",
+            "illustration_set",
+            "fileurl",
+            "palette",
+        )
         extra_kwargs = {
             "image_url": {"read_only": True},
             "fileurl": {"write_only": True},
@@ -1032,7 +1148,7 @@ class ElementCommentSerializer(serializers.ModelSerializer):
         fields = ("text", "element", "user")
 
 
-'''
+"""
 class ProjectScreenExportSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
     tags = TagListSerializerField(required=False, allow_null=True)
@@ -1056,7 +1172,7 @@ class ProjectScreenExportSerializer(serializers.ModelSerializer):
             "tags",
         )
         extra_kwargs = {"screenscenario": {"read_only": True}}
-'''
+"""
 
 
 class ProjectScreenImportSerializer(serializers.ModelSerializer):
@@ -1110,14 +1226,17 @@ class ProjectScreenImportSerializer(serializers.ModelSerializer):
                     node_se.save()
                     # Multiple level of the recursion
                     for child_data in children:
-                        w = ScenarioElementSerializer(data=child_data, context={"parent": node_se}                                                      )
+                        w = ScenarioElementSerializer(
+                            data=child_data, context={"parent": node_se}
+                        )
                         w.is_valid(raise_exception=True)
                         w.save()
 
         node.save()
         return node
 
-'''
+
+"""
     def create(self, validated_data):
         scenarioelements = validated_data.pop("elements", None)
         screenscenario = ScreenScenario.objects.create(**validated_data)
@@ -1142,7 +1261,7 @@ class ProjectScreenImportSerializer(serializers.ModelSerializer):
                 s.is_valid(raise_exception=True)
                 s.save()
         return screenscenario
-'''
+"""
 
 
 class ProjectImportExportSerializer(TaggitSerializer, serializers.ModelSerializer):
@@ -1183,7 +1302,7 @@ class ProjectImportExportSerializer(TaggitSerializer, serializers.ModelSerialize
         node.save()
 
         for projectscreen in projectscreens:
-            print("projectscreen_data", projectscreen)
+            # print("projectscreen_data", projectscreen)
             screenscenarios = projectscreen.pop("screenscenario", None)
             projectscreen["project"] = node
             projscreen = ProjectScreen.objects.create(**projectscreen)
@@ -1200,7 +1319,7 @@ class ProjectImportExportSerializer(TaggitSerializer, serializers.ModelSerialize
                 if scenarioelements:
                     for scenarioelement in scenarioelements:
                         children = scenarioelement.pop("children", [])
-                        print("scenarioelement:", scenarioelement)
+                        # print("scenarioelement:", scenarioelement)
                         scenarioelement["scenario"] = s
                         node_se = ScenarioElement.objects.create(
                             # parent is null only on the root node
@@ -1211,11 +1330,12 @@ class ProjectImportExportSerializer(TaggitSerializer, serializers.ModelSerialize
                         node_se.save()
                         # Multiple level of the recursion
                         for child_data in children:
-                            w = ScenarioElementSerializer(data=child_data, context={"parent": node_se}                                                      )
+                            w = ScenarioElementSerializer(
+                                data=child_data, context={"parent": node_se}
+                            )
                             w.is_valid(raise_exception=True)
                             w.save()
 
             projscreen.save()
-
 
         return node

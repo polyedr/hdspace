@@ -728,7 +728,7 @@ def update_nested(in_dict, key, value):
        if key == k:
            imgname = urlparse(v).path.split("/")[-1]
            in_dict[k] = value + imgname
-           print("kv", k, v, imgname)
+           # print("kv", k, v, imgname)
        elif isinstance(v, dict):
            update_nested(v, key, value)
        elif isinstance(v, list):
