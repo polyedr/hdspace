@@ -43,7 +43,6 @@ import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { URL_REGEX } from '@Constants/defaultParams';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import PositionSelector, { BackgroundPosition } from './PositionSelector';
-
 interface StyleProperties {
   backgroundColor?: React.CSSProperties['backgroundColor'];
   backgroundImage?: React.CSSProperties['backgroundImage'];
@@ -332,6 +331,21 @@ const BackgroundBlock: React.FC<Props> = ({
     [element, currentScreenId],
   );
 
+  const imageRemoveHandler = useCallback((e) => {
+    // dispatch(
+    //   uploadImageByUrl(
+    //     element.id,
+    //     { url: null, useInBackground: false },
+    //     assetLists[0].id,
+    //     {
+    //       screenId: currentScreenId,
+    //     },
+    //   ),
+    // );
+    alert('HEllo');
+    e.stopPropagation();
+  }, []);
+
   const handleChangePosition = useCallback(
     (backgroundPosition) => {
       updateCSS('backgroundPosition', backgroundPosition);
@@ -372,6 +386,7 @@ const BackgroundBlock: React.FC<Props> = ({
           >
             {!backgroundImage ? <Icon fontSize="medium">image</Icon> : null}
           </div>
+          <button onClick={imageRemoveHandler}>remove</button>
         </div>
 
         <div className={classes.urlContainer}>

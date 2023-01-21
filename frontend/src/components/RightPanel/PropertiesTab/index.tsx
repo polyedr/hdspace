@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';
 import {
@@ -156,8 +156,6 @@ const PropertiesTab: React.FC = () => {
     setShowRemoveGroupDialog(false);
     setEditedStyles(null);
   }, []);
-
-  useEffect(() => {});
 
   const handleConfirmSourceUnbinding = () => {
     if (!editedStyles) {
