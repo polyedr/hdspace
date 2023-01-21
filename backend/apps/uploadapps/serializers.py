@@ -528,6 +528,10 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
                 pre_imageURL = "https://" + o.netloc + UPLOAD_FOLDER + "/"
                 update_nested(o_data, "imageURL", pre_imageURL)
 
+                # Nulling parent ids for scenarios
+                for screenscenario in o_data["screenscenario"]:
+                    moved_indices_screen = screenscenario.pop("screen", None)
+
                 serializer = ProjectScreenImportSerializer(data=o_data)
                 serializer.is_valid(raise_exception=True)
                 # serializer.save()
@@ -535,10 +539,18 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
                 object_id = object.id
 
             if self.object_type == "project":
+                # Clear the user (parent object) value
+                o_data["user"] = self.context["request"].user.id
                 # Re-write non-empty images for elements parameters. Elements are recursive.
                 o = urlparse(self.context["request"].build_absolute_uri())
                 pre_imageURL = "https://" + o.netloc + UPLOAD_FOLDER + "/"
                 update_nested(o_data, "imageURL", pre_imageURL)
+
+                # Nulling parent ids for screens and scenarios
+                for screen in o_data["projectscreen"]:
+                    moved_indices_project = screen.pop("project", None)
+                    for screenscenario in screen:
+                        moved_indices_screen = screen.pop("screen", None)
 
                 serializer = ProjectImportExportSerializer(
                     data=o_data, context={"request": self.context["request"]}
