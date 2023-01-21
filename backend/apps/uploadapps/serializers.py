@@ -17,7 +17,7 @@ import urllib.robotparser
 import json
 
 from project.settings import MEDIA_ROOT, MEDIA_URL, BASE_DIR
-from apps.utils.fset1 import update_or_create_dir, extract_zip, item_generator, recursive_lookup
+from apps.utils.fset1 import update_or_create_dir, extract_zip, item_generator, recursive_lookup, update_nested
 from apps.projects.models import ProjectImage, ProjectIllustrationSet, ScreenScenario, ProjectScreen, Project
 from apps.projects.serializers import ImageSerializer, IllustrationSetSerializer, ScreenScenarioSerializer, \
     ScreenScenarioExportSerializer, ScreenScenarioImportSerializer, ProjectImportExportSerializer, \
@@ -251,21 +251,25 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
     archive = serializers.FileField(required=False)
 
     class Meta:
-        model = WpgSaved
-        fields = ("owner", "archive", "action", "object_type", "object_id")
+        model = ObjectMove
+        fields = ("link", "archive", "action", "object_type", "object_id")
         # extra_kwargs = {"action": {"read_only": True}, "object_type": {"read_only": True}, "object_id": {"read_only": True}, "archive": {"read_only": True}}
-        extra_kwargs = {"archive": {"read_only": True}}
+        extra_kwargs = {"action": {"write_only": True}, "object_type": {"write_only": True}, "archive": {"read_only": True}}
 
     def create(self, validated_data):
-        self.action = validated_data.pop("action")
-        self.object_type = validated_data.pop("object_type")
+        self.action = validated_data["action"]
+        self.object_type = validated_data["object_type"]
         print(self.object_type)
+        # Object id has the meaning for export at the validated data
+        try:
+            object_id = self.object_id = validated_data.pop("object_id")
+        except Exception:
+            object_id = self.object_id = -1
 
         json_response = {}
 
-        # t = ""
+        # archive_link = ""
         if (self.action == "export"):
-            self.object_id = validated_data.pop("object_id")
             images = []
             if (self.object_type == "projectimage"):
                 queryset = ProjectImage.objects.get(pk=self.object_id)
@@ -276,7 +280,8 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
                 images.append(image)
                 print("base dir path", BASE_DIR)
                 print(json_response)
-                print(image)
+                print("image: ", image)
+                print("images: ", images)
 
             if (self.object_type == "projectimageset"):
                 queryset = ProjectIllustrationSet.objects.get(pk=self.object_id)
@@ -367,12 +372,17 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
             # Clear content at the SAVE_DIR
             os.chdir(SAVE_DIR)
             subprocess.run(['rm -rf *'], shell=True)
+            print("SD", SAVE_DIR)
 
+            # print("image: ", image)
+            # print("images: ", images)
+            # shutil.copy2(image, SAVE_DIR)
             for image in images:
                 # Copying images to the object pre-archived folder
                 # for ProjectImage, ProjectImageSet
                 try:
                     shutil.copy2(image, SAVE_DIR)
+                    print("SD", SAVE_DIR)
                 except Exception:
                     pass
 
@@ -387,11 +397,9 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
 
             # Obtaining the absolute path for the parameters directly. Should change this later.
             o = urlparse(self.context["request"].build_absolute_uri())
-            t = (
+            archive_link = (
                 "https://" + o.netloc + MEDIA_URL + "uploads/" + zip_archive_name
             )
-
-            # wpsaved.wpname = t
 
         if (self.action == "import"):
             self.archive = validated_data.pop("archive")
@@ -460,8 +468,9 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
             if (self.object_type == "scenario"):
                 # Clear the screen (parent object) value
                 o_data["screen"] = None
-
-                # Re-write non-empty images for elements parameters
+                '''
+                # Re-write non-empty images for elements parameters. Elements are recursive.
+                # It is a simplification for one level. More complex solution means a multi-level nested dictionary update
                 for element in o_data["elements"]:
                     for key in element["parameters"]:
                         if key == "imageURL":
@@ -469,55 +478,31 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
                             o = urlparse(self.context['request'].build_absolute_uri())
                             imageURL = "https://" + o.netloc + UPLOAD_FOLDER + "/" + imgname
                             element["parameters"]["imageURL"] = imageURL
+                '''
+                # Re-write non-empty images for elements parameters. Elements are recursive.
+                o = urlparse(self.context['request'].build_absolute_uri())
+                pre_imageURL = "https://" + o.netloc + UPLOAD_FOLDER + "/"
+                update_nested(o_data, "imageURL", pre_imageURL)
 
                 serializer = ScreenScenarioImportSerializer(data=o_data)
                 serializer.is_valid(raise_exception=True)
-                serializer.save()
+                object = serializer.save()
+                object_id = object.id
 
             if (self.object_type == "screen"):
                 # Clear the project (parent object) value
                 o_data["project"] = None
-                print(type(o_data), type(files["objectjson.json"]))
-                # input()
-                #
-                # for value, key in o_data.items():
-                #     print(value, key)
-                #     if key == 'imageURL':
-                #         print("value=", value)
 
-                relookup = recursive_lookup("imageURL", o_data)
-                print(relookup)
+                # Re-write non-empty images for elements parameters. Elements are recursive.
+                o = urlparse(self.context['request'].build_absolute_uri())
+                pre_imageURL = "https://" + o.netloc + UPLOAD_FOLDER + "/"
+                update_nested(o_data, "imageURL", pre_imageURL)
 
-                # print(o_data)
-                input()
-
-                '''
-                    # from export
-                    o = urlparse(imageurl)
-                    if o.scheme:
-                        image = BASE_DIR + o.path
-                        imgname = o.path.split("/")[-1]
-                        o1 = urlparse(self.context['request'].build_absolute_uri())
-                        imageURL = "https://" + o1.netloc + UPLOAD_FOLDER + "/" + imgname
-                        imageurl = imageURL                     
-                        input()
-                    
-                    o = urlparse(imageurl)
-                    image = BASE_DIR + o.path
-                    print(image)
-                    images.append(image)
-                '''
-                '''
-                imageurls = item_generator(o_data, "imageURL")
-                for imageurl in imageurls:
-                    print("Q", imageurl)
-                    imageurl = "ASDFGHJK"
-                    print("W", imageurl)
-                    input()
-                '''
                 serializer = ProjectScreenImportSerializer(data=o_data)
                 serializer.is_valid(raise_exception=True)
-                serializer.save()
+                # serializer.save()
+                object = serializer.save()
+                object_id = object.id
 
             if (self.object_type == "project"):
                 # Clear the screen (parent object) value
@@ -529,11 +514,12 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
 
         # Create a record for the object move
         objectmove = ObjectMove(id=None, **validated_data)
-        # wpsaved.wpname = t
+        objectmove.object_id = object_id
         try:
-            objectmove.object_id = object_id
+            objectmove.link = archive_link
         except Exception:
             pass
+
         objectmove.save()
         return objectmove
 

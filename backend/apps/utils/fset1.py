@@ -9,6 +9,7 @@
 import math
 import os
 import shutil
+from urllib.parse import urlparse
 from zipfile import ZipFile
 
 import cv2
@@ -720,3 +721,17 @@ def recursive_lookup(k, d):
             return recursive_lookup(k, v)
     return None
 
+
+# Update nested dictionary for the object move at the uploadapps
+def update_nested(in_dict, key, value):
+   for k, v in in_dict.items():
+       if key == k:
+           imgname = urlparse(v).path.split("/")[-1]
+           in_dict[k] = value + imgname
+           print("kv", k, v, imgname)
+       elif isinstance(v, dict):
+           update_nested(v, key, value)
+       elif isinstance(v, list):
+           for o in v:
+               if isinstance(o, dict):
+                   update_nested(o, key, value)

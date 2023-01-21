@@ -76,7 +76,7 @@ class ObjectMove(models.Model):
     object_type = models.CharField(
         choices=OBJECT_TYPE, default=SCENARIO, max_length=32
     )
-    wpname = models.CharField(max_length=250, null=True, blank=True)
+    link = models.CharField(max_length=250, null=True, blank=True)
 
     # Parent id and type, it is important while importing
     parent_id = models.IntegerField(null=True, blank=True)
@@ -84,10 +84,3 @@ class ObjectMove(models.Model):
     # Object id defined while exporting and displayed while importing
     object_id = models.IntegerField(null=True, blank=True)
 
-    owner = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
-        related_name="owned_objects_moved",
-    )
