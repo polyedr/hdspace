@@ -24,7 +24,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Layout = ({ children }) => {
+function Layout({ children }) {
   const classes = useStyles();
   const url = new URL(window.location.href);
   const shortuuid_token = url?.pathname.split('/')[4];
@@ -41,6 +41,6 @@ const Layout = ({ children }) => {
       <div className={classes.content}>{children}</div>
     </div>
   );
-};
+}
 
 export default Layout;

@@ -70,15 +70,14 @@ const useStyles = makeStyles({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
+    borderLeft: '1px solid #E4E6EB',
   },
-
   header: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '10px 16px',
   },
-
   toggleButtonsContainer: {
     width: '100%',
     display: 'flex',
@@ -169,24 +168,25 @@ const PropertiesTab: React.FC = () => {
   const isGroupElement = !!activeElement.parameters.sourceElementId;
   const isGroupSource = !!activeElement.parameters.groupElements;
 
-  const elementsControlsCollection = useMemo(() => {
-    return Object.keys(selectedElements).map((elementId) => {
-      return AVAILABLE_CONTROLS[selectedElements[elementId].type];
-    });
-  }, [selectedElements, AVAILABLE_CONTROLS]);
+  const elementsControlsCollection = useMemo(
+    () =>
+      Object.keys(selectedElements).map(
+        (elementId) => AVAILABLE_CONTROLS[selectedElements[elementId].type],
+      ),
+    [selectedElements, AVAILABLE_CONTROLS],
+  );
 
   const SELECTION_CONTROLS = useMemo(() => {
     if (!elementsControlsCollection.length) {
       return [];
     }
     const elementsControls = elementsControlsCollection.reduce(
-      (controls, controlsList) => {
-        return controls.filter((control) => {
-          return (
-            controlsList.includes(control) && !UNIQUE_CONTROLS.includes(control)
-          );
-        });
-      },
+      (controls, controlsList) =>
+        controls.filter(
+          (control) =>
+            controlsList.includes(control) &&
+            !UNIQUE_CONTROLS.includes(control),
+        ),
     );
     return elementsControls;
   }, [elementsControlsCollection]);
@@ -447,11 +447,11 @@ const PropertiesTab: React.FC = () => {
 
   const collapseAll = () => {
     setIsAccordianExpanded(!isAccordianExpanded);
-    setTitle((state) => {
-      return state === CollapseTypes.EXPAND
+    setTitle((state) =>
+      state === CollapseTypes.EXPAND
         ? CollapseTypes.COLLAPSE
-        : CollapseTypes.EXPAND;
-    });
+        : CollapseTypes.EXPAND,
+    );
   };
 
   return (

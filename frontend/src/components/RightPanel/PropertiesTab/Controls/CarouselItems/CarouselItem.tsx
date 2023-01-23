@@ -41,13 +41,13 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   id: string;
   parameters: any;
   updateParams: any;
   isLast: boolean;
   canEdit: boolean;
-};
+}
 
 const CarouselItem: React.FC<Props> = ({
   id,

@@ -49,11 +49,10 @@ const TopBar: React.FC = () => {
 
   return currentScreenId !== -1 ? (
     <div className={classes.root}>
-      <div style={{ visibility: 'hidden' }} />
       <Actions />
 
       <div className={classes.wrapper}>
-        <>{freeCanvasMode ? <div className={classes.magic} /> : null}</>
+        {freeCanvasMode ? <div className={classes.magic} /> : null}
       </div>
     </div>
   ) : (

@@ -191,7 +191,7 @@ const htmlElementToAdeviElement = (
   const { style: inlineStyle } = element;
 
   if (!type) {
-    if (unsupportedElementList.indexOf(element.tagName) === -1) {
+    if (!unsupportedElementList.includes(element.tagName)) {
       unsupportedElementList.push(element.tagName);
     }
     type = 'divBlock';

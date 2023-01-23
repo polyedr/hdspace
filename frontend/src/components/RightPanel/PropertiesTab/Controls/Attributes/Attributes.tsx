@@ -64,88 +64,86 @@ const Attributes: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   }
 
   return (
-    <>
-      <div>
-        {Object.keys(attributes).map((attrName) => {
-          const attrValue = attributes[attrName];
-          return (
-            <div key={`attribute-${attrName}`} className={classes.attrWrapper}>
-              <StyledTextField
-                className={classes.attrName}
-                label={attrName}
-                defaultValue={attrValue}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  const { value } = event.target;
-                  handleUpdateAttribute.cancel();
-                  handleUpdateAttribute.callback(attrName, value);
-                }}
-                margin="dense"
-                disabled={!canEdit}
-              />
-              <IconButton
-                onClick={() => {
-                  updateParams({
-                    attributes: Object.keys(attributes).reduce(
-                      (newAttributes, name) => {
-                        if (name === attrName) {
-                          return newAttributes;
-                        }
-                        return {
-                          ...newAttributes,
-                          [name]: attributes[name],
-                        };
-                      },
-                      {},
-                    ),
-                  });
-                }}
-                size="small"
-                title="Delete element"
-                disabled={!canEdit}
-                className={classes.iconButton}
-                disableRipple
-                disableFocusRipple
-                disableTouchRipple
-              >
-                <DeleteIcon />
-              </IconButton>
-            </div>
-          );
-        })}
-        {addInProgress && (
-          <StyledTextField
-            style={{ width: '100%' }}
-            label="New attribute name"
-            margin="dense"
-            disabled={!canEdit}
-            onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
-              if (event.target && event.key === 'Enter') {
-                const { value } = event.target as HTMLInputElement;
+    <div>
+      {Object.keys(attributes).map((attrName) => {
+        const attrValue = attributes[attrName];
+        return (
+          <div key={`attribute-${attrName}`} className={classes.attrWrapper}>
+            <StyledTextField
+              className={classes.attrName}
+              label={attrName}
+              defaultValue={attrValue}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                const { value } = event.target;
+                handleUpdateAttribute.cancel();
+                handleUpdateAttribute.callback(attrName, value);
+              }}
+              margin="dense"
+              disabled={!canEdit}
+            />
+            <IconButton
+              onClick={() => {
                 updateParams({
-                  attributes: {
-                    ...attributes,
-                    [value.toLowerCase().replaceAll(' ', '_')]: '',
-                  },
-                  activeElementId,
+                  attributes: Object.keys(attributes).reduce(
+                    (newAttributes, name) => {
+                      if (name === attrName) {
+                        return newAttributes;
+                      }
+                      return {
+                        ...newAttributes,
+                        [name]: attributes[name],
+                      };
+                    },
+                    {},
+                  ),
                 });
-                setAddInProgress(false);
-              }
-            }}
-          />
-        )}
-        <div className={classes.flexWrapper}>
-          {canEdit && !addInProgress && (
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => setAddInProgress(true)}
+              }}
+              size="small"
+              title="Delete element"
+              disabled={!canEdit}
+              className={classes.iconButton}
+              disableRipple
+              disableFocusRipple
+              disableTouchRipple
             >
-              Add attribute
-            </Button>
-          )}
-        </div>
+              <DeleteIcon />
+            </IconButton>
+          </div>
+        );
+      })}
+      {addInProgress && (
+        <StyledTextField
+          style={{ width: '100%' }}
+          label="New attribute name"
+          margin="dense"
+          disabled={!canEdit}
+          onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
+            if (event.target && event.key === 'Enter') {
+              const { value } = event.target as HTMLInputElement;
+              updateParams({
+                attributes: {
+                  ...attributes,
+                  [value.toLowerCase().replaceAll(' ', '_')]: '',
+                },
+                activeElementId,
+              });
+              setAddInProgress(false);
+            }
+          }}
+        />
+      )}
+      <div className={classes.flexWrapper}>
+        {canEdit && !addInProgress && (
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={() => setAddInProgress(true)}
+          >
+            Add attribute
+          </Button>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

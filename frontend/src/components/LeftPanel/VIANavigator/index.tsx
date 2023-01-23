@@ -10,7 +10,8 @@ import AtlasTree, {
 import { MenuItem } from '@material-ui/core';
 import { NNModelName, VIARegion } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   StyledAccordion,
   StyledAccordionDetails,

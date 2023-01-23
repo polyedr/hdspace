@@ -23,6 +23,7 @@ import {
   useDebouncedValueChange,
 } from '@Utils/debounceHooks';
 import { MenuItem } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
@@ -30,6 +31,7 @@ import cn from 'classnames';
 import BORDER_STYLE from '@Constants/borderStyle';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
 import { useDebouncedCallback } from 'use-debounce';
+import { styled } from '@mui/styles';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
@@ -38,7 +40,7 @@ const useStyles = makeStyles({
     justifyContent: 'space-between',
   },
   text: {
-    width: '76px',
+    // width: '76px',
   },
   position: {
     display: 'flex',
@@ -46,9 +48,10 @@ const useStyles = makeStyles({
   },
   control: {
     justifyContent: 'flex-start',
+    width: '100%',
   },
   container: {
-    padding: '0 16px',
+    // padding: '0 16px',
   },
   numberInput: {
     '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
@@ -57,7 +60,7 @@ const useStyles = makeStyles({
     },
   },
   borderStyleControl: {
-    maxWidth: '70px',
+    width: 'calc(50% - 40px) !important',
   },
   styleBlock: {
     display: 'flex',
@@ -65,12 +68,16 @@ const useStyles = makeStyles({
     alignItems: 'flex-end',
     justifyContent: 'space-between',
   },
+  styleInnerBlock: {
+    width: '25%',
+  },
   labelTextField: {
-    fontSize: '16px',
-    color: 'rgba(129, 129, 142, 1)',
+    fontSize: '12px',
+    color: '#81818E',
   },
   borderWidthLabel: {
-    paddingBottom: '5px',
+    // paddingBottom: '5px',
+    width: 30,
   },
   detailedBorderWidth: {
     width: '45px',
@@ -100,6 +107,11 @@ const detailedLabel = {
   borderLeftWidth: 'Left',
   borderRightWidth: 'Right',
 };
+
+const CustomStyledToggleButton = styled(StyledToggleButton)({
+  padding: '0 !important',
+  margin: '0 !important',
+});
 
 const BorderBlock: React.FC<Props> = ({
   updateStyles,
@@ -137,7 +149,7 @@ const BorderBlock: React.FC<Props> = ({
       return `${MIN_BORDER_RADIUS}px`;
     }
 
-    if (!radius || radius.indexOf('%') === -1) {
+    if (!radius || !radius.includes('%')) {
       return `${value > MAX_BORDER_RADIUS ? MAX_BORDER_RADIUS : value}px`;
     }
 
@@ -262,31 +274,28 @@ const BorderBlock: React.FC<Props> = ({
         <div
           className={cn(classes.styleBlock)}
           style={{
-            width: '101px',
+            width: 'calc(50% - 10px) ',
           }}
         >
-          {!isDefaultStyles && (
-            <>
-              <div
-                className={cn(classes.labelTextField, classes.borderWidthLabel)}
-              >
-                W
-              </div>
-              <StyledTextField
-                type="number"
-                value={width ? parseFloat(width as string) : ''}
-                onChange={handleWidthChange}
-                margin="dense"
-                inputProps={{ className: classes.numberInput }}
-                className={classes.text}
-                disabled={!canEdit}
-              />
-            </>
-          )}
+          {/* {!isDefaultStyles && ( */}
+          <div className={cn(classes.labelTextField, classes.borderWidthLabel)}>
+            W
+          </div>
+          <StyledTextField
+            style={{ marginBottom: 0 }}
+            type="number"
+            value={width ? parseFloat(width as string) : ''}
+            onChange={handleWidthChange}
+            margin="dense"
+            inputProps={{ className: classes.numberInput }}
+            className={classes.text}
+            disabled={!canEdit}
+          />
+          {/* )} */}
         </div>
         <StyledTextField
+          style={{ marginBottom: 0 }}
           className={classes.borderStyleControl}
-          fullWidth
           margin="dense"
           value={borderStyle || BORDER_STYLE[1].value}
           onChange={handleBorderStyleChange}
@@ -306,20 +315,20 @@ const BorderBlock: React.FC<Props> = ({
           size="small"
           style={isDefaultStyles ? { width: '20px', height: '20px' } : {}}
         >
-          <StyledToggleButton
+          <CustomStyledToggleButton
             value
             disabled={!canEdit}
             onClick={() => setIsBorderEditorOpen(!isBorderEditorOpen)}
           >
             <CheckBoxOutlineBlankRoundedIcon fontSize="medium" />
-          </StyledToggleButton>
+          </CustomStyledToggleButton>
         </StyledToggleButtonGroup>
       </div>
 
       {isBorderEditorOpen && (
-        <div className={cn(classes.styleBlock)}>
+        <div className={cn(classes.styleBlock)} style={{ gap: 15 }}>
           {Object.keys(detailedBorderWidth).map((item) => (
-            <div key={item}>
+            <div key={item} className={cn(classes.styleInnerBlock)}>
               <StyledTextField
                 type="number"
                 value={
@@ -346,8 +355,15 @@ const BorderBlock: React.FC<Props> = ({
 
       <div className={cn(classes.wrapper, classes.position)}>
         <div className={cn(classes.control, classes.position)}>
-          <div>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <StyledTextField
+              style={{ width: 'calc(50% - 10px)' }}
               type="number"
               value={safeParseFloat(validateBorderRadius(String(radius)))}
               onChange={handleRadiusChange}
@@ -356,21 +372,23 @@ const BorderBlock: React.FC<Props> = ({
               disabled={!canEdit}
             />
 
-            <StyledTextField
-              margin="dense"
-              onChange={handleRadiusUnitsChange}
-              value={radiusUnitsValue}
-              select
-              disabled={!canEdit}
-            >
-              <MenuItem value="px" dense>
-                px
-              </MenuItem>
-              <MenuItem value="%" dense>
-                percent
-              </MenuItem>
-            </StyledTextField>
-            <div className={classes.labelTextField}>Radius</div>
+            <Box sx={{ width: 'calc(50% - 5px)' }}>
+              <StyledTextField
+                margin="dense"
+                onChange={handleRadiusUnitsChange}
+                value={radiusUnitsValue}
+                select
+                disabled={!canEdit}
+              >
+                <MenuItem value="px" dense>
+                  px
+                </MenuItem>
+                <MenuItem value="%" dense>
+                  percent
+                </MenuItem>
+              </StyledTextField>
+              <div className={classes.labelTextField}>Radius</div>
+            </Box>
           </div>
         </div>
       </div>

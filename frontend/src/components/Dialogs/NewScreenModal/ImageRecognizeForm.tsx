@@ -50,9 +50,9 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   onClose: (...args: any) => void;
-};
+}
 
 const ImageRecognizeForm: FC<Props> = ({ onClose }) => {
   const classes = useStyles();

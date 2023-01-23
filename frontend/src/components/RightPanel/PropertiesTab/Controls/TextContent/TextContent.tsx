@@ -18,7 +18,7 @@ import {
 import { convertToHTML } from 'draft-convert';
 import RichTextContent from '@Components/RightPanel/PropertiesTab/helperComponents/RichTextContent/RichTextContent';
 
-const TextContent = ({ element, updateParams, canEdit }) => {
+function TextContent({ element, updateParams, canEdit }) {
   const { link, isLink, textContent, screenName, screenLink } =
     element.parameters;
   const [input, setInput] = useState(link);
@@ -78,14 +78,14 @@ const TextContent = ({ element, updateParams, canEdit }) => {
           updateParams(
             {
               textContent: convertToHTML({
-              // eslint-disable-next-line consistent-return
-              blockToHTML: (block) => {
-                if (block.type === 'unstyled') {
-                  if (block.text === ' ' || block.text === '') return <br />;
-                  return <div />;
-                }
-              },
-            })(value.getCurrentContent()),
+                // eslint-disable-next-line consistent-return
+                blockToHTML: (block) => {
+                  if (block.type === 'unstyled') {
+                    if (block.text === ' ' || block.text === '') return <br />;
+                    return <div />;
+                  }
+                },
+              })(value.getCurrentContent()),
             },
             element?.id,
           );
@@ -196,6 +196,6 @@ const TextContent = ({ element, updateParams, canEdit }) => {
       )}
     </>
   );
-};
+}
 
 export default TextContent;

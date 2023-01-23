@@ -79,10 +79,10 @@ const useStyles = makeStyles({
   },
 });
 
-const ActivityTab = () => {
+function ActivityTab() {
   const dispatch = useDispatch();
   const project = useSelector(selectCurrentProjectId);
-  const actions: Array<ActionTypePM> = useSelector(selectActions);
+  const actions: ActionTypePM[] = useSelector(selectActions);
   const [platform, setPlatform] = useState<PlatformActionData>('ALL');
   const classes = useStyles();
 
@@ -167,6 +167,6 @@ const ActivityTab = () => {
       </div>
     </Container>
   );
-};
+}
 
 export default ActivityTab;

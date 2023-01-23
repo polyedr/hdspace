@@ -17,7 +17,7 @@ import Borders from './Borders/Borders';
 import BorderCrumb from './Crumb/BorderCrumb';
 import CreateGroupAction from './Actions/CreateGroup/CreateGroupAction';
 
-type Props = {
+interface Props {
   element: StateElement;
   elementDom: HTMLElement;
   frameWindow: Window;
@@ -32,10 +32,10 @@ type Props = {
   preSelectedElementId: string | null;
   dropTargetParams: DropTargetParams | null;
   enableDropTargetBordersMode: boolean;
-  updateStyles(payload: React.CSSProperties): void;
-};
+  updateStyles: (payload: React.CSSProperties) => void;
+}
 
-const InteractionsHandler = ({
+function InteractionsHandler({
   element,
   elementDom,
   frameWindow,
@@ -51,12 +51,13 @@ const InteractionsHandler = ({
   dropTargetParams,
   enableDropTargetBordersMode,
   updateStyles,
-}: Props) => {
-  const elementGroupStyles = useSelector((state: AppReduxState) => {
-    return selectCurrentProject(state).projectData.classes.find((value) => {
-      return value.className === element.styles.classNames?.[1];
-    })?.rules;
-  });
+}: Props) {
+  const elementGroupStyles = useSelector(
+    (state: AppReduxState) =>
+      selectCurrentProject(state).projectData.classes.find(
+        (value) => value.className === element.styles.classNames?.[1],
+      )?.rules,
+  );
 
   const [styles, setStyles] = useState<BoundingStyles | null>(
     getBoundingStyles(elementDom, frameWindow, screen.element),
@@ -65,7 +66,7 @@ const InteractionsHandler = ({
   const updateBorderStyles = useCallback(
     (entry: HTMLElement) => {
       const updatedBorderStyles = getBoundingStyles(
-        entry as HTMLElement,
+        entry,
         frameWindow,
         screen.element,
       );
@@ -138,6 +139,6 @@ const InteractionsHandler = ({
       )}
     </React.Fragment>
   );
-};
+}
 
 export default memo(InteractionsHandler);

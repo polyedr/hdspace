@@ -60,26 +60,24 @@ const CustomProjectCard = styled(Box)`
   top: 238px;
   padding: 8px;
 `;
-const Marketplace: React.FC = () => {
-  return (
-    <Container style={{ display: 'flex', justifyContent: 'space-around' }}>
-      <CustomRoot>
-        <CustomHeader>
-          <CustomTitle variant="h5">Marketplace</CustomTitle>
-          <CustomSubTitle variant="h6">
-            Don&apos;t know where to start with your project? Feel free to use
-            our templates to inspire your creativity
-          </CustomSubTitle>
-          <CustomHeaderAction>
-            <Searchbar />
-          </CustomHeaderAction>
-        </CustomHeader>
-        <CustomProjectCard sx={{ flexGrow: 1 }}>
-          <TemplateCard />
-        </CustomProjectCard>
-      </CustomRoot>
-    </Container>
-  );
-};
+const Marketplace: React.FC = () => (
+  <Container style={{ display: 'flex', justifyContent: 'space-around' }}>
+    <CustomRoot>
+      <CustomHeader>
+        <CustomTitle variant="h5">Marketplace</CustomTitle>
+        <CustomSubTitle variant="h6">
+          Don&apos;t know where to start with your project? Feel free to use our
+          templates to inspire your creativity
+        </CustomSubTitle>
+        <CustomHeaderAction>
+          <Searchbar />
+        </CustomHeaderAction>
+      </CustomHeader>
+      <CustomProjectCard sx={{ flexGrow: 1 }}>
+        <TemplateCard />
+      </CustomProjectCard>
+    </CustomRoot>
+  </Container>
+);
 
 export default memo(Marketplace);

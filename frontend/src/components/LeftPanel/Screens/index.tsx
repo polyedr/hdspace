@@ -21,7 +21,7 @@ import {
 } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
-  selectScreensWithoutMaster,
+  selectSortedScreens,
 } from '@Redux/project/selectors/screen';
 import prevent from '@Utils/preventEvent';
 import { Indices } from '@Src/types';
@@ -41,15 +41,20 @@ const Title = styled(Typography)`
   font-family: Roboto;
   font-style: normal;
   font-weight: 600 !important;
-  font-size: 14px;
+  font-size: 10px !important;
+  text-transform: uppercase;
   line-height: 145%;
 `;
 
-const CustomIconButton = styled(IconButton)`
-  width: 32px;
-  height: 32px;
-  color: #81818e;
-`;
+const CustomIconButton = styled(IconButton)({
+  width: '32px',
+  height: '32px',
+  color: '#81818e',
+
+  '& svg': {
+    height: 20,
+  },
+});
 
 const CustomList = styled(List)`
   width: 100%;
@@ -58,19 +63,19 @@ const CustomList = styled(List)`
   overflow-x: hidden;
 `;
 
-const StyledIconButton: React.FC<IconButtonProps> = (props) => {
-  return <CustomIconButton {...props} />;
-};
+const StyledIconButton: React.FC<IconButtonProps> = (props) => (
+  <CustomIconButton {...props} />
+);
 
-const StyledCustomList: React.FC<ListProps> = (props) => {
-  return <CustomList {...props} />;
-};
-const Screens = () => {
+const StyledCustomList: React.FC<ListProps> = (props) => (
+  <CustomList {...props} />
+);
+function Screens() {
   const dispatch = useDispatch();
 
   const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const screens = useSelector(selectScreensWithoutMaster);
+  const screens = useSelector(selectSortedScreens);
   const screenCreateLoader = useSelector(selectScreenCreateLoader);
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -150,9 +155,9 @@ const Screens = () => {
         <Droppable droppableId="droppable">
           {(provided) => (
             <Scrollbar
-              autoHeightMin="30vh"
-              autoHeightMax="30vh"
-              style={{ backgroundColor: '#ffffff', overflow: 'scroll' }}
+              autoHeightMin="calc(100vh - 90px)"
+              autoHeightMax="calc(100vh - 90px)"
+              style={{ backgroundColor: '#ffffff', overflow: 'hidden' }}
             >
               <StyledCustomList
                 innerRef={provided.innerRef}
@@ -176,6 +181,6 @@ const Screens = () => {
       </DragDropContext>
     </>
   );
-};
+}
 
 export default Screens;

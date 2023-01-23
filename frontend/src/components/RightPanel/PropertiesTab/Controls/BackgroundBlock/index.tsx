@@ -88,11 +88,11 @@ enum BackgroundClip {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    padding: '0 16px',
+    // padding: '0 16px',
   },
   formControl: {
     width: '100%',
-    marginBottom: theme.spacing(2),
+    // marginBottom: theme.spacing(2),
   },
   imageWrapper: {
     height: 100,
@@ -489,7 +489,7 @@ const BackgroundBlock: React.FC<Props> = ({
   );
 };
 
-export default (props) => {
+export default function (props) {
   const assetLists = useSelector(selectAllAssetLists);
 
   if (!assetLists) {
@@ -497,4 +497,4 @@ export default (props) => {
   }
 
   return <BackgroundBlock {...props} assetLists={assetLists} />;
-};
+}

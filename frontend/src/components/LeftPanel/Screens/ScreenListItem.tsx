@@ -38,7 +38,7 @@ const useStyles = makeStyles(({ typography }) => ({
     alignItems: 'center',
   },
   active: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F3F4F6',
   },
   screenData: {
     marginLeft: '6px',
@@ -53,7 +53,7 @@ const useStyles = makeStyles(({ typography }) => ({
   },
   name: {
     fontFamily: typography.fontFamily,
-    fontSize: typography.fontSize,
+    fontSize: 11,
   },
   popover: {
     pointerEvents: 'none',
@@ -63,15 +63,15 @@ const useStyles = makeStyles(({ typography }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   screen: Screen;
   index: number;
   active: boolean;
-};
-type State = {
+}
+interface State {
   mouseX: number | null;
   mouseY: number | null;
-};
+}
 
 const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const dispatch = useDispatch();

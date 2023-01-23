@@ -207,7 +207,6 @@ const updateDefaultStylesSaga = compose(
 
   yield call(projectUpdateHelperSaga, newProject);
 
-  // @ts-ignore
   if (!action.meta.useHistory) {
     yield put(
       Actions.addUndoActions(
@@ -218,7 +217,6 @@ const updateDefaultStylesSaga = compose(
 
   const state: Normalized<StateElement> = yield select(selectAllElements);
 
-  // @ts-ignore
   yield put(Actions.updateElementsTree(state, { ...action.meta }));
 });
 

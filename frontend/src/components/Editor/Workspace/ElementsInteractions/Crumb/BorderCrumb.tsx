@@ -31,7 +31,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import Icon from '../../../../UI/Icon';
 
-type Props = {
+interface Props {
   element: StateElement;
   show: boolean;
   currentProjectId: number;
@@ -39,7 +39,7 @@ type Props = {
   styles: BoundingStyles;
   children?: any;
   masterScreenId: number | null;
-};
+}
 
 const useStyles = makeStyles((theme) => ({
   crumb: ({ styles, element, rootId }: Props & { rootId: string }) => ({
@@ -230,7 +230,7 @@ const BorderCrumb: React.FC<Props> = (props) => {
       >
         {element.name}
       </span>
-      {element.type !== 'root' && element.name.indexOf('Master') < 0 && (
+      {element.type !== 'root' && !element.name.includes('Master') && (
         <>
           <span className={classes.icon} onClick={handleCopyLink}>
             <ShareIcon

@@ -22,10 +22,10 @@ const IconButton = styled(MuiIconButton)({
 
 interface Props {
   task: BoardTask;
-  onChange(title: string): void;
+  onChange: (title: string) => void;
 }
 
-const TaskTitle = ({ task, onChange }: Props) => {
+function TaskTitle({ task, onChange }: Props) {
   const [editMode, setEditMode] = useState(false);
   const [taskTitle, setTaskTitle] = useState(task.title);
 
@@ -37,9 +37,7 @@ const TaskTitle = ({ task, onChange }: Props) => {
   );
 
   const handleSetEditMode = useCallback(
-    (mode: boolean) => {
-      return () => setEditMode(mode);
-    },
+    (mode: boolean) => () => setEditMode(mode),
     [setEditMode],
   );
 
@@ -103,6 +101,6 @@ const TaskTitle = ({ task, onChange }: Props) => {
       )}
     </>
   );
-};
+}
 
 export default TaskTitle;

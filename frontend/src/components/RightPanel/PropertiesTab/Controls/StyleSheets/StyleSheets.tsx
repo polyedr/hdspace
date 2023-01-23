@@ -20,11 +20,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const transformToEditorStyles = (styles: React.CSSProperties) => {
-  return Object.keys(styles).reduce((stringStyles, styleName) => {
-    return `${stringStyles}${styleName}: ${styles[styleName]};\r\n`;
-  }, '');
-};
+const transformToEditorStyles = (styles: React.CSSProperties) =>
+  Object.keys(styles).reduce(
+    (stringStyles, styleName) =>
+      `${stringStyles}${styleName}: ${styles[styleName]};\r\n`,
+    '',
+  );
 
 const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   removeStyles,

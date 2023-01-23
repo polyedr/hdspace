@@ -82,15 +82,16 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   text: {
     padding: '5px',
+    fontSize: 11,
   },
 }));
 
-type ExpandIndicatorProps = {
+interface ExpandIndicatorProps {
   hasChildren: boolean;
   isExpanded: boolean;
   onExpand: () => void;
   onCollapse: () => void;
-};
+}
 
 const ExpandIndicator: React.FC<ExpandIndicatorProps> = ({
   hasChildren,

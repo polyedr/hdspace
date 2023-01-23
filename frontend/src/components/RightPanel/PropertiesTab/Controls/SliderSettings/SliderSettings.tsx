@@ -14,37 +14,49 @@ const SliderSettings: React.FC<PropertiesChangeProps<SliderElement>> = ({
   const step = useSelector(selectActiveElementParamByName('step'));
   const value = useSelector(selectActiveElementParamByName('value'));
 
-  const handleChangeMin = useCallback((e) => {
-    const { value } = e.target;
-    if (Number.isNaN(value)) {
-      return;
-    }
-    updateParams({ min: value });
-  }, []);
+  const handleChangeMin = useCallback(
+    (e) => {
+      const { value } = e.target;
+      if (Number.isNaN(value)) {
+        return;
+      }
+      updateParams({ min: value });
+    },
+    [updateParams],
+  );
 
-  const handleChangeMax = useCallback((e) => {
-    const { value } = e.target;
-    if (Number.isNaN(value)) {
-      return;
-    }
-    updateParams({ max: value });
-  }, []);
+  const handleChangeMax = useCallback(
+    (e) => {
+      const { value } = e.target;
+      if (Number.isNaN(value)) {
+        return;
+      }
+      updateParams({ max: value });
+    },
+    [updateParams],
+  );
 
-  const handleChangeValue = useCallback((e) => {
-    const { value } = e.target;
-    if (Number.isNaN(value)) {
-      return;
-    }
-    updateParams({ value });
-  }, []);
+  const handleChangeValue = useCallback(
+    (e) => {
+      const { value } = e.target;
+      if (Number.isNaN(value)) {
+        return;
+      }
+      updateParams({ value });
+    },
+    [updateParams],
+  );
 
-  const handleChangeStep = useCallback((e) => {
-    const { value } = e.target;
-    if (Number.isNaN(value) || parseInt(value) < 1) {
-      return;
-    }
-    updateParams({ step: value });
-  }, []);
+  const handleChangeStep = useCallback(
+    (e) => {
+      const { value } = e.target;
+      if (Number.isNaN(value) || parseInt(value) < 1) {
+        return;
+      }
+      updateParams({ step: value });
+    },
+    [updateParams],
+  );
 
   return (
     <>

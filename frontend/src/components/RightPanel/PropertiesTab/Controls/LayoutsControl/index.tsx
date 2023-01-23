@@ -75,11 +75,9 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
     const offLayout = (layout) => {
       switch (layout) {
         case 'tablet':
-          return layouts.filter(
-            (e) => additionalLayoutTablet.indexOf(e) === -1,
-          );
+          return layouts.filter((e) => !additionalLayoutTablet.includes(e));
         case 'mobile':
-          return layouts.filter((e) => additionalLayoutPhone.indexOf(e) === -1);
+          return layouts.filter((e) => !additionalLayoutPhone.includes(e));
         default:
           return layouts.filter((l) => l !== layout);
       }

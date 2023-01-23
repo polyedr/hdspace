@@ -81,9 +81,9 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   elementId?: string;
-};
+}
 
 const Workspace: React.FC<Props> = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
@@ -143,8 +143,8 @@ const Workspace: React.FC<Props> = () => {
                   DOMHandler.INSTANCE.watch(scrollbars.view);
                 }}
                 autoHeightMin="100%"
-                onScroll={({ srcElement }) => {
-                  setScrollLeft(srcElement.scrollLeft);
+                onScroll={(event) => {
+                  setScrollLeft(event.currentTarget.scrollLeft);
                 }}
               >
                 {freeCanvasMode ? (
@@ -163,7 +163,6 @@ const Workspace: React.FC<Props> = () => {
                 )}
               </Scrollbar>
             </EditorViewport>
-
             <NNProcessingModal />
           </FrameWrapper>
         </div>

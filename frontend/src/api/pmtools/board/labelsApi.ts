@@ -2,25 +2,24 @@ import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps } from '@Src/types';
 
-export const fetchLabels = ({
+export const fetchLabels = async ({
   projectId,
   ...options
-}: MyAxiosProps & { projectId: number }) => {
-  return myAxios({
+}: MyAxiosProps & { projectId: number }) =>
+  await myAxios({
     url: `/projects/columns-for-project/${projectId}/`,
     method: 'get',
     ...options,
   }).catch(handleError);
-};
 
-export const createProjectLabel = ({
+export const createProjectLabel = async ({
   text,
   colour,
   projectId,
   ...options
-}: MyAxiosProps & { text: string; colour: string; projectId: number }) => {
-  return myAxios({
-    url: `/projects/columntask-labels/`,
+}: MyAxiosProps & { text: string; colour: string; projectId: number }) =>
+  await myAxios({
+    url: '/projects/columntask-labels/',
     method: 'post',
     data: {
       colour,
@@ -30,15 +29,14 @@ export const createProjectLabel = ({
     },
     ...options,
   }).catch(handleError);
-};
 
-export const updateLabel = ({
+export const updateLabel = async ({
   text,
   colour,
   labelId,
   ...options
-}: MyAxiosProps & { text: string; colour: string; labelId: number }) => {
-  return myAxios({
+}: MyAxiosProps & { text: string; colour: string; labelId: number }) =>
+  await myAxios({
     url: `/projects/columntask_labels/${labelId}/`,
     method: 'patch',
     data: {
@@ -47,26 +45,24 @@ export const updateLabel = ({
     },
     ...options,
   }).catch(handleError);
-};
 
-export const deleteLabel = ({
+export const deleteLabel = async ({
   labelId,
   ...options
-}: MyAxiosProps & { labelId: number }) => {
-  return myAxios({
+}: MyAxiosProps & { labelId: number }) =>
+  await myAxios({
     url: `/projects/columntask_labels/${labelId}/`,
     method: 'delete',
     ...options,
   }).catch(handleError);
-};
 
-export const updateTaskLabels = ({
+export const updateTaskLabels = async ({
   text,
   colour,
   labelId,
   ...options
-}: MyAxiosProps & { text: string; colour: string; labelId: number }) => {
-  return myAxios({
+}: MyAxiosProps & { text: string; colour: string; labelId: number }) =>
+  await myAxios({
     url: `/projects/columntask_labels/${labelId}/`,
     method: 'post',
     data: {
@@ -75,4 +71,3 @@ export const updateTaskLabels = ({
     },
     ...options,
   }).catch(handleError);
-};

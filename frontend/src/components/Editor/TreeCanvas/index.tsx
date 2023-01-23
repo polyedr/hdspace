@@ -14,9 +14,9 @@ import { UserProjectPermission } from '@Src/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import DraggableElement from '../Draggable/DraggableElement';
 
-type Props = {
+interface Props {
   scrollRef: React.RefObject<Scrollbars>;
-};
+}
 
 const TreeCanvas: React.FC<Props> = ({ scrollRef }) => {
   const rootId = useSelector(selectCurrentRootId);

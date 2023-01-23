@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback, useContext } from 'react';
 import {
   ChatAutoComplete,
@@ -59,12 +60,14 @@ export const ThreadMessageInput: React.FC<Props> = () => {
     [giphyState, messageInput, setGiphyState],
   );
 
-  const GiphyIcon = () => (
-    <div className="giphy-icon__wrapper">
-      <LightningBoltSmall />
-      <p className="giphy-icon__text">GIPHY</p>
-    </div>
-  );
+  function GiphyIcon() {
+    return (
+      <div className="giphy-icon__wrapper">
+        <LightningBoltSmall />
+        <p className="giphy-icon__text">GIPHY</p>
+      </div>
+    );
+  }
 
   return (
     <div className="thread-message-input__wrapper">

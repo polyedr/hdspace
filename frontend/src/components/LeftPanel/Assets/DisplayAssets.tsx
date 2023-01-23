@@ -50,7 +50,7 @@ const useStyles = makeStyles({
   },
 });
 
-const DisplayAssets = () => {
+function DisplayAssets() {
   const dispatch = useDispatch();
   const classes = useStyles();
   const currentAssetListId = useSelector(selectCurrentAssetListId);
@@ -97,7 +97,7 @@ const DisplayAssets = () => {
   );
 
   useEffect(() => {
-    assets?.map((data, index) => {
+    assets?.forEach((data, index) => {
       const elementId = element.id;
       const elementData = {
         parameters: {
@@ -112,7 +112,7 @@ const DisplayAssets = () => {
   }, [mouseEnterImageShow]);
 
   useEffect(() => {
-    assets?.map((data, index) => {
+    assets?.forEach((data, index) => {
       const image = data?.image;
       const elementId = element?.id;
       if (index === backGraundImageEnter) {
@@ -144,12 +144,12 @@ const DisplayAssets = () => {
   const imageBackground = images?.split('(')[1].split(')')[0];
   useEffect(() => {
     setSecondBackgroundImage(imageBackground);
-  }, [selectBackgroundAssetValue]);
+  }, [imageBackground, selectBackgroundAssetValue]);
 
   const assetsSecondImages = element?.parameters?.imageURL;
   useEffect(() => {
     setAssetImage(assetsSecondImages);
-  }, [selectAsset]);
+  }, [assetsSecondImages, selectAsset]);
 
   const handleLeaveBackgroundImage = () => {
     const elementId = element?.id;
@@ -165,7 +165,7 @@ const DisplayAssets = () => {
     dispatch(updateStateElement(elementId, secondBackgroundImageData));
   };
   const handleSetImage = (clickIndex) => {
-    assets?.map((data, index) => {
+    assets?.forEach((data, index) => {
       const secondImageData = {
         parameters: {
           ...element?.parameters,
@@ -191,7 +191,7 @@ const DisplayAssets = () => {
   };
 
   const handleSetBackgroundImage = (clickIndex) => {
-    assets?.map((data, index) => {
+    assets?.forEach((data, index) => {
       const image = data?.image;
       const elementId = element?.id;
       if (index === clickIndex) {
@@ -297,20 +297,24 @@ const DisplayAssets = () => {
               <ImageListItem
                 style={{ width: '100%', margin: '5px', height: '100%' }}
                 key={`asset-${asset.id}`}
-                onMouseEnter={() =>
-                  (selectAsset && setMouseEnterImageShow(index)) ||
-                  (selectBackgroundAssetValue &&
-                    setBackGraundImageEnater(index))
-                }
-                onMouseLeave={() =>
-                  (selectAsset && handleLeaveBtn()) ||
-                  (selectBackgroundAssetValue && handleLeaveBackgroundImage())
-                }
-                onClick={() =>
-                  (selectAsset && handleSetImage(index)) ||
-                  (selectBackgroundAssetValue &&
-                    handleSetBackgroundImage(index))
-                }
+                onMouseEnter={() => {
+                  if (selectAsset) {
+                    setMouseEnterImageShow(index);
+                  }
+
+                  if (selectBackgroundAssetValue) {
+                    setBackGraundImageEnater(index);
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (selectAsset) handleLeaveBtn();
+                  if (selectBackgroundAssetValue) handleLeaveBackgroundImage();
+                }}
+                onClick={() => {
+                  if (selectAsset) handleSetImage(index);
+                  if (selectBackgroundAssetValue)
+                    handleSetBackgroundImage(index);
+                }}
               >
                 <AssetImage
                   asset={asset}
@@ -331,6 +335,6 @@ const DisplayAssets = () => {
       </Scrollbar>
     </div>
   );
-};
+}
 
 export default DisplayAssets;

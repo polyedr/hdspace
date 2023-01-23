@@ -20,16 +20,15 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from '../../client';
 
-type Props = {
+interface Props {
   createType: string;
   isCreating: boolean;
   isEditing?: boolean;
   setIsCreating: React.Dispatch<React.SetStateAction<boolean>>;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 type HeaderProps = ThreadHeaderProps & {
   setPinsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -65,8 +64,7 @@ export const ChannelContainer: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const [pinsOpen, setPinsOpen] = useState(false);

@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) =>
       height: '18px',
       backgroundColor: (props: any) => props.color,
       cursor: 'pointer',
-      border: '1px solid #E4E6EB',
+      // border: '1px solid #E4E6EB',
       borderRadius: 2,
     },
     transparent: {
@@ -26,12 +26,12 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-type ColorPickerProps = {
+interface ColorPickerProps {
   color: string;
   colors?: string[];
-  onChangeComplete(color: Pick<ColorResult, 'hex'>): void;
+  onChangeComplete: (color: Pick<ColorResult, 'hex'>) => void;
   disabled?: boolean;
-};
+}
 
 const ColorPicker: React.FC<ColorPickerProps> = ({
   color,

@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: 'white',
       '& .MuiSelect-select': {
         display: 'flex',
+        alignItems: 'center',
       },
     },
     root: {
@@ -65,6 +66,7 @@ const useStyles = makeStyles((theme) =>
     dropdowntext: {
       paddingLeft: '10px',
       fontSize: '12px',
+      textTransform: 'capitalize',
     },
     icon: {
       color: '#5064FF',
@@ -117,15 +119,14 @@ const Layouts: React.FC = () => {
     if (iconType === 'Tablet') return <TabletIcon className={classes.icon} />;
     return null;
   };
-  const renderOption = (additionalLayout, iconType) => {
-    return additionalLayout.map((key) => (
+  const renderOption = (additionalLayout, iconType) =>
+    additionalLayout.map((key) => (
       <MenuItem value={key} key={key} style={{ display: 'flex' }}>
         {iconSelector(iconType)}
 
         <div className={classes.dropdowntext}>{key}</div>
       </MenuItem>
     ));
-  };
 
   return (
     <>

@@ -1,5 +1,4 @@
-﻿/* eslint-disable react-hooks/exhaustive-deps */
-import { NNBlockType } from '@Src/types';
+﻿import { NNBlockType } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import { useCallback } from 'react';
