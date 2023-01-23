@@ -23,6 +23,7 @@ import {
   Button,
   Theme,
   SelectChangeEvent,
+  IconButton,
 } from '@mui/material';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 
@@ -34,6 +35,7 @@ import {
 } from '@Redux/project/selectors/asset';
 import {
   setBackgroundList,
+  updateElementStyles,
   uploadElementAsset,
   uploadImageByUrl,
 } from '@Redux/project/actions';
@@ -43,6 +45,8 @@ import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { URL_REGEX } from '@Constants/defaultParams';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import PositionSelector, { BackgroundPosition } from './PositionSelector';
+import { selectActiveElementId } from '@Redux/project/selectors/element';
+import RemoveIcon from '@mui/icons-material/Remove';
 interface StyleProperties {
   backgroundColor?: React.CSSProperties['backgroundColor'];
   backgroundImage?: React.CSSProperties['backgroundImage'];
@@ -88,6 +92,15 @@ enum BackgroundClip {
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
+  imageIcon: {
+    position: 'absolute',
+    top: '6px',
+    right: '5px',
+    color: 'black',
+    height: '15px',
+    width: '15px',
+    background: 'white',
+  },
   root: {
     // padding: '0 16px',
   },
@@ -100,6 +113,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 100,
     background: '#ddd',
     borderRadius: 10,
+    position: 'relative',
     marginTop: theme.spacing(1),
     display: 'flex',
     alignItems: 'center',
@@ -185,7 +199,7 @@ const BackgroundBlock: React.FC<Props> = ({
   }, [element.id]);
 
   const currentScreenId = useSelector(selectCurrentScreenId);
-
+  const activeElementId = useSelector(selectActiveElementId);
   const fileSelectorRef = useRef<HTMLInputElement>(null);
 
   const currentAssetListId = useSelector(selectCurrentAssetListId);
@@ -331,20 +345,23 @@ const BackgroundBlock: React.FC<Props> = ({
     [element, currentScreenId],
   );
 
-  const imageRemoveHandler = useCallback((e) => {
-    // dispatch(
-    //   uploadImageByUrl(
-    //     element.id,
-    //     { url: null, useInBackground: false },
-    //     assetLists[0].id,
-    //     {
-    //       screenId: currentScreenId,
-    //     },
-    //   ),
-    // );
-    alert('HEllo');
-    e.stopPropagation();
-  }, []);
+  const imageRemoveHandler = useCallback(
+    (e) => {
+      dispatch(
+        updateElementStyles(
+          activeElementId,
+          {
+            backgroundImage: 'unset',
+          },
+          {
+            screenId: currentScreenId,
+          },
+        ),
+      );
+      e.stopPropagation();
+    },
+    [activeElementId],
+  );
 
   const handleChangePosition = useCallback(
     (backgroundPosition) => {
@@ -373,9 +390,10 @@ const BackgroundBlock: React.FC<Props> = ({
 
     return (
       <>
-        <div onClick={handleSelectImage} className={classes.formControl}>
+        <div className={classes.formControl}>
           <InputLabel>Background Image</InputLabel>
           <div
+            onClick={handleSelectImage}
             className={classes.imageWrapper}
             style={{
               backgroundImage,
@@ -384,9 +402,28 @@ const BackgroundBlock: React.FC<Props> = ({
               backgroundSize: 'cover',
             }}
           >
-            {!backgroundImage ? <Icon fontSize="medium">image</Icon> : null}
+            {['none', 'unset'].includes(backgroundImage) ? (
+              <Icon fontSize="small">image</Icon>
+            ) : null}
+            {!['none', 'unset'].includes(backgroundImage) ? (
+              <IconButton
+                onClick={imageRemoveHandler}
+                style={{
+                  position: 'absolute',
+                  top: '6px',
+                  right: '5px',
+                  color: 'black',
+                  height: '15px',
+                  width: '15px',
+                  background: 'white',
+                }}
+              >
+                <RemoveIcon style={{ fontSize: '10px' }} />
+              </IconButton>
+            ) : (
+              ''
+            )}
           </div>
-          <button onClick={imageRemoveHandler}>remove</button>
         </div>
 
         <div className={classes.urlContainer}>

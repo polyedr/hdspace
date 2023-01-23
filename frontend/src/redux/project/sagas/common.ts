@@ -163,9 +163,9 @@ export function* updateOrReplaceElementStyles(
             type === 'replace'
               ? styles
               : {
-                  ...state[id].styles.ownStyles,
-                  ...styles,
-                },
+                ...state[id].styles.ownStyles,
+                ...styles,
+              },
         },
       }),
     );
