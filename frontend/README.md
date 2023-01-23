@@ -6,6 +6,8 @@ Project tested with **nodejs v16.19.0** (lts at the moment).
 
 Run `npm install` to install all necessary dependencies.
 
+To enable legacy dependencies run npm config set `legacy-peer-deps true`
+
 Now you can start the project.
 
 Available scripts:

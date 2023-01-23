@@ -95,7 +95,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       !element.parameters.sourceElementId &&
       canDragAndDrop &&
       !isProto,
-    end: (dragSource, monitor) => {
+    end: (_, monitor) => {
       if (!monitor.didDrop()) {
         dispatch(setCurrentDropTargetParams(null));
       }

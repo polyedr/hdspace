@@ -21,6 +21,7 @@ import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
 import { DOMHandler } from './DOMHandler';
+import HoverInterations from './ElementsInteractions/HoverInterations';
 
 const useStyles = makeStyles({
   workspace: {
@@ -161,6 +162,7 @@ const Workspace: React.FC<Props> = () => {
                 {!freeCanvasMode && !isPrototypeMode && (
                   <ElementsInteractions posRight={scrollLeft} />
                 )}
+                {isPrototypeMode && <HoverInterations />}
               </Scrollbar>
             </EditorViewport>
             <NNProcessingModal />
