@@ -7,6 +7,7 @@ import { AppReduxState } from '@Redux/types';
 import TYPES from '@Redux/actionTypes';
 import ImageRecognizeForm from '@Components/Dialogs/NewScreenModal/ImageRecognizeForm';
 import { vi } from 'vitest';
+import { AppThemeProvider } from '@Src/styles/Theme';
 
 Object.defineProperty(URL, 'createObjectURL', {
   writable: true,
@@ -28,7 +29,9 @@ describe('ImageRecognizeForm', () => {
 
     ui = render(
       <Provider store={store}>
-        <ImageRecognizeForm onClose={closeCallback} />
+        <AppThemeProvider>
+          <ImageRecognizeForm onClose={closeCallback} />
+        </AppThemeProvider>
       </Provider>,
     );
   });
@@ -55,12 +58,12 @@ describe('ImageRecognizeForm', () => {
   });
 
   it('should have disabled confirm button if no file selected', () => {
-    const button = ui.getByText('Create').parentElement;
+    const button = ui.getByText('Create');
     expect(button).toBeDisabled();
   });
 
   it('should dispatch recognizeImage action of confirm', () => {
-    const button = ui.getByText('Create').parentElement;
+    const button = ui.getByText('Create');
     if (!button) throw new Error('Can not find button');
     const input = ui.getByLabelText('Upload');
     fireEvent.change(input, {

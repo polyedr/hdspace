@@ -2,10 +2,9 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
-import { MuiThemeProvider } from '@material-ui/core/styles';
 import Navigator from '../../../../components/LeftPanel/Navigator';
 import { mockState } from '../../test-utils';
-import { theme } from '../../../../styles/Theme';
+import { AppThemeProvider } from '@Src/styles/Theme';
 
 describe('Navigator', () => {
   let store;
@@ -17,9 +16,9 @@ describe('Navigator', () => {
 
     ui = render(
       <Provider store={store}>
-        <MuiThemeProvider theme={theme}>
+        <AppThemeProvider>
           <Navigator />
-        </MuiThemeProvider>
+        </AppThemeProvider>
       </Provider>,
     );
   });
