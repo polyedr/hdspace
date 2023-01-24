@@ -5,14 +5,14 @@ import {
   StyledToggleButton,
   StyledToggleButtonGroup,
 } from '@Components/styledComponents';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 import {
   positionsList,
   initialInsetStyles,
   particularPositionStyles,
 } from '@Components/RightPanel/PropertiesTab/Controls/Position/constants/constants';
 import ClearIconMui from '@mui/icons-material/Clear';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import FloatIcons from '@Components/RightPanel/PropertiesTab/Controls/Position/components/FloatIcons';
 import { IconType } from '@Components/RightPanel/PropertiesTab/Controls/Position/enums/IconTypes';
 import { POSITIONS } from '@Components/RightPanel/PropertiesTab/Controls/Position/enums/Positions';

@@ -1,11 +1,24 @@
-import React, { useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { BoundingStyles, DropTargetParams } from '@Src/types';
-import { Rnd } from 'react-rnd';
-import cn from 'classnames';
-import { selectIsElementActive } from '@Redux/project/selectors/element';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import ELEMENT_IDS from '@Constants/elementIds';
+import { makeStyles } from '@mui/styles';
+import { Menu, MenuItem, Theme } from '@mui/material';
+import {
+  copyActiveElement,
+  pasteCopiedElement,
+  pasteElementAtIndex,
+} from '@Redux/project/actions';
 import { selectShowingGrid } from '@Redux/project/selectors/base';
+import {
+  getIndexOfSelectedElementInParentChildren,
+  selectIsElementActive,
+  selectItemToCopyInfo,
+} from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { BoundingStyles, DropTargetParams, Entity } from '@Src/types';
+import { canElementHaveChildren } from '@Utils/AvailableChildrenHelper';
+import cn from 'classnames';
+import React, { useCallback, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Rnd } from 'react-rnd';
 import DropPositionMarker from './DropPositionMarker';
 
 interface Props {
@@ -84,6 +97,42 @@ const Borders: React.FC<Props> = ({
   const showGrid = useSelector(selectShowingGrid);
   const classes = useStyles({ isActive });
   const rightGridScale = useRef<HTMLDivElement>(null);
+  const index = useSelector(getIndexOfSelectedElementInParentChildren);
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const canHaveChildren = canElementHaveChildren(type as Entity);
+  const emptyClipboard = !useSelector(selectItemToCopyInfo);
+  const dispatch = useDispatch();
+
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+
+  const handleContextMenu = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      event.preventDefault();
+
+      const frame = window.parent.document.getElementById(
+        ELEMENT_IDS.canvas,
+      ) as HTMLIFrameElement;
+
+      const { x, y } = frame.getBoundingClientRect();
+
+      setContextMenu(
+        contextMenu === null
+          ? {
+              mouseX: event.clientX + x,
+              mouseY: event.clientY + y,
+            }
+          : null,
+      );
+    },
+    [elementId],
+  );
+
+  const handleClose = () => {
+    setContextMenu(null);
+  };
 
   if (!elementId || !styles) {
     return null;
@@ -139,12 +188,77 @@ const Borders: React.FC<Props> = ({
 
   const lockedAspectRatioElements: [string] = ['carousel'];
   const selectedElementType: string = type;
+
+  const pasteToBoard = () => {
+    dispatch(pasteCopiedElement({ screenId: currentScreenId }));
+    handleClose();
+  };
+
+  const pasteAfterElement = () => {
+    dispatch(pasteElementAtIndex({ index: index + 1 }));
+  };
+
+  const pasteBeforeElement = () => {
+    dispatch(pasteElementAtIndex({ index }));
+  };
+
+  const copyToClipBoard = () => {
+    dispatch(copyActiveElement());
+    handleClose();
+  };
+
   if (keepAspectRatio) {
     lockedAspectRatioElements.push(selectedElementType);
   }
 
   return (
     <>
+      {!canHaveChildren && (
+        <Menu
+          open={contextMenu !== null}
+          onClose={handleClose}
+          anchorReference="anchorPosition"
+          anchorPosition={
+            contextMenu !== null
+              ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+              : undefined
+          }
+        >
+          <MenuItem onClick={copyToClipBoard}>Copy</MenuItem>
+          <MenuItem
+            disabled={canHaveChildren || emptyClipboard}
+            onClick={pasteAfterElement}
+          >
+            Paste After
+          </MenuItem>
+          <MenuItem
+            disabled={canHaveChildren || emptyClipboard}
+            onClick={pasteBeforeElement}
+          >
+            Paste Before
+          </MenuItem>
+        </Menu>
+      )}
+      {canHaveChildren && (
+        <Menu
+          open={contextMenu !== null}
+          onClose={handleClose}
+          anchorReference="anchorPosition"
+          anchorPosition={
+            contextMenu !== null
+              ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+              : undefined
+          }
+        >
+          <MenuItem onClick={copyToClipBoard}>Copy</MenuItem>
+          <MenuItem
+            disabled={!canHaveChildren || emptyClipboard}
+            onClick={pasteToBoard}
+          >
+            Paste
+          </MenuItem>
+        </Menu>
+      )}
       {isActiveBorder &&
         !showGrid &&
         !['root', 'calendar', 'clock'].includes(type) && (
@@ -195,7 +309,8 @@ const Borders: React.FC<Props> = ({
             >
               {rightGridScale.current?.scrollWidth !== undefined
                 ? `${Math.round(
-                    (Number(rightGridScale.current?.scrollWidth) * 100) / 100,
+                    // eslint-disable-next-line prettier/prettier
+                  (Number(rightGridScale.current?.scrollWidth) * 100) / 100,
                   )}px`
                 : null}
             </div>
@@ -243,6 +358,16 @@ const Borders: React.FC<Props> = ({
             topRight: true,
           }}
         >
+          <div
+            onContextMenu={handleContextMenu}
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+            }}
+          />
           {enableDropTargetBordersMode && isDropTarget && (
             <DropPositionMarker styles={styles} isActive={isActiveBorder} />
           )}

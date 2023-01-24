@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
 import { useHistory } from 'react-router';
-import Switch from '@material-ui/core/Switch';
+import Switch from '@mui/material/Switch';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 

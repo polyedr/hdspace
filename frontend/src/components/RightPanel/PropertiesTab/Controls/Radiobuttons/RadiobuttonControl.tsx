@@ -3,26 +3,32 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { deleteElement } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { IconButton } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { IconButton, lighten, Theme } from '@mui/material';
 import {
   StyledAccordion,
   StyledAccordionDetails,
   StyledAccordionSummary,
   StyledTextField,
 } from '@Components/styledComponents';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(({ spacing, palette }) => ({
+const useStyles = makeStyles<Theme>(({ spacing, palette }) => ({
   title: {
+    '&.MuiAccordionSummary-root': {
+      paddingRight: 0,
+    },
     '& .MuiAccordionSummary-content': {
-      padding: '0.5em 1em',
+      padding: 0,
+      width: '100%',
     },
   },
   wrapper: {
     flex: 1,
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: '5px 0',
   },
   details: {
     display: 'flex',
@@ -88,7 +94,6 @@ const RadiobuttonControl: FC<Props> = ({
 
       <StyledAccordionDetails className={classes.details}>
         <StyledTextField
-          variant="outlined"
           defaultValue={label}
           onChange={(ev) => debouncedLabel.callback(ev.target.value)}
           label="Label"
@@ -99,7 +104,6 @@ const RadiobuttonControl: FC<Props> = ({
         />
 
         <StyledTextField
-          variant="outlined"
           onChange={(ev) => debouncedValue.callback(ev.target.value)}
           defaultValue={value}
           label="Value"

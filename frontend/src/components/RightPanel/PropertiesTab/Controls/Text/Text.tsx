@@ -6,12 +6,7 @@ import {
 } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
-import {
-  Checkbox,
-  FormControlLabel,
-  MenuItem,
-  FormLabel,
-} from '@material-ui/core';
+import { Checkbox, FormControlLabel, MenuItem, FormLabel } from '@mui/material';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { useSelector } from 'react-redux';
 import { selectScreensWithoutMaster } from '@Redux/project/selectors/screen';
@@ -113,7 +108,6 @@ const Text: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
     <>
       <StyledTextField
         value={state || ''}
-        variant="outlined"
         onChange={handleChange}
         label="Text Content"
         margin="dense"

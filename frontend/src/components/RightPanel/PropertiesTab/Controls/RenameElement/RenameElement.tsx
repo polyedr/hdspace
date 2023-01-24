@@ -21,7 +21,7 @@ const RenameElement: React.FC<Props> = ({ canEdit }) => {
   });
 
   return (
-    <div style={{ padding: '0 16px' }}>
+    <div>
       <StyledTextField
         fullWidth
         margin="dense"

@@ -22,16 +22,14 @@ import {
   useDebouncedInputChange,
   useDebouncedValueChange,
 } from '@Utils/debounceHooks';
-import { MenuItem } from '@material-ui/core';
-import { Box } from '@mui/material';
-import { makeStyles } from '@material-ui/core/styles';
+import { MenuItem, Box } from '@mui/material';
+import { styled, makeStyles } from '@mui/styles';
 import { useSelector } from 'react-redux';
 import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
 import cn from 'classnames';
 import BORDER_STYLE from '@Constants/borderStyle';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
 import { useDebouncedCallback } from 'use-debounce';
-import { styled } from '@mui/styles';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 

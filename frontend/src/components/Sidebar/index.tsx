@@ -4,12 +4,10 @@ import {
 } from '@Redux/project/selectors/base';
 import React, { FC, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Box from '@mui/material/Box';
-import { Tabs, Tab } from '@material-ui/core';
+import { Tabs, Tab, Box, SwipeableDrawer } from '@mui/material';
 import { components, TABS_PMTOOLS } from '@Constants/pmtools/tabsNamesSidebar';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { setSidebarOpen } from '@Redux/project/actions';
-import { makeStyles, styled } from '@material-ui/core/styles';
+import { makeStyles, styled } from '@mui/styles';
 
 const useStyles = makeStyles({
   root: {

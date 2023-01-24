@@ -10,14 +10,16 @@ import {
   ListItemText,
   Stack,
   styled,
+  ClickAwayListener,
   TextField as MuiTextField,
 } from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import EditIcon from '@mui/icons-material/Edit';
-import CloseIcon from '@mui/icons-material/Close';
-import { ClickAwayListener } from '@material-ui/core';
+import {
+  Check as CheckIcon,
+  DeleteOutline as DeleteOutlineIcon,
+  AlternateEmail as AlternateEmailIcon,
+  Edit as EditIcon,
+  Close as CloseIcon,
+} from '@mui/icons-material';
 import { BoardTask, BoardTaskCheckListItem } from '@Redux/pmtools/types';
 import { useDispatch } from 'react-redux';
 import {

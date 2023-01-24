@@ -1,6 +1,6 @@
 import React from 'react';
-import { Chip, Button } from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel';
+import { Chip, Button, Theme } from '@mui/material';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { connect, useSelector } from 'react-redux';
 import {
   addElementClassName,
@@ -14,15 +14,15 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { AppReduxState } from '@Redux/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { UserProjectPermission } from '@Src/types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import EditableStyles from '../EditableStyles/EditableStyles';
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles<Theme>(({ spacing }) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',
-    padding: '0 16px',
+    // padding: '0 16px',
   },
   chip: {
     marginRight: '5px',
@@ -51,15 +51,17 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 
   elementsStylesChip: {
-    marginRight: '5px',
-    marginBottom: '5px',
-    color: 'rgba(42, 42, 45, 1)',
-    backgroundColor: 'rgba(243, 244, 246, 0.8)',
-    '&:hover, &:focus': {
-      backgroundColor: 'rgba(243, 244, 246, 1)',
-    },
-    '& .MuiChip-label': {
-      textTransform: 'capitalize',
+    '&.MuiChip-root': {
+      marginRight: '5px',
+      marginBottom: '5px',
+      color: 'rgba(42, 42, 45, 1)',
+      backgroundColor: 'rgba(243, 244, 246, 0.8)',
+      '&:hover, &:focus': {
+        backgroundColor: 'rgba(243, 244, 246, 1)',
+      },
+      '& .MuiChip-label': {
+        textTransform: 'capitalize',
+      },
     },
   },
   chipContainer: {

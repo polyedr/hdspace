@@ -1,11 +1,11 @@
 import { renderElementButtons } from '@Components/RightPanel/ElementsTab/ElementsBlock';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
-import { Button, TextField } from '@material-ui/core';
+import { Button, TextField } from '@mui/material';
 import { convertElementToData } from '@Utils/elementsHierarchy';
 import React, { FC, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { uniq } from 'ramda';
 
 const useStyles = makeStyles({

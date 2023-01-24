@@ -1,13 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { lighten, Theme, IconButton } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { StyledTextField } from '@Components/styledComponents';
-import { IconButton } from '@material-ui/core';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles<Theme>(({ palette }) => ({
   wrapper: {
     flex: 1,
     display: 'flex',

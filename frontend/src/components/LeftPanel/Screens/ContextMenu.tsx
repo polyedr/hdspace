@@ -2,9 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { duplicateScreen } from '@Redux/project/actions';
 import { selectScreensLength } from '@Redux/project/selectors/screen';
-import { Menu, MenuItem } from '@material-ui/core';
+import { Menu, MenuItem, styled } from '@mui/material';
 import { Screen } from '@Src/types';
-import { styled } from '@mui/material';
 import Icon from '../../UI/Icon';
 
 const StyledMenu = styled(Menu)({

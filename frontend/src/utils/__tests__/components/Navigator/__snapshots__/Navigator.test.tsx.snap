@@ -3,7 +3,7 @@
 exports[`Navigator > should render a Navigator component 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-1"
+    class="MuiBox-root css-0"
   >
     <div
       class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAccordion-root Mui-expanded css-3n4nvf-MuiPaper-root-MuiAccordion-root"
@@ -12,7 +12,7 @@ exports[`Navigator > should render a Navigator component 1`] = `
         class="MuiAccordionDetails-root css-h4f17h-MuiAccordionDetails-root"
       >
         <div
-          class="makeStyles-tree-2"
+          class="makeStyles-tree-1"
           id="navigator-id"
         >
           <div
@@ -31,7 +31,7 @@ exports[`Navigator > should render a Navigator component 1`] = `
                   <div
                     aria-expanded="true"
                     aria-selected="false"
-                    class="makeStyles-treeItem-3 makeStyles-treeItem-7"
+                    class="makeStyles-treeItem-2 makeStyles-treeItem-6"
                     data-react-beautiful-dnd-draggable="0"
                     id="treeitem-1"
                     role="group"
@@ -39,7 +39,7 @@ exports[`Navigator > should render a Navigator component 1`] = `
                   >
                     <span>
                       <button
-                        class="makeStyles-iconButton-8"
+                        class="makeStyles-iconButton-7"
                         tabindex="-1"
                         type="button"
                       >
@@ -59,14 +59,14 @@ exports[`Navigator > should render a Navigator component 1`] = `
                       </button>
                     </span>
                     <span
-                      class="makeStyles-text-6"
+                      class="makeStyles-text-5"
                     >
                       Root
                     </span>
                   </div>
                   <div
                     aria-selected="false"
-                    class="makeStyles-treeItem-3 makeStyles-treeItem-9"
+                    class="makeStyles-treeItem-2 makeStyles-treeItem-8"
                     data-react-beautiful-dnd-draggable="0"
                     id="treeitem-2"
                     role="treeitem"
@@ -74,12 +74,13 @@ exports[`Navigator > should render a Navigator component 1`] = `
                   >
                     <span>
                       <span
-                        class="makeStyles-iconButton-8"
+                        class="makeStyles-iconButton-7"
                       />
                     </span>
                     <svg
                       aria-hidden="true"
-                      class="MuiSvgIcon-root makeStyles-icon-5"
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-icon-4 css-i4bv87-MuiSvgIcon-root"
+                      data-testid="NotesIcon"
                       focusable="false"
                       viewBox="0 0 24 24"
                     >
@@ -88,7 +89,7 @@ exports[`Navigator > should render a Navigator component 1`] = `
                       />
                     </svg>
                     <span
-                      class="makeStyles-text-6"
+                      class="makeStyles-text-5"
                     >
                       paragraph
                     </span>

@@ -1,7 +1,7 @@
-import { ClickAwayListener } from '@material-ui/core';
 import {
   Box as MuiBox,
   Button as MuiButton,
+  ClickAwayListener,
   Stack,
   styled,
 } from '@mui/material';
@@ -10,13 +10,13 @@ import React, { useCallback, useState } from 'react';
 import Editor, { RenderEditorHtml } from './Editor';
 
 const Box = styled(MuiBox)({
-  border: '1px solid #F3F4F6',
+  border: '1px solid #c4c4c4',
   padding: '12px 15px 10px',
   borderRadius: 4,
   marginBottom: 10,
 
   '&:hover': {
-    border: '1px solid #B0B0BD',
+    border: '1px solid #000000',
   },
 
   '& p': {
@@ -25,12 +25,12 @@ const Box = styled(MuiBox)({
 });
 
 const EditorWrapper = styled('div')({
-  border: '1px solid #E4E6EB',
+  border: '1px solid #c4c4c4',
   borderRadius: 4,
   padding: '12px 15px 10px',
 
   '& p': {
-    margin: '0 0 15px',
+    margin: '0 0px 15px',
   },
 
   '& p span': {
@@ -40,8 +40,8 @@ const EditorWrapper = styled('div')({
 });
 
 const InfoSubTitle = styled('p')({
-  fontSize: 16,
-  color: '#81818E',
+  fontSize: 14,
+  color: '#a2a2a2',
 });
 
 const Button = styled(MuiButton)({
