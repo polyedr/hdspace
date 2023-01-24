@@ -10,6 +10,7 @@ import { create } from 'jss';
 
 import FrameComponent, { FrameContextConsumer } from 'react-frame-component';
 import { useSelector } from 'react-redux';
+import { SCREEN_WIDTH } from './constants';
 
 const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
 
@@ -38,7 +39,7 @@ const ScreenFrame: React.FC = ({ children }) => {
   return (
     <div
       className="wireframe-screen-frame"
-      style={{ width: 600, overflow: 'scroll' }}
+      style={{ width: SCREEN_WIDTH, overflow: 'scroll' }}
     >
       {children}
     </div>

@@ -18,7 +18,6 @@ const Title: FC<PropertiesChangeProps<ImageElement>> = ({
   return (
     <StyledTextField
       value={state || ''}
-      variant="outlined"
       onChange={handleChange}
       label="Title"
       margin="dense"

@@ -85,7 +85,7 @@ export const constraintsStyles = makeStyles(() => ({
       height: 35,
       padding: '0 5px',
       backgroundColor: '#F3F4F6',
-      textAlign: 'center',
+      textAlign: 'right',
     },
 
     '& label': {

@@ -12,6 +12,7 @@ import {
 } from '@Redux/project/actions';
 import { FRAMEWORKS_LIST } from '@Constants/frameworks';
 import { GRID_CELL_SPACE, GRID_STROKE_WIDTH } from '@/constants/grid';
+import { SCREEN_WIDTH } from './constants';
 
 export type WireframeScreen = ProjectScren & {
   position: { x: number; y: number };
@@ -21,6 +22,8 @@ type Screens = Normalized<WireframeScreen>;
 function buildScreenData(_screens: Normalized<ProjectScren>): Screens {
   const screens = {};
 
+  let index = 0;
+
   Object.entries(_screens).forEach(([key, screen]) => {
     if (screen.name.includes('Master')) {
       return;
@@ -28,8 +31,13 @@ function buildScreenData(_screens: Normalized<ProjectScren>): Screens {
 
     screens[key] = {
       ...screen,
-      position: { x: GRID_CELL_SPACE * 2, y: GRID_CELL_SPACE * 4 },
+      position: {
+        x: GRID_CELL_SPACE * 2 + (SCREEN_WIDTH + 100) * index,
+        y: GRID_CELL_SPACE * 4,
+      },
     };
+
+    index++;
   });
 
   return screens;

@@ -67,7 +67,6 @@ const SliderSettings: React.FC<PropertiesChangeProps<SliderElement>> = ({
         margin="dense"
         fullWidth
         disabled={!canEdit}
-        variant="outlined"
       />
       <StyledTextField
         value={max}
@@ -76,7 +75,6 @@ const SliderSettings: React.FC<PropertiesChangeProps<SliderElement>> = ({
         margin="dense"
         fullWidth
         disabled={!canEdit}
-        variant="outlined"
       />
       <StyledTextField
         value={value}
@@ -85,7 +83,6 @@ const SliderSettings: React.FC<PropertiesChangeProps<SliderElement>> = ({
         margin="dense"
         fullWidth
         disabled={!canEdit}
-        variant="outlined"
       />
       <StyledTextField
         value={step}
@@ -94,7 +91,6 @@ const SliderSettings: React.FC<PropertiesChangeProps<SliderElement>> = ({
         margin="dense"
         fullWidth
         disabled={!canEdit}
-        variant="outlined"
       />
     </>
   );
