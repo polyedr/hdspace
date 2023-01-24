@@ -91,6 +91,7 @@
     "mui-color": "^1.2.0",
     "mui-rte": "^2.0.1",
     "notistack": "^2.0.8",
+    "patch-package": "^6.5.1",
     "postcss-preset-env": "^7.8.2",
     "pretty": "^2.0.0",
     "pretty-bytes": "^5.4.1",
