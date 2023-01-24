@@ -21,6 +21,7 @@ const ElementWrapper = styled('div')<{ active: boolean }>(({ active }) => ({
 
 const Card = styled(MuiCard)<{ active: boolean }>(({ active }) => ({
   // boxShadow: `0 0 1px ${active ? 4 : 1}px rgba(0,0,0,.2)`,
+  backgroundColor: 'transparent',
 }));
 
 const RenderElement = ({ elementId, screenId, allElements }) => {
