@@ -52,7 +52,6 @@ const TagName: React.FC<PropertiesChangeProps<HTMLLibraryElement>> = ({
   return (
     <>
       <StyledTextField
-        variant="outlined"
         value={state}
         onChange={handleNameChange}
         label="Name"

@@ -15,14 +15,20 @@ import {
 
 const useStyles = makeStyles<Theme>(({ spacing, palette }) => ({
   title: {
+    '&.MuiAccordionSummary-root': {
+      paddingRight: 0,
+    },
     '& .MuiAccordionSummary-content': {
-      padding: '0.5em 1em',
+      padding: 0,
+      width: '100%',
     },
   },
   wrapper: {
     flex: 1,
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: '5px 0',
   },
   details: {
     display: 'flex',
@@ -89,7 +95,6 @@ const SelectOption: React.FC<Props> = ({
 
       <StyledAccordionDetails className={classes.details}>
         <StyledTextField
-          variant="outlined"
           defaultValue={name}
           onChange={(ev) => debouncedName.callback(ev.target.value)}
           label="Name"
@@ -100,7 +105,6 @@ const SelectOption: React.FC<Props> = ({
         />
 
         <StyledTextField
-          variant="outlined"
           onChange={(ev) => debouncedValue.callback(ev.target.value)}
           defaultValue={value}
           label="Value"

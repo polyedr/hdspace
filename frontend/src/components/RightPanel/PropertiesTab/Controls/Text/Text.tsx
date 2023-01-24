@@ -108,7 +108,6 @@ const Text: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
     <>
       <StyledTextField
         value={state || ''}
-        variant="outlined"
         onChange={handleChange}
         label="Text Content"
         margin="dense"

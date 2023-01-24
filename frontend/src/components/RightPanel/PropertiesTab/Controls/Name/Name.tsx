@@ -23,7 +23,6 @@ const Name: React.FC<PropertiesChangeProps<CheckboxElement>> = ({
 
   return (
     <StyledTextField
-      variant="outlined"
       value={state}
       onChange={handleNameChange}
       label="Name"

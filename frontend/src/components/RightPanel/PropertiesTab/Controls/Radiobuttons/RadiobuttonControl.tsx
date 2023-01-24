@@ -15,14 +15,20 @@ import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles<Theme>(({ spacing, palette }) => ({
   title: {
+    '&.MuiAccordionSummary-root': {
+      paddingRight: 0,
+    },
     '& .MuiAccordionSummary-content': {
-      padding: '0.5em 1em',
+      padding: 0,
+      width: '100%',
     },
   },
   wrapper: {
     flex: 1,
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: '5px 0',
   },
   details: {
     display: 'flex',
@@ -88,7 +94,6 @@ const RadiobuttonControl: FC<Props> = ({
 
       <StyledAccordionDetails className={classes.details}>
         <StyledTextField
-          variant="outlined"
           defaultValue={label}
           onChange={(ev) => debouncedLabel.callback(ev.target.value)}
           label="Label"
@@ -99,7 +104,6 @@ const RadiobuttonControl: FC<Props> = ({
         />
 
         <StyledTextField
-          variant="outlined"
           onChange={(ev) => debouncedValue.callback(ev.target.value)}
           defaultValue={value}
           label="Value"

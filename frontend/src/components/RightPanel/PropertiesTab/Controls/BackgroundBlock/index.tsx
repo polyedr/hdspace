@@ -23,6 +23,7 @@ import {
   Button,
   Theme,
   SelectChangeEvent,
+  styled,
 } from '@mui/material';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 
@@ -93,8 +94,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     // padding: '0 16px',
   },
   formControl: {
-    width: '100%',
-    // marginBottom: theme.spacing(2),
+    '&.MuiFormControl-root': {
+      width: '100%',
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
   },
   imageWrapper: {
     height: 100,
@@ -122,6 +126,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
   },
 }));
+
+const ImageIcon = styled(Icon)({
+  width: 'auto',
+  height: 'auto',
+});
 
 const DEFAULT_BACKGROUND_COLOR = 'transparent';
 
@@ -359,10 +368,11 @@ const BackgroundBlock: React.FC<Props> = ({
 
     return (
       <>
-        <div onClick={handleSelectImage} className={classes.formControl}>
-          <InputLabel>Background Image</InputLabel>
+        <div className={classes.formControl}>
+          <InputLabel sx={{ margin: '5px 0' }}>Background Image</InputLabel>
           <div
             className={classes.imageWrapper}
+            onClick={handleSelectImage}
             style={{
               backgroundImage,
               backgroundPosition: 'center',
@@ -370,7 +380,9 @@ const BackgroundBlock: React.FC<Props> = ({
               backgroundSize: 'cover',
             }}
           >
-            {!backgroundImage ? <Icon fontSize="medium">image</Icon> : null}
+            {!backgroundImage ? (
+              <ImageIcon fontSize="medium">image</ImageIcon>
+            ) : null}
           </div>
         </div>
 
@@ -384,7 +396,7 @@ const BackgroundBlock: React.FC<Props> = ({
           />
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             component="span"
             style={{
               zIndex: 2,
@@ -410,7 +422,7 @@ const BackgroundBlock: React.FC<Props> = ({
           Upload image to asset list
         </Button>
 
-        <FormControl className={classes.formControl}>
+        <FormControl variant="standard" className={classes.formControl}>
           <InputLabel>Background Repeat</InputLabel>
           <Select
             onChange={handleChangeBackgroundRepeat}
@@ -430,7 +442,7 @@ const BackgroundBlock: React.FC<Props> = ({
           onChange={handleChangePosition}
           disabled={!canEdit}
         />
-        <FormControl className={classes.formControl}>
+        <FormControl variant="standard" className={classes.formControl}>
           <InputLabel>Background Size</InputLabel>
           <Select
             onChange={handleChangeBackgroundSize}
@@ -444,7 +456,7 @@ const BackgroundBlock: React.FC<Props> = ({
             ))}
           </Select>
         </FormControl>
-        <FormControl className={classes.formControl}>
+        <FormControl variant="standard" className={classes.formControl}>
           <InputLabel>Background Clip</InputLabel>
           <Select
             onChange={handleChangeBackgroundClip}
