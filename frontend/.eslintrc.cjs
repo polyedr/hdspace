@@ -35,7 +35,7 @@ module.exports = {
     '@typescript-eslint/strict-boolean-expressions': 'warn',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/naming-convention': 'off',
-    "@typescript-eslint/indent": 'off',
+    '@typescript-eslint/indent': 'off',
     '@typescript-eslint/strict-boolean-expressions': 'off',
     'react/display-name': 'off',
     '@typescript-eslint/restrict-template-expressions': 'warn',
