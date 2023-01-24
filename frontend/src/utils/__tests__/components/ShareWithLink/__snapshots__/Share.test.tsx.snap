@@ -12,7 +12,8 @@ exports[`Share > should render properly 1`] = `
   >
     <svg
       aria-hidden="true"
-      class="MuiSvgIcon-root makeStyles-icon-2"
+      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium makeStyles-icon-2 css-i4bv87-MuiSvgIcon-root"
+      data-testid="ShareIcon"
       focusable="false"
       viewBox="0 0 24 24"
     >

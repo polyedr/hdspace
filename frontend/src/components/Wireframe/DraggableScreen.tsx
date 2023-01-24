@@ -33,7 +33,11 @@ const DraggableScreen: React.FC<Props> = ({ data, zoom, onDrag, onStop }) => {
       grid={[GRID_CELL_SPACE * zoom, GRID_CELL_SPACE * zoom]}
       bounds="parent"
     >
-      <Box sx={styles} id={`wireframe-screen-${data.id}`}>
+      <Box
+        sx={styles}
+        className="wireframe-screen-frame"
+        id={`wireframe-screen-${data.id}`}
+      >
         <Screen data={data} active={currentScreen === data.id} />
       </Box>
     </Draggable>

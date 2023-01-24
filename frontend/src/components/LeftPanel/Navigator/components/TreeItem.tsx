@@ -79,7 +79,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     outline: '1px solid #5b5f67',
   },
   icon: {
-    fontSize: '1.2em',
+    '&.MuiSvgIcon-root': {
+      fontSize: '1.2em',
+    },
   },
   text: {
     padding: '5px',

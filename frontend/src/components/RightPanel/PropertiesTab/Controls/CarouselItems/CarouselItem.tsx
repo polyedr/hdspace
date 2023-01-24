@@ -95,7 +95,6 @@ const CarouselItem: React.FC<Props> = ({
 
       <StyledAccordionDetails className={classes.details}>
         <StyledTextField
-          variant="outlined"
           defaultValue={link}
           onChange={(ev) => debouncedLink.callback(ev.target.value)}
           label="link edit"
@@ -105,7 +104,6 @@ const CarouselItem: React.FC<Props> = ({
           disabled={!canEdit}
         />
         <StyledTextField
-          variant="outlined"
           defaultValue={alt}
           onChange={(ev) => debouncedAlt.callback(ev.target.value)}
           label="alt edit"

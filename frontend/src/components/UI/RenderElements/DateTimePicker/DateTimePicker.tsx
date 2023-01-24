@@ -1,15 +1,16 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   DateTimePicker as MuiDateTimePicker,
   LocalizationProvider,
   DatePicker,
   TimePicker,
-} from '@mui/lab';
+} from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import cn from 'classnames';
 import DateFnsUtils from '@date-io/date-fns';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { DateTimePickerType } from '@Src/types';
-import { TextField, TextFieldProps } from '@mui/material';
+import { TextField } from '@mui/material';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -33,27 +34,17 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
 
     const { type, label } = element.parameters;
 
-    const pickerProps = {
-      ampm: false,
-      style: { width: '100%' },
-      id: element.id,
-      value: date,
-      onChange: handleChange,
-      disabled: isDisabled,
-      disableToolbar: false,
-      label,
-      TextFieldComponent: (props: TextFieldProps) => (
-        <TextField
-          {...props}
-          inputProps={{
-            className: cn(
-              classes.ownStyles,
-              isDisabled ? classes.disabled : classes.ownPseudoStyles,
-            ),
-          }}
-        />
-      ),
-    };
+    const pickerProps = useMemo(() => {
+      return {
+        ampm: false,
+        id: element.id,
+        value: date,
+        onChange: handleChange,
+        disabled: isDisabled,
+        disableToolbar: false,
+        label,
+      };
+    }, [label, isDisabled, handleChange, element.id, date]);
 
     const renderPicker = useCallback(() => {
       switch (type) {
@@ -61,25 +52,15 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
           return (
             <DatePicker
               {...pickerProps}
-              variant="inline"
-              inputVariant="outlined"
-              format="MM/dd/yyyy"
-              KeyboardButtonProps={{
-                'aria-label': 'change date',
-              }}
+              renderInput={(params) => <TextField fullWidth {...params} />}
             />
           );
         }
         case DateTimePickerType.Time: {
           return (
             <TimePicker
-              variant="inline"
               {...pickerProps}
-              format="hh:mm a"
-              inputVariant="outlined"
-              KeyboardButtonProps={{
-                'aria-label': 'change time',
-              }}
+              renderInput={(params) => <TextField fullWidth {...params} />}
             />
           );
         }
@@ -87,12 +68,7 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
           return (
             <MuiDateTimePicker
               {...pickerProps}
-              format="MM/dd/yyyy hh:mm"
-              variant="inline"
-              inputVariant="outlined"
-              KeyboardButtonProps={{
-                'aria-label': 'change date time',
-              }}
+              renderInput={(params) => <TextField fullWidth {...params} />}
             />
           );
         }
@@ -103,16 +79,16 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
     }, [pickerProps, type, label]);
 
     return (
-      <div
-        ref={ref}
-        data-ls-id={element.id}
-        className={cn(className, groupClass)}
-        {...eventHandlers}
-      >
-        <LocalizationProvider utils={DateFnsUtils}>
+      <LocalizationProvider utils={DateFnsUtils} dateAdapter={AdapterDateFns}>
+        <div
+          ref={ref}
+          data-ls-id={element.id}
+          className={cn(className, groupClass, classes.ownStyles)}
+          {...eventHandlers}
+        >
           {renderPicker()}
-        </LocalizationProvider>
-      </div>
+        </div>
+      </LocalizationProvider>
     );
   },
 );
