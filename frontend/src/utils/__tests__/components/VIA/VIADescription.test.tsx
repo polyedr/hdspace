@@ -6,7 +6,7 @@ import { mockState, mockVIAState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import VIADescription from '@Components/Editor/VIA/VIADescription';
 import TYPES from '@Redux/actionTypes';
-import { AppThemeProvider, theme } from '../../../../styles/Theme';
+import { AppThemeProvider } from '../../../../styles/Theme';
 
 describe('VIADescription', () => {
   let store: MockStoreEnhanced<AppReduxState>;

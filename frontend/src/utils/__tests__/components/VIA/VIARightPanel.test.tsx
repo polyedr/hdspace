@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { fireEvent, render, RenderResult } from '@testing-library/react';
 import { mockState, mockVIAState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
-import { AppThemeProvider, theme } from '@Src/styles/Theme';
+import { AppThemeProvider } from '@Src/styles/Theme';
 import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
 import TYPES from '@Redux/actionTypes';
 

@@ -10,7 +10,7 @@ import cn from 'classnames';
 import DateFnsUtils from '@date-io/date-fns';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { DateTimePickerType } from '@Src/types';
-import { TextField, TextFieldProps } from '@mui/material';
+import { TextField } from '@mui/material';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
