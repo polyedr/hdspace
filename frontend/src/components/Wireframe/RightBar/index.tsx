@@ -23,7 +23,7 @@ import {
 import { useSelector } from 'react-redux';
 import {
   selectCurrentWireframeElement,
-  selectCurrentWireframeScreen,
+  // selectCurrentWireframeScreen,
 } from '@Redux/wireframe/selectors';
 
 const RightpanelBox = styled(Box)({
@@ -56,7 +56,7 @@ const RightSidebar = () => {
   const [open, setOpen] = React.useState(false);
 
   const selectedElementId = useSelector(selectCurrentWireframeElement);
-  const selectedScreenId = useSelector(selectCurrentWireframeScreen);
+  // const selectedScreenId = useSelector(selectCurrentWireframeScreen);
 
   const handleClick = () => {
     setOpen(!open);
