@@ -220,7 +220,7 @@ const SizeBlock: React.FC<Props> = ({
       <ButtonGroup>
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           value="small"
           onClick={handleSizeChange}
         >
@@ -228,7 +228,7 @@ const SizeBlock: React.FC<Props> = ({
         </Button>
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           value="large"
           onClick={handleSizeChange}
         >

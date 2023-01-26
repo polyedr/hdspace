@@ -8,6 +8,8 @@ import {
   ThemeProvider,
 } from '@mui/styles';
 import { CircularProgress } from '@mui/material';
+import { StyleSheetManager } from 'styled-components';
+import createCache from '@emotion/cache';
 import Frame, {
   FrameContext,
   FrameContextConsumer,
@@ -29,6 +31,7 @@ import { selectFreeCanvasMode } from '@Redux/project/selectors/screen';
 import GridLines from 'react-gridlines';
 import { WindowProvider } from './FrameContext';
 import useProjectHeaderStyles from '../hooks/useProjectHeaderStyles';
+import { CacheProvider } from '@emotion/react';
 
 const useStyles = makeStyles({
   loaderWrapper: {
@@ -211,6 +214,13 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
     >
       <FrameContextConsumer>
         {({ document: frameDocument, window: frameWindow }) => {
+          const cache = createCache({
+            key: `iframe-demo-${theme.direction}`,
+            prepend: true,
+            container: frameDocument.head,
+            stylisPlugins: theme.direction === 'rtl' ? [rtlPlugin] : [],
+          });
+
           const jss = create({
             plugins: [...jssPreset().plugins],
             insertionPoint: frameDocument.head,
@@ -227,9 +237,18 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
                     <DndFrame>
                       <WindowProvider value={frameWindow}>
                         <StylesProvider jss={jss}>
-                          <ThemeProvider theme={theme}>
-                            {children}
-                          </ThemeProvider>
+                          <StyleSheetManager
+                            target={frameDocument.head}
+                            stylisPlugins={
+                              theme.direction === 'rtl' ? [rtlPluginSc] : []
+                            }
+                          >
+                            <ThemeProvider theme={theme}>
+                              <CacheProvider value={cache}>
+                                {children}
+                              </CacheProvider>
+                            </ThemeProvider>
+                          </StyleSheetManager>
                         </StylesProvider>
                       </WindowProvider>
                     </DndFrame>
@@ -244,9 +263,18 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
                     <DndFrame>
                       <WindowProvider value={frameWindow}>
                         <StylesProvider jss={jss}>
-                          <ThemeProvider theme={theme}>
-                            {children}
-                          </ThemeProvider>
+                          <StyleSheetManager
+                            target={frameDocument.head}
+                            stylisPlugins={
+                              theme.direction === 'rtl' ? [rtlPluginSc] : []
+                            }
+                          >
+                            <ThemeProvider theme={theme}>
+                              <CacheProvider value={cache}>
+                                {children}
+                              </CacheProvider>
+                            </ThemeProvider>
+                          </StyleSheetManager>
                         </StylesProvider>
                       </WindowProvider>
                     </DndFrame>
@@ -256,7 +284,18 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
                 <DndFrame>
                   <WindowProvider value={frameWindow}>
                     <StylesProvider jss={jss}>
-                      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+                      <StyleSheetManager
+                        target={frameDocument.head}
+                        stylisPlugins={
+                          theme.direction === 'rtl' ? [rtlPluginSc] : []
+                        }
+                      >
+                        <ThemeProvider theme={theme}>
+                          <CacheProvider value={cache}>
+                            {children}
+                          </CacheProvider>
+                        </ThemeProvider>
+                      </StyleSheetManager>
                     </StylesProvider>
                   </WindowProvider>
                 </DndFrame>

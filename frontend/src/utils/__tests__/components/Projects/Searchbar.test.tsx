@@ -7,6 +7,7 @@ import { mockState } from '../../test-utils';
 import { AppReduxState } from '../../../../redux/types';
 import TYPES from '../../../../redux/actionTypes';
 import Searchbar from '../../../../components/Projects/Searchbar';
+import { AppThemeProvider } from '@Src/styles/Theme';
 
 describe('Searchbar', () => {
   let store: MockStoreEnhanced<AppReduxState>;
@@ -18,7 +19,9 @@ describe('Searchbar', () => {
 
     ui = render(
       <Provider store={store}>
-        <Searchbar />
+        <AppThemeProvider>
+          <Searchbar />
+        </AppThemeProvider>
       </Provider>,
     );
   });
@@ -33,7 +36,9 @@ describe('Searchbar', () => {
   });
 
   it('should have a parameter name field', () => {
-    const input = ui.getByLabelText('Search by');
+    const input = ui.getByLabelText('Search by', {
+      selector: 'input',
+    });
     expect(input).toBeInTheDocument();
   });
 
@@ -56,7 +61,9 @@ describe('Searchbar', () => {
   it('should change a parameter name on input change', () => {
     const testValue = ProjectsSearchParameter.status;
 
-    const input = ui.getByLabelText('Search by');
+    const input = ui.getByLabelText('Search by', {
+      selector: 'input',
+    });
     fireEvent.change(input, {
       target: {
         value: testValue,

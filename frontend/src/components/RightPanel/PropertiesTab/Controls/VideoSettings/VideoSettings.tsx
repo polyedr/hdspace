@@ -78,7 +78,6 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
     <div>
       <div>
         <StyledTextField
-          variant="outlined"
           value={linkInputValue}
           onChange={handleChangeLinkInputValue}
           label="Link"
