@@ -7,7 +7,7 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   root: {

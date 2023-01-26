@@ -24,9 +24,9 @@ const ImagesList = React.forwardRef<HTMLDivElement, RendererProps>(
 
     const childrenStyles = useSelector(
       selectElementsStyles(
-        (childrenImages as React.ReactElement[])?.map((item) => {
-          return item.props.elementId;
-        }),
+        (childrenImages as React.ReactElement[])?.map(
+          (item) => item.props.elementId,
+        ),
       ),
     );
 

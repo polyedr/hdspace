@@ -6,27 +6,9 @@ import {
 } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
-import { FormControlLabel, MenuItem } from '@material-ui/core';
+import { FormControlLabel, MenuItem } from '@mui/material';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles({
-  wrapper: {
-    margin: '1em 0 0 0',
-    display: 'flex',
-    alignItems: 'flex-start',
-  },
-  menuItem: {
-    textTransform: 'capitalize',
-  },
-  row: {
-    display: 'flex',
-    '& > *:first-child': {
-      marginRight: '1em',
-    },
-    width: '100%',
-  },
-});
+import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/NativeColumns/styles';
 
 const ruleStyles = [
   'none',
@@ -43,7 +25,7 @@ const ruleStyles = [
 
 const ruleWidths = ['thin', 'medium', 'thick'];
 
-type Props = {
+interface Props {
   element: StateElement;
   canEdit: boolean;
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
@@ -51,7 +33,7 @@ type Props = {
   ruleWidth: React.CSSProperties['columnRuleWidth'];
   ruleStyle: React.CSSProperties['columnRuleStyle'];
   ruleColor: React.CSSProperties['columnRuleColor'];
-};
+}
 
 const ColumnRule: React.FC<Props> = ({
   removeStyles,
@@ -62,7 +44,7 @@ const ColumnRule: React.FC<Props> = ({
   ruleColor = 'transparent',
   canEdit,
 }) => {
-  const classes = useStyles();
+  const classes = useColumnControlStyles();
 
   const [ruleColorValue, handleRuleColorChange] = useDebouncedValueChange(
     ruleColor,
@@ -74,11 +56,11 @@ const ColumnRule: React.FC<Props> = ({
   return (
     <>
       <FormControlLabel
-        className={classes.wrapper}
-        label="Column Rule"
-        labelPlacement="top"
+        classes={{ root: classes.rootLabel, label: classes.label }}
+        label="Column Fill"
+        labelPlacement="start"
         control={
-          <div className={classes.row}>
+          <div className={classes.control}>
             <StyledTextField
               fullWidth
               label="Rule Style"
@@ -91,11 +73,7 @@ const ColumnRule: React.FC<Props> = ({
               disabled={!canEdit}
             >
               {ruleStyles.map((style) => (
-                <MenuItem
-                  value={style}
-                  key={style}
-                  className={classes.menuItem}
-                >
+                <MenuItem value={style} key={style}>
                   {style}
                 </MenuItem>
               ))}
@@ -113,11 +91,7 @@ const ColumnRule: React.FC<Props> = ({
               disabled={!canEdit}
             >
               {ruleWidths.map((width) => (
-                <MenuItem
-                  value={width}
-                  key={width}
-                  className={classes.menuItem}
-                >
+                <MenuItem value={width} key={width}>
                   {width}
                 </MenuItem>
               ))}

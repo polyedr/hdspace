@@ -3,8 +3,7 @@ const generateFontFace = (
   pathName: string,
   fontWeight: number,
   fontStyle: string,
-): string => {
-  return `
+): string => `
     @font-face {
       font-family: "${fontFamily}";
       font-weight: ${fontWeight};
@@ -15,6 +14,5 @@ const generateFontFace = (
       url("fonts/${pathName}.svg#${pathName}") format("svg");
     }
   `;
-};
 
 export default generateFontFace;

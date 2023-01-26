@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`VIA Region should render VIA Regions wrapper 1`] = `
+exports[`VIA Region > should render VIA Regions wrapper 1`] = `
 <div>
   <div
     class="makeStyles-viaRoot-1"

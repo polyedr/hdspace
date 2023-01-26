@@ -5,7 +5,7 @@ import {
   PropertiesChangeProps,
 } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 import { useSelector } from 'react-redux';
 import {
   selectActiveElementParamByName,

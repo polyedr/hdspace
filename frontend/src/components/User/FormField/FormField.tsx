@@ -2,18 +2,18 @@ import React from 'react';
 import { Field } from 'react-final-form';
 import cn from 'classnames';
 
-const styles = require('./FormField.scss');
+import styles from './FormField.scss';
 
-type Props = {
+interface Props {
   name: string;
   placeholder: string;
   label?: string;
   type: string;
   className?: string;
   validator: (value: string) => string | undefined;
-};
+}
 
-const FormField = (props: Props) => {
+function FormField(props: Props) {
   const {
     name,
     placeholder,
@@ -54,6 +54,6 @@ const FormField = (props: Props) => {
       </Field>
     </div>
   );
-};
+}
 
 export default FormField;

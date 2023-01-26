@@ -16,7 +16,7 @@ const CustomContent = styled.div`
   flex: 1;
 `;
 
-const Layout = ({ children }) => {
+function Layout({ children }) {
   return (
     <CustomLayout>
       <TopPanel />
@@ -24,6 +24,6 @@ const Layout = ({ children }) => {
       <CustomContent>{children}</CustomContent>
     </CustomLayout>
   );
-};
+}
 
 export default Layout;

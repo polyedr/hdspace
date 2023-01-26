@@ -13,7 +13,7 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '@Src/types';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   FormControl,
   InputLabel,
@@ -21,7 +21,10 @@ import {
   MenuItem,
   Icon,
   Button,
-} from '@material-ui/core';
+  Theme,
+  SelectChangeEvent,
+  styled,
+} from '@mui/material';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -88,11 +91,14 @@ enum BackgroundClip {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    padding: '0 16px',
+    // padding: '0 16px',
   },
   formControl: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
+    '&.MuiFormControl-root': {
+      width: '100%',
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
   },
   imageWrapper: {
     height: 100,
@@ -120,6 +126,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
   },
 }));
+
+const ImageIcon = styled(Icon)({
+  width: 'auto',
+  height: 'auto',
+});
 
 const DEFAULT_BACKGROUND_COLOR = 'transparent';
 
@@ -310,22 +321,22 @@ const BackgroundBlock: React.FC<Props> = ({
   }, []);
 
   const handleChangeBackgroundSize = useCallback(
-    (e: React.ChangeEvent<{ value: unknown }>) => {
-      updateCSS('backgroundSize', e.target.value as string);
+    (e: SelectChangeEvent) => {
+      updateCSS('backgroundSize', e.target.value);
     },
     [element, currentScreenId],
   );
 
   const handleChangeBackgroundClip = useCallback(
-    (e: React.ChangeEvent<{ value: unknown }>) => {
-      updateCSS('backgroundClip', e.target.value as string);
+    (e: SelectChangeEvent) => {
+      updateCSS('backgroundClip', e.target.value);
     },
     [element, currentScreenId],
   );
 
   const handleChangeBackgroundRepeat = useCallback(
-    (e: React.ChangeEvent<{ value: unknown }>) => {
-      updateCSS('backgroundRepeat', e.target.value as string);
+    (e: SelectChangeEvent) => {
+      updateCSS('backgroundRepeat', e.target.value);
     },
     [element, currentScreenId],
   );
@@ -357,10 +368,11 @@ const BackgroundBlock: React.FC<Props> = ({
 
     return (
       <>
-        <div onClick={handleSelectImage} className={classes.formControl}>
-          <InputLabel>Background Image</InputLabel>
+        <div className={classes.formControl}>
+          <InputLabel sx={{ margin: '5px 0' }}>Background Image</InputLabel>
           <div
             className={classes.imageWrapper}
+            onClick={handleSelectImage}
             style={{
               backgroundImage,
               backgroundPosition: 'center',
@@ -368,7 +380,9 @@ const BackgroundBlock: React.FC<Props> = ({
               backgroundSize: 'cover',
             }}
           >
-            {!backgroundImage ? <Icon fontSize="medium">image</Icon> : null}
+            {!backgroundImage ? (
+              <ImageIcon fontSize="medium">image</ImageIcon>
+            ) : null}
           </div>
         </div>
 
@@ -382,7 +396,7 @@ const BackgroundBlock: React.FC<Props> = ({
           />
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             component="span"
             style={{
               zIndex: 2,
@@ -408,7 +422,7 @@ const BackgroundBlock: React.FC<Props> = ({
           Upload image to asset list
         </Button>
 
-        <FormControl className={classes.formControl}>
+        <FormControl variant="standard" className={classes.formControl}>
           <InputLabel>Background Repeat</InputLabel>
           <Select
             onChange={handleChangeBackgroundRepeat}
@@ -428,7 +442,7 @@ const BackgroundBlock: React.FC<Props> = ({
           onChange={handleChangePosition}
           disabled={!canEdit}
         />
-        <FormControl className={classes.formControl}>
+        <FormControl variant="standard" className={classes.formControl}>
           <InputLabel>Background Size</InputLabel>
           <Select
             onChange={handleChangeBackgroundSize}
@@ -442,7 +456,7 @@ const BackgroundBlock: React.FC<Props> = ({
             ))}
           </Select>
         </FormControl>
-        <FormControl className={classes.formControl}>
+        <FormControl variant="standard" className={classes.formControl}>
           <InputLabel>Background Clip</InputLabel>
           <Select
             onChange={handleChangeBackgroundClip}
@@ -473,7 +487,7 @@ const BackgroundBlock: React.FC<Props> = ({
         type="file"
         disabled={!canEdit}
       />
-      <FormControl className={classes.formControl}>
+      {/* <FormControl className={classes.formControl}>
         <InputLabel>Background Type</InputLabel>
         <Select onChange={handleChangeType} value={type}>
           {Object.values(BackgroundType).map((type) => (
@@ -482,14 +496,29 @@ const BackgroundBlock: React.FC<Props> = ({
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
+      </FormControl> */}
+      <StyledTextField
+        fullWidth
+        margin="dense"
+        label="Background Type"
+        value={type}
+        onChange={handleChangeType}
+        select
+        disabled={!canEdit}
+      >
+        {Object.values(BackgroundType).map((type) => (
+          <MenuItem value={type} key={type}>
+            {type}
+          </MenuItem>
+        ))}
+      </StyledTextField>
 
       {renderBackgroundControls()}
     </div>
   );
 };
 
-export default (props) => {
+export default function (props) {
   const assetLists = useSelector(selectAllAssetLists);
 
   if (!assetLists) {
@@ -497,4 +526,4 @@ export default (props) => {
   }
 
   return <BackgroundBlock {...props} assetLists={assetLists} />;
-};
+}

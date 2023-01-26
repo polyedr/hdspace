@@ -1,7 +1,8 @@
 import React from 'react';
-import { IconButton } from '@material-ui/core';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { IconButton, Theme } from '@mui/material';
+import { lighten } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { deleteElement } from '@Redux/project/actions';
@@ -13,7 +14,7 @@ import {
   StyledTextField,
 } from '@Components/styledComponents';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
   title: {
     '& .MuiAccordionSummary-content': {
       padding: '0.5em 1em',
@@ -41,13 +42,13 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   id: string;
   parameters: any;
   updateParams: any;
   isLast: boolean;
   canEdit: boolean;
-};
+}
 
 const CarouselItem: React.FC<Props> = ({
   id,
@@ -94,7 +95,6 @@ const CarouselItem: React.FC<Props> = ({
 
       <StyledAccordionDetails className={classes.details}>
         <StyledTextField
-          variant="outlined"
           defaultValue={link}
           onChange={(ev) => debouncedLink.callback(ev.target.value)}
           label="link edit"
@@ -104,7 +104,6 @@ const CarouselItem: React.FC<Props> = ({
           disabled={!canEdit}
         />
         <StyledTextField
-          variant="outlined"
           defaultValue={alt}
           onChange={(ev) => debouncedAlt.callback(ev.target.value)}
           label="alt edit"

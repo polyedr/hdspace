@@ -1,7 +1,9 @@
 import { StyledIconButton } from '@Components/styledComponents';
-import { Button } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import { Button, Theme } from '@mui/material';
+import {
+  Add as AddIcon,
+  Assignment as AssignmentIcon,
+} from '@mui/icons-material';
 import {
   assembleVIARegions,
   cancelRecognizing,
@@ -15,10 +17,10 @@ import {
 import { RIGHT_PANEL_WIDTH } from '@Src/styles/Theme';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import VIADescription from './VIADescription';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
   root: {
     width: RIGHT_PANEL_WIDTH,
     display: 'flex',

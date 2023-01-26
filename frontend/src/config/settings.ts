@@ -1,7 +1,7 @@
 import { MyAxiosProps } from '@Src/types';
 import axios from 'axios';
 
-export const env = process.env.NODE_ENV;
+export const env = import.meta.env.MODE;
 
 const settings = {
   development: {
@@ -26,15 +26,15 @@ const settings = {
 
 const { api } = settings[env] || settings.development;
 
-export const myAxios = (props: MyAxiosProps) => {
+export const myAxios = async (props: MyAxiosProps) => {
   const authorization = props.access
     ? { Authorization: `Bearer ${props.access}` }
     : {};
 
-  return axios({
+  return await axios({
     ...props,
     method: props.method,
-    baseURL: props.baseURL || `${api.host}/api/v${api.version}`,
+    baseURL: props.baseURL ?? `${api.host}/api/v${api.version}`,
     url: props.url,
     headers: {
       'Content-Type': props.contentType

@@ -31,7 +31,7 @@ const Container = React.forwardRef<HTMLDivElement, RendererProps>(
         )}
         style={
           (masterScreenEnabled && showGrid) ||
-          (showGrid && elementName === 'Root' && masterScreenEnabled === false)
+          (showGrid && elementName === 'Root' && !masterScreenEnabled)
             ? { background: 'transparent' }
             : {}
         }

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`Free Canvas should render a "free canvas" container 1`] = `
+exports[`Free Canvas > should render a "free canvas" container 1`] = `
 <div>
   <div
     class="root makeStyles-ownStyles-1 react-draggable"
@@ -36,30 +36,27 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
               paragraph
             </span>
             <hr
-              class="MuiDivider-root makeStyles-divider-18 MuiDivider-vertical"
+              class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical makeStyles-divider-18 css-ftc7wc-MuiDivider-root"
             />
             <button
-              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-17"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-iconButton-17 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
               tabindex="0"
               title="Settings"
               type="button"
             >
-              <span
-                class="MuiIconButton-label"
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit css-1vooibu-MuiSvgIcon-root"
+                data-testid="SettingsIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
               >
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
-                  />
-                </svg>
-              </span>
+                <path
+                  d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+                />
+              </svg>
               <span
-                class="MuiTouchRipple-root"
+                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
               />
             </button>
           </div>
@@ -79,53 +76,47 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
                 </b>
               </span>
               <hr
-                class="MuiDivider-root makeStyles-divider-18 MuiDivider-vertical"
+                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical makeStyles-divider-18 css-ftc7wc-MuiDivider-root"
               />
               <button
-                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-17"
+                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-iconButton-17 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
                 tabindex="0"
                 title="Move element up"
                 type="button"
               >
-                <span
-                  class="MuiIconButton-label"
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit css-1vooibu-MuiSvgIcon-root"
+                  data-testid="KeyboardArrowUpIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    aria-hidden="true"
-                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
-                    focusable="false"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"
-                    />
-                  </svg>
-                </span>
+                  <path
+                    d="M7.41 15.41 12 10.83l4.59 4.58L18 14l-6-6-6 6z"
+                  />
+                </svg>
                 <span
-                  class="MuiTouchRipple-root"
+                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
                 />
               </button>
               <button
-                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-17 Mui-disabled Mui-disabled"
+                class="MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-sizeMedium makeStyles-iconButton-17 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
                 disabled=""
                 tabindex="-1"
                 title="Move element down"
                 type="button"
               >
-                <span
-                  class="MuiIconButton-label"
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit css-1vooibu-MuiSvgIcon-root"
+                  data-testid="KeyboardArrowDownIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    aria-hidden="true"
-                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
-                    focusable="false"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
-                    />
-                  </svg>
-                </span>
+                  <path
+                    d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
               </button>
             </div>
           </div>

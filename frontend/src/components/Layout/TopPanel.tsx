@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectIsPrototypeMode, selectUserData } from '@Redux/user/selectors';
 import {
   selectCurrentProject,
-  selectSidebarOpen,
   selectBordersEnabled,
   selectShowingBorders,
+  selectShowingGrid,
 } from '@Redux/project/selectors/base';
 import {
   updateNameAndTagsProject,
-  setSidebarOpen,
   toggleContainersBorders,
+  toggleGrid,
 } from '@Redux/project/actions';
 import {
   selectVIAModeEnabled,
@@ -18,31 +18,50 @@ import {
 } from '@Redux/project/selectors/via';
 
 import {
-  FormControlLabel,
-  Typography,
-  Checkbox,
-  ToggleButton,
-  Menu,
-  MenuItem,
+  styled,
+  AppBar as MUIAppbar,
+  Toolbar,
+  IconButton,
+  Box,
+  Theme,
 } from '@mui/material';
-import { AppBar, Toolbar, IconButton, Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import MenuIcon from '@mui/icons-material/Menu';
+import ToggleButton from '@mui/material/ToggleButton';
+
+import { makeStyles } from '@mui/styles';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { StyledIconButton } from '@Components/styledComponents';
 import { HELP_LINK } from '@Src/config/settings';
 import Dialog from '../Dialogs/Dialog';
 import Layouts from './TopBar/Layouts';
-import ShowGrid from './TopBar/ShowGrid';
 import RenameProjectBar from './TopBar/RenameProjectBar';
 import TopBar from './TopBar';
 import History from './History';
 import Logo from '../UI/Logo';
 import Avatar from './Avatar';
+import { ShowGridIcon, ShowBlockIcon } from './icons';
 
-const useStyles = makeStyles(({ typography, palette }) => ({
+const Appbar = styled(MUIAppbar)({
+  '&.MuiAppBar-root': {
+    boxShadow: 'none',
+    borderBottom: '1px solid #E4E6EB',
+
+    '& .MuiToolbar-root': {
+      padding: 0,
+    },
+
+    '& .MuiLink-root': {
+      width: '73px',
+      height: 55,
+      borderRight: '1px solid #E4E6EB',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  },
+});
+
+const useStyles = makeStyles<Theme>(({ typography, palette }) => ({
   toolbar: {
     backgroundColor: 'white',
     color: palette.common.white,
@@ -88,11 +107,11 @@ const useStyles = makeStyles(({ typography, palette }) => ({
     color: '#81818E',
   },
   icon: {
-    width: '16px !important',
+    width: '20px !important',
   },
 }));
 
-const TopPanel = () => {
+function TopPanel() {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [openEdit, setOpenEdit] = useState(false);
@@ -104,21 +123,14 @@ const TopPanel = () => {
   } = useSelector(selectCurrentProject);
   const { id: userId } = useSelector(selectUserData);
   const viaMode = useSelector(selectVIAModeEnabled);
-  const sidebarOpen = useSelector(selectSidebarOpen);
   const viaResultId = useSelector(selectVIAResultId);
   const bordersEnabled = useSelector(selectBordersEnabled);
   const handleEditClick = () => setOpenEdit(true);
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const showBorders = useSelector(selectShowingBorders);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: {
-    currentTarget: React.SetStateAction<HTMLElement | null>;
-  }) => {
-    setIsDropdownOpen(true);
-    setAnchorEl(event.currentTarget);
-  };
+
+  const showGrid = useSelector(selectShowingGrid);
+
   const handleClose = () => setOpenEdit(false);
   const handleSubmitNameAndTags = async (values: {
     name: string;
@@ -133,16 +145,8 @@ const TopPanel = () => {
     return ` ${item}`;
   });
 
-  const handleSidebarToggle = () => {
-    dispatch(setSidebarOpen(!sidebarOpen));
-  };
-
-  const handleCloseDropDown = () => {
-    setIsDropdownOpen(false);
-    setAnchorEl(null);
-  };
   return (
-    <AppBar position="fixed">
+    <Appbar position="fixed">
       <Toolbar variant="dense" className={classes.toolbar}>
         <Box className={classes.topbarsections}>
           <Logo className={classes.icon} />
@@ -169,66 +173,33 @@ const TopPanel = () => {
           )}
 
           <Box className={classes.toolbar}>
-            {projectName && (
+            <Box>
               <ToggleButton
-                value="DropDown"
-                selected={isDropdownOpen}
+                selected={showBorders}
+                value="borders"
                 className={classes.togglebutton}
-                onClick={handleClick}
+                disabled={!bordersEnabled && !isProtoMode}
+                onClick={() => dispatch(toggleContainersBorders(!showBorders))}
               >
-                <SettingsOutlinedIcon className={classes.icon} />
+                <ShowBlockIcon />
               </ToggleButton>
-            )}
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleCloseDropDown}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
-              }}
-            >
-              <MenuItem onClick={handleClose}>
-                <ShowGrid />
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="Show borders"
-                      checked={showBorders}
-                      disabled={!bordersEnabled && !isProtoMode}
-                      onChange={() =>
-                        dispatch(toggleContainersBorders(!showBorders))
-                      }
-                    />
-                  }
-                  label={
-                    <Typography className={classes.title}>
-                      Show blocks
-                    </Typography>
-                  }
-                />
-              </MenuItem>
-            </Menu>
+            </Box>
+            <Box>
+              <ToggleButton
+                selected={showGrid}
+                value="grid"
+                className={classes.togglebutton}
+                onClick={() => dispatch(toggleGrid(!showGrid))}
+              >
+                <ShowGridIcon />
+              </ToggleButton>
+            </Box>
             <a target="_blank" href={HELP_LINK} rel="noreferrer noopener">
               <IconButton className={classes.iconbutton} title="Help">
                 <HelpOutlineIcon className={classes.icon} />
               </IconButton>
             </a>
-            {projectName ? (
-              <ToggleButton
-                value="sidebarOpen"
-                selected={sidebarOpen}
-                onClick={handleSidebarToggle}
-                title="Toggle Sidebar"
-                className={classes.togglebutton}
-              >
-                <MenuIcon className={classes.icon} />
-              </ToggleButton>
-            ) : (
-              <Avatar />
-            )}
+            {!projectName && <Avatar />}
           </Box>
         </Box>
       </Toolbar>
@@ -243,8 +214,8 @@ const TopPanel = () => {
         initialValueTags={tagsWithoutSpace}
         description={`Enter new name for project ${projectName}`}
       />
-    </AppBar>
+    </Appbar>
   );
-};
+}
 
 export default TopPanel;

@@ -1,7 +1,8 @@
 import React, { memo, MouseEvent, useCallback } from 'react';
 import { RenderItemParams, TreeItem as TreeItemType } from '@atlaskit/tree';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import { splitWords } from '@Utils/stringHelper';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
 import { useDispatch } from 'react-redux';
@@ -31,7 +32,7 @@ const useIndicatorStyles = makeStyles({
   },
 });
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   treeItem: {
     width: '100%',
     display: 'flex',
@@ -69,7 +70,7 @@ const useStyles = makeStyles(({ palette }) => ({
       width: 0.5,
       height: ({ rulerHeight }: Props) => rulerHeight,
       display: 'block',
-      backgroundColor: palette.grey.A200,
+      backgroundColor: theme.palette.grey.A200,
     },
   },
   isDragging: {
@@ -78,19 +79,22 @@ const useStyles = makeStyles(({ palette }) => ({
     outline: '1px solid #5b5f67',
   },
   icon: {
-    fontSize: '1.2em',
+    '&.MuiSvgIcon-root': {
+      fontSize: '1.2em',
+    },
   },
   text: {
     padding: '5px',
+    fontSize: 11,
   },
 }));
 
-type ExpandIndicatorProps = {
+interface ExpandIndicatorProps {
   hasChildren: boolean;
   isExpanded: boolean;
   onExpand: () => void;
   onCollapse: () => void;
-};
+}
 
 const ExpandIndicator: React.FC<ExpandIndicatorProps> = ({
   hasChildren,

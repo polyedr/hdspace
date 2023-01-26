@@ -5,7 +5,7 @@ import {
   NNModelSelection,
 } from '@Src/types';
 
-export const BOOTSTRAP_VERSIONS: Array<FrameworkVersion> = [
+export const BOOTSTRAP_VERSIONS: FrameworkVersion[] = [
   {
     name: '5.0',
     styleSheetsData: [
@@ -29,7 +29,7 @@ export const BOOTSTRAP_VERSIONS: Array<FrameworkVersion> = [
   },
 ];
 
-export const MATERIAL_VERSIONS: Array<FrameworkVersion> = [
+export const MATERIAL_VERSIONS: FrameworkVersion[] = [
   {
     name: '1.0.0',
     styleSheetsData: [

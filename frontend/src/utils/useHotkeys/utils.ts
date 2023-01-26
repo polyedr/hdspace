@@ -1,11 +1,11 @@
 /* eslint-disable no-bitwise, no-underscore-dangle */
 
-export type ModifiersSet = {
+export interface ModifiersSet {
   meta: boolean;
   control: boolean;
   alt: boolean;
   shift: boolean;
-};
+}
 
 type Code = string; // ev.code
 type Key = string; // just a string denoting key
@@ -68,7 +68,7 @@ export const parseShortcut = (
   const entries = key
     .toLowerCase()
     .split('+')
-    .map((elem) => elem.trim()) as Key[];
+    .map((elem) => elem.trim());
 
   const meta = parseModifier('meta', entries);
   const control = parseModifier('control', entries);

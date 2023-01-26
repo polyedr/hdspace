@@ -7,10 +7,10 @@ import AtlasTree, {
   TreeDestinationPosition,
   TreeSourcePosition,
 } from '@atlaskit/tree';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 import { NNModelName, VIARegion } from '@Src/types';
-import { makeStyles } from '@material-ui/core/styles';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { makeStyles } from '@mui/styles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   StyledAccordion,
   StyledAccordionDetails,
