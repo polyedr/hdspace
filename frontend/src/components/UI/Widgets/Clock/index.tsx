@@ -1,16 +1,16 @@
 import React, { memo, useRef, useMemo } from 'react';
 import cn from 'classnames';
-import useInterval from '@use-it/interval';
+import useInterval from '@use-it/interval/dist/index';
 
 import '../../../../styles/export/clock.css';
 
-type Props = {
+interface Props {
   id: string;
-};
+}
 
-type Dialline = {
+interface Dialline {
   transform?: React.CSSProperties['transform'];
-};
+}
 
 const ClockWidget: React.FC<Props> = ({ id }) => {
   const hHand = useRef<HTMLDivElement | null>(null);
@@ -54,15 +54,13 @@ const ClockWidget: React.FC<Props> = ({ id }) => {
         <span className={cn('mark', 'h12')}>12</span>
       </div>
       <div className="diallines" />
-      {diallines.map((dial) => {
-        return (
-          <div
-            key={dial.transform}
-            className="diallines"
-            style={{ transform: dial.transform }}
-          />
-        );
-      })}
+      {diallines.map((dial) => (
+        <div
+          key={dial.transform}
+          className="diallines"
+          style={{ transform: dial.transform }}
+        />
+      ))}
     </div>
   );
 };

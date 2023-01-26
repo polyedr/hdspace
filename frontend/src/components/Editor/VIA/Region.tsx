@@ -1,4 +1,5 @@
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
 import { selectIsRegionActive } from '@Redux/project/selectors/via';
 import prevent from '@Utils/preventEvent';
@@ -65,9 +66,9 @@ const useStyles = makeStyles<
   },
 });
 
-type Props = {
+interface Props {
   region: VIARegion;
-};
+}
 
 const Region: FC<Props> = ({ region }) => {
   const dispatch = useDispatch();

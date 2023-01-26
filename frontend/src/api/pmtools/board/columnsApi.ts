@@ -3,25 +3,24 @@ import { BoardNewColumn } from '@Redux/pmtools/types';
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps } from '@Src/types';
 
-export const fetchColumns = ({
+export const fetchColumns = async ({
   projectId,
   ...options
-}: MyAxiosProps & { projectId: number }) => {
-  return myAxios({
+}: MyAxiosProps & { projectId: number }) =>
+  await myAxios({
     url: `/projects/columns-for-project/${projectId}/`,
     method: 'get',
     ...options,
   }).catch(handleError);
-};
 
-export const createColumn = ({
+export const createColumn = async ({
   title,
   colour,
   projectId,
   ...options
-}: MyAxiosProps & BoardNewColumn) => {
-  return myAxios({
-    url: `/projects/project-columns/`,
+}: MyAxiosProps & BoardNewColumn) =>
+  await myAxios({
+    url: '/projects/project-columns/',
     method: 'post',
     data: {
       title,
@@ -30,33 +29,30 @@ export const createColumn = ({
     },
     ...options,
   }).catch(handleError);
-};
 
-export const updateColumn = ({
+export const updateColumn = async ({
   fields,
   columnId,
   ...options
 }: MyAxiosProps & {
   fields: any;
   columnId: number;
-}) => {
-  return myAxios({
+}) =>
+  await myAxios({
     url: `/projects/project-columns/${columnId}/`,
     method: 'patch',
     data: fields,
     ...options,
   }).catch(handleError);
-};
 
-export const updateColumnsSequence = ({
+export const updateColumnsSequence = async ({
   projectId,
   ...options
 }: MyAxiosProps & {
   projectId: number;
-}) => {
-  return myAxios({
+}) =>
+  await myAxios({
     url: `/projects/project/update_children_order/${projectId}/`,
     method: 'patch',
     ...options,
   }).catch(handleError);
-};

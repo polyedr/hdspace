@@ -26,11 +26,13 @@ const useProjectHeaderStyles = (classes: ProjectClass[]) => {
   }, []);
 
   useEffect(() => {
-    styleEl.innerHTML = classes.reduce((styles, classInstance) => {
-      return !classInstance
-        ? ''
-        : `${styles}${getProjectClassString(classInstance)}`;
-    }, '');
+    styleEl.innerHTML = classes.reduce(
+      (styles, classInstance) =>
+        !classInstance
+          ? ''
+          : `${styles}${getProjectClassString(classInstance)}`,
+      '',
+    );
   }, [classes, getProjectClassString, styleEl]);
 
   return styleEl;

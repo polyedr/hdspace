@@ -1,11 +1,11 @@
-﻿import { IconButton, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+﻿import { IconButton, Typography, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSelector } from 'react-redux';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import React from 'react';
 
-const useStyles = makeStyles(({ typography, palette }) => ({
+const useStyles = makeStyles<Theme>(({ typography, palette }) => ({
   title: {
     padding: '0.5em 1em',
     '&:hover $editButton': {
@@ -26,7 +26,7 @@ const useStyles = makeStyles(({ typography, palette }) => ({
     fontSize: '14px',
     color: 'black',
     fontFamily: typography.fontFamily,
-    fontWeight: 'bold',
+    fontWeight: 'bold !important',
   },
   editButton: {
     color: palette.common.black,
@@ -34,12 +34,12 @@ const useStyles = makeStyles(({ typography, palette }) => ({
     transition: 'opacity 0.1s ease',
   },
 }));
-const RenameProjectBar = ({
+function RenameProjectBar({
   projectName,
   userIdCreator,
   userId,
   handleEditClick,
-}) => {
+}) {
   const classes = useStyles();
   const currentScreenId = useSelector(selectCurrentScreenId);
   const isRenameProject = userIdCreator === userId;
@@ -60,6 +60,6 @@ const RenameProjectBar = ({
       )}
     </div>
   );
-};
+}
 
 export default RenameProjectBar;

@@ -78,28 +78,26 @@ const NewTaskInput = styled(TextField)({
   },
 });
 
-const TasksContainer = styled('div')<{ isDraggingOver: boolean }>(() => {
-  return {
-    flexGrow: 1,
-    overflow: 'auto',
-    height: '100%',
-    '&::-webkit-scrollbar': {
-      width: 4,
-      background: '#E4E6EB',
-      borderRadius: 6,
-    },
+const TasksContainer = styled('div')<{ isDraggingOver: boolean }>(() => ({
+  flexGrow: 1,
+  overflow: 'auto',
+  height: '100%',
+  '&::-webkit-scrollbar': {
+    width: 4,
+    background: '#E4E6EB',
+    borderRadius: 6,
+  },
 
-    '&::-webkit-scrollbar-thumb': {
-      background: '#B0B0BD',
-      borderRadius: 4,
-    },
+  '&::-webkit-scrollbar-thumb': {
+    background: '#B0B0BD',
+    borderRadius: 4,
+  },
 
-    '&::-webkit-scrollbar-track': {
-      borderRadius: 4,
-      backgroundClip: 'content-box',
-    },
-  };
-});
+  '&::-webkit-scrollbar-track': {
+    borderRadius: 4,
+    backgroundClip: 'content-box',
+  },
+}));
 
 const StyledMenu = styled(Menu)(() => ({
   '& .MuiMenuItem-root': {
@@ -112,7 +110,7 @@ const StyledMenu = styled(Menu)(() => ({
   },
 }));
 
-const Tasks = ({ column }) => {
+function Tasks({ column }) {
   return (
     <Droppable droppableId={column.id.toString()} type="tasks">
       {(provided, snapshot) => (
@@ -129,9 +127,9 @@ const Tasks = ({ column }) => {
       )}
     </Droppable>
   );
-};
+}
 
-const Column = ({ column, index }) => {
+function Column({ column, index }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -281,6 +279,6 @@ const Column = ({ column, index }) => {
       />
     </>
   );
-};
+}
 
 export default Column;

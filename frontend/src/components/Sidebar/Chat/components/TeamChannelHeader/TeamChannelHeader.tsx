@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import {
   useChannelActionContext,
@@ -21,10 +22,10 @@ import type {
   TeamUserType,
 } from '../../client';
 
-type Props = {
+interface Props {
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   setPinsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 export const TeamChannelHeader: React.FC<Props> = (props) => {
   const { setIsEditing, setPinsOpen } = props;
@@ -60,7 +61,8 @@ export const TeamChannelHeader: React.FC<Props> = (props) => {
   >();
 
   const teamHeader = `# ${
-    channel?.data?.name || channel?.data?.id || 'random'
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
+    (channel?.data?.name ?? channel?.data?.id) || 'random'
   }`;
 
   const getMessagingHeader = () => {
@@ -118,8 +120,9 @@ export const TeamChannelHeader: React.FC<Props> = (props) => {
         {watchers
           ? Object.values(watchers).map((watcher) => (
               <Avatar
+                key={watcher.id}
                 src={watcher?.image ?? undefined}
-                alt={watcher.name || ''}
+                alt={watcher.name ?? ''}
               />
             ))
           : null}

@@ -7,7 +7,7 @@ import {
   setTemplatesSearchParameter,
 } from '@Redux/marketplace/actions';
 import { TEMPLATE_STATUS_LIST } from '@Constants/defaultParams';
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { DatePicker, LocalizationProvider } from '@mui/lab';
 import DateFnsUtils from '@date-io/date-fns';
 import { startOfDay, endOfDay } from 'date-fns';
 import SearchIcon from '@mui/icons-material/Search';
@@ -186,7 +186,7 @@ const Searchbar: FC = () => {
       <CustomForm>
         <CustomSearchSection>
           {isDate && typeof parameterValue === 'object' ? (
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <LocalizationProvider utils={DateFnsUtils}>
               <CustomDatePicker
                 label="From Date"
                 value={parameterValue.from}
@@ -207,7 +207,7 @@ const Searchbar: FC = () => {
                 autoOk
                 clearable
               />
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
           ) : (
             <CustomeSearch
               value={parameterValue}

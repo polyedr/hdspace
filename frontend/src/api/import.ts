@@ -9,11 +9,11 @@ import {
 import { AxiosResponse } from 'axios';
 import { handleError } from './helper';
 
-export const apiPostURL = ({
+export const apiPostURL = async ({
   wpname,
   ...props
 }: MyAxiosProps & { wpname: string }): Promise<Result<PostUrlResponse>> =>
-  myAxios({
+  await myAxios({
     ...props,
     url: '/uploadapps/wpg/',
     method: 'POST',
@@ -21,17 +21,17 @@ export const apiPostURL = ({
     data: {
       wpname,
       parse_with_splash: wpname.endsWith('/') ? 1 : 0,
-      no_robots: process.env.NODE_ENV !== 'production',
+      no_robots: import.meta.env.MODE !== 'production',
     },
   })
     .then((res: AxiosResponse<PostUrlResponse>) => ({ result: res.data }))
     .catch(handleError);
 
-export const apiPostURLCheckRobots = ({
+export const apiPostURLCheckRobots = async ({
   fileurl,
   ...props
 }: MyAxiosProps & { fileurl: string }): Promise<Result<PostURLCheckRobots>> =>
-  myAxios({
+  await myAxios({
     ...props,
     url: '/uploadapps/robots/',
     method: 'POST',
@@ -43,11 +43,11 @@ export const apiPostURLCheckRobots = ({
     .then((res: AxiosResponse<PostURLCheckRobots>) => ({ result: res.data }))
     .catch(handleError);
 
-export const apiGetWebPage = ({
+export const apiGetWebPage = async ({
   wpname,
   ...props
 }: MyAxiosProps & { wpname: string }) =>
-  myAxios({
+  await myAxios({
     ...props,
     url: wpname,
     method: 'GET',
@@ -57,9 +57,9 @@ export const apiGetWebPage = ({
     .then((res) => res.data)
     .catch(handleError);
 
-export const apiGetFile = (props: MyAxiosProps & { fileUrl: string }) => {
+export const apiGetFile = async (props: MyAxiosProps & { fileUrl: string }) => {
   const { fileUrl, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     url: '/uploadapps/',
     method: 'POST',

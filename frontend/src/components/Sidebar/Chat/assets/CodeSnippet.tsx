@@ -1,12 +1,12 @@
 import React from 'react';
 
-type Props = {
+interface Props {
   codeState: boolean;
   resetIconState: () => void;
   setCodeState: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
-export const CodeSnippet = (props: Props) => {
+export function CodeSnippet(props: Props) {
   const { codeState, resetIconState, setCodeState } = props;
 
   return (
@@ -32,4 +32,4 @@ export const CodeSnippet = (props: Props) => {
       </svg>
     </div>
   );
-};
+}

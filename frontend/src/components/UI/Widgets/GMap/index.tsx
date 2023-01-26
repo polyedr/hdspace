@@ -3,7 +3,7 @@ import React from 'react';
 import GoogleMapReact from 'google-map-react';
 import { IMapProps } from '@Src/types';
 
-const styles = require('./styles.scss');
+import styles from './styles.module.scss?inline';
 
 interface IMarkerProps {
   text: string;
@@ -11,23 +11,23 @@ interface IMarkerProps {
   lng: number;
 }
 
-const Marker: React.FC<IMarkerProps> = ({ text }) => {
-  return (
-    <div className={styles.mapMarker}>
-      <p>{text}</p>
-    </div>
-  );
-};
-
-const GMap = ({ center, zoom, markerText, apiKey }: IMapProps) => (
-  <GoogleMapReact
-    center={center}
-    zoom={zoom}
-    bootstrapURLKeys={{ key: apiKey }}
-    yesIWantToUseGoogleMapApiInternals
-  >
-    <Marker lat={center?.lat} lng={center?.lng} text={markerText || ''} />
-  </GoogleMapReact>
+const Marker: React.FC<IMarkerProps> = ({ text }) => (
+  <div className={styles.mapMarker}>
+    <p>{text}</p>
+  </div>
 );
+
+function GMap({ center, zoom, markerText, apiKey }: IMapProps) {
+  return (
+    <GoogleMapReact
+      center={center}
+      zoom={zoom}
+      bootstrapURLKeys={{ key: apiKey }}
+      yesIWantToUseGoogleMapApiInternals
+    >
+      <Marker lat={center?.lat} lng={center?.lng} text={markerText || ''} />
+    </GoogleMapReact>
+  );
+}
 
 export default GMap;

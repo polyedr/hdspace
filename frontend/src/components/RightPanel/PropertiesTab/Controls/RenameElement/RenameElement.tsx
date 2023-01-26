@@ -5,9 +5,9 @@ import { updateElement } from '@Redux/project/actions';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
-type Props = {
+interface Props {
   canEdit: boolean;
-};
+}
 
 const RenameElement: React.FC<Props> = ({ canEdit }) => {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ const RenameElement: React.FC<Props> = ({ canEdit }) => {
   });
 
   return (
-    <div style={{ padding: '0 16px' }}>
+    <div>
       <StyledTextField
         fullWidth
         margin="dense"

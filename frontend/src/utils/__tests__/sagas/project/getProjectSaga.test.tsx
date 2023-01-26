@@ -17,7 +17,6 @@ describe('getProjectSaga Test', () => {
   const mockProject = createMockProject();
   const projectWithScreens = createProjectWithScreensMock(mockProject.id);
   describe('under normal behavior', () => {
-    // @ts-expect-error saga type is not compatible with IterableIterator
     const it = sagaHelper(getProjectSaga(action));
 
     it('should set projects list loader flag to true', (result) => {
@@ -38,7 +37,6 @@ describe('getProjectSaga Test', () => {
   describe('when project with screens request fails', () => {
     const errorMessage = 'Error message';
     const error = new Error(errorMessage);
-    // @ts-expect-error getProjectSaga type is not compatible with IterableIterator
     const it = sagaHelper(getProjectSaga(action));
     it('should set projects list loader flag to true', (result) => {
       expect(result).toEqual(put(Actions.setProjectLoader(true)));

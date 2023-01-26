@@ -19,9 +19,8 @@ export const selectUsersPrev = ({ permissions }: AppReduxState) =>
 export const selectUsersPageSize = ({ permissions }: AppReduxState) =>
   permissions.allUsersList.pageSize;
 
-export const selectAllUsersPermissions = ({ permissions }: AppReduxState) => {
-  return permissions.projectUsersPermissionsList.data;
-};
+export const selectAllUsersPermissions = ({ permissions }: AppReduxState) =>
+  permissions.projectUsersPermissionsList.data;
 export const selectUserFromAllUsers =
   (userId: string) => (state: AppReduxState) => {
     const allUsers = selectAllUsers(state);
@@ -30,11 +29,8 @@ export const selectUserFromAllUsers =
 
 export const selectUserFromProjectUsers =
   (userId: string) =>
-  ({ permissions }: AppReduxState) => {
-    return (
-      permissions.projectUsersPermissionsList.data[userId]?.userData || null
-    );
-  };
+  ({ permissions }: AppReduxState) =>
+    permissions.projectUsersPermissionsList.data[userId]?.userData || null;
 
 export const selectUserPermissions =
   (userId: string) =>
@@ -60,9 +56,7 @@ export const selectIfProjectUserExists =
 
 export const selectCurrentUserProjectPermissions = ({
   permissions,
-}: AppReduxState) => {
-  return permissions.currentUserProjectPermissions;
-};
+}: AppReduxState) => permissions.currentUserProjectPermissions;
 
 export const selectIfCurrentUserHasPermission =
   (permission: UserProjectPermission) => (state: AppReduxState) => {

@@ -5,14 +5,17 @@ import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { HTMLLibraryElement, PropertiesChangeProps } from '@Src/types';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
-import { makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import { BLACKLIST_TAGS } from './constants';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   errorLabel: {
     color: theme.palette.error.light,
     padding: '0 1em',
+    marginBottom: 10,
+    paddingTop: 25,
   },
 }));
 
@@ -49,7 +52,6 @@ const TagName: React.FC<PropertiesChangeProps<HTMLLibraryElement>> = ({
   return (
     <>
       <StyledTextField
-        variant="outlined"
         value={state}
         onChange={handleNameChange}
         label="Name"

@@ -1,6 +1,6 @@
 import React from 'react';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   image: {
@@ -9,9 +9,9 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   image: string | null;
-};
+}
 
 const ScreenLogo: React.FC<Props> = ({ image }) => {
   const classes = useStyles();
@@ -19,7 +19,7 @@ const ScreenLogo: React.FC<Props> = ({ image }) => {
   return (
     <>
       {image ? (
-        <img className={classes.image} src={image as string} alt="" />
+        <img className={classes.image} src={image} alt="" />
       ) : (
         <InsertDriveFileOutlinedIcon className={classes.image} />
       )}

@@ -1,12 +1,12 @@
 import React, { FC, useState, MouseEvent } from 'react';
-import { Button, Menu, MenuItem } from '@material-ui/core';
+import { Button, Menu, MenuItem, Theme } from '@mui/material';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import { NNBlockType } from '@Src/types';
 import { useSelector } from 'react-redux';
 import { selectCurrentRootId } from '@Redux/project/selectors/element';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(({ spacing, palette }) => ({
+const useStyles = makeStyles<Theme>(({ spacing, palette }) => ({
   wrapper: {
     flex: 1,
     display: 'flex',
@@ -50,9 +50,9 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   onClose: (...args: any) => void;
-};
+}
 
 const ImageRecognizeForm: FC<Props> = ({ onClose }) => {
   const classes = useStyles();

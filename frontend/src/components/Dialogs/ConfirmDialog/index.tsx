@@ -8,11 +8,13 @@ import {
   DialogContentText,
   Button,
   IconButton,
-} from '@material-ui/core';
-import { Close } from '@material-ui/icons';
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+  Theme,
+} from '@mui/material';
+import { Close } from '@mui/icons-material';
+// import { Theme } from '@mui/material/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(({ spacing, palette }) =>
+const useStyles = makeStyles<Theme>(({ spacing, palette }) =>
   createStyles({
     closeBtn: {
       position: 'absolute',
@@ -23,13 +25,13 @@ const useStyles = makeStyles(({ spacing, palette }) =>
   }),
 );
 
-type Props = {
+interface Props {
   open: boolean;
   title?: string;
   description?: string;
   onClose: () => void;
   onDelete: (e) => void;
-};
+}
 
 const ConfirmDialog: React.FC<Props> = ({
   open,

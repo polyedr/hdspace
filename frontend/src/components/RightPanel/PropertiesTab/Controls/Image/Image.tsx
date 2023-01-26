@@ -15,7 +15,7 @@ import {
   selectImageList,
 } from '@Redux/project/selectors/asset';
 import Button from '@mui/material/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { URL_REGEX } from '@Constants/defaultParams';
 
 const useStyles = makeStyles({
@@ -147,7 +147,7 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
         <label htmlFor="upload-image">
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             component="span"
             disabled={!canEdit}
           >
@@ -165,7 +165,7 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
         />
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           component="span"
           style={{
             zIndex: 2,

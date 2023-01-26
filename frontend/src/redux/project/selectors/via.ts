@@ -28,9 +28,7 @@ export const selectActiveVIARegion = createSelector(
 );
 
 export const selectIsRegionActive = (regionId: string) =>
-  createSelector(selectActiveVIARegionId, (activeId) => {
-    return activeId === regionId;
-  });
+  createSelector(selectActiveVIARegionId, (activeId) => activeId === regionId);
 
 export const selectAnnotatedElementId = ({ project }: AppReduxState) =>
   project.edit.VIAMode.annotatedElementId;
