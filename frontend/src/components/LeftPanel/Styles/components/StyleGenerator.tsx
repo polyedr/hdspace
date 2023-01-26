@@ -5,24 +5,6 @@ import { StyledTextField } from '@Components/styledComponents';
 import { useDispatch } from 'react-redux';
 import { generateImagePalette } from '@Redux/project/actions';
 
-const useButtonStyles = makeStyles<Theme>(({ palette, typography }) => ({
-  root: {
-    '&.MuiButton-root': {
-      backgroundColor: palette.secondary.main,
-      fontSize: typography.fontSize,
-      marginBottom: 0,
-      width: 'auto !important',
-      minHeight: 'auto !important',
-      padding: '0 !important',
-      color: '#fff',
-      textTransform: 'capitalize',
-
-      '&:hover': {
-        backgroundColor: 'rgba(17, 175, 142, 1) !important',
-      },
-    },
-  },
-}));
 const useStyles = makeStyles<Theme>(() => ({
   title: {
     marginBottom: '10px',
@@ -58,7 +40,6 @@ const containerStyles: SxProps = {
 
 function StyleGenerator() {
   const classes = useStyles();
-  const buttonClasses = useButtonStyles();
   const dispatch = useDispatch();
 
   const [url, setUrl] = useState<string>('');
@@ -79,8 +60,13 @@ function StyleGenerator() {
             />
           </FormControl>
         </div>
-        <Button size="small" classes={buttonClasses} onClick={onGenerateClick}>
-          <div className={classes.chooseButtonText}>Generate color scheme</div>
+        <Button
+          variant="contained"
+          color="secondary"
+          component="span"
+          onClick={onGenerateClick}
+        >
+          Generate color scheme
         </Button>
       </div>
     </Box>

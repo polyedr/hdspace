@@ -1,6 +1,6 @@
 import ELEMENT_IDS from '@Constants/elementIds';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import { Menu, MenuItem } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { Menu, MenuItem, Theme } from '@mui/material';
 import {
   copyActiveElement,
   pasteCopiedElement,

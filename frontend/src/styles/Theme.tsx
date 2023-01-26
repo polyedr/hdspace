@@ -1,4 +1,13 @@
-import { createTheme, darken, lighten } from '@mui/material/styles';
+import React from 'react';
+import {
+  createTheme,
+  darken,
+  lighten,
+  ThemeProvider as StyleThemeProvider,
+} from '@mui/material/styles';
+
+import { ThemeProvider } from '@mui/material';
+
 declare module '@mui/material/styles' {
   interface Palette {
     link: Palette['primary'];
@@ -64,3 +73,9 @@ export const theme = createTheme({
   },
   transitions: {},
 });
+
+export const AppThemeProvider = ({ children }) => (
+  <ThemeProvider theme={theme}>
+    <StyleThemeProvider theme={theme}>{children}</StyleThemeProvider>
+  </ThemeProvider>
+);
