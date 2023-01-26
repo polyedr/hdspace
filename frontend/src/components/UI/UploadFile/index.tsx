@@ -1,8 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useCallback } from 'react';
 import Icon from '../Icon';
 
-const styles = require('./styles.scss');
+import styles from './styles.scss';
 
 interface IUploadFile {
   file: any;

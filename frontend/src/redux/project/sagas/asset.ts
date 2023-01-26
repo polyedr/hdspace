@@ -68,7 +68,7 @@ export function* uploadAssetHelper(
       if (!meta?.useHistory) {
         yield put(
           Actions.addUndoActions([
-            Actions.removeAsset(asset.id, asset.listId as string, meta),
+            Actions.removeAsset(asset.id, asset.listId, meta),
           ]),
         );
       }

@@ -1,6 +1,6 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { MenuProps } from '@material-ui/core/Menu';
+import { withStyles } from '@mui/styles';
+import { MenuProps } from '@mui/material/Menu';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   copyActiveElement,
@@ -12,7 +12,7 @@ import { canElementHaveChildren } from '@Utils/AvailableChildrenHelper';
 import { selectItemToCopyInfo } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { TreeItem } from '@atlaskit/tree';
-import { Menu, MenuItem } from '@material-ui/core';
+import { Menu, MenuItem } from '@mui/material';
 import Icon from '../../../UI/Icon';
 
 const StyledMenu = withStyles({
@@ -38,12 +38,12 @@ const StyledMenu = withStyles({
   },
 })((props: MenuProps) => <Menu {...props} />);
 
-type Props = {
+interface Props {
   open: boolean;
   onClose: () => void;
   anchorPosition: any;
   item: TreeItem;
-};
+}
 
 const ContextMenu: React.FC<Props> = ({
   open,

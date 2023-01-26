@@ -78,13 +78,13 @@ const Menu = styled(MuiMenu)({
   },
 });
 
-const Status = ({
+function Status({
   task,
   onChange,
 }: {
   task: BoardTask;
-  onChange(status: StatusOptions): void;
-}) => {
+  onChange: (status: StatusOptions) => void;
+}) {
   const [status, setStatus] = useState<StatusOptions>(task.status);
   // const [status, setStatus] = useState(options[0]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -151,6 +151,6 @@ const Status = ({
       </Menu>
     </>
   );
-};
+}
 
 export default Status;

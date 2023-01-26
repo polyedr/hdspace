@@ -1,12 +1,12 @@
 import React from 'react';
 
-type Props = {
+interface Props {
   boldState: boolean;
   resetIconState: () => void;
   setBoldState: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
-export const BoldIcon = (props: Props) => {
+export function BoldIcon(props: Props) {
   const { boldState, resetIconState, setBoldState } = props;
 
   return (
@@ -32,4 +32,4 @@ export const BoldIcon = (props: Props) => {
       </svg>
     </div>
   );
-};
+}

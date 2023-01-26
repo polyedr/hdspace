@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { FC, useEffect, useState } from 'react';
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from '@mui/icons-material/Add';
 import {
   StyledIconButton,
   StyledTextField,
@@ -15,11 +15,11 @@ import Click from '@Components/RightPanel/EventsTab/Click';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import EventListItem from '@Components/RightPanel/EventsTab/EventListItem';
-import { MenuItem, Button } from '@material-ui/core';
+import { MenuItem, Button, Theme } from '@mui/material';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
   root: {
     padding: spacing(2),
     backgroundColor: palette.panel.light,

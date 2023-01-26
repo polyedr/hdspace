@@ -21,7 +21,7 @@ interface BaseProps {
 }
 type OrNull<T> = T | null;
 
-export const Mention = ({ attributes, children, element }) => {
+export function Mention({ attributes, children, element }) {
   const selected = useSelected();
   const focused = useFocused();
   return (
@@ -43,7 +43,7 @@ export const Mention = ({ attributes, children, element }) => {
       {children}@{element.character}
     </span>
   );
-};
+}
 
 export const serialize = (node: Descendant) => {
   if (Text.isText(node)) {
@@ -99,7 +99,7 @@ export const serialize = (node: Descendant) => {
   }
 };
 
-export const Element = ({ attributes, children, element }) => {
+export function Element({ attributes, children, element }) {
   const style = { textAlign: element.align };
   switch (element.type) {
     case 'block-quote':
@@ -147,13 +147,13 @@ export const Element = ({ attributes, children, element }) => {
         </p>
       );
   }
-};
+}
 
 export const SendButton = styled(SendIcon)({
   color: '#81818E',
 });
 
-export const Leaf = ({ attributes, children, leaf }) => {
+export function Leaf({ attributes, children, leaf }) {
   let content = children;
 
   if (leaf.bold) {
@@ -177,9 +177,9 @@ export const Leaf = ({ attributes, children, leaf }) => {
   }
 
   return <span {...attributes}>{content}</span>;
-};
+}
 
-export const BlockButton = ({ format, icon }) => {
+export function BlockButton({ format, icon }) {
   const editor = useSlate();
   return (
     <IconButton
@@ -200,9 +200,9 @@ export const BlockButton = ({ format, icon }) => {
       <Icon>{icon}</Icon>
     </IconButton>
   );
-};
+}
 
-export const MarkButton = ({ format, icon }) => {
+export function MarkButton({ format, icon }) {
   const editor = useSlate();
   return (
     <IconButton
@@ -215,7 +215,7 @@ export const MarkButton = ({ format, icon }) => {
       <Icon>{icon}</Icon>
     </IconButton>
   );
-};
+}
 
 export const IconButton = styled(MuiIconButton)({
   display: 'inline-flex !important',
@@ -390,11 +390,11 @@ export const Menu = React.forwardRef(
   ),
 );
 
-export const Portal = ({ children }) => {
+export function Portal({ children }) {
   return typeof document === 'object'
     ? ReactDOM.createPortal(children, document.body)
     : null;
-};
+}
 
 export const Toolbar = React.forwardRef(
   (

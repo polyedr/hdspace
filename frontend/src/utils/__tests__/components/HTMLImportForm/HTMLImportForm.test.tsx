@@ -5,12 +5,14 @@ import { Provider } from 'react-redux';
 import { mockState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import HtmlImportForm from '@Components/Dialogs/NewScreenModal/HTMLImportForm';
+import { vi } from 'vitest';
+import { AppThemeProvider } from '@Src/styles/Theme';
 // import TYPES from '@Redux/actionTypes';
 
 describe('HTMLImportForm', () => {
   let store: MockStoreEnhanced<AppReduxState>;
   let ui: RenderResult;
-  const closeCallback = jest.fn();
+  const closeCallback = vi.fn();
 
   beforeEach(() => {
     const mockStore = configureStore<AppReduxState>([]);
@@ -18,7 +20,9 @@ describe('HTMLImportForm', () => {
 
     ui = render(
       <Provider store={store}>
-        <HtmlImportForm onClose={closeCallback} />
+        <AppThemeProvider>
+          <HtmlImportForm onClose={closeCallback} />
+        </AppThemeProvider>
       </Provider>,
     );
   });
@@ -51,7 +55,7 @@ describe('HTMLImportForm', () => {
     expect(textInput.value).toBeFalsy();
     expect(fileInput.value).toBeFalsy();
 
-    const submitButton = ui.getByText('Check Import Site').parentElement;
+    const submitButton = ui.getByText('Check Import Site');
     expect(submitButton).toBeDisabled();
 
     fireEvent.change(textInput, { target: { value: '123' } });

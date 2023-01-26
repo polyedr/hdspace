@@ -1,5 +1,5 @@
 import { StyledTextField } from '@Components/styledComponents';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 import React from 'react';
 import {
   Alignments,
@@ -7,9 +7,9 @@ import {
   RadiobuttonGroupElement,
 } from '@Src/types';
 
-type Props = {
+interface Props {
   flexDirection: Alignments;
-};
+}
 
 const Alignment: React.FC<
   Props & PropertiesChangeProps<RadiobuttonGroupElement>

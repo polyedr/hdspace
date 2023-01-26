@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@mui/lab/Alert';
 import { selectConfirmMessage } from '@Redux/user/selectors';
+import { Grid } from '@mui/material';
 import LoginForm from '../LoginForm';
 import Info from '../Info';
 import useStyles from '../LoginRegistration/LoginRegistrationStyles';
@@ -14,24 +15,30 @@ const SignIn: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <Info
-        title="Did you know?"
-        list={[
-          'Our AI system recognizes Graphical User Interfaces (GUIs) including separate elements with color and layout patterns.',
-          'You can add ready-made templates or draw your own drawing: our AI system will recognize and include it  in your project.',
-        ]}
-        img={bigimg}
-      />
-      <div className={classes.formContainer}>
-        {confirmMessage && (
-          <div className={classes.info}>
-            <Alert severity="info" variant="filled">
-              {confirmMessage}
-            </Alert>
+      <Grid container>
+        <Grid item xs={12} sm={7}>
+          <Info
+            title="Did you know?"
+            list={[
+              'Our AI system recognizes Graphical User Interfaces (GUIs) including separate elements with color and layout patterns.',
+              'You can add ready-made templates or draw your own drawing: our AI system will recognize and include it  in your project.',
+            ]}
+            img={bigimg}
+          />
+        </Grid>
+        <Grid item xs={12} sm={5}>
+          <div className={classes.formContainer}>
+            {confirmMessage && (
+              <div className={classes.info}>
+                <Alert severity="info" variant="filled">
+                  {confirmMessage}
+                </Alert>
+              </div>
+            )}
+            <LoginForm />
           </div>
-        )}
-        <LoginForm />
-      </div>
+        </Grid>
+      </Grid>
     </div>
   );
 };

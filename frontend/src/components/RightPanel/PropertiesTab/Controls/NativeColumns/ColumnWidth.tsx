@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { FormControlLabel, MenuItem } from '@material-ui/core';
+import { FormControlLabel, MenuItem } from '@mui/material';
 import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/NativeColumns/styles';
 
 enum Units {
@@ -23,11 +23,11 @@ const parse = (value: string | number | undefined) => {
   return [width, units];
 };
 
-type Props = {
+interface Props {
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   value: React.CSSProperties['columnWidth'];
   canEdit: boolean;
-};
+}
 
 const ColumnWidth: React.FC<Props> = ({ updateStyles, value, canEdit }) => {
   const classes = useColumnControlStyles();

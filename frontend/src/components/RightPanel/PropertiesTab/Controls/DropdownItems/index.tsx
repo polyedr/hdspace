@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
-import AddIcon from '@material-ui/icons/Add';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import AddIcon from '@mui/icons-material/Add';
+import { lighten, IconButton, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import {
   selectActiveElementId,
   selectElementAsTree,
@@ -10,10 +11,9 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { addChildToElement, deleteElement } from '@Redux/project/actions';
 import { DropdownItemElement, PropertiesChangeProps } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
-import { IconButton } from '@material-ui/core';
 import DropdownItem from './DropdownItem';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles<Theme>(({ palette }) => ({
   row: {
     display: 'flex',
     justifyContent: 'flex-start',
@@ -26,10 +26,10 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-type StateProps = {
+interface StateProps {
   dropdownMenuID: string;
   dropdownItems: DropdownItemElement[];
-};
+}
 
 function mapState(state: AppReduxState): StateProps {
   const activeElementId = selectActiveElementId(state);

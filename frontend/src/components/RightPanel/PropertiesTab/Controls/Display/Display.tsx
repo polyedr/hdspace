@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 import FlexProperties from '../../helperComponents/Display/FlexProperties';
 import { DISPLAY } from './constants';
 import PlaceItemsProperties from '../../helperComponents/Display/PlaceItemsProperties';
@@ -34,7 +34,7 @@ const Display: React.FC<Props> = ({
   );
 
   return (
-    <div style={{ padding: '0 16px' }}>
+    <div>
       <div>
         {!masterScreenEnabled && canEdit && (
           <RemoveStyles

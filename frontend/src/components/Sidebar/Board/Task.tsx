@@ -1,11 +1,10 @@
 import { styled } from '@mui/material/styles';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
+import { Box, Chip, Stack } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { differenceInDays, format } from 'date-fns';
-import { BoardLabel, BoardTask } from '@Redux/pmtools/types';
+import { BoardTask } from '@Redux/pmtools/types';
 import { useSelector } from 'react-redux';
 import { selectLabels } from '@Redux/pmtools/board/selectors';
 import TaskDialog from './TaskDialog';
@@ -60,18 +59,14 @@ const Task: React.FC<Props> = ({ task, index }) => {
   const labels = useSelector(selectLabels);
 
   const handleShowDialog = useCallback(
-    (show) => {
-      return () => setShowDialog(show);
-    },
+    (show) => () => setShowDialog(show),
     [setShowDialog],
   );
 
   const selectedLabels = useMemo(() => {
     const mergedLabels = task.label_ids
-      .map((id) => {
-        return labels.find((l) => l.id === id) ?? null;
-      })
-      .filter((l) => l !== null) as BoardLabel[];
+      .map((id) => labels.find((l) => l.id === id) ?? null)
+      .filter((l) => l !== null);
 
     return mergedLabels.sort((a, b) => (a.text > b.text ? 1 : -1));
   }, [task.label_ids, labels]);
@@ -97,9 +92,11 @@ const Task: React.FC<Props> = ({ task, index }) => {
               spacing={1}
               mb={2}
               justifyContent="space-between"
-              alignItems="center"
+              alignItems="flex-start"
             >
-              {task.title}
+              <Box sx={{ width: 'calc(100% - 20px)', textAlign: 'justify' }}>
+                {task.title}
+              </Box>
               <BarIcon priority={task.priority} />
             </Stack>
             <Stack direction="row" spacing={0.2} mb={2} flexWrap="wrap">

@@ -1,6 +1,8 @@
 import React, { ReactElement, useRef } from 'react';
-import { IconButtonProps, IconButton, SvgIconTypeMap } from '@material-ui/core';
 import {
+  IconButtonProps,
+  IconButton,
+  SvgIconTypeMap,
   styled as MuiStyled,
   TextField,
   TextFieldProps,
@@ -14,12 +16,86 @@ import {
   Slider,
   SliderProps,
 } from '@mui/material';
+
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
 import ToggleButton from '@mui/material/ToggleButton';
-import { makeStyles } from '@material-ui/core/styles';
-import { OverridableComponent } from '@material-ui/core/OverridableComponent';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import { makeStyles } from '@mui/styles';
+import { OverridableComponent } from '@mui/material/OverridableComponent';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import styled from 'styled-components';
+
+export const PropertyAccordianSummary = MuiStyled(AccordionSummary)({
+  flexDirection: 'row-reverse',
+
+  '&.MuiAccordionSummary-root': {
+    minHeight: 32,
+    backgroundColor: '#F3F4F6',
+    padding: '0 5px',
+  },
+
+  '& .MuiAccordionSummary-content': {
+    margin: 0,
+    fontSize: 10,
+    textTransform: 'uppercase',
+    padding: '0 2px',
+    fontWeight: 600,
+
+    '&.Mui-expanded': {
+      margin: 0,
+    },
+
+    '& svg': {
+      height: 15,
+    },
+  },
+});
+
+export const PropertyAccordion = styled(MuiAccordion)({
+  '&.MuiAccordion-root': {
+    boxShadow: 'none',
+    margin: '0 !important',
+    borderBottom: '1px solid #E4E6EB',
+    borderRadius: 0,
+    // paddingBottom: 10,
+
+    '&:before': {
+      display: 'none',
+    },
+  },
+
+  '& .MuiAccordionDetails-root': {
+    padding: '8px 10px 16px',
+  },
+});
+
+export const PropertyAccordionDetails = styled(AccordionDetails)({
+  // '&.MuiAccordionDetails-root': {
+  //   display: 'flex',
+  //   flexFlow: 'row wrap',
+  //   padding: '0',
+  //   justifyContent: 'space-between',
+  //   '& .MuiButton-text ': {
+  //     width: '33%',
+  //     minHeight: '65px',
+  //     paddingTop: '8px',
+  //     '& svg': {
+  //       height: 20,
+  //     },
+  //     '& span': {
+  //       fontSize: 11,
+  //       color: '#81818E',
+  //       fontWeight: 400,
+  //     },
+  //   },
+  //   '& .MuiButton-text:hover': {
+  //     boxShadow: 'none',
+  //     backgroundColor: 'transparent',
+  //     '& span': {
+  //       color: 'black',
+  //     },
+  //   },
+  // },
+});
 
 const MuiSlider = styled(Slider)`
   & .MuiSlider-thumb {
@@ -90,32 +166,34 @@ const CustomTextField = styled(TextField)`
   & .MuiInput-underline:after {
     border-bottom-color: rgba(80, 100, 255, 0.1);
   }
+
+  & .MuiInput-underline:before {
+    border-color: #e4e6eb !important;
+  }
+
   & .MuiInput-root {
     color: #2a2a2d;
     & .Mui-focused fieldset {
       border-color: rgba(80, 100, 255, 0.1);
     }
     & .MuiSvgIcon-root {
-      color: #2a2a2d;
+      color: #81818e;
     }
   }
 `;
 
 const CustomToggleButtonGroup = styled(ToggleButtonGroup)`
   .MuiToggleButtonGroup-grouped {
-    margin: 0 6px;
+    margin: 0 6px 0 0;
+    border-radius: 4px !important;
     border: 0;
+    height: 34px;
+    width: 34px;
     &.mui-disabled {
       border: 0;
     }
-    &:not(:last-of-type) {
-      border-radius: 4px !important;
-    }
-    &:last-of-type {
-      border-radius: 4px !important;
-    }
     &:hover {
-      background-color: rgba(80, 100, 255, 0.05);
+      background-color: rgba(80, 100, 255, 0.04);
       color: rgba(80, 100, 255, 0.7);
     }
   }
@@ -123,7 +201,7 @@ const CustomToggleButtonGroup = styled(ToggleButtonGroup)`
 
 const CustomToggleButton = styled(ToggleButton)`
   &.Mui-selected {
-    background-color: rgba(80, 100, 255, 0.1) !important;
+    background-color: rgba(80, 100, 255, 0.3) !important;
     color: rgba(80, 100, 255) !important;
     &:hover {
       background-color: rgba(80, 100, 255, 0.3) !important;
@@ -159,36 +237,30 @@ const MuiAccordionDetails = MuiStyled(AccordionDetails)(() => ({
 }));
 
 export const StyledAccordion = React.forwardRef<any, AccordionProps>(
-  ({ children, ...props }, ref) => {
-    return (
-      <Accordion {...props} ref={ref}>
-        {children as unknown as ReactElement}
-      </Accordion>
-    );
-  },
+  ({ children, ...props }, ref) => (
+    <Accordion {...props} ref={ref}>
+      {children as unknown as ReactElement}
+    </Accordion>
+  ),
 );
 
 export const StyledAccordionSummary: React.FC<AccordionSummaryProps> = ({
   children,
   ...props
-}) => {
-  return <MuiAccordionSummary {...props}>{children}</MuiAccordionSummary>;
-};
+}) => <MuiAccordionSummary {...props}>{children}</MuiAccordionSummary>;
 
 export const StyledAccordionDetails = React.forwardRef<
   any,
   AccordionDetailsProps
->(({ children, ...props }, ref) => {
-  return (
-    <MuiAccordionDetails {...props} ref={ref}>
-      {children}
-    </MuiAccordionDetails>
-  );
-});
+>(({ children, ...props }, ref) => (
+  <MuiAccordionDetails {...props} ref={ref}>
+    {children}
+  </MuiAccordionDetails>
+));
 
-export const StyledSlider: React.FC<SliderProps> = (props) => {
-  return <MuiSlider {...props} />;
-};
+export const StyledSlider: React.FC<SliderProps> = (props) => (
+  <MuiSlider {...props} />
+);
 
 export const StyledTextField: React.FC<TextFieldProps> = (props) => {
   const { select } = props;
@@ -196,6 +268,7 @@ export const StyledTextField: React.FC<TextFieldProps> = (props) => {
 
   return (
     <CustomTextField
+      fullWidth
       {...(!select
         ? {
             inputRef,
@@ -229,15 +302,13 @@ export const PanelTextField: React.FC<
   );
 };
 
-export const StyledToggleButton: React.FC<ToggleButtonProps> = (props) => {
-  return <CustomToggleButton {...props} />;
-};
+export const StyledToggleButton: React.FC<ToggleButtonProps> = (props) => (
+  <CustomToggleButton {...props} />
+);
 
 export const StyledToggleButtonGroup: React.FC<ToggleButtonGroupProps> = (
   props,
-) => {
-  return <CustomToggleButtonGroup {...props} />;
-};
+) => <CustomToggleButtonGroup {...props} />;
 
 export const StyledIconButton: React.FC<IconButtonProps> = ({
   children,

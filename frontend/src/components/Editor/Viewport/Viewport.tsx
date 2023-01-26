@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 import 'css-ripple-effect/dist/ripple.min.css';
 import useViewportHotkeys from '../hooks/useViewportHotkeys';

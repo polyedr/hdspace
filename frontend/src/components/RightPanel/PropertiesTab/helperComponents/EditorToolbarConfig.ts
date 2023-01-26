@@ -1,10 +1,10 @@
-export type StyleConfig = {
+export interface StyleConfig {
   label: string;
   style: string;
   className?: string;
-};
+}
 
-export type StyleConfigList = Array<StyleConfig>;
+export type StyleConfigList = StyleConfig[];
 
 export const INLINE_STYLE_BUTTONS: StyleConfigList = [
   { label: 'Bold', style: 'BOLD' },

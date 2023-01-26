@@ -180,7 +180,7 @@ export const createScreenSaga = compose(
       const {
         result: elements,
         error: elementsError,
-      }: Result<LibraryElement<'root'>[]> = yield call(
+      }: Result<Array<LibraryElement<'root'>>> = yield call(
         reqWrapper,
         apiCreateElements,
         { data: [rootElement] },
@@ -717,7 +717,7 @@ export const clearEditableScreenSaga = withRequiredPermissions(
 
 export function* getScreensSaga(screens: Screen[]) {
   try {
-    const { result: elements, error }: Result<ServerElement<'root'>[]> =
+    const { result: elements, error }: Result<Array<ServerElement<'root'>>> =
       yield call(reqWrapper, apiGetElements, {
         scenariosIDs: [screens.map((screen) => screen.screenscenario)],
       });
@@ -756,7 +756,7 @@ export function* getScreensSaga(screens: Screen[]) {
   }
 }
 
-export const changeScreensOrder = function* (
+export function* changeScreensOrder(
   action: ReturnType<typeof Actions.changeScreensOrder>,
 ) {
   try {
@@ -775,7 +775,7 @@ export const changeScreensOrder = function* (
 
     yield put(setScreens([masterScreen, ...newScreenList]));
 
-    const results: Result<Screen>[] = yield all(
+    const results: Array<Result<Screen>> = yield all(
       newScreenList.map(({ id, buoyancy }) =>
         call(reqWrapper, apiUpdateScreen, {
           id,
@@ -809,7 +809,7 @@ export const changeScreensOrder = function* (
       ),
     );
   }
-};
+}
 
 export const changeScreensOrderSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,

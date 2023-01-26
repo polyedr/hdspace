@@ -16,7 +16,6 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from '../../client';
 
 type Props = ChannelPreviewUIComponentProps & {
@@ -35,17 +34,18 @@ export const TeamChannelPreview: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
-  const ChannelPreview = () => (
-    <p className="channel-preview__item">
-      # {channel?.data?.name || channel?.data?.id || 'random'}
-    </p>
-  );
+  function ChannelPreview() {
+    return (
+      <p className="channel-preview__item">
+        # {channel?.data?.name || channel?.data?.id || 'random'}
+      </p>
+    );
+  }
 
-  const DirectPreview = () => {
+  function DirectPreview() {
     const members = Object.values(channel.state.members).filter(
       ({ user }) => user?.id !== client.userID,
     );
@@ -86,7 +86,7 @@ export const TeamChannelPreview: React.FC<Props> = (props) => {
         </p>
       </div>
     );
-  };
+  }
 
   return (
     <div

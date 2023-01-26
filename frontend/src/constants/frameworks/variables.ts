@@ -1,8 +1,6 @@
 import { UIFrameworkVariables } from '@Src/types';
 
-export type FrameworkVariablesDataSource = {
-  [id: string]: UIFrameworkVariables;
-};
+export type FrameworkVariablesDataSource = Record<string, UIFrameworkVariables>;
 
 export const FRAMEWORK_VARIABLES: FrameworkVariablesDataSource = {
   not_selected: {},

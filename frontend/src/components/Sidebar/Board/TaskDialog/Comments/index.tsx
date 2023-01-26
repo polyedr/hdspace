@@ -20,7 +20,7 @@ interface Props {
   task: BoardTask;
 }
 
-const Comments = ({ task }: Props) => {
+function Comments({ task }: Props) {
   const dispatch = useDispatch();
 
   const comments = useSelector(selectComments(task));
@@ -32,9 +32,10 @@ const Comments = ({ task }: Props) => {
     [task],
   );
 
-  const sortedComments = useMemo(() => {
-    return comments.sort((a, b) => (a.id < b.id ? 1 : -1));
-  }, [comments]);
+  const sortedComments = useMemo(
+    () => comments.sort((a, b) => (a.id < b.id ? 1 : -1)),
+    [comments],
+  );
 
   return (
     <>
@@ -46,6 +47,6 @@ const Comments = ({ task }: Props) => {
       </CommentHistory>
     </>
   );
-};
+}
 
 export default Comments;
