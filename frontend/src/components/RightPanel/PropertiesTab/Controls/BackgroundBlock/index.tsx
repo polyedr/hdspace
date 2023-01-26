@@ -1,11 +1,17 @@
 /* eslint-disable no-alert */
-import React, {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-  useEffect,
-} from 'react';
+import {
+  Button,
+  FormControl,
+  Icon,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Theme,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   AssetsList,
   ElementTypeName,
@@ -13,40 +19,33 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '@Src/types';
-import { makeStyles } from '@mui/styles';
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Icon,
-  Button,
-  Theme,
-  SelectChangeEvent,
-  IconButton,
-} from '@mui/material';
-import { enqueueSnackbar } from '@Redux/notification/actions';
-
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectAllAssetLists,
-  selectBackGroundAssetsList,
-  selectCurrentAssetListId,
-} from '@Redux/project/selectors/asset';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { StyledTextField } from '@Components/styledComponents';
+import { URL_REGEX } from '@Constants/defaultParams';
+import RemoveIcon from '@mui/icons-material/Remove';
 import {
   setBackgroundList,
   updateElementStyles,
   uploadElementAsset,
   uploadImageByUrl,
 } from '@Redux/project/actions';
+import {
+  selectAllAssetLists,
+  selectBackGroundAssetsList,
+  selectCurrentAssetListId,
+} from '@Redux/project/selectors/asset';
+import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
-import { URL_REGEX } from '@Constants/defaultParams';
+import { useDispatch, useSelector } from 'react-redux';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import PositionSelector, { BackgroundPosition } from './PositionSelector';
-import { selectActiveElementId } from '@Redux/project/selectors/element';
-import RemoveIcon from '@mui/icons-material/Remove';
 interface StyleProperties {
   backgroundColor?: React.CSSProperties['backgroundColor'];
   backgroundImage?: React.CSSProperties['backgroundImage'];
@@ -105,8 +104,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     // padding: '0 16px',
   },
   formControl: {
-    width: '100%',
-    // marginBottom: theme.spacing(2),
+    '&.MuiFormControl-root': {
+      width: '100%',
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
   },
   imageWrapper: {
     height: 100,
@@ -436,7 +438,7 @@ const BackgroundBlock: React.FC<Props> = ({
           />
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             component="span"
             style={{
               zIndex: 2,
@@ -462,7 +464,7 @@ const BackgroundBlock: React.FC<Props> = ({
           Upload image to asset list
         </Button>
 
-        <FormControl className={classes.formControl}>
+        <FormControl variant="standard" className={classes.formControl}>
           <InputLabel>Background Repeat</InputLabel>
           <Select
             onChange={handleChangeBackgroundRepeat}
@@ -482,7 +484,7 @@ const BackgroundBlock: React.FC<Props> = ({
           onChange={handleChangePosition}
           disabled={!canEdit}
         />
-        <FormControl className={classes.formControl}>
+        <FormControl variant="standard" className={classes.formControl}>
           <InputLabel>Background Size</InputLabel>
           <Select
             onChange={handleChangeBackgroundSize}
@@ -496,7 +498,7 @@ const BackgroundBlock: React.FC<Props> = ({
             ))}
           </Select>
         </FormControl>
-        <FormControl className={classes.formControl}>
+        <FormControl variant="standard" className={classes.formControl}>
           <InputLabel>Background Clip</InputLabel>
           <Select
             onChange={handleChangeBackgroundClip}

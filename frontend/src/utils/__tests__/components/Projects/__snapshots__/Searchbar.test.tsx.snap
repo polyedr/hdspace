@@ -10,21 +10,22 @@ exports[`Searchbar > should render a searchbar 1`] = `
         class="makeStyles-form-3"
       >
         <div
-          class="MuiFormControl-root MuiTextField-root makeStyles-input-1 makeStyles-queryInput-2 MuiFormControl-marginDense"
+          class="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root makeStyles-input-1 makeStyles-queryInput-2 css-4mzek5-MuiFormControl-root-MuiTextField-root"
         >
           <label
-            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-marginDense MuiInputLabel-outlined"
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-1nti53f-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="false"
             for="search_input"
+            id="mui-1-label"
           >
             Search project
           </label>
           <div
-            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-e5d6s-MuiInputBase-root-MuiOutlinedInput-root"
           >
             <input
               aria-invalid="false"
-              class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+              class="MuiInputBase-input MuiOutlinedInput-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
               id="search_input"
               placeholder="Search project"
               type="text"
@@ -32,10 +33,10 @@ exports[`Searchbar > should render a searchbar 1`] = `
             />
             <fieldset
               aria-hidden="true"
-              class="PrivateNotchedOutline-root-7 MuiOutlinedInput-notchedOutline"
+              class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
             >
               <legend
-                class="PrivateNotchedOutline-legendLabelled-9"
+                class="css-yjsfm1"
               >
                 <span>
                   Search project
@@ -46,21 +47,25 @@ exports[`Searchbar > should render a searchbar 1`] = `
         </div>
       </div>
       <div
-        class="MuiFormControl-root MuiTextField-root makeStyles-input-1 makeStyles-parameterInput-4 makeStyles-capitalize-6 MuiFormControl-marginDense"
+        class="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root makeStyles-input-1 makeStyles-parameterInput-4 makeStyles-capitalize-6 css-4mzek5-MuiFormControl-root-MuiTextField-root"
       >
         <label
-          class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
+          class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-hcxejd-MuiFormLabel-root-MuiInputLabel-root"
           data-shrink="true"
           for="parameter_name_input"
+          id="mui-2-label"
         >
           Search by
         </label>
         <div
-          class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+          class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-e5d6s-MuiInputBase-root-MuiOutlinedInput-root"
         >
           <div
+            aria-expanded="false"
             aria-haspopup="listbox"
-            class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+            aria-labelledby="mui-2-label mui-2"
+            class="MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
+            id="mui-2"
             role="button"
             tabindex="0"
           >
@@ -68,14 +73,15 @@ exports[`Searchbar > should render a searchbar 1`] = `
           </div>
           <input
             aria-hidden="true"
-            class="MuiSelect-nativeInput"
+            class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
             id="parameter_name_input"
             tabindex="-1"
             value="name"
           />
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root MuiSelect-icon MuiSelect-iconOutlined"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconOutlined css-hfutr2-MuiSvgIcon-root-MuiSelect-icon"
+            data-testid="ArrowDropDownIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
@@ -85,10 +91,10 @@ exports[`Searchbar > should render a searchbar 1`] = `
           </svg>
           <fieldset
             aria-hidden="true"
-            class="PrivateNotchedOutline-root-7 MuiOutlinedInput-notchedOutline"
+            class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
           >
             <legend
-              class="PrivateNotchedOutline-legendLabelled-9 PrivateNotchedOutline-legendNotched-10"
+              class="css-14lo706"
             >
               <span>
                 Search by

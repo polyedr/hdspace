@@ -10,7 +10,7 @@ import {
   IconButton,
 } from '@mui/material';
 import { Form, Field } from 'react-final-form';
-import { ColorPicker, createColor } from 'material-ui-color';
+import { ColorPicker, createColor } from 'mui-color';
 import { useDispatch } from 'react-redux';
 import { createColumn } from '@Redux/pmtools/board/actions/columns';
 import CloseIcon from '@mui/icons-material/Close';

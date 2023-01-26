@@ -64,7 +64,7 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
                 responseType: 'blob',
               })
               .then((response) => {
-                if (response.headers['content-type'].indexOf('image') !== -1) {
+                if (response.headers['content-type'].includes('image')) {
                   const blob = new Blob([response.data], {
                     type: response.headers['content-type'],
                   });
