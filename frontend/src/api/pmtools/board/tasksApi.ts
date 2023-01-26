@@ -2,6 +2,7 @@ import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps } from '@Src/types';
 
+<<<<<<< HEAD
 export const deleteTask = async ({ taskId, ...options }) => {
   return await myAxios({
     url: `/projects/column-tasks/${taskId}/`,
@@ -12,6 +13,10 @@ export const deleteTask = async ({ taskId, ...options }) => {
 
 export const fetchTask = async ({ taskId, ...options }) => {
   return await myAxios({
+=======
+export const fetchTask = async ({ taskId, ...options }) =>
+  await myAxios({
+>>>>>>> 805ea1dbfd07d9f92e555dff3d3c69d8767fa637
     url: `/projects/column-tasks/${taskId}/`,
     method: 'get',
     ...options,
