@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { selectHoveredElementId } from '@Redux/project/selectors/element';
 import { FrameContext } from 'react-frame-component';
 import { useSelector } from 'react-redux';
+import { IconButton } from '@material-ui/core';
+import CopyAllIcon from '@mui/icons-material/CopyAll';
 
 const HoverInterations: React.FC = () => {
   const [elemetRect, setElementRect] = useState<DOMRect | null>(null);
@@ -26,7 +28,22 @@ const HoverInterations: React.FC = () => {
           left: elemetRect.left + elemetRect.width,
         }}
       >
-        Share button
+        <IconButton
+          disableRipple
+          onClick={() => {
+            alert('Okay');
+          }}
+        >
+          <CopyAllIcon
+            style={{
+              position: 'absolute',
+              right: '30px',
+              top: '12px',
+              height: '25px',
+              width: '25px',
+            }}
+          />
+        </IconButton>
       </div>
     )
   );
