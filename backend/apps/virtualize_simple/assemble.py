@@ -1620,7 +1620,8 @@ def elements_rootblock(
     for pre, fill, node in RenderTree(root_block):
         node.styles = {}
         node.parameters = {}
-        # if serializing == "freecanvas":
+
+        # Calculate values for the freecanvas displaying:
         node.parameters["freeCanvas"] = {}
 
         node.parameters["freeCanvas"]["zIndex"] = 0

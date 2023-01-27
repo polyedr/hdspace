@@ -91,7 +91,7 @@ VIA_ANNOTATION_ASSEMBLING_FILE = "elements_websites_assembling.txt"
 
 # Create elements for the root block function serializer
 def elements_rootblock_create(
-    root_block, outer_div_node, o, serializing="virtualize_simple", children=[]
+    root_block, outer_div_node, o, serializing="virtualize_simple", palette=False, children=[]
 ):
     # Function elements creation, loop through the root_block
     if (serializing == "assemble"):
@@ -108,29 +108,30 @@ def elements_rootblock_create(
                         parent=node.parent.scenarioelement, **node.scenarioelement_kwargs
                     )
 
-        # First, display all the non-text regions
-        for pre, fill, node in RenderTree(root_block):
-            if node.element_assigned in {"input", "select", "button", "image"}:
-                # Create a new Scenario Element for the elements chain
-                node.scenarioelement = ScenarioElement.objects.create(
-                    parent=outer_div_node, **node.scenarioelement_kwargs
-                )
-        # Second, display all the text regions
-        for pre, fill, node in RenderTree(root_block):
-            if node.element_assigned in {
-                "label",
-                "text",
-                "ocrtext",
-                "textarea",
-                "form_heading",
-                "li",
-                "listItem",
-            }:
-                # Create a new Scenario Element for the elements chain
-                node.scenarioelement = ScenarioElement.objects.create(
-                    parent=outer_div_node, **node.scenarioelement_kwargs
-                )
-                node.scenarioelement.buoyancy = 10000
+        if palette==True:
+            # First, display all the non-text regions
+            for pre, fill, node in RenderTree(root_block):
+                if node.element_assigned in {"input", "select", "button", "image"}:
+                    # Create a new Scenario Element for the elements chain
+                    node.scenarioelement = ScenarioElement.objects.create(
+                        parent=outer_div_node, **node.scenarioelement_kwargs
+                    )
+            # Second, display all the text regions
+            for pre, fill, node in RenderTree(root_block):
+                if node.element_assigned in {
+                    "label",
+                    "text",
+                    "ocrtext",
+                    "textarea",
+                    "form_heading",
+                    "li",
+                    "listItem",
+                }:
+                    # Create a new Scenario Element for the elements chain
+                    node.scenarioelement = ScenarioElement.objects.create(
+                        parent=outer_div_node, **node.scenarioelement_kwargs
+                    )
+                    node.scenarioelement.buoyancy = 10000
 
     if (serializing == "freecanvas"):
         for pre, fill, node in RenderTree(root_block):

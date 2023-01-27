@@ -288,6 +288,10 @@ class ProjectScreenList(generics.ListCreateAPIView):
     """
     List all project screens, or create a new project screen.
     """
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = {'tags__name': ['exact'], 'name': ['exact'], 'project': ['exact'],
+                        'status': ['exact'], 'created': ['lte', 'gte', 'lt', 'gt'],
+                        'updated': ['lte', 'gte', 'lt', 'gt']}
 
     queryset = ProjectScreen.objects.all()
     serializer_class = ProjectScreenSerializer
