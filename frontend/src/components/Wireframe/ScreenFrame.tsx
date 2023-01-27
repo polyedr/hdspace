@@ -1,15 +1,18 @@
 import React from 'react';
 import { SCREEN_WIDTH } from './constants';
+import { Box } from '@mui/material';
+import { styled } from '@mui/styles';
+
+const MuiBox = styled(Box)({
+  width: SCREEN_WIDTH,
+  overflow: 'auto',
+  backgroundColor: 'white',
+  boxShadow: '0 2px 6px 0 rgba(0, 0, 0, 0.08)',
+  cursor: 'auto',
+});
 
 const ScreenFrame: React.FC = ({ children }) => {
-  return (
-    <div
-      className="wireframe-screen-frame"
-      style={{ width: SCREEN_WIDTH, overflow: 'scroll' }}
-    >
-      {children}
-    </div>
-  );
+  return <MuiBox>{children}</MuiBox>;
 };
 
 export default ScreenFrame;

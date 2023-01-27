@@ -24,6 +24,7 @@ import {
   IconButton,
   Box,
   Theme,
+  Button,
 } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
 
@@ -39,7 +40,12 @@ import TopBar from './TopBar';
 import History from './History';
 import Logo from '../UI/Logo';
 import Avatar from './Avatar';
-import { ShowGridIcon, ShowBlockIcon } from './icons';
+import {
+  ShowGridIcon,
+  ShowBlockIcon,
+  EditorModeIcon,
+  WireframeModeIcon,
+} from './icons';
 
 const Appbar = styled(MUIAppbar)({
   '&.MuiAppBar-root': {
@@ -60,6 +66,37 @@ const Appbar = styled(MUIAppbar)({
     },
   },
 });
+
+const ModeToggleBox = styled(Box)(({ theme }) => ({
+  backgroundColor: '#F6F6F6',
+  borderRadius: 4,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  height: '36px',
+  overflow: 'hidden',
+
+  '& button': {
+    borderRadius: 0,
+
+    '&:hover': {
+      backgroundColor: theme.palette.grey[200],
+    },
+  },
+}));
+
+const AlignButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.grey[300],
+  color: theme.palette.grey[600],
+  fontSize: 12,
+  height: 36,
+  fontWeight: 600,
+  margin: '0 24px',
+
+  '&:hover': {
+    backgroundColor: theme.palette.grey[200],
+  },
+}));
 
 const useStyles = makeStyles<Theme>(({ typography, palette }) => ({
   toolbar: {
@@ -160,6 +197,17 @@ function TopPanel() {
           )}
         </Box>
         <Box className={classes.topbarsections}>
+          <ModeToggleBox>
+            <IconButton aria-label="Editor Mode">
+              <EditorModeIcon />
+            </IconButton>
+            <IconButton aria-label="Wireframe Mode">
+              <WireframeModeIcon />
+            </IconButton>
+          </ModeToggleBox>
+          <AlignButton variant="contained" disableElevation>
+            Auto align
+          </AlignButton>
           <Layouts />
         </Box>
 

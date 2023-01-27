@@ -1,6 +1,10 @@
 import React, { useCallback } from 'react';
 import { type WireframeScreen } from './Canvas';
-import { Card as MuiCard, styled, Typography } from '@mui/material';
+import {
+  Card as MuiCard,
+  styled,
+  Typography as MuiTypography,
+} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAllElements } from '@Redux/project/selectors/element';
 import RENDERERS from '@Components/UI/RenderElements';
@@ -22,7 +26,15 @@ const ElementWrapper = styled('div')<{ active: boolean }>(({ active }) => ({
 const Card = styled(MuiCard)<{ active: boolean }>(({ active }) => ({
   // boxShadow: `0 0 1px ${active ? 4 : 1}px rgba(0,0,0,.2)`,
   backgroundColor: 'transparent',
+  boxShadow: 'none',
+  overflow: 'inherit',
 }));
+
+const Typography = styled(MuiTypography)({
+  fontWeight: 400,
+  color: 'black',
+  cursor: 'move',
+});
 
 const RenderElement = ({ elementId, screenId, allElements }) => {
   const element = allElements[elementId];
