@@ -16,6 +16,7 @@ interface Props {
 
 const styles: SxProps = {
   position: 'absolute',
+  zIndex: 1,
 };
 
 const DraggableScreen: React.FC<Props> = ({ data, zoom, onDrag, onStop }) => {
@@ -38,7 +39,7 @@ const DraggableScreen: React.FC<Props> = ({ data, zoom, onDrag, onStop }) => {
         className="wireframe-screen-frame"
         id={`wireframe-screen-${data.id}`}
       >
-        <Screen data={data} active={currentScreen === data.id} />
+        <Screen data={data} active={currentScreen === data.id.toString()} />
       </Box>
     </Draggable>
   );

@@ -40,13 +40,13 @@ const Wireframe: React.FC<Props> = ({ projectId, screenId: _ }) => {
       <Stack sx={{ height: '100%' }}>
         <Grid container columnSpacing={2} flex={1}>
           <Grid item xs={2}>
-            <LeftSidebar />
+            <LeftSidebar screens={screens} />
           </Grid>
           <Grid item xs={8}>
             <Canvas screens={screens} />
           </Grid>
           <Grid item xs={2}>
-            <RightSidebar />
+            <RightSidebar screens={screens} />
           </Grid>
         </Grid>
       </Stack>

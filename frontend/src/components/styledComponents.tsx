@@ -50,7 +50,7 @@ export const PropertyAccordianSummary = MuiStyled(AccordionSummary)({
   },
 });
 
-export const PropertyAccordion = styled(MuiAccordion)({
+export const PropertyAccordion = MuiStyled(MuiAccordion)({
   '&.MuiAccordion-root': {
     boxShadow: 'none',
     margin: '0 !important',
@@ -66,7 +66,7 @@ export const PropertyAccordion = styled(MuiAccordion)({
   },
 });
 
-export const PropertyAccordionDetails = styled(AccordionDetails)({});
+export const PropertyAccordionDetails = MuiStyled(AccordionDetails)({});
 
 const MuiSlider = styled(Slider)`
   & .MuiSlider-thumb {

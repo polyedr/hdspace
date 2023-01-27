@@ -34,8 +34,8 @@ const RenderElement = ({ elementId, screenId, allElements }) => {
     (e: React.MouseEvent) => {
       e.stopPropagation();
 
-      dispatch(setActiveScreen(screenId));
-      dispatch(setActiveElement(elementId));
+      dispatch(setActiveScreen(screenId.toString()));
+      dispatch(setActiveElement(elementId.toString()));
     },
     [elementId, screenId],
   );
@@ -73,7 +73,7 @@ const Screen: React.FC<Props> = ({ data, active }) => {
   const dispatch = useDispatch();
 
   const handleSceeenClick = () => {
-    dispatch(setActiveScreen(data.id));
+    dispatch(setActiveScreen(data.id.toString()));
   };
 
   return (

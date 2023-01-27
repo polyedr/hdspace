@@ -53,7 +53,7 @@ const CustomList = styled(List)({
   },
 });
 
-const LeftSidebar = () => {
+const LeftSidebar = ({ screens }) => {
   const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {

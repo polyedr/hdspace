@@ -1,11 +1,10 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import { Xwrapper, useXarrow } from 'react-xarrows';
+import Xarrow, { Xwrapper, useXarrow } from 'react-xarrows';
 import DraggableScreen from './DraggableScreen';
 import type { Normalized, Screen as ProjectScren } from '@Src/types';
-
 import GridLines from 'react-gridlines';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   setCurrentScreenId,
   updateCurrentUIFramework,
@@ -13,6 +12,7 @@ import {
 import { FRAMEWORKS_LIST } from '@Constants/frameworks';
 import { GRID_CELL_SPACE, GRID_STROKE_WIDTH } from '@/constants/grid';
 import { SCREEN_WIDTH } from './constants';
+import { selectCompleteConnections } from '@Redux/wireframe/selectors';
 
 export type WireframeScreen = ProjectScren & {
   position: { x: number; y: number };
@@ -47,6 +47,7 @@ const Canvas: React.FC<{ screens: Normalized<ProjectScren> }> = ({
   screens: _screens,
 }) => {
   const [screens] = useState<Screens>(buildScreenData(_screens));
+  const connections = useSelector(selectCompleteConnections);
 
   const [isMoveable, setIsMoveable] = useState(false);
   const [zoom, setZoom] = useState(0.5);
@@ -66,7 +67,7 @@ const Canvas: React.FC<{ screens: Normalized<ProjectScren> }> = ({
     // etc
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     dispatch(setCurrentScreenId(screens[Object.keys(screens)[0]].id));
 
     dispatch(
@@ -76,6 +77,12 @@ const Canvas: React.FC<{ screens: Normalized<ProjectScren> }> = ({
         version: FRAMEWORKS_LIST[2].versions[0],
       }),
     );
+
+    const timer = setInterval(updateXArrow, 10);
+
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
   const screensCount = Object.keys(screens).length;
@@ -136,16 +143,19 @@ const Canvas: React.FC<{ screens: Normalized<ProjectScren> }> = ({
           </GridLines>
         </TransformComponent>
       </TransformWrapper>
-      {/* <Xarrow
-        color="#000"
-        strokeWidth={1.5}
-        start={'630037'}
-        path="grid"
-        tailShape="circle"
-        tailSize={20}
-        zIndex={50}
-        end={`wireframe-screen-${screens[Object.keys(screens)[0]].id}`}
-      /> */}
+      {connections.map((c) => (
+        <Xarrow
+          key={c.sourceElement}
+          color="#000"
+          strokeWidth={1.5}
+          start={c.sourceElement.toString()}
+          path="grid"
+          tailShape="circle"
+          tailSize={20}
+          zIndex={0}
+          end={`wireframe-screen-${c.destinationScreen}`}
+        />
+      ))}
     </Xwrapper>
   );
 };

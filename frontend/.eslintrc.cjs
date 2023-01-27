@@ -11,6 +11,7 @@ module.exports = {
     'plugin:import/recommended',
   ],
   overrides: [],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',

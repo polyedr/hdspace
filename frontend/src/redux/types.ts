@@ -228,13 +228,16 @@ export interface NotificationState {
 }
 
 export interface WireframeConnection {
+  id: string;
+  screenId: string;
   sourceElement: string;
-  destinationScreem: string;
+  event: string;
+  destinationScreen: string;
 }
 
 export interface WireframeState {
-  activeScreen?: number;
-  activeElement?: number;
+  activeScreen?: string;
+  activeElement?: string;
   connections: WireframeConnection[];
 }
 export interface AppReduxState {
