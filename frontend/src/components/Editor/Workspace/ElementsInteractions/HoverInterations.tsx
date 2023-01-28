@@ -1,41 +1,43 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { selectHoveredElementId } from '@Redux/project/selectors/element';
 import { FrameContext } from 'react-frame-component';
-import { useSelector } from 'react-redux';
-import { IconButton } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
 import CopyAllIcon from '@mui/icons-material/CopyAll';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 
 const HoverInterations: React.FC = () => {
   const [elemetRect, setElementRect] = useState<DOMRect | null>(null);
   const { document: frameDocument } = useContext(FrameContext);
   const hoveredElement = useSelector(selectHoveredElementId);
+  const dispatch = useDispatch();
+  const [element, setElement] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     if (hoveredElement) {
       const element = frameDocument.getElementById(hoveredElement);
+      setElement(element);
       if (element) {
         setElementRect(element.getBoundingClientRect());
       }
     }
-  }, [hoveredElement, setElementRect]);
+  }, [hoveredElement, element, setElementRect]);
 
   const handleCopyLink = useCallback(() => {
     const { origin, pathname, search } = window.location;
-    console.log({ origin, pathname, search });
-    // const params = new URLSearchParams(search);
-    // params.set('moveToElement', element.id);
+    const params = new URLSearchParams(search);
+    params.set('moveToElement', element.getAttribute('id'));
 
-    // navigator.clipboard.writeText(`${origin}${pathname}?${params.toString()}`);
+    navigator.clipboard.writeText(`${origin}${pathname}?${params.toString()}`);
 
-    // dispatch(
-    //   enqueueSnackbar({
-    //     message: 'Link copied to clipboard.',
-    //     options: {
-    //       variant: 'success',
-    //     },
-    //   }),
-    // );
-  }, []);
+    dispatch(
+      enqueueSnackbar({
+        message: 'Link copied to clipboard.',
+        options: {
+          variant: 'success',
+        },
+      }),
+    );
+  }, [hoveredElement]);
 
   return (
     elemetRect && (
@@ -46,17 +48,17 @@ const HoverInterations: React.FC = () => {
           left: elemetRect.left + elemetRect.width,
         }}
       >
-        <IconButton disableRipple onClick={handleCopyLink}>
-          <CopyAllIcon
-            style={{
-              position: 'absolute',
-              right: '30px',
-              top: '12px',
-              height: '25px',
-              width: '25px',
-            }}
-          />
-        </IconButton>
+        <CopyAllIcon
+          onClick={handleCopyLink}
+          style={{
+            position: 'absolute',
+            right: '10px',
+            top: '12px',
+            cursor: 'pointer',
+            height: '25px',
+            width: '25px',
+          }}
+        />
       </div>
     )
   );
