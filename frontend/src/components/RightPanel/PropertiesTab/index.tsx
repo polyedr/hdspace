@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';
 import {
@@ -89,6 +89,15 @@ const useStyles = makeStyles({
     fontSize: '12px',
     letterSpacing: '145%',
   },
+  rightEmptyPanel: {
+    color: '#fff',
+    height: '100%',
+    display: 'flex',
+    overflow: 'hidden',
+    transition: 'width 250ms ease',
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+  },
   toggleButton: {
     color: '#81818E',
     fontWeight: 'bold',
@@ -147,8 +156,6 @@ const PropertiesTab: React.FC = () => {
     setShowRemoveGroupDialog(false);
     setEditedStyles(null);
   }, []);
-
-  useEffect(() => {});
 
   const handleConfirmSourceUnbinding = () => {
     if (!editedStyles) {
@@ -442,7 +449,7 @@ const PropertiesTab: React.FC = () => {
     !activeElement ||
     [masterCoreElementId, masterGroupsElementId].includes(activeElement.id)
   ) {
-    return null;
+    return <div className={classes.rightEmptyPanel}></div>;
   }
 
   const collapseAll = () => {
