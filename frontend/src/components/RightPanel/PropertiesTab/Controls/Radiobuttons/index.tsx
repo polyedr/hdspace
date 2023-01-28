@@ -6,12 +6,12 @@ import { addChildToElement } from '@Redux/project/actions';
 import generateUniqueName from '@Utils/generateUniqueName';
 import { v4 } from 'uuid';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import { IconButton } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
+import { makeStyles } from '@mui/styles';
+import { IconButton, lighten, Theme } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import RadiobuttonControl from './RadiobuttonControl';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles<Theme>(({ palette }) => ({
   row: {
     display: 'flex',
     justifyContent: 'flex-start',

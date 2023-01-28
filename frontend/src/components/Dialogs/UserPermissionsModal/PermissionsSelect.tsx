@@ -6,7 +6,8 @@ import {
   MenuItem,
   Select,
   Input,
-} from '@material-ui/core';
+  SelectChangeEvent,
+} from '@mui/material';
 import * as Actions from '@Redux/permissions/actions';
 import {
   EDITABLE_USER_PERMISSIONS,
@@ -59,7 +60,7 @@ const PermissionsSelect: React.FC<Props> = (props: Props) => {
 
   return (
     <Select
-      onChange={(e: React.ChangeEvent<any>) => {
+      onChange={(e: SelectChangeEvent<UserProjectPermission[]>) => {
         handlePermissionManagement(
           e.target.value as unknown as UserProjectPermission[],
         );

@@ -1,5 +1,5 @@
 import { StyledTextField } from '@Components/styledComponents';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 import React from 'react';
 import {
   Alignments,

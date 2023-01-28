@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { Box, BoxProps, Link } from '@material-ui/core';
+import { Box, BoxProps, Link } from '@mui/material';
 
 // import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { ExitIcon } from '../Icon';

@@ -7,8 +7,8 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import ToggleButton from '@mui/material/ToggleButton';
 import { setBordersEnabled, exportScreenFlag } from '@Redux/project/actions';
-import { IconButton } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { IconButton, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { PANEL_TRANSITION_DURATION } from '@Src/styles/Theme';
 import {
   selectUpdateScreenImageLoader,
@@ -24,7 +24,7 @@ import History from '@Components/Layout/History';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import Share from './Share';
 
-const useStyles = makeStyles(({ typography }) => ({
+const useStyles = makeStyles<Theme>(({ typography }) => ({
   root: {
     display: 'flex',
     flexWrap: 'nowrap',

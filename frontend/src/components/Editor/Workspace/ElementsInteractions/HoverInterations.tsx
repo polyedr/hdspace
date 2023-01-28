@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { selectHoveredElementId } from '@Redux/project/selectors/element';
 import { FrameContext } from 'react-frame-component';
 import { useSelector } from 'react-redux';
@@ -19,6 +19,24 @@ const HoverInterations: React.FC = () => {
     }
   }, [hoveredElement, setElementRect]);
 
+  const handleCopyLink = useCallback(() => {
+    const { origin, pathname, search } = window.location;
+    console.log({ origin, pathname, search });
+    // const params = new URLSearchParams(search);
+    // params.set('moveToElement', element.id);
+
+    // navigator.clipboard.writeText(`${origin}${pathname}?${params.toString()}`);
+
+    // dispatch(
+    //   enqueueSnackbar({
+    //     message: 'Link copied to clipboard.',
+    //     options: {
+    //       variant: 'success',
+    //     },
+    //   }),
+    // );
+  }, []);
+
   return (
     elemetRect && (
       <div
@@ -28,12 +46,7 @@ const HoverInterations: React.FC = () => {
           left: elemetRect.left + elemetRect.width,
         }}
       >
-        <IconButton
-          disableRipple
-          onClick={() => {
-            alert('Okay');
-          }}
-        >
+        <IconButton disableRipple onClick={handleCopyLink}>
           <CopyAllIcon
             style={{
               position: 'absolute',

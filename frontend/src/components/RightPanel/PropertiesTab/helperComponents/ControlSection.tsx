@@ -6,7 +6,7 @@ import {
   PropertyAccordion,
 } from '@Components/styledComponents';
 // import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { setImageList } from '@Redux/project/actions';
 import { useDispatch } from 'react-redux';
 

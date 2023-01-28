@@ -147,6 +147,15 @@ export const selectCurrentGeneratorElements = createSelector(
   },
 );
 
+export const getIndexOfSelectedElementInParentChildren = createSelector(
+  selectActiveElement,
+  selectParentOfActiveElement,
+  (activeElement, rootElement) => {
+    const index = rootElement?.children.indexOf(activeElement.id);
+    return index || 0;
+  },
+);
+
 function makeActiveElementInfoSelector<
   T extends StateElement,
   K extends 'styles' | 'parameters',

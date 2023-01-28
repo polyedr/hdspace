@@ -2,8 +2,8 @@ import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import { styled } from '@mui/material/styles';
-import { createStyles, darken, makeStyles } from '@material-ui/core/styles';
-import Alert from '@material-ui/lab/Alert';
+import { createStyles, makeStyles } from '@mui/styles';
+import Alert from '@mui/lab/Alert';
 import {
   selectProfileData,
   selectSubscriptionData,
@@ -39,16 +39,18 @@ import {
   MenuItem,
   FormHelperText,
   Grid,
-} from '@material-ui/core';
+  darken,
+  Avatar,
+  Theme,
+} from '@mui/material';
 import ImageCropper from '@Components/CropImage';
 import { useHistory } from 'react-router';
-import { Avatar } from '@mui/material';
 import { getSubscriptionData } from '@Redux/permissions/actions';
 import { isRequired } from '@Utils/validators';
 import SubmitError from '../SubmitError';
 import { SubscriptionCard } from './SubscriptionCard';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     headerContainer: {
       paddingTop: theme.spacing(2),

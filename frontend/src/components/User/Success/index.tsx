@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Grid } from '@material-ui/core';
+import { Typography, Grid } from '@mui/material';
 import bigimg from '../../../assets/images/bigimg.png';
 import logo from '../../../assets/images/logo.png';
 import Info from '../Info';

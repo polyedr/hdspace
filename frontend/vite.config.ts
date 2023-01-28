@@ -23,7 +23,9 @@ export default ({ mode }) => {
     plugins: [
       react(),
       splitVendorChunkPlugin(),
-      ...(process.env.NODE_ENV !== 'development' ? [eslint()] : []),
+      eslint({
+        failOnError: process.env.NODE_ENV !== 'development',
+      }),
       vitePluginFaviconsInject('./src/assets/sprites/favicon.png'),
     ],
     css: {

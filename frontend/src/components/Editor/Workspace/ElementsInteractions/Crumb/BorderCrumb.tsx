@@ -26,10 +26,10 @@ import {
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import ShareIcon from '@mui/icons-material/Share';
-
-import { makeStyles } from '@material-ui/core/styles';
-import { enqueueSnackbar } from '@Redux/notification/actions';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import Icon from '../../../../UI/Icon';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 
 interface Props {
   element: StateElement;
@@ -41,7 +41,7 @@ interface Props {
   masterScreenId: number | null;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   crumb: ({ styles, element, rootId }: Props & { rootId: string }) => ({
     top: element.id === rootId ? styles.top : styles.top + styles.height - 1,
     left: element.id === rootId ? 'auto' : styles.left,
