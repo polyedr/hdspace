@@ -21,6 +21,7 @@ interface Props {
 const ElementWrapper = styled('div')<{ active: boolean }>(({ active }) => ({
   display: 'inline-block',
   border: `1px solid ${active ? 'blue' : 'white'}`,
+  padding: 5,
 }));
 
 const Card = styled(MuiCard)<{ active: boolean }>(({ active }) => ({
