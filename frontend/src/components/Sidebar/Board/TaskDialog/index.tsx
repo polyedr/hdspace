@@ -1,22 +1,24 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import Avatar from '@Components/UI/Avatar';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ShareIcon from '@mui/icons-material/Share';
 import {
   Button as MuiButton,
   Dialog as MuiDialog,
   DialogContent,
   DialogTitle,
   Grid,
+  IconButton as MuiIconButton,
   Table,
   TableBody,
   TableCell as MuiTableCell,
   TableContainer,
   TableRow,
   TextField as MuiTextField,
-  IconButton as MuiIconButton,
 } from '@mui/material';
 import Slide from '@mui/material/Slide';
-import { TransitionProps } from '@mui/material/transitions';
-import { styled } from '@mui/material/styles';
-import AddIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
 import { useDispatch } from 'react-redux';
 import {
@@ -26,22 +28,20 @@ import {
 } from '@Redux/pmtools/board/actions/tasks';
 import { BoardTask } from '@Redux/pmtools/types';
 import DeleteIcon from '@mui/icons-material/Delete';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import ShareIcon from '@mui/icons-material/Share';
-import SettingsIcon from '@mui/icons-material/Settings';
-import CloseIcon from '@mui/icons-material/Close';
-import Avatar from '@Components/UI/Avatar';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
+import { styled } from '@mui/material/styles';
+import { TransitionProps } from '@mui/material/transitions';
+import React, { useCallback, useEffect, useState } from 'react';
+import Checklist from './Checklist';
 import Comment from './Comments';
-import TaskTitle from './TaskTitle';
+import Description from './Description';
 import DueDate from './DueDate';
-import { IconButton } from './StyledComponents';
+import MemberPicker from './MemberPicker';
 import Priority from './Priority';
 import Status from './Status';
-import MemberPicker from './MemberPicker';
-import Description from './Description';
+import { IconButton } from './StyledComponents';
 import Tags from './Tags';
-import Checklist from './Checklist';
+import TaskTitle from './TaskTitle';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -102,7 +102,17 @@ const StandardTextField = styled(MuiTextField)({
   '& .MuiInputBase-root:before': {
     borderColor: '#E4E6EB',
   },
-
+  '& input[type=number]': {
+    '-moz-appearance': 'textfield',
+  },
+  '& input[type=number]::-webkit-outer-spin-button': {
+    '-webkit-appearance': 'none',
+    margin: 0,
+  },
+  '& input[type=number]::-webkit-inner-spin-button': {
+    '-webkit-appearance': 'none',
+    margin: 0,
+  },
   '& input': {
     maxWidth: 64,
   },
@@ -141,7 +151,7 @@ const Transition = React.forwardRef(function Transition(
 interface Props {
   task: BoardTask;
   open: boolean;
-  onClose(): void;
+  onClose: () => void;
 }
 
 const TaskDialog = ({ task, open, onClose }: Props) => {
@@ -149,6 +159,7 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
   const [showDelete, setShowDelete] = useState(false);
   const [storyPoints, setStoryPoints] = useState(task.story_points.toString());
   const [time, setTime] = useState(task.time);
+  const [error, setStoryError] = useState('');
 
   useEffect(() => {
     if (open) {
@@ -233,6 +244,141 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                 <CloseIcon />
               </ActionIconwrapper>
             </Stack>
+            <TableContainer>
+              <Table aria-label="simple table">
+                <TableBody>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Status
+                    </TableCell>
+                    <TableCell>
+                      <Status
+                        onChange={(status) =>
+                          handleUpdateTask('status', status)
+                        }
+                        task={task}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Due Date
+                    </TableCell>
+                    <TableCell>
+                      <DueDate
+                        date={task.due_date}
+                        onChange={(date) => handleUpdateTask('due_date', date)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Assignee
+                    </TableCell>
+                    <TableCell>
+                      <MemberPicker
+                        selected={task?.assignee_id?.toString()}
+                        onChange={(member) => {
+                          if (member)
+                            handleUpdateTask('assignee_id', member?.id);
+                          else handleUpdateTask('assignee_id', null);
+                        }}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Responsible
+                    </TableCell>
+                    <TableCell>
+                      <IconButton>
+                        <MemberPicker
+                          selected={task?.responsible_id?.toString()}
+                          onChange={(member) => {
+                            if (member)
+                              handleUpdateTask('responsible_id', member?.id);
+                            else handleUpdateTask('responsible_id', null);
+                          }}
+                        />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Priority
+                    </TableCell>
+                    <TableCell>
+                      <Priority
+                        onChange={(priority) =>
+                          handleUpdateTask('priority', priority)
+                        }
+                        task={task}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Story Points
+                    </TableCell>
+                    <TableCell>
+                      <StandardTextField
+                        type="number"
+                        InputProps={{
+                          style: { width: '85px' },
+                          inputProps: { min: 0 },
+                        }}
+                        value={storyPoints}
+                        onChange={handleChangeStoryPoints}
+                        onBlur={() => {
+                          if (parseInt(storyPoints) > 2147483647) {
+                            setStoryError(
+                              'Story point should be less then 2147483647',
+                            );
+                          } else {
+                            setStoryError('');
+                            handleUpdateTask('story_points', storyPoints);
+                          }
+                        }}
+                        error={error !== ''}
+                        helperText={error}
+                        variant="standard"
+                        autoComplete="off"
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Time
+                    </TableCell>
+                    <TableCell>
+                      <StandardTextField
+                        onChange={handleChangeTime}
+                        type="text"
+                        variant="standard"
+                        autoComplete="off"
+                        onBlur={() => handleUpdateTask('time', time)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Author
+                    </TableCell>
+                    <TableCell>
+                      <AuthorButton variant="text">
+                        <AuthorAvatar
+                          alt={`${task.author.first_name} ${task.author.last_name}`}
+                          src={task.author.profile_avatar}
+                          uniqueKey={task.author.id}
+                          tooltipDisabled
+                        />
+                        <span>{`${task.author.first_name} ${task.author.last_name}`}</span>
+                      </AuthorButton>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Grid>
         </Grid>
 
