@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux';
 import { createProjectLabel } from '@Redux/pmtools/board/actions/labels';
 
 const colors = [
-  '#F3F4F6',
+  '#007500',
   '#EF3052',
   '#FAB200',
   '#FF9A50',
