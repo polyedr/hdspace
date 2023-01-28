@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { FormControlLabel, MenuItem } from '@material-ui/core';
+import { FormControlLabel, MenuItem } from '@mui/material';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/NativeColumns/styles';
@@ -25,11 +25,11 @@ const parse = (value: string | number | undefined) => {
   return [gap, units];
 };
 
-type Props = {
+interface Props {
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   value: React.CSSProperties['columnGap'];
   canEdit: boolean;
-};
+}
 
 const ColumnGap: React.FC<Props> = ({ updateStyles, value, canEdit }) => {
   const classes = useColumnControlStyles();

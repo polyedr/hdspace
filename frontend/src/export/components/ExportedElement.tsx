@@ -5,10 +5,10 @@ import { AppReduxState } from '@Redux/types';
 import { selectLayout } from '@Redux/project/selectors/base';
 import { Layout } from '@Src/types';
 
-type Props = {
+interface Props {
   elementId: string;
   state: AppReduxState;
-};
+}
 
 const ExportedElement: React.FC<Props> = ({ elementId, state }) => {
   const element = selectElementById(state, elementId);

@@ -1,3 +1,1 @@
-export type BorderedDom = {
-  [id: string]: HTMLElement;
-};
+export type BorderedDom = Record<string, HTMLElement>;

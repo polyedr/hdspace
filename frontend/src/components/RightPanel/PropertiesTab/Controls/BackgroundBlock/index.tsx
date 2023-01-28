@@ -1,11 +1,17 @@
 /* eslint-disable no-alert */
-import React, {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-  useEffect,
-} from 'react';
+import {
+  Button,
+  FormControl,
+  Icon,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Theme,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   AssetsList,
   ElementTypeName,
@@ -13,35 +19,33 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '@Src/types';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { StyledTextField } from '@Components/styledComponents';
+import { URL_REGEX } from '@Constants/defaultParams';
+import RemoveIcon from '@mui/icons-material/Remove';
 import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Icon,
-  Button,
-} from '@material-ui/core';
-import { enqueueSnackbar } from '@Redux/notification/actions';
-
-import { useDispatch, useSelector } from 'react-redux';
+  setBackgroundList,
+  updateElementStyles,
+  uploadElementAsset,
+  uploadImageByUrl,
+} from '@Redux/project/actions';
 import {
   selectAllAssetLists,
   selectBackGroundAssetsList,
   selectCurrentAssetListId,
 } from '@Redux/project/selectors/asset';
-import {
-  setBackgroundList,
-  uploadElementAsset,
-  uploadImageByUrl,
-} from '@Redux/project/actions';
+import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
-import { URL_REGEX } from '@Constants/defaultParams';
+import { useDispatch, useSelector } from 'react-redux';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import PositionSelector, { BackgroundPosition } from './PositionSelector';
-
 interface StyleProperties {
   backgroundColor?: React.CSSProperties['backgroundColor'];
   backgroundImage?: React.CSSProperties['backgroundImage'];
@@ -87,18 +91,31 @@ enum BackgroundClip {
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
+  imageIcon: {
+    position: 'absolute',
+    top: '6px',
+    right: '5px',
+    color: 'black',
+    height: '15px',
+    width: '15px',
+    background: 'white',
+  },
   root: {
-    padding: '0 16px',
+    // padding: '0 16px',
   },
   formControl: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
+    '&.MuiFormControl-root': {
+      width: '100%',
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
   },
   imageWrapper: {
     height: 100,
     width: 100,
     background: '#ddd',
     borderRadius: 10,
+    position: 'relative',
     marginTop: theme.spacing(1),
     display: 'flex',
     alignItems: 'center',
@@ -184,7 +201,7 @@ const BackgroundBlock: React.FC<Props> = ({
   }, [element.id]);
 
   const currentScreenId = useSelector(selectCurrentScreenId);
-
+  const activeElementId = useSelector(selectActiveElementId);
   const fileSelectorRef = useRef<HTMLInputElement>(null);
 
   const currentAssetListId = useSelector(selectCurrentAssetListId);
@@ -310,24 +327,42 @@ const BackgroundBlock: React.FC<Props> = ({
   }, []);
 
   const handleChangeBackgroundSize = useCallback(
-    (e: React.ChangeEvent<{ value: unknown }>) => {
-      updateCSS('backgroundSize', e.target.value as string);
+    (e: SelectChangeEvent) => {
+      updateCSS('backgroundSize', e.target.value);
     },
     [element, currentScreenId],
   );
 
   const handleChangeBackgroundClip = useCallback(
-    (e: React.ChangeEvent<{ value: unknown }>) => {
-      updateCSS('backgroundClip', e.target.value as string);
+    (e: SelectChangeEvent) => {
+      updateCSS('backgroundClip', e.target.value);
     },
     [element, currentScreenId],
   );
 
   const handleChangeBackgroundRepeat = useCallback(
-    (e: React.ChangeEvent<{ value: unknown }>) => {
-      updateCSS('backgroundRepeat', e.target.value as string);
+    (e: SelectChangeEvent) => {
+      updateCSS('backgroundRepeat', e.target.value);
     },
     [element, currentScreenId],
+  );
+
+  const imageRemoveHandler = useCallback(
+    (e) => {
+      dispatch(
+        updateElementStyles(
+          activeElementId,
+          {
+            backgroundImage: 'unset',
+          },
+          {
+            screenId: currentScreenId,
+          },
+        ),
+      );
+      e.stopPropagation();
+    },
+    [activeElementId],
   );
 
   const handleChangePosition = useCallback(
@@ -357,9 +392,10 @@ const BackgroundBlock: React.FC<Props> = ({
 
     return (
       <>
-        <div onClick={handleSelectImage} className={classes.formControl}>
+        <div className={classes.formControl}>
           <InputLabel>Background Image</InputLabel>
           <div
+            onClick={handleSelectImage}
             className={classes.imageWrapper}
             style={{
               backgroundImage,
@@ -368,7 +404,27 @@ const BackgroundBlock: React.FC<Props> = ({
               backgroundSize: 'cover',
             }}
           >
-            {!backgroundImage ? <Icon fontSize="medium">image</Icon> : null}
+            {['none', 'unset'].includes(backgroundImage) ? (
+              <Icon fontSize="small">image</Icon>
+            ) : null}
+            {!['none', 'unset'].includes(backgroundImage) ? (
+              <IconButton
+                onClick={imageRemoveHandler}
+                style={{
+                  position: 'absolute',
+                  top: '6px',
+                  right: '5px',
+                  color: 'black',
+                  height: '15px',
+                  width: '15px',
+                  background: 'white',
+                }}
+              >
+                <RemoveIcon style={{ fontSize: '10px' }} />
+              </IconButton>
+            ) : (
+              ''
+            )}
           </div>
         </div>
 
@@ -382,7 +438,7 @@ const BackgroundBlock: React.FC<Props> = ({
           />
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             component="span"
             style={{
               zIndex: 2,
@@ -408,7 +464,7 @@ const BackgroundBlock: React.FC<Props> = ({
           Upload image to asset list
         </Button>
 
-        <FormControl className={classes.formControl}>
+        <FormControl variant="standard" className={classes.formControl}>
           <InputLabel>Background Repeat</InputLabel>
           <Select
             onChange={handleChangeBackgroundRepeat}
@@ -428,7 +484,7 @@ const BackgroundBlock: React.FC<Props> = ({
           onChange={handleChangePosition}
           disabled={!canEdit}
         />
-        <FormControl className={classes.formControl}>
+        <FormControl variant="standard" className={classes.formControl}>
           <InputLabel>Background Size</InputLabel>
           <Select
             onChange={handleChangeBackgroundSize}
@@ -442,7 +498,7 @@ const BackgroundBlock: React.FC<Props> = ({
             ))}
           </Select>
         </FormControl>
-        <FormControl className={classes.formControl}>
+        <FormControl variant="standard" className={classes.formControl}>
           <InputLabel>Background Clip</InputLabel>
           <Select
             onChange={handleChangeBackgroundClip}
@@ -473,7 +529,7 @@ const BackgroundBlock: React.FC<Props> = ({
         type="file"
         disabled={!canEdit}
       />
-      <FormControl className={classes.formControl}>
+      {/* <FormControl className={classes.formControl}>
         <InputLabel>Background Type</InputLabel>
         <Select onChange={handleChangeType} value={type}>
           {Object.values(BackgroundType).map((type) => (
@@ -482,14 +538,29 @@ const BackgroundBlock: React.FC<Props> = ({
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
+      </FormControl> */}
+      <StyledTextField
+        fullWidth
+        margin="dense"
+        label="Background Type"
+        value={type}
+        onChange={handleChangeType}
+        select
+        disabled={!canEdit}
+      >
+        {Object.values(BackgroundType).map((type) => (
+          <MenuItem value={type} key={type}>
+            {type}
+          </MenuItem>
+        ))}
+      </StyledTextField>
 
       {renderBackgroundControls()}
     </div>
   );
 };
 
-export default (props) => {
+export default function (props) {
   const assetLists = useSelector(selectAllAssetLists);
 
   if (!assetLists) {
@@ -497,4 +568,4 @@ export default (props) => {
   }
 
   return <BackgroundBlock {...props} assetLists={assetLists} />;
-};
+}

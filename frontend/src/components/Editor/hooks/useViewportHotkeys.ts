@@ -36,13 +36,13 @@ const useViewportHotkeys = () => {
   );
   const iframeDocument = useSelector(selectEditorDocument);
 
-  const coreElementSelected = useMemo(() => {
-    return [
-      masterCoreElementId,
-      masterGroupsElementId,
-      ...coreElementsIds,
-    ].includes(id);
-  }, [coreElementsIds, id, masterCoreElementId, masterGroupsElementId]);
+  const coreElementSelected = useMemo(
+    () =>
+      [masterCoreElementId, masterGroupsElementId, ...coreElementsIds].includes(
+        id,
+      ),
+    [coreElementsIds, id, masterCoreElementId, masterGroupsElementId],
+  );
 
   const deleteHandler = useCallback(() => {
     if (!coreElementSelected && canEdit && !isPrototypeMode) {
@@ -88,24 +88,20 @@ const useViewportHotkeys = () => {
     }
   }, [isPrototypeMode, dispatch]);
 
-  useHotkeys(
-    'delete, meta + backspace',
-    deleteHandler,
-    iframeDocument as Document,
-  );
+  useHotkeys('delete, meta + backspace', deleteHandler, iframeDocument);
 
-  useHotkeys('alt + c', wrapHandler, iframeDocument as Document);
+  useHotkeys('alt + c', wrapHandler, iframeDocument);
 
-  useHotkeys('meta + c, control + c', copyHanlder, iframeDocument as Document);
+  useHotkeys('meta + c, control + c', copyHanlder, iframeDocument);
 
-  useHotkeys('meta + v, control + v', pasteHandler, iframeDocument as Document);
+  useHotkeys('meta + v, control + v', pasteHandler, iframeDocument);
 
-  useHotkeys('meta + z, control + z', undoHandler, iframeDocument as Document);
+  useHotkeys('meta + z, control + z', undoHandler, iframeDocument);
 
   useHotkeys(
     'meta + shift + z, control + shift + z',
     redoHandler,
-    iframeDocument as Document,
+    iframeDocument,
   );
 };
 

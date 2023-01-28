@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { AppReduxState } from '@Redux/types';
 import { mockState } from '../../test-utils';
 import Profile from '../../../../components/User/Profile';
+import { AppThemeProvider } from '@Src/styles/Theme';
 
 describe('Profile', () => {
   let store: MockStoreEnhanced<AppReduxState>;
@@ -16,7 +17,9 @@ describe('Profile', () => {
 
     ui = render(
       <Provider store={store}>
-        <Profile />
+        <AppThemeProvider>
+          <Profile />
+        </AppThemeProvider>
       </Provider>,
     );
   });

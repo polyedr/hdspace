@@ -1,7 +1,7 @@
 import React from 'react';
 import cn from 'classnames';
 
-const styles = require('./styles.scss');
+import styles from './styles.module.scss';
 
 const validTypes = [
   'none',
@@ -14,7 +14,7 @@ const validTypes = [
 ];
 
 const getStyleType = (styleType = 'confirm') => {
-  if (validTypes.indexOf(styleType) !== -1) {
+  if (validTypes.includes(styleType)) {
     return styles[`button_${styleType}`];
   }
 

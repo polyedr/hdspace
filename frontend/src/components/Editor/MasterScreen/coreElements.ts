@@ -25,7 +25,7 @@ import {
   makeParagraph,
   makeTextBlock,
 } from '@Domain/libraryElements/typographyElements/typographyElements';
-import { capitalize } from '@material-ui/core/utils';
+import { capitalize } from '@mui/material/utils';
 import { Entity, ServerElement } from '@Src/types';
 
 const CORE_MASTER_RESPONSE_ELEMENTS = [
@@ -49,15 +49,17 @@ const CORE_MASTER_RESPONSE_ELEMENTS = [
   makeSection(),
 ];
 
-const getMasterElementsIds = (elements: ServerElement<Entity>[]): string[] => {
-  return elements.reduce((allIds: string[], el: ServerElement<Entity>) => {
-    return [
+const getMasterElementsIds = (
+  elements: Array<ServerElement<Entity>>,
+): string[] =>
+  elements.reduce<string[]>(
+    (allIds: string[], el: ServerElement<Entity>) => [
       ...allIds,
-      ...getMasterElementsIds(el.children as ServerElement<Entity>[]),
+      ...getMasterElementsIds(el.children as Array<ServerElement<Entity>>),
       el.id.toString(),
-    ];
-  }, [] as string[]);
-};
+    ],
+    [],
+  );
 
 const CORE_MASTER_ELEMENTS_IDS = getMasterElementsIds(
   CORE_MASTER_RESPONSE_ELEMENTS,

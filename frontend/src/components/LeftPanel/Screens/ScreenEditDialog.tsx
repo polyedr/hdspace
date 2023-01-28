@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Field, Form } from 'react-final-form';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 import {
   Dialog as MuiDialog,
@@ -10,15 +10,16 @@ import {
   Button,
   TextField,
   Tooltip,
-} from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import IconButton from '@material-ui/core/IconButton';
-
+  IconButton,
+} from '@mui/material';
+import {
+  Delete as DeleteIcon,
+  CloudUpload as CloudUploadIcon,
+} from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { uploadIcoScreen } from '@Redux/project/actions';
 
-type Props = {
+interface Props {
   open: boolean;
   titleDialog: string;
   onSubmit: (...args: any) => void;
@@ -31,7 +32,7 @@ type Props = {
   validation?: any;
   currentScreenId: number;
   project: number;
-};
+}
 const useStyles = makeStyles({
   dialogTitle: {
     padding: '0',

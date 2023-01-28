@@ -1,9 +1,8 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 import { ActionTypePM, PlatformActionData } from '@Src/types/pmtools/types';
-import { ListItemAvatar, Avatar } from '@mui/material';
-import AssignmentTurnedInOutlinedIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
+import { ListItemAvatar, Avatar, Typography } from '@mui/material';
+import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
 
 const useStyles = makeStyles({
   root: {
@@ -52,10 +51,10 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   activity: ActionTypePM;
   platform: PlatformActionData;
-};
+}
 
 const History: React.FC<Props> = ({ activity, platform }) => {
   const classes = useStyles();

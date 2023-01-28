@@ -59,7 +59,7 @@ interface Props {
   task: BoardTask;
 }
 
-const Checklist = ({ task }: Props) => {
+function Checklist({ task }: Props) {
   const [addingItem, setAddingItem] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const dispatch = useDispatch();
@@ -68,9 +68,10 @@ const Checklist = ({ task }: Props) => {
 
   const [value, setValue] = useState('');
 
-  const handleSetAddingItem = useCallback((adding: boolean) => {
-    return () => setAddingItem(adding);
-  }, []);
+  const handleSetAddingItem = useCallback(
+    (adding: boolean) => () => setAddingItem(adding),
+    [],
+  );
 
   const handleDeleteChecklist = useCallback(() => {
     dispatch(requestDeleteChecklist(task));
@@ -93,7 +94,7 @@ const Checklist = ({ task }: Props) => {
   const handleEnterAddItem = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
-        handleAddItem();
+        if (value) handleAddItem();
       }
     },
     [value, task, setAddingItem, handleAddItem],
@@ -106,11 +107,11 @@ const Checklist = ({ task }: Props) => {
     [setValue],
   );
 
-  const progress = useMemo(() => {
-    return (
-      (checklist.filter((c) => c.status === 1).length * 100) / checklist.length
-    );
-  }, [checklist]);
+  const progress = useMemo(
+    () =>
+      (checklist.filter((c) => c.status === 1).length * 100) / checklist.length,
+    [checklist],
+  );
 
   return (
     <div>
@@ -187,6 +188,6 @@ const Checklist = ({ task }: Props) => {
       />
     </div>
   );
-};
+}
 
 export default React.memo(Checklist);

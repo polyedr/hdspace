@@ -19,7 +19,7 @@ const staticToolbarPlugin = createToolbarPlugin();
 const { Toolbar } = staticToolbarPlugin;
 const plugins = [staticToolbarPlugin];
 
-const RichTextContent = ({ textState, handleChange }) => {
+function RichTextContent({ textState, handleChange }) {
   const editor = React.useRef<Editor | null>(null);
   const focusEditor = () => {
     if (editor.current !== null) {
@@ -71,6 +71,6 @@ const RichTextContent = ({ textState, handleChange }) => {
       </Toolbar>
     </div>
   );
-};
+}
 
 export default RichTextContent;

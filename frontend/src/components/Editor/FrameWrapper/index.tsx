@@ -6,8 +6,10 @@ import {
   makeStyles,
   StylesProvider,
   ThemeProvider,
-} from '@material-ui/core/styles';
-import { CircularProgress } from '@material-ui/core';
+} from '@mui/styles';
+import { CircularProgress } from '@mui/material';
+import { StyleSheetManager } from 'styled-components';
+import createCache from '@emotion/cache';
 import Frame, {
   FrameContext,
   FrameContextConsumer,
@@ -15,7 +17,7 @@ import Frame, {
 import { useDispatch, useSelector } from 'react-redux';
 import { DndContext } from 'react-dnd';
 import { setEditorDocument } from '@Redux/project/actions';
-import { themeOld as theme } from '@Src/styles/Theme';
+import { theme } from '@Src/styles/Theme';
 import {
   selectCurrentProjectClasses,
   selectCurrentUIFramework,
@@ -29,6 +31,7 @@ import { selectFreeCanvasMode } from '@Redux/project/selectors/screen';
 import GridLines from 'react-gridlines';
 import { WindowProvider } from './FrameContext';
 import useProjectHeaderStyles from '../hooks/useProjectHeaderStyles';
+import { CacheProvider } from '@emotion/react';
 
 const useStyles = makeStyles({
   loaderWrapper: {
@@ -91,17 +94,15 @@ const CustomHead: FC = () => {
       {frameworkVersion && (
         <>
           {frameworkVersion.styleSheetsData.map(
-            ({ key, link, ...otherParams }) => {
-              return (
-                <link
-                  key={key}
-                  rel="stylesheet"
-                  type="text/css"
-                  href={link}
-                  {...otherParams}
-                />
-              );
-            },
+            ({ key, link, ...otherParams }) => (
+              <link
+                key={key}
+                rel="stylesheet"
+                type="text/css"
+                href={link}
+                {...otherParams}
+              />
+            ),
           )}
           {frameworkVersion.scriptsData.map(({ key, link, ...otherParams }) => (
             <script
@@ -115,9 +116,10 @@ const CustomHead: FC = () => {
             <style type="text/css">
               {`:root {
               ${Object.keys(uiFramework.themeVariables)
-                .map((varName) => {
-                  return `--${varName}: ${uiFramework.themeVariables[varName]}`;
-                })
+                .map(
+                  (varName) =>
+                    `--${varName}: ${uiFramework.themeVariables[varName]}`,
+                )
                 .join(';')}
           }`}
             </style>
@@ -128,7 +130,7 @@ const CustomHead: FC = () => {
   );
 };
 
-const DndFrame = ({ children }) => {
+function DndFrame({ children }) {
   const styles = useStyles();
   const { dragDropManager } = useContext(DndContext);
   const { window } = useContext(FrameContext);
@@ -145,7 +147,7 @@ const DndFrame = ({ children }) => {
   ) : (
     children
   );
-};
+}
 
 const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
 
@@ -172,17 +174,21 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
 
   const projectClasses = useSelector(selectCurrentProjectClasses);
 
-  const entityClasses = useMemo(() => {
-    return projectClasses.filter((classInstance) =>
-      entityClassNames.includes(classInstance.className),
-    );
-  }, [projectClasses]);
+  const entityClasses = useMemo(
+    () =>
+      projectClasses.filter((classInstance) =>
+        entityClassNames.includes(classInstance.className),
+      ),
+    [projectClasses],
+  );
 
-  const sharedClasses = useMemo(() => {
-    return projectClasses.filter(
-      (classInstance) => !entityClassNames.includes(classInstance.className),
-    );
-  }, [projectClasses]);
+  const sharedClasses = useMemo(
+    () =>
+      projectClasses.filter(
+        (classInstance) => !entityClassNames.includes(classInstance.className),
+      ),
+    [projectClasses],
+  );
 
   const entityStylesEl = useProjectHeaderStyles(entityClasses);
   const sharedStylesEl = useProjectHeaderStyles(sharedClasses);
@@ -208,6 +214,13 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
     >
       <FrameContextConsumer>
         {({ document: frameDocument, window: frameWindow }) => {
+          const cache = createCache({
+            key: `iframe-demo-${theme.direction}`,
+            prepend: true,
+            container: frameDocument.head,
+            stylisPlugins: theme.direction === 'rtl' ? [rtlPlugin] : [],
+          });
+
           const jss = create({
             plugins: [...jssPreset().plugins],
             insertionPoint: frameDocument.head,
@@ -224,9 +237,18 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
                     <DndFrame>
                       <WindowProvider value={frameWindow}>
                         <StylesProvider jss={jss}>
-                          <ThemeProvider theme={theme}>
-                            {children}
-                          </ThemeProvider>
+                          <StyleSheetManager
+                            target={frameDocument.head}
+                            stylisPlugins={
+                              theme.direction === 'rtl' ? [rtlPluginSc] : []
+                            }
+                          >
+                            <ThemeProvider theme={theme}>
+                              <CacheProvider value={cache}>
+                                {children}
+                              </CacheProvider>
+                            </ThemeProvider>
+                          </StyleSheetManager>
                         </StylesProvider>
                       </WindowProvider>
                     </DndFrame>
@@ -241,9 +263,18 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
                     <DndFrame>
                       <WindowProvider value={frameWindow}>
                         <StylesProvider jss={jss}>
-                          <ThemeProvider theme={theme}>
-                            {children}
-                          </ThemeProvider>
+                          <StyleSheetManager
+                            target={frameDocument.head}
+                            stylisPlugins={
+                              theme.direction === 'rtl' ? [rtlPluginSc] : []
+                            }
+                          >
+                            <ThemeProvider theme={theme}>
+                              <CacheProvider value={cache}>
+                                {children}
+                              </CacheProvider>
+                            </ThemeProvider>
+                          </StyleSheetManager>
                         </StylesProvider>
                       </WindowProvider>
                     </DndFrame>
@@ -253,7 +284,18 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
                 <DndFrame>
                   <WindowProvider value={frameWindow}>
                     <StylesProvider jss={jss}>
-                      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+                      <StyleSheetManager
+                        target={frameDocument.head}
+                        stylisPlugins={
+                          theme.direction === 'rtl' ? [rtlPluginSc] : []
+                        }
+                      >
+                        <ThemeProvider theme={theme}>
+                          <CacheProvider value={cache}>
+                            {children}
+                          </CacheProvider>
+                        </ThemeProvider>
+                      </StyleSheetManager>
                     </StylesProvider>
                   </WindowProvider>
                 </DndFrame>

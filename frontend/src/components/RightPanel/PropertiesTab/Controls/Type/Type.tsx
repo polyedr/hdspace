@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 import TYPE from './constants';
 import {
   InputType,

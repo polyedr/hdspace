@@ -15,7 +15,7 @@ import {
   selectIsElementActive,
 } from '@Redux/project/selectors/element';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import Borders from './Borders';
 
@@ -41,8 +41,8 @@ const useStyles = makeStyles({
   },
   imageView: {
     position: 'absolute',
-    width: 'auto !important',
-    height: 'auto !important',
+    width: 'auto',
+    height: 'auto',
     zIndex: ({
       isActive,
       zIndex,
@@ -62,11 +62,11 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   elementId: StateElement['id'];
   includesActiveElement?: boolean;
   lockAspectRatio?: boolean;
-};
+}
 
 const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   const dispatch = useDispatch();
@@ -134,6 +134,8 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
             zIndex,
             width: parseInt(ref.style.width),
             height: parseInt(ref.style.height),
+            // width: parseInt(ref.style.width),
+            // height: parseInt(ref.style.height),
             left: position.x,
             top: position.y,
           },
@@ -145,8 +147,10 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
       updateElementStyles(
         id,
         {
-          width: ref.style.width,
-          height: ref.style.height,
+          // width: ref.style.width,
+          // height: ref.style.height,
+          width: '100%',
+          height: '100%',
         },
         { screenId: currentScreenId },
       ),
@@ -198,8 +202,8 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
       onResizeStop={handleResizeStop}
       onDragStop={handleDragStop}
       position={{
-        x: left as number,
-        y: top as number,
+        x: left,
+        y: top,
       }}
       {...(width &&
         height && {

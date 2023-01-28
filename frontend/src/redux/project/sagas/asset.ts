@@ -68,7 +68,7 @@ export function* uploadAssetHelper(
       if (!meta?.useHistory) {
         yield put(
           Actions.addUndoActions([
-            Actions.removeAsset(asset.id, asset.listId as string, meta),
+            Actions.removeAsset(asset.id, asset.listId, meta),
           ]),
         );
       }
@@ -368,6 +368,7 @@ export const uploadElementAssetSaga = withRequiredPermissions(
   const { screenId } = action.meta;
 
   const element = yield select(selectElementById, elementId);
+  console.log(element);
   try {
     const { imageURL, file, useInBackground } = asset;
     let finalImageUrl = imageURL;

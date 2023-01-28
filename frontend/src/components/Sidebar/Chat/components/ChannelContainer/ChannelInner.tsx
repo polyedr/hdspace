@@ -24,19 +24,18 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from '../../client';
 
-type InnerProps = {
+interface InnerProps {
   pinsOpen: boolean;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   setPinsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
-type GiphyStateObj = {
+interface GiphyStateObj {
   giphyState: boolean;
   setGiphyState: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 export const GiphyContext = React.createContext<GiphyStateObj>(
   {} as GiphyStateObj,
@@ -58,8 +57,7 @@ export const ChannelInner: React.FC<InnerProps> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const teamPermissions: PinEnabledUserRoles = {
