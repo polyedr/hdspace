@@ -1,41 +1,39 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import Avatar from '@Components/UI/Avatar';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ShareIcon from '@mui/icons-material/Share';
 import {
   Button as MuiButton,
   Dialog as MuiDialog,
   DialogContent,
   DialogTitle,
-  Grid,
-  Table,
+  Grid, IconButton as MuiIconButton, Table,
   TableBody,
   TableCell as MuiTableCell,
   TableContainer,
   TableRow,
-  TextField as MuiTextField,
-  IconButton as MuiIconButton,
+  TextField as MuiTextField
 } from '@mui/material';
 import Slide from '@mui/material/Slide';
-import { TransitionProps } from '@mui/material/transitions';
-import { styled } from '@mui/material/styles';
-import AddIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
-import { useDispatch } from 'react-redux';
+import { styled } from '@mui/material/styles';
+import { TransitionProps } from '@mui/material/transitions';
 import { fetchTask, updateTask } from '@Redux/pmtools/board/actions/tasks';
 import { BoardTask } from '@Redux/pmtools/types';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import ShareIcon from '@mui/icons-material/Share';
-import SettingsIcon from '@mui/icons-material/Settings';
-import CloseIcon from '@mui/icons-material/Close';
-import Avatar from '@Components/UI/Avatar';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import Checklist from './Checklist';
 import Comment from './Comments';
-import TaskTitle from './TaskTitle';
+import Description from './Description';
 import DueDate from './DueDate';
-import { IconButton } from './StyledComponents';
+import MemberPicker from './MemberPicker';
 import Priority from './Priority';
 import Status from './Status';
-import MemberPicker from './MemberPicker';
-import Description from './Description';
+import { IconButton } from './StyledComponents';
 import Tags from './Tags';
-import Checklist from './Checklist';
+import TaskTitle from './TaskTitle';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -96,7 +94,17 @@ const StandardTextField = styled(MuiTextField)({
   '& .MuiInputBase-root:before': {
     borderColor: '#E4E6EB',
   },
-
+  '& input[type=number]': {
+    '-moz-appearance': 'textfield'
+  },
+  '& input[type=number]::-webkit-outer-spin-button': {
+    '-webkit-appearance': 'none',
+    margin: 0
+  },
+  '& input[type=number]::-webkit-inner-spin-button': {
+    '-webkit-appearance': 'none',
+    margin: 0
+  },
   '& input': {
     maxWidth: 64,
   },
@@ -143,6 +151,7 @@ function TaskDialog({ task, open, onClose }: Props) {
 
   const [storyPoints, setStoryPoints] = useState(task.story_points.toString());
   const [time, setTime] = useState(task.time);
+  const [error, setStoryError] = useState('');
 
   useEffect(() => {
     if (open) {
@@ -322,12 +331,23 @@ function TaskDialog({ task, open, onClose }: Props) {
                     </TableCell>
                     <TableCell>
                       <StandardTextField
+                        type="number"
+                        InputProps={{
+                          style: { width: "85px" },
+                          inputProps: { min: 0 }
+                        }}
                         value={storyPoints}
                         onChange={handleChangeStoryPoints}
-                        onBlur={() =>
-                          handleUpdateTask('story_points', storyPoints)
-                        }
-                        type="text"
+                        onBlur={() => {
+                          if (parseInt(storyPoints) > 2147483647) {
+                            setStoryError("Story point should be less then 2147483647");
+                          } else {
+                            setStoryError('');
+                            handleUpdateTask('story_points', storyPoints);
+                          }
+                        }}
+                        error={error !== ''}
+                        helperText={error}
                         variant="standard"
                         autoComplete="off"
                       />
