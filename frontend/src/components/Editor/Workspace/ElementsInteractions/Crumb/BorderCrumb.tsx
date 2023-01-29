@@ -205,20 +205,20 @@ const BorderCrumb: React.FC<Props> = (props) => {
 
   const handleCopyLink = useCallback(() => {
     const { origin, pathname, search } = window.location;
-    console.log(origin, 'search: ' + pathname, 'search: ' + search, element.id);
-    // const params = new URLSearchParams(search);
-    // params.set('moveToElement', element.id);
 
-    // navigator.clipboard.writeText(`${origin}${pathname}?${params.toString()}`);
+    const params = new URLSearchParams(search);
+    params.set('moveToElement', element.id);
 
-    // dispatch(
-    //   enqueueSnackbar({
-    //     message: 'Link copied to clipboard.',
-    //     options: {
-    //       variant: 'success',
-    //     },
-    //   }),
-    // );
+    navigator.clipboard.writeText(`${origin}${pathname}?${params.toString()}`);
+
+    dispatch(
+      enqueueSnackbar({
+        message: 'Link copied to clipboard.',
+        options: {
+          variant: 'success',
+        },
+      }),
+    );
   }, [element]);
 
   return element && show ? (
