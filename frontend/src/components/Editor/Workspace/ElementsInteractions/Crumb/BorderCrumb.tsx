@@ -29,8 +29,6 @@ import ShareIcon from '@mui/icons-material/Share';
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material';
 import Icon from '../../../../UI/Icon';
-import { enqueueSnackbar } from '@Redux/notification/actions';
-
 interface Props {
   element: StateElement;
   show: boolean;
@@ -206,19 +204,6 @@ const BorderCrumb: React.FC<Props> = (props) => {
   const handleCopyLink = useCallback(() => {
     const { origin, pathname, search } = window.location;
     console.log(origin, 'search: ' + pathname, 'search: ' + search, element.id);
-    // const params = new URLSearchParams(search);
-    // params.set('moveToElement', element.id);
-
-    // navigator.clipboard.writeText(`${origin}${pathname}?${params.toString()}`);
-
-    // dispatch(
-    //   enqueueSnackbar({
-    //     message: 'Link copied to clipboard.',
-    //     options: {
-    //       variant: 'success',
-    //     },
-    //   }),
-    // );
   }, [element]);
 
   return element && show ? (

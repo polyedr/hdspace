@@ -274,7 +274,7 @@ const BackgroundBlock: React.FC<Props> = ({
         dispatch(
           uploadElementAsset(
             element.id,
-            { file, useInBackground: true },
+            { file, useInBackground: element.type !== 'image' },
             assetId,
             {
               screenId: currentScreenId,

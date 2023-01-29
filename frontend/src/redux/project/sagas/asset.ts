@@ -412,8 +412,8 @@ export const uploadElementAssetSaga = withRequiredPermissions(
             ...element.parameters,
             imageURL: finalImageUrl,
             imageSize: {
-              width: 0,
-              height: 0,
+              width: '100px',
+              height: '100px',
             },
             width: 'auto',
             height: 'auto',
