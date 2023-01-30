@@ -51,7 +51,7 @@ from apps.utils.fset1 import (
 from google.cloud import vision
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(
-    BASE_DIR + "/gkeys/creativesmarthub-e941d155283d.json"
+    BASE_DIR + "/gkeys/adevigcv-0300068cae79.json"
 )
 
 config_tesseract = "-l eng --oem 1 --psm 3"
@@ -1178,7 +1178,7 @@ def print_clusters(
         cv2.imwrite(imgpath, image_clusters)
 
 
-def htmltree_initialize(fname, bcolour_container_value, img_width):
+def htmltree_initialize(fname, bcolour_container_value, img_width, img_height, imgpath, SAVE_DIR):
     root = ET.Element("html", version="5.0")
     # Передайте родительский узел, имя дочернего узла,
     # и любое количество дополнительных атрибутов
@@ -1192,9 +1192,23 @@ def htmltree_initialize(fname, bcolour_container_value, img_width):
 
     styles = {}
     parameters = {}
-    styles["background-color"] = "rgba(" + bcolour_container_value + ")"
+    # styles["background-color"] = "rgba(" + bcolour_container_value + ")"
+    # Set the background image
+    print("fname", fname)
+    input_image_name = imgpath
+
+    # Add this to view a processed image containing clusters with elements
+    clustersel_image_name =  SAVE_DIR + "/allclusters_with_elements_" + fname
+
+    styles["background"] = "url(" + input_image_name + ") no-repeat center"
+    styles["background"] = "url(" + clustersel_image_name + ") no-repeat center"
     # The magic number 30 to solve presence of wide elements have been measured with px
-    styles["width"] = str(img_width + 30) + "px"
+    # styles["width"] = str(img_width + 30) + "px"
+    # For the pixel perfect floating solutions
+    styles["display"] = "inline-block"
+    styles["min-width"] = str(img_width) + "px"
+    styles["height"] = str(img_height) + "px"
+    styles["border"] = "5px solid rgba(52, 74, 240, 0.9)"
     str_styles = "; ".join("{}:{}".format(key, val) for key, val in styles.items())
     outer_div.set("style", str_styles)
     return root, outer_div, styles, parameters
@@ -1649,7 +1663,10 @@ def elements_rootblock(
             # Define the direction of the container start
             # Horizontal
             if node.parent.direction == 1:
-                node.styles["display"] = "inline-block"
+                # node.styles["display"] = "inline-block"
+                node.styles["display"] = "block"
+                node.styles["float"] = "left"
+                # node.styles["clear"] = "both"
                 node.parent.styles["white-space"] = "nowrap"
                 # print(node.parent.styles)
                 # input()
@@ -1700,11 +1717,22 @@ def elements_rootblock(
             # Define the direction of the container end
 
         if node == root_block:
-            margin_lr = int((img_width - node_width) / 2)
-            margin_tp = int((img_height - node_height) / 2)
+            # print("img_width, img_height, node_width, node.x1, node.y1, node.x2, node.y2", img_width, img_height, node_width, node.x1, node.y1, node.x2, node.y2)
+            # input()
+            # margin_lr = int((img_width - node_width) / 2)
+            # margin_tp = int((img_height - node_height) / 2)
+            margin_l = int((node.x1))
+            margin_r = int((img_width - node.x2))
+            margin_t = int((node.y1))
+            margin_b = int((img_height - node.y2))
             node.div = ET.SubElement(outer_div, "div")
             node.styles["border"] = "1px solid green"
-            node.styles["margin"] = str(margin_tp) + "px " + str(margin_lr) + "px"
+            # node.styles["margin"] = str(margin_tp) + "px " + str(margin_lr) + "px"
+            # Two margins of four are redundant
+            node.styles["margin-left"] = str(margin_l) + "px "
+            # node.styles["margin-right"] = str(margin_r) + "px "
+            node.styles["margin-top"] = str(margin_t) + "px "
+            # node.styles["margin-bottom"] = str(margin_b) + "px "
             node.buoyancy = 0
 
             str_styles = "; ".join(
@@ -1818,10 +1846,17 @@ def elements_rootblock(
                     padding_top = padding_bottom = 3 # A default value when the text is not at the input
 
                 if (text_leftc - node.x1) > 0:
-                    padding = int(text_leftc - node.x1)
+                    # padding = int(text_leftc - node.x1)
+                    padding_left = int(text_leftc - node.x1)
                 else:
-                    padding = 3
-                padding_left = padding_right = padding
+                    padding_left = 3
+
+                if (text_rightc - node.x2) > 0:
+                    padding_right = int(text_rightc - node.x2)
+                else:
+                    padding_right = 3
+
+                # padding_left = padding_right = padding
                 node.styles["padding-top"] = str(padding_top) + "px"
                 node.styles["padding-bottom"] = str(padding_bottom) + "px"
                 node.styles["padding-left"] = str(padding_left) + "px"
@@ -1861,10 +1896,21 @@ def elements_rootblock(
                     padding_top = padding_bottom = 3 # A default value when the text is not at the input
 
                 if (text_leftc - node.x1) > 0:
-                    padding = int(text_leftc - node.x1)
+                    # padding = int(text_leftc - node.x1)
+                    padding_left = int(text_leftc - node.x1)
                 else:
-                    padding = 3
-                padding_left = padding_right = padding
+                    padding_left = 3
+
+                if (text_rightc - node.x2) > 0:
+                    padding_right = int(text_rightc - node.x2)
+                else:
+                    padding_right = 3
+
+                print("x1 x2 tlc trc", node.types, node.element_assigned, node.x1, node.x2, text_leftc, text_rightc)
+                print("left right", node.types, node.element_assigned, (text_leftc - node.x1), (text_rightc - node.x2))
+                # input()
+
+                # padding_left = padding_right = padding
                 node.styles["padding-top"] = str(padding_top) + "px"
                 node.styles["padding-bottom"] = str(padding_bottom) + "px"
                 node.styles["padding-left"] = str(padding_left) + "px"
@@ -2211,7 +2257,7 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
 
         # HTML tree initialize function call
         root, outer_div, styles, parameters = htmltree_initialize(
-            fname, bcolour_container_value, img_width
+            fname, bcolour_container_value, img_width, img_height, imgpath, SAVE_DIR
         )
 
         # Detect elements for the root block
@@ -2227,6 +2273,7 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
             o,
             serializing=serializing,
         )
+        # print("outerdiv", outer_div)
 
         # Printing clusters function calling
         # Localhost only
