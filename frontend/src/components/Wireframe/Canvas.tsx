@@ -133,6 +133,7 @@ const Canvas: React.FC<{ screens: Normalized<ProjectScren> }> = ({
             height: 'calc(100vh - 60px)',
             width: '100%',
             backgroundColor: '#E5E3E8',
+            cursor: 'grab',
           }}
         >
           <GridLines

@@ -27,6 +27,7 @@ import {
   FormControl,
   Theme,
 } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ScreenRotationIcon from '@mui/icons-material/ScreenRotation';
 import DesktopWindowsOutlinedIcon from '@mui/icons-material/DesktopWindowsOutlined';
 import TabletIcon from '@mui/icons-material/Tablet';
@@ -48,6 +49,11 @@ const useStyles = makeStyles((theme: Theme) =>
       '& .MuiSelect-select': {
         display: 'flex',
         alignItems: 'center',
+      },
+      '& .MuiInput-input': {
+        '&:focus': {
+          backgroundColor: 'transparent',
+        },
       },
     },
     root: {
@@ -145,6 +151,7 @@ const Layouts: React.FC = () => {
               disableUnderline
               onChange={handleFormatChange}
               className={classes.selectEmpty}
+              IconComponent={ExpandMoreIcon}
             >
               <MenuItem disabled>Desktop</MenuItem>
               {renderOption(additionalLayoutDesktop, 'Desktop')}
