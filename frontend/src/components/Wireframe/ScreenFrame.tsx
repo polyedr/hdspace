@@ -1,11 +1,15 @@
 import React from 'react';
-import { SCREEN_WIDTH } from './constants';
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from './constants';
 
 const ScreenFrame: React.FC = ({ children }) => {
   return (
     <div
       className="wireframe-screen-frame"
-      style={{ width: SCREEN_WIDTH, overflow: 'scroll' }}
+      style={{
+        width: SCREEN_WIDTH,
+        overflow: 'scroll',
+        minHeight: SCREEN_HEIGHT,
+      }}
     >
       {children}
     </div>

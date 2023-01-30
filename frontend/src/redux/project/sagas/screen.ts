@@ -581,6 +581,20 @@ export const editScreenNameAndDataSaga = withRequiredPermissions(
     });
 
     const metaData = data?.meta ?? oldScreen.screenData.meta;
+
+    const wireframeConnections =
+      data?.wireframe?.connections ??
+      oldScreen.screenData?.wireframe?.connections ??
+      [];
+
+    const wireframeScreenPosition =
+      data?.wireframe?.position ?? oldScreen.screenData?.wireframe?.position;
+
+    const wireframeData = {
+      position: wireframeScreenPosition,
+      connections: wireframeConnections,
+    };
+
     const newMetaData = metaData || {};
     const newScreen: Screen = {
       ...oldScreen,
@@ -604,6 +618,7 @@ export const editScreenNameAndDataSaga = withRequiredPermissions(
               : oldScreen?.screenData?.meta?.faviconUrl,
         },
         uiFramework: data?.uiFramework || oldScreen.screenData.uiFramework,
+        wireframe: wireframeData,
       },
     };
     yield put(Actions.updateScreen(newScreen));

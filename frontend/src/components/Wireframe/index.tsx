@@ -38,14 +38,14 @@ const Wireframe: React.FC<Props> = ({ projectId, screenId: _ }) => {
   return (
     <>
       <Stack sx={{ height: '100%' }}>
-        <Grid container columnSpacing={2} flex={1}>
-          <Grid item xs={2}>
+        <Grid container columnSpacing={0} flex={1}>
+          <Grid style={{ position: 'relative', zIndex: 4 }} item xs={2}>
             <LeftSidebar screens={screens} />
           </Grid>
           <Grid item xs={8}>
             <Canvas screens={screens} />
           </Grid>
-          <Grid item xs={2}>
+          <Grid style={{ position: 'relative', zIndex: 4 }} item xs={2}>
             <RightSidebar screens={screens} />
           </Grid>
         </Grid>

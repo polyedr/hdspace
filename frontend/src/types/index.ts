@@ -5,6 +5,7 @@ import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import { IBoardForUI } from './pmtools/board';
+import { WireframeConnection } from '@Redux/types';
 
 export type IconType = OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
 
@@ -1199,6 +1200,14 @@ export interface ScreenMetaData {
   faviconUrl: string;
 }
 
+export interface WireframeScreenData {
+  position?: {
+    x: number;
+    y: number;
+  };
+  connections?: WireframeConnection[];
+}
+
 export interface ScreenData {
   meta?: ScreenMetaData;
   nnResult?: {
@@ -1210,6 +1219,7 @@ export interface ScreenData {
   uiFramework: UIFramework;
   freeCanvas: boolean;
   editableScreenUser: EditableScreenUser[] | [];
+  wireframe?: WireframeScreenData;
 }
 export interface EditableScreenUser {
   idUser: number;
