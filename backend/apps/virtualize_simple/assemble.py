@@ -1337,6 +1337,7 @@ def detect_text_gcv(path):
 def ocr_recognition(elem_image, ocr_engine="tesseract"):
     font_size_value = 14
     alltext_width = 0
+    alltext_height = 0
     leftmin = 0
     maxright = 0
     text_elem_ocr = ""
@@ -1481,53 +1482,6 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
         elem_image_gray = cv2.cvtColor(elem_image, cv2.COLOR_BGR2GRAY)
         elem_image_gray = cv2.resize(elem_image_gray, None, fx=4, fy=4)
         result = pytesseract.image_to_boxes(elem_image_gray)
-        d = pytesseract.image_to_data(elem_image_gray, output_type=Output.DICT)
-
-        n_boxes = len(d['level'])
-        # print(n_boxes, d)
-
-        if n_boxes > 1:
-            for i in range(n_boxes):
-                if (d['text'][i]):  # Choose only the text detected rows
-                    # Initialization from the first array object containing the text
-                    (left_min, top_min, width, height) = (d['left'][i], d['top'][i], d['width'][i], d['height'][i])
-                    max_right = left_min + width
-                    max_bottom = top_min + height
-
-            for i in range(n_boxes):
-                if (d['text'][i]):  # Choose only the text detected rows
-                    # print("i=", i)
-                    (x, y, w, h) = (d['left'][i], d['top'][i], d['width'][i], d['height'][i])
-                    right = x + w
-                    bottom = y + h
-
-                    if x < left_min:
-                        left_min = x
-
-                    if y < top_min:
-                        top_min = y
-
-                    if right > max_right:
-                        max_right = right
-
-                    if bottom > max_bottom:
-                        max_bottom = bottom
-
-                    # Detect width and height for the complete sentence or paragraph
-                    # 4 is the correction number, because the image was scaled before for this number
-                    alltext_width = int((max_right - left_min)/4.0)
-                    # print("alltext_width=", alltext_width)
-                    alltext_height = int((max_bottom - top_min)/4.0)
-                    leftmin = int((left_min)/4.0)
-                    maxright = int((max_right)/4.0)
-
-                    # cv2.rectangle(elem_image_gray, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                    '''
-                    # print(left_min, top_min, max_right, max_bottom, d['text'][i])
-                    cv2.rectangle(elem_image_gray, (left_min, top_min), (max_right, max_bottom), (0, 255, 0), 2)
-                    cv2.imshow('img', elem_image_gray)
-                    cv2.waitKey(0)
-                    '''
 
         lines = result.strip().split("\n")
         font_size = []
@@ -1588,7 +1542,56 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
         text_elem_ocr = text_elem_gcv
         # Detect the font-size with tesseract for some element, with gcv text end
 
-    return font_size_value, text_elem_ocr, alltext_width, leftmin, maxright
+    # Out of the choices. Getting the bounding box of the recognized words start
+    d = pytesseract.image_to_data(elem_image_gray, output_type=Output.DICT)
+    n_boxes = len(d['level'])
+    # print("d", n_boxes, d)
+    # input()
+    if n_boxes > 1:
+        for i in range(n_boxes):
+            if (d['text'][i]):  # Choose only the text detected rows
+                # Initialization from the first array object containing the text
+                (left_min, top_min, width, height) = (d['left'][i], d['top'][i], d['width'][i], d['height'][i])
+                max_right = left_min + width
+                max_bottom = top_min + height
+
+        for i in range(n_boxes):
+            if (d['text'][i]):  # Choose only the text detected rows
+                # print("i=", i)
+                (x, y, w, h) = (d['left'][i], d['top'][i], d['width'][i], d['height'][i])
+                right = x + w
+                bottom = y + h
+
+                if x < left_min:
+                    left_min = x
+
+                if y < top_min:
+                    top_min = y
+
+                if right > max_right:
+                    max_right = right
+
+                if bottom > max_bottom:
+                    max_bottom = bottom
+
+                # Detect width and height for the complete sentence or paragraph
+                # 4 is the correction number, because the image was scaled before for this number
+                alltext_width = int((max_right - left_min) / 4.0)
+                # print("alltext_width=", alltext_width)
+                alltext_height = int((max_bottom - top_min) / 4.0)
+                # print("alltext_width=", alltext_width, "alltext_height=", alltext_height)
+                leftmin = int((left_min) / 4.0)
+                maxright = int((max_right) / 4.0)
+                # cv2.rectangle(elem_image_gray, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                '''
+                # print(left_min, top_min, max_right, max_bottom, d['text'][i])
+                cv2.rectangle(elem_image_gray, (left_min, top_min), (max_right, max_bottom), (0, 255, 0), 2)
+                cv2.imshow('img', elem_image_gray)
+                cv2.waitKey(0)
+                '''
+    # Getting the bounding box of the recognized words end
+
+    return font_size_value, text_elem_ocr, alltext_width, leftmin, maxright, alltext_height
 
 
 # Create the elements for the elements_rootblock function
@@ -1663,9 +1666,9 @@ def elements_rootblock(
             # Define the direction of the container start
             # Horizontal
             if node.parent.direction == 1:
-                # node.styles["display"] = "inline-block"
-                node.styles["display"] = "block"
-                node.styles["float"] = "left"
+                node.styles["display"] = "inline-block"
+                # node.styles["display"] = "block"
+                # node.styles["float"] = "left"
                 # node.styles["clear"] = "both"
                 node.parent.styles["white-space"] = "nowrap"
                 # print(node.parent.styles)
@@ -1726,7 +1729,7 @@ def elements_rootblock(
             margin_t = int((node.y1))
             margin_b = int((img_height - node.y2))
             node.div = ET.SubElement(outer_div, "div")
-            node.styles["border"] = "1px solid green"
+            node.styles["outline"] = "1px solid lightgreen"
             # node.styles["margin"] = str(margin_tp) + "px " + str(margin_lr) + "px"
             # Two margins of four are redundant
             node.styles["margin-left"] = str(margin_l) + "px "
@@ -1822,7 +1825,7 @@ def elements_rootblock(
                 # Defiine a scenarioelement_inner dictionary
                 scenarioelement_inner_kwargs = {}
                 # A choice for ocr_engine is {"tesseract", "lorem", "googlecloud"}
-                font_size_value, text_elem_ocr, text_width, text_leftc, text_rightc = ocr_recognition(
+                font_size_value, text_elem_ocr, text_width, text_leftc, text_rightc, alltext_height = ocr_recognition(
                     elem_image, ocr_engine="tesseract"
                 )
 
@@ -1891,18 +1894,17 @@ def elements_rootblock(
 
                 # Paddings calculations block
                 if text_elem_ocr:
-                    padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
+                    padding_top = padding_bottom = int((node_height - alltext_height) / 2.0)
                 else:
                     padding_top = padding_bottom = 3 # A default value when the text is not at the input
 
-                if (text_leftc - node.x1) > 0:
-                    # padding = int(text_leftc - node.x1)
-                    padding_left = int(text_leftc - node.x1)
+                if text_leftc > 0:
+                    padding_left = int(text_leftc)
                 else:
                     padding_left = 3
 
-                if (text_rightc - node.x2) > 0:
-                    padding_right = int(text_rightc - node.x2)
+                if (node.x2 - node.x1 - text_rightc) > 0:
+                    padding_right = int(node.x2 - node.x1 - text_rightc)
                 else:
                     padding_right = 3
 
