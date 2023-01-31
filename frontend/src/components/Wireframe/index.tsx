@@ -29,8 +29,6 @@ const Wireframe: React.FC<Props> = ({ projectId, screenId: _ }) => {
 
   const dispatch = useDispatch();
 
-  console.log(project);
-
   useEffect(() => {
     if (currentProjectId !== projectId) {
       dispatch(getProject(projectId));

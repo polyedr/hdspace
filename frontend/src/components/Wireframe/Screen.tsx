@@ -10,13 +10,10 @@ import { selectAllElements } from '@Redux/project/selectors/element';
 import RENDERERS from '@Components/UI/RenderElements';
 import useLayout from '@Components/Editor/hooks/useLayout';
 import ScreenFrame from './ScreenFrame';
-import {
-  initConnections,
-  setActiveElement,
-  setActiveScreen,
-} from '@Redux/wireframe/wireframe';
+import { setActiveElement, setActiveScreen } from '@Redux/wireframe/wireframe';
 import { selectCurrentWireframeElement } from '@Redux/wireframe/selectors';
 import { type Screen as ScreenType } from '@Src/types';
+import { GRID_CELL_SPACE } from '@Constants/grid';
 
 interface Props {
   data: WireframeScreen;
@@ -40,6 +37,8 @@ const Typography = styled(MuiTypography)({
   fontWeight: 400,
   color: 'black',
   cursor: 'move',
+  height: GRID_CELL_SPACE * 2,
+  lineHeight: GRID_CELL_SPACE * 2 + 'px',
 });
 
 interface RenderElementProps {

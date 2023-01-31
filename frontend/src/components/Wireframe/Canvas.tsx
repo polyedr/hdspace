@@ -51,11 +51,19 @@ function buildScreenData(_screens: Normalized<ProjectScren>): Screens {
       ...screen,
       position: {
         x:
-          screen.screenData?.wireframePosition?.x ??
-          canvasWidth / 2 - (SCREEN_WIDTH + 100) * index,
+          Math.round(
+            (screen.screenData?.wireframePosition?.x ??
+              canvasWidth / 2 - (SCREEN_WIDTH + 100) * index) / GRID_CELL_SPACE,
+          ) *
+            GRID_CELL_SPACE +
+          GRID_STROKE_WIDTH / 2,
         y:
-          screen.screenData?.wireframePosition?.y ??
-          canvasHeight / 2 - SCREEN_HEIGHT / 2,
+          Math.round(
+            (screen.screenData?.wireframePosition?.y ??
+              canvasHeight / 2 - SCREEN_HEIGHT / 2) * GRID_CELL_SPACE,
+          ) /
+            GRID_CELL_SPACE +
+          GRID_STROKE_WIDTH / 2,
       },
     };
 
@@ -127,7 +135,7 @@ const Canvas: React.FC<{
         disabled={isMoveable}
         limitToBounds={true}
         centerOnInit={true}
-        minScale={0.2}
+        minScale={0.01}
         initialScale={zoom}
         onPanning={updateXArrow}
         onPanningStop={updateXArrow}

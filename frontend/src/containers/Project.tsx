@@ -63,13 +63,13 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
     }
   }, [dispatch, projectId, currentProjectId]);
 
-  useEffect(
-    () => () => {
-      dispatch(resetProjectState());
-      DOMHandler.INSTANCE.reset();
-    },
-    [dispatch],
-  );
+  // useEffect(
+  //   () => () => {
+  //     dispatch(resetProjectState());
+  //     DOMHandler.INSTANCE.reset();
+  //   },
+  //   [dispatch],
+  // );
 
   useEffect(() => {
     if (!screenId && currentProjectId !== -1 && screens.length) {

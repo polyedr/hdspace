@@ -10,23 +10,26 @@ import history from '@/redux/history';
 import Routes from './Routes';
 import { AppThemeProvider } from '@/styles/Theme';
 import Notifier from '@/components/Notifier';
+import { BrowserRouter } from 'react-router-dom';
 
 const App: React.FC = () => (
   <SnackbarProvider
     maxSnack={10}
     anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
   >
-    <ConnectedRouter history={history}>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <AppThemeProvider>
-          <CssBaseline />
-          <ChatProvider>
-            <Routes />
-          </ChatProvider>
-          <Notifier />
-        </AppThemeProvider>
-      </LocalizationProvider>
-    </ConnectedRouter>
+    <BrowserRouter>
+      <ConnectedRouter history={history}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <AppThemeProvider>
+            <CssBaseline />
+            <ChatProvider>
+              <Routes />
+            </ChatProvider>
+            <Notifier />
+          </AppThemeProvider>
+        </LocalizationProvider>
+      </ConnectedRouter>
+    </BrowserRouter>
   </SnackbarProvider>
 );
 
