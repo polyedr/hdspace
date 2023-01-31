@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Xarrow, { Xwrapper, useXarrow } from 'react-xarrows';
 import DraggableScreen from './DraggableScreen';
-import type { Normalized, Screen as ProjectScren } from '@/types';
+import type { Normalized, Project, Screen as ProjectScren } from '@/types';
 import GridLines from 'react-gridlines';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -13,6 +13,7 @@ import { FRAMEWORKS_LIST } from '@/constants/frameworks';
 import { GRID_CELL_SPACE, GRID_STROKE_WIDTH } from '@/constants/grid';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from './constants';
 import { selectCompleteConnections } from '@/redux/wireframe/selectors';
+import { initConnections } from '@Redux/wireframe/wireframe';
 
 export type WireframeScreen = ProjectScren & {
   position: { x: number; y: number };
@@ -49,8 +50,12 @@ function buildScreenData(_screens: Normalized<ProjectScren>): Screens {
     screens[key] = {
       ...screen,
       position: {
-        x: canvasWidth / 2 - (SCREEN_WIDTH + 100) * index,
-        y: canvasHeight / 2 - SCREEN_HEIGHT / 2,
+        x:
+          screen.screenData?.wireframePosition?.x ??
+          canvasWidth / 2 - (SCREEN_WIDTH + 100) * index,
+        y:
+          screen.screenData?.wireframePosition?.y ??
+          canvasHeight / 2 - SCREEN_HEIGHT / 2,
       },
     };
 
@@ -60,12 +65,14 @@ function buildScreenData(_screens: Normalized<ProjectScren>): Screens {
   return screens;
 }
 
-const Canvas: React.FC<{ screens: Normalized<ProjectScren> }> = ({
-  screens: _screens,
-}) => {
+const Canvas: React.FC<{
+  screens: Normalized<ProjectScren>;
+  project: Project;
+}> = ({ screens: _screens, project: currentProject }) => {
   const [zoom, setZoom] = useState(0.4);
 
   const [screens] = useState<Screens>(buildScreenData(_screens));
+
   const connections = useSelector(selectCompleteConnections);
 
   const [isMoveable, setIsMoveable] = useState(false);
@@ -104,6 +111,14 @@ const Canvas: React.FC<{ screens: Normalized<ProjectScren> }> = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (currentProject.projectData?.wireframeConnections) {
+      dispatch(
+        initConnections(currentProject.projectData.wireframeConnections),
+      );
+    }
+  }, []);
+
   const screensCount = Object.keys(screens).length;
 
   return (
@@ -117,12 +132,12 @@ const Canvas: React.FC<{ screens: Normalized<ProjectScren> }> = ({
         onPanning={updateXArrow}
         onPanningStop={updateXArrow}
         onWheel={updateXArrow}
-        // panning={{
-        //   excluded: ['wireframe-screen-frame'],
-        // }}
-        // pinch={{
-        //   excluded: ['wireframe-screen-frame'],
-        // }}
+        panning={{
+          excluded: ['wireframe-screen-frame', 'screen-control'],
+        }}
+        pinch={{
+          excluded: ['wireframe-screen-frame', 'screen-control'],
+        }}
         onZoom={(zoom) => {
           setZoom(zoom.state.scale);
         }}
@@ -162,7 +177,7 @@ const Canvas: React.FC<{ screens: Normalized<ProjectScren> }> = ({
       </TransformWrapper>
       {connections.map((c) => (
         <Xarrow
-          key={c.sourceElement}
+          key={c.id}
           color="#000"
           strokeWidth={1.5}
           start={c.sourceElement.toString()}

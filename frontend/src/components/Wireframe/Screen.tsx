@@ -10,8 +10,13 @@ import { selectAllElements } from '@Redux/project/selectors/element';
 import RENDERERS from '@Components/UI/RenderElements';
 import useLayout from '@Components/Editor/hooks/useLayout';
 import ScreenFrame from './ScreenFrame';
-import { setActiveElement, setActiveScreen } from '@Redux/wireframe/wireframe';
+import {
+  initConnections,
+  setActiveElement,
+  setActiveScreen,
+} from '@Redux/wireframe/wireframe';
 import { selectCurrentWireframeElement } from '@Redux/wireframe/selectors';
+import { type Screen as ScreenType } from '@Src/types';
 
 interface Props {
   data: WireframeScreen;
@@ -37,7 +42,17 @@ const Typography = styled(MuiTypography)({
   cursor: 'move',
 });
 
-const RenderElement = ({ elementId, screenId, allElements }) => {
+interface RenderElementProps {
+  elementId: string;
+  screen: ScreenType;
+  allElements: any;
+}
+
+const RenderElement: React.FC<RenderElementProps> = ({
+  elementId,
+  screen,
+  allElements,
+}) => {
   const element = allElements[elementId];
 
   const dispatch = useDispatch();
@@ -47,11 +62,10 @@ const RenderElement = ({ elementId, screenId, allElements }) => {
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-
-      dispatch(setActiveScreen(screenId.toString()));
+      dispatch(setActiveScreen(screen.id.toString()));
       dispatch(setActiveElement(elementId.toString()));
     },
-    [elementId, screenId],
+    [elementId, screen.id],
   );
 
   if (!element || (!isDisplayed && element?.name !== 'Root')) {
@@ -71,7 +85,7 @@ const RenderElement = ({ elementId, screenId, allElements }) => {
         {element.children.map((childId: string) => (
           <RenderElement
             key={childId}
-            screenId={screenId}
+            screen={screen}
             elementId={childId}
             allElements={allElements}
           />
@@ -92,12 +106,12 @@ const Screen: React.FC<Props> = ({ data, active }) => {
 
   return (
     <Card active={active} onClick={handleSceeenClick}>
-      <Typography variant="h6" className={`handle-${data.id}`}>
+      <Typography variant="h6" className={`handle-${data.id} screen-control`}>
         {data.name}
       </Typography>
       <ScreenFrame>
         <RenderElement
-          screenId={data.id}
+          screen={data}
           elementId={rootId}
           allElements={allElements}
         />

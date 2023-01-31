@@ -38,16 +38,14 @@ const DraggableScreen: React.FC<Props> = ({ data, zoom, onDrag, onStop }) => {
       dispatch(
         editScreenNameAndData(currentProjectId, data.id, {
           data: {
-            wireframe: {
-              position: { x, y },
-            },
+            wireframePosition: { x, y },
           },
         }),
       );
 
       onStop(e, dragData);
     },
-    [onStop, dispatch, currentProjectId, data],
+    [onStop, dispatch, currentProjectId, data, editScreenNameAndData],
   );
 
   return (

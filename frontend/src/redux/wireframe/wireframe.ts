@@ -17,6 +17,9 @@ const wireframeSlice = createSlice({
     setActiveElement(state, action: PayloadAction<string>) {
       state.activeElement = action.payload;
     },
+    initConnections(state, action: PayloadAction<WireframeConnection[]>) {
+      state.connections = action.payload;
+    },
     addConnection: {
       reducer: (state, action: PayloadAction<WireframeConnection>) => {
         state.connections.push(action.payload);
@@ -53,6 +56,7 @@ export const {
   setActiveElement,
   addConnection,
   updateConnection,
+  initConnections,
 } = wireframeSlice.actions;
 
 export default wireframeSlice.reducer;

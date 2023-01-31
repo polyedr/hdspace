@@ -41,7 +41,7 @@ const RightSidebar = ({ screens }) => {
   return (
     <RightpanelBox>
       <Scrollbar>
-        <Button variant="text" onClick={handleAddConnection}>
+        <Button variant="contained" onClick={handleAddConnection}>
           Add Connection
         </Button>
         {currentScreenConnections.map((connection) => (

@@ -229,10 +229,6 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       },
     );
 
-    // if (result?.projectTrelloJSON) {
-    //   yield put(successSavedBoard(result.projectTrelloJSON));
-    // }
-
     if (result) {
       yield put(Actions.changeLayout(result?.projectData?.layout?.value));
       yield put(

@@ -935,6 +935,7 @@ export interface ProjectData {
   defaultStyles: DefaultStyles;
   layout: LayoutData;
   uiFramework: UIFramework;
+  wireframeConnections?: WireframeConnection[];
 }
 export interface MarketplaceData {
   classes: ProjectClass[];
@@ -1219,7 +1220,7 @@ export interface ScreenData {
   uiFramework: UIFramework;
   freeCanvas: boolean;
   editableScreenUser: EditableScreenUser[] | [];
-  wireframe?: WireframeScreenData;
+  wireframePosition?: { x: number; y: number };
 }
 export interface EditableScreenUser {
   idUser: number;

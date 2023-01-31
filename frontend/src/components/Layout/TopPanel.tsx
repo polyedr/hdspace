@@ -196,20 +196,22 @@ function TopPanel() {
             />
           )}
         </Box>
-        <Box className={classes.topbarsections}>
-          <ModeToggleBox>
-            <IconButton aria-label="Editor Mode">
-              <EditorModeIcon />
-            </IconButton>
-            <IconButton aria-label="Wireframe Mode">
-              <WireframeModeIcon />
-            </IconButton>
-          </ModeToggleBox>
-          <AlignButton variant="contained" disableElevation>
-            Auto align
-          </AlignButton>
-          <Layouts />
-        </Box>
+        {projectName && (
+          <Box className={classes.topbarsections}>
+            <ModeToggleBox>
+              <IconButton aria-label="Editor Mode">
+                <EditorModeIcon />
+              </IconButton>
+              <IconButton aria-label="Wireframe Mode">
+                <WireframeModeIcon />
+              </IconButton>
+            </ModeToggleBox>
+            <AlignButton variant="contained" disableElevation>
+              Auto align
+            </AlignButton>
+            <Layouts />
+          </Box>
+        )}
 
         <Box className={classes.toolbar}>
           {viaMode ? <History /> : <TopBar />}

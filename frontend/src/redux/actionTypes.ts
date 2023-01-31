@@ -437,10 +437,6 @@ const TYPES = {
   GET_MY_PERMISSIONS_FOR_PROJECT: 'permissions/GET_MY_PERMISSIONS_FOR_PROJECT',
   SET_STATE_CURRENT_USER_PERMISSIONS:
     'permissions/SET_STATE_CURRENT_USER_PERMISSIONS',
-
-  // wireframe saga action
-  WIREFRAME_UPDATE_SCREEN_DATA: 'wireframe/UPDATE_SCREEN_DATA',
-
 } as const;
 
 export default TYPES;
