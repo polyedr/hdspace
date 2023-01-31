@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button, ToggleButton, styled } from '@mui/material';
-import { EditorModeIcon, WireframeModeIcon } from './../icons';
 import { NavLink, useParams, useRouteMatch } from 'react-router-dom';
+import { EditorModeIcon, WireframeModeIcon } from './../icons';
 
 const AlignButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.grey[300],
@@ -23,7 +23,13 @@ const ActiveLink = ({ to, children, ...props }) => {
   });
 
   return (
-    <ToggleButton to={to} {...props} LinkComponent={NavLink} selected={match}>
+    <ToggleButton
+      value={to}
+      selected={!!match}
+      {...props}
+      to={to}
+      component={NavLink}
+    >
       {children}
     </ToggleButton>
   );
@@ -52,6 +58,16 @@ const ToggleMode = () => {
     projectId: string;
     screenId?: string;
   }>();
+
+  const wireframePath = `/wireframe/${projectId}${
+    screenId ? `/${screenId}` : ''
+  }`;
+
+  const isWireframeMode = useRouteMatch({
+    path: wireframePath,
+    exact: true,
+  });
+
   return (
     <>
       <ModeToggleBox>
@@ -61,16 +77,15 @@ const ToggleMode = () => {
         >
           <EditorModeIcon />
         </ActiveLink>
-        <ActiveLink
-          to={`/wireframe/${projectId}${screenId ? `/${screenId}` : ''}`}
-          aria-label="Wireframe Mode"
-        >
+        <ActiveLink to={wireframePath} aria-label="Wireframe Mode">
           <WireframeModeIcon />
         </ActiveLink>
       </ModeToggleBox>
-      <AlignButton variant="contained" disableElevation>
-        Auto align
-      </AlignButton>
+      {isWireframeMode && (
+        <AlignButton variant="contained" disableElevation>
+          Auto align
+        </AlignButton>
+      )}
     </>
   );
 };
