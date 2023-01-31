@@ -25,6 +25,7 @@ const IconButton = styled(ButtonBase)<{ active: boolean }>(
 
     '& svg': {
       height: 30,
+      color: '#B0B0BD',
     },
 
     '& path': {
