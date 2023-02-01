@@ -195,7 +195,11 @@ function TaskDialog({ task, open, onClose }: Props) {
     >
       <Grid container alignItems="center">
         <Grid item xs={8}>
-          <DialogTitle display="flex" alignItems="center">
+          <DialogTitle
+            display="flex"
+            justifyContent="space-between"
+            alignItems="flex-start"
+          >
             <TaskTitle
               onChange={(title) => handleUpdateTask('title', title)}
               task={task}
