@@ -39,9 +39,15 @@ const useStyles = makeStyles<Theme>(({ typography }) => ({
     fontSize: typography.fontSize,
   },
   iconButton: {
-    width: '32px',
-    height: '32px',
-    color: '#81818E',
+    '&.MuiIconButton-root': {
+      width: '32px',
+      height: '32px',
+      color: '#81818E',
+
+      '& svg': {
+        height: '20px',
+      },
+    },
   },
   helpTextStyle: {
     textDecoration: 'none',
