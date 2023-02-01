@@ -2,8 +2,8 @@
 import { makeStyles } from '@mui/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSelector } from 'react-redux';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import React from 'react';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
 const useStyles = makeStyles<Theme>(({ typography, palette }) => ({
   title: {

@@ -1,5 +1,5 @@
-import TYPES from '@Redux/actionTypes';
 import { takeEvery, takeLatest } from 'redux-saga/effects';
+import TYPES from '@Redux/actionTypes';
 import {
   createChecklistItemSaga,
   deleteChecklistItemSaga,

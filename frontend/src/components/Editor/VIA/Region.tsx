@@ -1,12 +1,12 @@
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material';
-import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
-import { selectIsRegionActive } from '@Redux/project/selectors/via';
-import prevent from '@Utils/preventEvent';
 import cn from 'classnames';
 import React, { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
+import prevent from '@Utils/preventEvent';
+import { selectIsRegionActive } from '@Redux/project/selectors/via';
+import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
 import { VIARegion } from '../../../types';
 import VIABorders from './VIABorders';
 

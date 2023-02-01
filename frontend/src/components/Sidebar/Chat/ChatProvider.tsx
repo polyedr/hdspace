@@ -1,7 +1,7 @@
-import { selectTokenPair, selectUserData } from '@Redux/user/selectors';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Chat, enTranslations, Streami18n } from 'stream-chat-react';
+import { selectTokenPair, selectUserData } from '@Redux/user/selectors';
 import client from './client';
 
 const i18nInstance = new Streami18n({

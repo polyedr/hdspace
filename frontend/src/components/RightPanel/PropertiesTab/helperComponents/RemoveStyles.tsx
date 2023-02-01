@@ -2,10 +2,10 @@
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@mui/styles';
+import ClearIcon from '@mui/icons-material/Clear';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { Entity } from '@Src/types';
-import ClearIcon from '@mui/icons-material/Clear';
 
 interface Props {
   propsToRemove?: string[];

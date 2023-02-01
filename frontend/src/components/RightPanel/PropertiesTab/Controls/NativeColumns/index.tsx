@@ -1,6 +1,6 @@
 import React from 'react';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { makeStyles } from '@mui/styles';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import ColumnCount from './ColumnCount';
 import ColumnWidth from './ColumnWidth';
 import ColumnFill from './ColumnFill';

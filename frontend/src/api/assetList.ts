@@ -1,6 +1,6 @@
+import { AxiosResponse } from 'axios';
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps } from '@Src/types';
-import { AxiosResponse } from 'axios';
 import {
   convertResponseToPaginatedAssetLists,
   convertResponseToAssetList,

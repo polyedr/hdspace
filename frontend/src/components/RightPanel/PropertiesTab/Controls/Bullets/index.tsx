@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, FormControlLabel } from '@mui/material';
-import { ListElement, PropertiesChangeProps } from '@Src/types';
 import { makeStyles } from '@mui/styles';
+import { ListElement, PropertiesChangeProps } from '@Src/types';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles({

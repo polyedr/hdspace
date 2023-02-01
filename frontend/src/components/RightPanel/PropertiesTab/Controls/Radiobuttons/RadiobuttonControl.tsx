@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import { deleteElement } from '@Redux/project/actions';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, lighten, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { deleteElement } from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   StyledAccordion,
   StyledAccordionDetails,
   StyledAccordionSummary,
   StyledTextField,
 } from '@Components/styledComponents';
-import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles<Theme>(({ spacing, palette }) => ({
   title: {

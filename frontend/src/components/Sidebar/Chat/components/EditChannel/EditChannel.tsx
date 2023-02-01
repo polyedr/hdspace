@@ -4,10 +4,6 @@ import { useChatContext } from 'stream-chat-react';
 import './EditChannel.css';
 
 import type { ChannelFilters } from 'stream-chat';
-import { UserList } from '../CreateChannel/UserList';
-
-import { CloseCreateChannel } from '../../assets';
-
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -16,6 +12,9 @@ import type {
   TeamMessageType,
   TeamReactionType,
 } from '../../client';
+import { UserList } from '../CreateChannel/UserList';
+
+import { CloseCreateChannel } from '../../assets';
 
 interface InputProps {
   channelName: string;

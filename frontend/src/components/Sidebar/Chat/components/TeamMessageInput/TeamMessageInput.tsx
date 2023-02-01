@@ -13,6 +13,15 @@ import {
 
 import './TeamMessageInput.css';
 
+import type {
+  TeamAttachmentType,
+  TeamChannelType,
+  TeamCommandType,
+  TeamEventType,
+  TeamMessageType,
+  TeamReactionType,
+  TeamUserType,
+} from '../../client';
 import { TeamTypingIndicator } from '../TeamTypingIndicator/TeamTypingIndicator';
 
 // eslint-disable-next-line import/no-cycle
@@ -27,16 +36,6 @@ import {
   SmileyFace,
   StrikeThroughIcon,
 } from '../../assets';
-
-import type {
-  TeamAttachmentType,
-  TeamChannelType,
-  TeamCommandType,
-  TeamEventType,
-  TeamMessageType,
-  TeamReactionType,
-  TeamUserType,
-} from '../../client';
 
 export type Props = MessageInputProps & {
   pinsOpen?: boolean;

@@ -16,6 +16,8 @@ import Frame, {
 } from 'react-frame-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { DndContext } from 'react-dnd';
+import GridLines from 'react-gridlines';
+import { CacheProvider } from '@emotion/react';
 import { setEditorDocument } from '@Redux/project/actions';
 import { theme } from '@Src/styles/Theme';
 import {
@@ -28,10 +30,8 @@ import ELEMENT_IDS from '@Constants/elementIds';
 import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
 
 import { selectFreeCanvasMode } from '@Redux/project/selectors/screen';
-import GridLines from 'react-gridlines';
-import { WindowProvider } from './FrameContext';
 import useProjectHeaderStyles from '../hooks/useProjectHeaderStyles';
-import { CacheProvider } from '@emotion/react';
+import { WindowProvider } from './FrameContext';
 
 const useStyles = makeStyles({
   loaderWrapper: {

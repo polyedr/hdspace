@@ -19,9 +19,9 @@ import {
 import { BoardTask } from '@Redux/pmtools/types';
 import { selectChecklist } from '@Redux/pmtools/board/selectors';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
+import { IconButton } from '../StyledComponents';
 import ProgressBar from './ProgressBar';
 import CheckItem from './CheckItem';
-import { IconButton } from '../StyledComponents';
 
 const TextField = styled(MuiTextField)({
   '& input': {

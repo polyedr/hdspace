@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { put, call, select } from 'redux-saga/effects';
+import logger from 'loglevel';
 import {
   selectElementParameters,
   selectElementStyles,
@@ -36,11 +37,10 @@ import {
   StateElement,
   UpdateDataActionType,
 } from '@Src/types';
-import logger from 'loglevel';
-import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
 import { selectFreeCanvasOffsetList } from '../selectors/base';
+import { reqWrapper } from './shared';
 
 export function* updateOrReplaceMultipleElementsParameters(
   action: ReturnType<

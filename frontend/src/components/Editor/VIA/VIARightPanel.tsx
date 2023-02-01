@@ -1,9 +1,11 @@
-import { StyledIconButton } from '@Components/styledComponents';
 import { Button, Theme } from '@mui/material';
 import {
   Add as AddIcon,
   Assignment as AssignmentIcon,
 } from '@mui/icons-material';
+import React, { FC } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
 import {
   assembleVIARegions,
   cancelRecognizing,
@@ -15,9 +17,7 @@ import {
   selectCopiedVIARegion,
 } from '@Redux/project/selectors/via';
 import { RIGHT_PANEL_WIDTH } from '@Src/styles/Theme';
-import React, { FC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles } from '@mui/styles';
+import { StyledIconButton } from '@Components/styledComponents';
 import VIADescription from './VIADescription';
 
 const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({

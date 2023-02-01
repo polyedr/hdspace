@@ -1,8 +1,9 @@
 /* eslint-disable react/no-unused-prop-types */
 import React, { useCallback, useRef, useState } from 'react';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { makeStyles } from '@mui/styles';
 import { useSelector, useDispatch } from 'react-redux';
+import { Button, MenuItem } from '@mui/material';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { uploadElementAsset, uploadImageByUrl } from '@Redux/project/actions';
@@ -11,7 +12,6 @@ import {
   selectAllAssetLists,
   selectCurrentAssetListId,
 } from '@Redux/project/selectors/asset';
-import { Button, MenuItem } from '@mui/material';
 import { URL_REGEX } from '@Constants/defaultParams';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {

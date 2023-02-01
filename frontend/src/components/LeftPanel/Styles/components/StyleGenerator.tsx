@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import { Button, FormControl, Box, SxProps, Theme } from '@mui/material';
-import { StyledTextField } from '@Components/styledComponents';
 import { useDispatch } from 'react-redux';
+import { StyledTextField } from '@Components/styledComponents';
 import { generateImagePalette } from '@Redux/project/actions';
 
 const useStyles = makeStyles<Theme>(() => ({

@@ -1,9 +1,10 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
+import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
 import ElementsBlock from '@Components/RightPanel/ElementsTab/ElementsBlock';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
-import React from 'react';
 import Scrollbar from '@Components/UI/Scrollbar';
-import { useSelector } from 'react-redux';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import FrameworkSection from '@Components/RightPanel/FrameworkSection';
 import Navigator from './Navigator';
@@ -15,7 +16,6 @@ import {
   LibraryIcon,
   LayersIcon,
 } from './icons';
-import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
 import LibraryMenu from './LibraryMenu';
 import Styles from './Styles';
 import VIANavigator from './VIANavigator';

@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import PATH_NAMES from '@Constants/pathNames';
-import { logoutStart } from '@Redux/user/actions';
-import { selectProfileData, selectUserData } from '@Redux/user/selectors';
 import {
   Tooltip,
   IconButton,
@@ -13,6 +10,9 @@ import {
   Avatar as MuiAvatar,
 } from '@mui/material';
 import styled from 'styled-components';
+import PATH_NAMES from '@Constants/pathNames';
+import { logoutStart } from '@Redux/user/actions';
+import { selectProfileData, selectUserData } from '@Redux/user/selectors';
 
 const CustomMenu = styled(Menu)`
   & ul {

@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { put, call, select, putResolve } from 'redux-saga/effects';
+import { compose } from 'redux';
+import logger from 'loglevel';
 import {
   selectCustomElementsPagination,
   selectElementStyles,
@@ -49,15 +51,18 @@ import {
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
 import { apiGetFile } from '@Api/import';
-import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
-import logger from 'loglevel';
-import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
-import { wrapIntoContainer } from './scenario';
 import withActionsHistory from '../wrappers/withActionsHistory';
+import {
+  selectAllAssetLists,
+  selectCurrentAssetListId,
+} from '../selectors/asset';
+import { selectCurrentScreenId } from '../selectors/screen';
+import { reqWrapper, projectUpdateHelperSaga } from './shared';
+import { wrapIntoContainer } from './scenario';
 import { uploadAssetHelper } from './asset';
 import {
   updateOrReplaceElementParameters,
@@ -65,11 +70,6 @@ import {
   updateOrReplaceMultipleElementsParameters,
   createElements,
 } from './common';
-import {
-  selectAllAssetLists,
-  selectCurrentAssetListId,
-} from '../selectors/asset';
-import { selectCurrentScreenId } from '../selectors/screen';
 
 // eslint-disable-next-line consistent-return
 export function* duplicateElements(

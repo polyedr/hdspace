@@ -12,11 +12,6 @@ import {
   MessageToSend,
 } from 'stream-chat-react';
 
-import { PinnedMessageList } from '../PinnedMessageList/PinnedMessageList';
-import { TeamChannelHeader } from '../TeamChannelHeader/TeamChannelHeader';
-// eslint-disable-next-line import/no-cycle
-import { ThreadMessageInput } from '../TeamMessageInput/ThreadMessageInput';
-
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -25,6 +20,10 @@ import type {
   TeamMessageType,
   TeamReactionType,
 } from '../../client';
+import { PinnedMessageList } from '../PinnedMessageList/PinnedMessageList';
+import { TeamChannelHeader } from '../TeamChannelHeader/TeamChannelHeader';
+// eslint-disable-next-line import/no-cycle
+import { ThreadMessageInput } from '../TeamMessageInput/ThreadMessageInput';
 
 interface InnerProps {
   pinsOpen: boolean;

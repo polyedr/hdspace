@@ -34,8 +34,8 @@ import {
 import { Entity } from '@Src/types';
 import { selectUserProfileDataParameters } from '@Redux/user/selectors';
 import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';
-import InteractionsHandler from './InteractionsHandler';
 import { DOMHandler } from '../DOMHandler';
+import InteractionsHandler from './InteractionsHandler';
 
 const useStyles = makeStyles({
   container: ({ posRight }: Props) => ({

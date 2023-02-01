@@ -4,9 +4,9 @@ import { Popover, IconButton } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import cn from 'classnames';
+import { makeStyles } from '@mui/styles';
 import { SAVEABLE_ELEMENTS } from '@Constants/defaultParams';
 import { updateElement } from '@Redux/project/actions';
-import { makeStyles } from '@mui/styles';
 import { StateElement } from '@Src/types';
 import { useButtonStyles } from '../hooks/styles';
 

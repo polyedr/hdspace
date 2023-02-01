@@ -26,6 +26,22 @@ module.exports = {
     }
   },
   rules: {
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "external",
+          "builtin",
+          "type",
+          "internal",
+          "index",
+          "parent",
+          "sibling",
+         
+          "object",
+        ]
+      }
+    ],
     'prettier/prettier': 'error',
     '@typescript-eslint/semi': 'off',
     '@typescript-eslint/space-before-function-paren': 'off',

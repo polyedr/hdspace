@@ -20,8 +20,8 @@ import {
   Edit as EditIcon,
   Close as CloseIcon,
 } from '@mui/icons-material';
-import { BoardTask, BoardTaskCheckListItem } from '@Redux/pmtools/types';
 import { useDispatch } from 'react-redux';
+import { BoardTask, BoardTaskCheckListItem } from '@Redux/pmtools/types';
 import {
   requestDeleteChecklistItem,
   requestUpdateChecklistItem,

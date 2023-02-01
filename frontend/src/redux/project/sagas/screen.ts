@@ -3,6 +3,8 @@ import { all, call, fork, put, select } from 'redux-saga/effects';
 import { omit, head, assoc, prepend } from 'ramda';
 import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
+import logger from 'loglevel';
+import { compose } from 'redux';
 import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import {
   convertCreatedElementToRequest,
@@ -17,7 +19,6 @@ import {
   apiPostFreeCanvas,
   apiUpdateScreen,
 } from '@Api/screen';
-import logger from 'loglevel';
 import {
   EditableScreenUser,
   LibraryElement,
@@ -32,7 +33,6 @@ import {
 } from '@Src/types';
 import generateUniqueName from '@Utils/generateUniqueName';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
-import { compose } from 'redux';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -50,8 +50,6 @@ import {
   updateScreenImage,
   setActiveElementId,
 } from '../actions';
-import { createScenarios } from './scenario';
-import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import {
   selectCurrentScreen,
@@ -71,6 +69,8 @@ import {
 } from '../selectors/element';
 import { selectCurrentProject, selectEditorDocument } from '../selectors/base';
 import withActionsHistory from '../wrappers/withActionsHistory';
+import { reqWrapper } from './shared';
+import { createScenarios } from './scenario';
 
 export const activateScreenSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,

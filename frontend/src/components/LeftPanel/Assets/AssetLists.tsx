@@ -1,17 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  selectAllAssetLists,
-  selectCurrentAssetListId,
-} from '@Redux/project/selectors/asset';
 import { Close as CloseIcon, Add as AddIcon } from '@mui/icons-material';
-import {
-  addAssetList,
-  loadAssetLists,
-  setSelectedAssetListId,
-} from '@Redux/project/actions';
-import { UserProjectPermission } from '@Src/types';
-import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import {
   Select,
   MenuItem,
@@ -20,8 +9,19 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material';
-
 import { makeStyles } from '@mui/styles';
+import {
+  selectAllAssetLists,
+  selectCurrentAssetListId,
+} from '@Redux/project/selectors/asset';
+import {
+  addAssetList,
+  loadAssetLists,
+  setSelectedAssetListId,
+} from '@Redux/project/actions';
+import { UserProjectPermission } from '@Src/types';
+import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
+
 import {
   selectAssetsListsLoader,
   selectCurrentProjectId,

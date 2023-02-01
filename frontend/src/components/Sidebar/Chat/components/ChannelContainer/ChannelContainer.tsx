@@ -4,15 +4,6 @@ import { Channel, useChatContext, ThreadHeaderProps } from 'stream-chat-react';
 import './ChannelContainer.css';
 
 import type { ChannelFilters } from 'stream-chat';
-import { ChannelInner } from './ChannelInner';
-import { ChannelEmptyState } from '../ChannelEmptyState/ChannelEmptyState';
-import { CreateChannel } from '../CreateChannel/CreateChannel';
-import { EditChannel } from '../EditChannel/EditChannel';
-import { TeamMessage } from '../TeamMessage/TeamMessage';
-import { TeamMessageInput } from '../TeamMessageInput/TeamMessageInput';
-
-import { CloseThreadIcon } from '../../assets';
-
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -21,6 +12,14 @@ import type {
   TeamMessageType,
   TeamReactionType,
 } from '../../client';
+import { ChannelEmptyState } from '../ChannelEmptyState/ChannelEmptyState';
+import { CreateChannel } from '../CreateChannel/CreateChannel';
+import { EditChannel } from '../EditChannel/EditChannel';
+import { TeamMessage } from '../TeamMessage/TeamMessage';
+import { TeamMessageInput } from '../TeamMessageInput/TeamMessageInput';
+
+import { CloseThreadIcon } from '../../assets';
+import { ChannelInner } from './ChannelInner';
 
 interface Props {
   createType: string;

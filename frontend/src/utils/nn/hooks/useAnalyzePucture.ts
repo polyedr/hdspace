@@ -1,8 +1,8 @@
-﻿import { NNBlockType } from '@Src/types';
+﻿import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { NNBlockType } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
-import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 const useAnalyzePucture = (
   elementId: string,

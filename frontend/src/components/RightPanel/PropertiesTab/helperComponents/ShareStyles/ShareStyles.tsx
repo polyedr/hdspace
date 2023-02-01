@@ -2,6 +2,7 @@ import React from 'react';
 import { Chip, Button, Theme } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { connect, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
 import {
   addElementClassName,
   copyElementStyles,
@@ -14,7 +15,6 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { AppReduxState } from '@Redux/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { UserProjectPermission } from '@Src/types';
-import { makeStyles } from '@mui/styles';
 import EditableStyles from '../EditableStyles/EditableStyles';
 
 const useStyles = makeStyles<Theme>(({ spacing }) => ({

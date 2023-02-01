@@ -1,13 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { Switch, IconButton, FormControlLabel } from '@mui/material';
-import Avatar from '@Components/UI/Avatar';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { ServerProject, UserData, UserProjectPermission } from '@Src/types';
 import { styled } from '@mui/material/styles';
-import * as Actions from '@Redux/permissions/actions';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useDispatch } from 'react-redux';
+import * as Actions from '@Redux/permissions/actions';
+import { ServerProject, UserData, UserProjectPermission } from '@Src/types';
+import Avatar from '@Components/UI/Avatar';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 
 interface PropsType {

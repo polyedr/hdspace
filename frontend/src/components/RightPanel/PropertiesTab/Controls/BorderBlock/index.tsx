@@ -1,4 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { MenuItem, Box } from '@mui/material';
+import { styled, makeStyles } from '@mui/styles';
+import { useSelector } from 'react-redux';
+import cn from 'classnames';
+import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
+import { useDebouncedCallback } from 'use-debounce';
 import {
   getPermissibleValue,
   safeMatch,
@@ -22,14 +28,8 @@ import {
   useDebouncedInputChange,
   useDebouncedValueChange,
 } from '@Utils/debounceHooks';
-import { MenuItem, Box } from '@mui/material';
-import { styled, makeStyles } from '@mui/styles';
-import { useSelector } from 'react-redux';
 import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
-import cn from 'classnames';
 import BORDER_STYLE from '@Constants/borderStyle';
-import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
-import { useDebouncedCallback } from 'use-debounce';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 

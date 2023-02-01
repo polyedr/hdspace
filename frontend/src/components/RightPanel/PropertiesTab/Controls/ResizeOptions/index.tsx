@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { makeStyles } from '@mui/styles';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { FormControlLabel, Switch } from '@mui/material';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 
 const useStyles = makeStyles({
   root: {

@@ -1,7 +1,7 @@
 import React from 'react';
 import cn from 'classnames';
-import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import logger from 'loglevel';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
 import Undefined from '../Undefined/Undefined';
 import { makeComponentStyles } from '../styles';

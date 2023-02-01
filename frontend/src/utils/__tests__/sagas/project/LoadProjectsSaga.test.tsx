@@ -1,5 +1,6 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, select, call } from 'redux-saga/effects';
+import { vi } from 'vitest';
 import { getProjectListSaga } from '@Redux/project/sagas/project';
 import * as Actions from '@Redux/project/actions';
 import {
@@ -11,7 +12,6 @@ import { apiGetProjectList } from '@Api/project';
 import { DEFAULT_PROJECT } from '@Constants/defaultParams';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { beforeSagaTest } from '../../test-utils';
-import { vi } from 'vitest';
 
 describe('getProjectListSaga Test', () => {
   describe('WHEN method is called and API is in its working state', () => {

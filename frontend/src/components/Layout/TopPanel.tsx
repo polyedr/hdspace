@@ -1,5 +1,21 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  styled,
+  AppBar as MUIAppbar,
+  Toolbar,
+  IconButton,
+  Box,
+  Theme,
+} from '@mui/material';
+import ToggleButton from '@mui/material/ToggleButton';
+import { makeStyles } from '@mui/styles';
+import {
+  HelpOutline as HelpOutlineIcon,
+  SettingsBackupRestore as SettingsBackupRestoreIcon,
+  Apps as AppsIcon,
+  ViewWeek as ViewWeekIcon,
+} from '@mui/icons-material';
 import { selectIsPrototypeMode, selectUserData } from '@Redux/user/selectors';
 import {
   selectCurrentProject,
@@ -17,31 +33,14 @@ import {
   selectVIAResultId,
 } from '@Redux/project/selectors/via';
 
-import {
-  styled,
-  AppBar as MUIAppbar,
-  Toolbar,
-  IconButton,
-  Box,
-  Theme,
-} from '@mui/material';
-import ToggleButton from '@mui/material/ToggleButton';
-
-import { makeStyles } from '@mui/styles';
-import {
-  HelpOutline as HelpOutlineIcon,
-  SettingsBackupRestore as SettingsBackupRestoreIcon,
-  Apps as AppsIcon,
-  ViewWeek as ViewWeekIcon,
-} from '@mui/icons-material';
 import { StyledIconButton } from '@Components/styledComponents';
 import { HELP_LINK } from '@Src/config/settings';
 import Dialog from '../Dialogs/Dialog';
+import Logo from '../UI/Logo';
 import Layouts from './TopBar/Layouts';
 import RenameProjectBar from './TopBar/RenameProjectBar';
 import TopBar from './TopBar';
 import History from './History';
-import Logo from '../UI/Logo';
 import Avatar from './Avatar';
 // import { ShowGridIcon, ShowBlockIcon } from './icons';
 

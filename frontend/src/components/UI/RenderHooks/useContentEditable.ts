@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useCallback, useRef } from 'react';
-import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { useSelector, useDispatch } from 'react-redux';
+import { useDebouncedCallback } from 'use-debounce';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { useDebouncedCallback } from 'use-debounce';
 import { EventHandlers } from '../RenderElements/types';
 
 export interface ContentEditableProps {

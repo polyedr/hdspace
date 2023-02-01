@@ -1,24 +1,24 @@
 import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  selectLayout,
-  selectScreenRotated,
-} from '@Redux/project/selectors/base';
-import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import Scrollbars from 'react-custom-scrollbars';
+import { makeStyles } from '@mui/styles';
+import TreeCanvas from '@Components/Editor/TreeCanvas';
+import MasterScreen from '@Components/Editor/MasterScreen';
+import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import {
   selectMasterScreenEnabled,
   selectFreeCanvasMode,
 } from '@Redux/project/selectors/screen';
-import { FrameWrapper } from '@Components/Editor/FrameWrapper';
-import MasterScreen from '@Components/Editor/MasterScreen';
-import TreeCanvas from '@Components/Editor/TreeCanvas';
-import Scrollbars from 'react-custom-scrollbars';
-import { makeStyles } from '@mui/styles';
-import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import {
+  selectLayout,
+  selectScreenRotated,
+} from '@Redux/project/selectors/base';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
+import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import { DOMHandler } from './DOMHandler';
 
 const useStyles = makeStyles({

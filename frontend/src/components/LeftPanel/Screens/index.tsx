@@ -11,8 +11,9 @@ import {
 } from '@mui/material';
 
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
-import { createScreen, changeScreensOrder } from '@Redux/project/actions';
 import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
+import { createScreen, changeScreensOrder } from '@Redux/project/actions';
 import {
   selectCurrentProjectId,
   selectScreenCreateLoader,
@@ -23,9 +24,8 @@ import {
 } from '@Redux/project/selectors/screen';
 import prevent from '@Utils/preventEvent';
 import { Indices } from '@Src/types';
-import ScreenListItem from './ScreenListItem';
 import Scrollbar from '../../UI/Scrollbar';
-import { styled } from '@mui/material/styles';
+import ScreenListItem from './ScreenListItem';
 
 const TitleContainer = styled(Box)({
   paddingLeft: 16,

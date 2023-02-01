@@ -3,7 +3,6 @@ import { useChatContext } from 'stream-chat-react';
 
 import './CreateChannel.css';
 
-import type { ChannelFilters } from 'stream-chat';
 import logger from 'loglevel';
 import Stack from '@mui/material/Stack';
 import { Button, TextField } from '@mui/material';
@@ -11,12 +10,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import FormControl from '@mui/material/FormControl';
 import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
-import { UserList } from './UserList';
-
-import { CloseCreateChannel } from '../../assets';
-
+import type { ChannelFilters } from 'stream-chat';
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -25,6 +19,10 @@ import type {
   TeamMessageType,
   TeamReactionType,
 } from '../../client';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
+import { CloseCreateChannel } from '../../assets';
+import { UserList } from './UserList';
 
 interface InputProps {
   channelName: string;

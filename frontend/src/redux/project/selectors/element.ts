@@ -17,12 +17,12 @@ import {
   Project,
   StateElement,
 } from '@Src/types';
+import { AppReduxState, ProjectState } from '../../types';
 import {
   selectCurrentProject,
   selectEditableStyles,
   selectProjectState,
 } from './base';
-import { AppReduxState, ProjectState } from '../../types';
 import {
   selectCurrentScreen,
   selectCurrentScreenId,

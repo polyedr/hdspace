@@ -2,8 +2,8 @@ import React from 'react';
 
 import './TeamChannelList.css';
 
-import type { ChannelListMessengerProps } from 'stream-chat-react';
 import { useSelector } from 'react-redux';
+import type { ChannelListMessengerProps } from 'stream-chat-react';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { selectUserData } from '@Redux/user/selectors';
 import Scrollbar from '@Components/UI/Scrollbar';
