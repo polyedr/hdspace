@@ -2,13 +2,10 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import ReactDOMServer from 'react-dom/server';
-import { ServerStyleSheets, ThemeProvider } from '@mui/styles';
-import {
-  ThemeProvider as MuiThemeProvider,
-  StyledEngineProvider,
-} from '@mui/material/styles';
+import { ServerStyleSheets } from '@mui/styles';
+import { StyledEngineProvider } from '@mui/material/styles';
 import JSZip from 'jszip';
-import { theme } from '@Src/styles/Theme';
+import { AppThemeProvider } from '@Src/styles/Theme';
 // eslint-disable-next-line import/named
 import { store } from '@Redux/store';
 import { AppReduxState } from '@Redux/types';
@@ -104,13 +101,11 @@ const exportHTML = (allScreensData, projectName) => {
       sheets.collect(
         <Provider store={store}>
           <StyledEngineProvider injectFirst>
-            <MuiThemeProvider theme={theme}>
-              <ThemeProvider theme={theme}>
-                <BrowserRouter>
-                  <ExportedElement elementId={data.element} state={state} />
-                </BrowserRouter>
-              </ThemeProvider>
-            </MuiThemeProvider>
+            <AppThemeProvider>
+              <BrowserRouter>
+                <ExportedElement elementId={data.element} state={state} />
+              </BrowserRouter>
+            </AppThemeProvider>
           </StyledEngineProvider>
         </Provider>,
       ),

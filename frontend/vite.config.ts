@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import eslint from 'vite-plugin-eslint';
 import vitePluginFaviconsInject from 'vite-plugin-favicons-inject';
 import path from 'path';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default ({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
@@ -22,10 +23,46 @@ export default ({ mode }) => {
     },
     plugins: [
       react(),
+      viteStaticCopy({
+        targets: [
+          {
+            src: path.resolve(__dirname, 'src/styles/export/clock.css'),
+            dest: path.resolve(__dirname, 'public/styles'),
+          },
+          {
+            src: path.resolve(__dirname, 'src/export/js/app.js'),
+            dest: path.resolve(__dirname, 'public/js/export'),
+          },
+          {
+            src: path.resolve(__dirname, 'src/export/js/map.js'),
+            dest: path.resolve(__dirname, 'public/js/export'),
+          },
+          {
+            src: path.resolve(__dirname, 'src/export/js/clock-widget.js'),
+            dest: path.resolve(__dirname, 'public/js/export'),
+          },
+          {
+            src: path.resolve(__dirname, 'src/export/js/clock.js'),
+            dest: path.resolve(__dirname, 'public/js/export'),
+          },
+          {
+            src: path.resolve(__dirname, 'src/export/js/calendar.js'),
+            dest: path.resolve(__dirname, 'public/js/export'),
+          },
+          {
+            src: path.resolve(
+              __dirname,
+              'node_modules/css-ripple-effect/dist/ripple.css',
+            ),
+            dest: path.resolve(__dirname, 'public/styles'),
+          },
+        ],
+      }),
       splitVendorChunkPlugin(),
       eslint({
         failOnError: process.env.NODE_ENV !== 'development',
       }),
+
       vitePluginFaviconsInject('./src/assets/sprites/favicon.png'),
     ],
     css: {
