@@ -3,9 +3,9 @@ import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { render, RenderResult } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { AppReduxState } from '@Redux/types';
+import { AppThemeProvider } from '@Src/styles/Theme';
 import { mockState } from '../../test-utils';
 import Profile from '../../../../components/User/Profile';
-import { AppThemeProvider } from '@Src/styles/Theme';
 
 describe('Profile', () => {
   let store: MockStoreEnhanced<AppReduxState>;

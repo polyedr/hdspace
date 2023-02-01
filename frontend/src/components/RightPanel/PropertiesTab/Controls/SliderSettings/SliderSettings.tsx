@@ -1,7 +1,7 @@
-import { PropertiesChangeProps, SliderElement } from '@Src/types';
 import React, { useCallback } from 'react';
-import { StyledTextField } from '@Components/styledComponents';
 import { useSelector } from 'react-redux';
+import { PropertiesChangeProps, SliderElement } from '@Src/types';
+import { StyledTextField } from '@Components/styledComponents';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 
 const SliderSettings: React.FC<PropertiesChangeProps<SliderElement>> = ({

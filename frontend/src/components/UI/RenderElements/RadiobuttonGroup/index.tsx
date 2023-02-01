@@ -1,7 +1,7 @@
 import React from 'react';
+import cn from 'classnames';
 import { makeComponentStyles } from '@Components/UI/RenderElements/styles';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
-import cn from 'classnames';
 import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('radiobuttonGroup', {});

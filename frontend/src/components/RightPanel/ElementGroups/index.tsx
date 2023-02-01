@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { selectElementGroups } from '@Redux/project/selectors/element';
 import Crop169Icon from '@mui/icons-material/Crop169';
-import { ElementData } from '@Src/types';
 import { makeStyles } from '@mui/styles';
+import { selectElementGroups } from '@Redux/project/selectors/element';
+import { ElementData } from '@Src/types';
 import {
   StyledAccordion,
   StyledAccordionDetails,

@@ -1,8 +1,8 @@
 import { createReducer, Handlers } from 'reduxsauce';
 import { UnsafeReturnType } from '@Src/types';
 import TYPES from '../actionTypes';
-import * as Actions from './actions';
 import { UserState } from '../types';
+import * as Actions from './actions';
 import { initialUserState } from './initial';
 
 type ActionHandler<T> = (

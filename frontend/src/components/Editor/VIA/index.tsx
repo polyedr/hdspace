@@ -1,5 +1,12 @@
 // @ts-nocheck
 import { makeStyles } from '@mui/styles';
+import { useHotkeys as useShortcut } from 'react-hotkeys-hook';
+import React, { FC } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectAnnotatedImageFile,
+  selectVIARegionsAsArray,
+} from '@Redux/project/selectors/via';
 import {
   copyVIARegion,
   deleteVIARegion,
@@ -8,13 +15,6 @@ import {
   pasteVIARegion,
   setActiveVIARegion,
 } from '@Redux/project/actions';
-import { useHotkeys as useShortcut } from 'react-hotkeys-hook';
-import {
-  selectAnnotatedImageFile,
-  selectVIARegionsAsArray,
-} from '@Redux/project/selectors/via';
-import React, { FC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Region from './Region';
 
 const useStyles = makeStyles({

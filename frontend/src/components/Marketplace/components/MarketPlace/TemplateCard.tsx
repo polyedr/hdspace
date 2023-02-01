@@ -10,11 +10,11 @@ import {
   IconButton,
   Divider,
 } from '@mui/material';
-import { getTemplatesLists } from '@Redux/marketplace/actions';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+import { getTemplatesLists } from '@Redux/marketplace/actions';
 import {
   selectMarketplacesData,
   selectTemplatessDataNext,

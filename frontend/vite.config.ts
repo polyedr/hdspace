@@ -1,8 +1,8 @@
+import path from 'path';
 import { defineConfig, loadEnv, splitVendorChunkPlugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import eslint from 'vite-plugin-eslint';
 import vitePluginFaviconsInject from 'vite-plugin-favicons-inject';
-import path from 'path';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default ({ mode }) => {

@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import { ElementEvent, EventType } from '@Src/types';
-import { StyledIconButton } from '@Components/styledComponents';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import ClickEventTitle from '@Components/RightPanel/EventsTab/ClickEventTitle';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { ElementEvent, EventType } from '@Src/types';
+import { StyledIconButton } from '@Components/styledComponents';
+import ClickEventTitle from '@Components/RightPanel/EventsTab/ClickEventTitle';
 
 const useStyles = makeStyles<Theme>(({ spacing, shape }) => ({
   root: {

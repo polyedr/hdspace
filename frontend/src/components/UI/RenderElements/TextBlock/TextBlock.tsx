@@ -1,11 +1,11 @@
 import React from 'react';
 import cn from 'classnames';
 
-import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
-import { useHistory } from 'react-router';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';

@@ -1,6 +1,10 @@
-import ELEMENT_IDS from '@Constants/elementIds';
 import { makeStyles } from '@mui/styles';
 import { Menu, MenuItem, Theme } from '@mui/material';
+import cn from 'classnames';
+import React, { useCallback, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Rnd } from 'react-rnd';
+import ELEMENT_IDS from '@Constants/elementIds';
 import {
   copyActiveElement,
   pasteCopiedElement,
@@ -15,10 +19,6 @@ import {
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { BoundingStyles, DropTargetParams, Entity } from '@Src/types';
 import { canElementHaveChildren } from '@Utils/AvailableChildrenHelper';
-import cn from 'classnames';
-import React, { useCallback, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Rnd } from 'react-rnd';
 import DropPositionMarker from './DropPositionMarker';
 
 interface Props {

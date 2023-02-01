@@ -1,3 +1,4 @@
+import { v4 } from 'uuid';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import {
   ButtonServerElement,
@@ -16,7 +17,6 @@ import {
   DateTimePickerType,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
-import { v4 } from 'uuid';
 
 export const makeButton = ({
   buoyancy = 0,

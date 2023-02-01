@@ -1,8 +1,8 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
+import { FormControlLabel, MenuItem } from '@mui/material';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { FormControlLabel, MenuItem } from '@mui/material';
 import { useColumnControlStyles } from './styles';
 
 enum Units {

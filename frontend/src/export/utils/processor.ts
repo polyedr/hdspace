@@ -3,9 +3,9 @@ import JSZip from 'jszip';
 import pretty from 'pretty';
 import decamelize from 'decamelize';
 import cssbeautify from 'cssbeautify';
+import logger from 'loglevel';
 import { toClassName } from '@Utils/stringHelper';
 import { ProjectClass, ScreenMetaData, StateElement } from '@Src/types';
-import logger from 'loglevel';
 import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];

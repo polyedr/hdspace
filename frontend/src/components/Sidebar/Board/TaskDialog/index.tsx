@@ -1,4 +1,3 @@
-import Avatar from '@Components/UI/Avatar';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -22,10 +21,11 @@ import Slide from '@mui/material/Slide';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { TransitionProps } from '@mui/material/transitions';
-import { fetchTask, updateTask } from '@Redux/pmtools/board/actions/tasks';
-import { BoardTask } from '@Redux/pmtools/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { fetchTask, updateTask } from '@Redux/pmtools/board/actions/tasks';
+import { BoardTask } from '@Redux/pmtools/types';
+import Avatar from '@Components/UI/Avatar';
 import Checklist from './Checklist';
 import Comment from './Comments';
 import Description from './Description';

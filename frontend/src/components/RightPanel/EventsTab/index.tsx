@@ -1,12 +1,14 @@
 /* eslint-disable react/no-array-index-key */
 import React, { FC, useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
+import { useDispatch, useSelector } from 'react-redux';
+import { MenuItem, Button, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import {
   StyledIconButton,
   StyledTextField,
 } from '@Components/styledComponents';
 import { ElementEvent, EventType, StateElement } from '@Src/types';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElement,
   selectActiveElementParams,
@@ -15,9 +17,6 @@ import Click from '@Components/RightPanel/EventsTab/Click';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import EventListItem from '@Components/RightPanel/EventsTab/EventListItem';
-import { MenuItem, Button, Theme } from '@mui/material';
-
-import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
   root: {

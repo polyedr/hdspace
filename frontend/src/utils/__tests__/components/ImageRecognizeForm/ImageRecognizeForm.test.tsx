@@ -2,11 +2,11 @@ import React from 'react';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { fireEvent, render, RenderResult } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import { vi } from 'vitest';
 import { mockState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import TYPES from '@Redux/actionTypes';
 import ImageRecognizeForm from '@Components/Dialogs/NewScreenModal/ImageRecognizeForm';
-import { vi } from 'vitest';
 import { AppThemeProvider } from '@Src/styles/Theme';
 
 Object.defineProperty(URL, 'createObjectURL', {

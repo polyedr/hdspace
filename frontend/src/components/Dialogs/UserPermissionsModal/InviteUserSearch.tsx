@@ -3,13 +3,6 @@ import { useDebouncedCallback } from 'use-debounce';
 import { useDispatch, useSelector } from 'react-redux';
 import { matchSorter } from 'match-sorter';
 import CircularProgress from '@mui/material/CircularProgress';
-import * as Actions from '@Redux/permissions/actions';
-import {
-  selectAllUsers,
-  selectUsersLoading,
-  selectUsersNext,
-  selectUsersSearchValue,
-} from '@Redux/permissions/selectors';
 import {
   Autocomplete,
   Chip as MuiChip,
@@ -17,10 +10,17 @@ import {
   TextField as MuiTextField,
   Typography as MuiTypography,
 } from '@mui/material';
-import Avatar from '@Components/UI/Avatar';
 import { styled } from '@mui/material/styles';
-import { UserData } from '@Src/types';
 import { makeStyles } from '@mui/styles';
+import * as Actions from '@Redux/permissions/actions';
+import {
+  selectAllUsers,
+  selectUsersLoading,
+  selectUsersNext,
+  selectUsersSearchValue,
+} from '@Redux/permissions/selectors';
+import Avatar from '@Components/UI/Avatar';
+import { UserData } from '@Src/types';
 
 const InputTitle = styled('p')({
   marginTop: 0,

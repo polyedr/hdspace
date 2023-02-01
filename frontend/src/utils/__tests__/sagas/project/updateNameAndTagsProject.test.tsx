@@ -1,7 +1,7 @@
 import sagaHelper from 'redux-saga-testing';
+import { select, call, put } from 'redux-saga/effects';
 import { updateNameAndTagsProjectSaga } from '@Redux/project/sagas/project';
 import * as Actions from '@Redux/project/actions';
-import { select, call, put } from 'redux-saga/effects';
 import { selectProjectById } from '@Redux/project/selectors/base';
 import { apiUpdateProject } from '@Api/project';
 import { reqWrapper } from '@Redux/project/sagas/shared';

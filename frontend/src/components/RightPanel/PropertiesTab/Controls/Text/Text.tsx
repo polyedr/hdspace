@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Checkbox, FormControlLabel, MenuItem, FormLabel } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { useDebouncedCallback } from 'use-debounce';
 import {
   ParagraphElement,
   PropertiesChangeProps,
@@ -6,11 +9,8 @@ import {
 } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
-import { Checkbox, FormControlLabel, MenuItem, FormLabel } from '@mui/material';
 import ELEMENT_IDS from '@Constants/elementIds';
-import { useSelector } from 'react-redux';
 import { selectScreensWithoutMaster } from '@Redux/project/selectors/screen';
-import { useDebouncedCallback } from 'use-debounce';
 
 const Text: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
   element,

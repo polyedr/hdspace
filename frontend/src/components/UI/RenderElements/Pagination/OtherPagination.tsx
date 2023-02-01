@@ -1,8 +1,8 @@
 import React, { LegacyRef } from 'react';
 import cn from 'classnames';
+import { useSelector } from 'react-redux';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import { useSelector } from 'react-redux';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 

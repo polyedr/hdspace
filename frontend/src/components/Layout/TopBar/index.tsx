@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import {
   selectCurrentScreenId,
   selectFreeCanvasMode,
 } from '@Redux/project/selectors/screen';
-import { makeStyles } from '@mui/styles';
-import { Theme } from '@mui/material';
 import Actions from './actions';
 
 const useStyles = makeStyles<Theme>(({ typography, spacing }) => ({

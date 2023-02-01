@@ -1,9 +1,9 @@
 import React from 'react';
 import cn from 'classnames';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectAllElements } from '@Redux/project/selectors/element';
-import { useSelector, useDispatch } from 'react-redux';
 import { RendererProps } from '../types';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';

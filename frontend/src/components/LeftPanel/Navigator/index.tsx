@@ -4,18 +4,18 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { mutateTree, TreeData } from '@atlaskit/tree';
 import { useSelector } from 'react-redux';
 
+import { Box } from '@mui/material';
 import {
   selectCurrentRootId,
   selectAllElements,
 } from '@Redux/project/selectors/element';
 import Tree from '@Components/LeftPanel/Navigator/components/Tree';
 import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
-import { Box } from '@mui/material';
-import { makeTree, updateTree, convertElements } from './utils';
 import {
   StyledAccordion,
   StyledAccordionDetails,
 } from '../../styledComponents';
+import { makeTree, updateTree, convertElements } from './utils';
 
 const Navigator: React.FC = () => {
   const elements = useSelector(selectAllElements);

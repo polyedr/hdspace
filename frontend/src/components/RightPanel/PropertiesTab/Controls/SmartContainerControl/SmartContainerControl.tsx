@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Button } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
 import { NNBlockType, StateElement } from '@Src/types';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import { selectElementFileInput } from '@Redux/project/selectors/base';
-import { Button } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import useAnalyzePucture from '@Utils/nn/hooks/useAnalyzePucture';
 
 interface Props {

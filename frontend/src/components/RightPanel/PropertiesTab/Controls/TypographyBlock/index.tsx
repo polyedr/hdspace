@@ -5,6 +5,13 @@ import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
 import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
 import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
 import * as CSS from 'csstype';
+import { MenuItem } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { useSelector } from 'react-redux';
+import cn from 'classnames';
+import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
+import VerticalAlignCenterIcon from '@mui/icons-material/VerticalAlignCenter';
+import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop';
 import { getPermissibleValue } from '@Utils/NumberHelper';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import FONTS from '@Constants/fonts';
@@ -14,15 +21,8 @@ import {
   StyledToggleButtonGroup,
 } from '@Components/styledComponents';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
-import { MenuItem } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { useSelector } from 'react-redux';
 import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
 import FONT_WEIGHT from '@Constants/fontWeight';
-import cn from 'classnames';
-import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
-import VerticalAlignCenterIcon from '@mui/icons-material/VerticalAlignCenter';
-import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 

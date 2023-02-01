@@ -1,8 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@mui/styles';
-import { ActionTypePM, PlatformActionData } from '@Src/types/pmtools/types';
 import { ListItemAvatar, Avatar, Typography } from '@mui/material';
 import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
+import { ActionTypePM, PlatformActionData } from '@Src/types/pmtools/types';
 
 const useStyles = makeStyles({
   root: {

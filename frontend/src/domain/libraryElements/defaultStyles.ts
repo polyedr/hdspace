@@ -1,5 +1,5 @@
-import { Alignments, Entity } from '@Src/types';
 import React from 'react';
+import { Alignments, Entity } from '@Src/types';
 import {
   buttonStyleControls,
   calendarStyleControls,

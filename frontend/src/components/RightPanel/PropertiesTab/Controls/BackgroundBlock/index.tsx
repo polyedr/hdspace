@@ -11,6 +11,15 @@ import {
   Theme,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   AssetsList,
@@ -19,16 +28,8 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '@Src/types';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
 import { StyledTextField } from '@Components/styledComponents';
 import { URL_REGEX } from '@Constants/defaultParams';
-import RemoveIcon from '@mui/icons-material/Remove';
 import {
   setBackgroundList,
   updateElementStyles,
@@ -43,7 +44,6 @@ import {
 import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
-import { useDispatch, useSelector } from 'react-redux';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import PositionSelector, { BackgroundPosition } from './PositionSelector';
 interface StyleProperties {

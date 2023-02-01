@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { HTMLLibraryElement, PropertiesChangeProps } from '@Src/types';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
-import { Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
 import { BLACKLIST_TAGS } from './constants';
 
