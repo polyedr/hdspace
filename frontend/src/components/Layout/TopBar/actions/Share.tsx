@@ -27,11 +27,17 @@ const useStyles = makeStyles({
     height: '16px',
   },
   togglebutton: {
-    width: '32px',
-    height: '32px',
-    border: 'none !important',
-    borderRadius: '50% !important',
-    color: '#81818E !important',
+    '&.MuiToggleButton-root': {
+      width: '32px',
+      height: '32px',
+      border: 'none',
+      borderRadius: '50%',
+      color: '#81818E',
+
+      '& svg': {
+        height: '20px',
+      },
+    },
     '&.Mui-selected': {
       color: '#000  !important',
     },

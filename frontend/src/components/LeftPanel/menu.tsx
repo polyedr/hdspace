@@ -10,11 +10,12 @@ import Navigator from './Navigator';
 import Screens from './Screens';
 import {
   ElementsIcon,
-  ComponentIcon,
-  StylesIcon,
   ScreensIcon,
+  StylesIcon,
   LibraryIcon,
+  LayersIcon,
 } from './icons';
+import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
 import LibraryMenu from './LibraryMenu';
 import Styles from './Styles';
 import VIANavigator from './VIANavigator';
@@ -51,13 +52,13 @@ export const mainMenu = [
   {
     id: 'screens',
     label: 'Screens',
-    icon: ComponentIcon,
+    icon: ScreensIcon,
     component: Screens,
   },
   {
     id: 'styles',
     label: 'Styles',
-    icon: ComponentIcon,
+    icon: StylesIcon,
     component: () => (
       <Scrollbar>
         <FrameworkSection />
@@ -68,13 +69,13 @@ export const mainMenu = [
   {
     id: 'layers-tab',
     label: 'Layers',
-    icon: StylesIcon,
+    icon: LayersIcon,
     component: Layers,
   },
   {
     id: 'generators',
     label: 'Generators',
-    icon: ScreensIcon,
+    icon: StyleOutlinedIcon,
     component: () => (
       <Scrollbar>
         <ElementsBlock title="Generators" elements={generators} expandable />
