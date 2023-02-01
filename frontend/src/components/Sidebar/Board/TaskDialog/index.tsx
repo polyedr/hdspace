@@ -279,9 +279,10 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                       <MemberPicker
                         selected={task?.assignee_id?.toString()}
                         onChange={(member) => {
-                          if (member)
-                            handleUpdateTask('assignee_id', member?.id);
-                          else handleUpdateTask('assignee_id', null);
+                          handleUpdateTask(
+                            'assignee_id',
+                            member?.id ? member?.id : null,
+                          );
                         }}
                       />
                     </TableCell>
@@ -295,9 +296,10 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                         <MemberPicker
                           selected={task?.responsible_id?.toString()}
                           onChange={(member) => {
-                            if (member)
-                              handleUpdateTask('responsible_id', member?.id);
-                            else handleUpdateTask('responsible_id', null);
+                            handleUpdateTask(
+                              'responsible_id',
+                              member?.id ? member?.id : null,
+                            );
                           }}
                         />
                       </IconButton>
