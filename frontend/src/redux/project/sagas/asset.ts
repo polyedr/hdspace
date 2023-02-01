@@ -153,7 +153,10 @@ export function* loadAssetListsSaga(
         projectId: action.payload,
       },
     );
-    yield put(Actions.setSelectedAssetListId(assetLists.results[0].id));
+
+    if (assetLists.results.length > 0) {
+      yield put(Actions.setSelectedAssetListId(assetLists.results[0].id));
+    }
     yield put(Actions.setAssetLists(assetLists));
     yield put(Actions.setAssetsListsLoader(false));
   } catch (error) {
@@ -368,6 +371,7 @@ export const uploadElementAssetSaga = withRequiredPermissions(
   const { screenId } = action.meta;
 
   const element = yield select(selectElementById, elementId);
+  console.log(element);
   try {
     const { imageURL, file, useInBackground } = asset;
     let finalImageUrl = imageURL;

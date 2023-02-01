@@ -14,10 +14,7 @@ import {
   selectUpdateScreenImageLoader,
   selectCurrentProject,
 } from '@Redux/project/selectors/base';
-import {
-  selectFreeCanvasMode,
-  selectScreensWithoutMaster,
-} from '@Redux/project/selectors/screen';
+import { selectScreensWithoutMaster } from '@Redux/project/selectors/screen';
 
 import exportHTML from '@Src/export/app';
 import History from '@Components/Layout/History';
@@ -81,7 +78,7 @@ const Actions: React.FC = () => {
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const dispatch = useDispatch();
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
-  const canvasMode = useSelector(selectFreeCanvasMode);
+  // const canvasMode = useSelector(selectFreeCanvasMode);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const screens = useSelector(selectScreensWithoutMaster);
   const { name: projectName } = useSelector(selectCurrentProject);
@@ -123,7 +120,7 @@ const Actions: React.FC = () => {
         value="Proto mode"
         onClick={handleToggleProtoMode}
         title="Proto mode"
-        disabled={imageLoader || canvasMode}
+        disabled={imageLoader}
         selected={isPrototypeMode}
       >
         <VisibilityOutlinedIcon className={classes.icon} />
