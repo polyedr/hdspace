@@ -153,7 +153,10 @@ export function* loadAssetListsSaga(
         projectId: action.payload,
       },
     );
-    yield put(Actions.setSelectedAssetListId(assetLists.results[0].id));
+
+    if (assetLists.results.length > 0) {
+      yield put(Actions.setSelectedAssetListId(assetLists.results[0].id));
+    }
     yield put(Actions.setAssetLists(assetLists));
     yield put(Actions.setAssetsListsLoader(false));
   } catch (error) {

@@ -9,12 +9,14 @@ import {
   Dialog as MuiDialog,
   DialogContent,
   DialogTitle,
-  Grid, IconButton as MuiIconButton, Table,
+  Grid,
+  IconButton as MuiIconButton,
+  Table,
   TableBody,
   TableCell as MuiTableCell,
   TableContainer,
   TableRow,
-  TextField as MuiTextField
+  TextField as MuiTextField,
 } from '@mui/material';
 import Slide from '@mui/material/Slide';
 import Stack from '@mui/material/Stack';
@@ -95,15 +97,15 @@ const StandardTextField = styled(MuiTextField)({
     borderColor: '#E4E6EB',
   },
   '& input[type=number]': {
-    '-moz-appearance': 'textfield'
+    '-moz-appearance': 'textfield',
   },
   '& input[type=number]::-webkit-outer-spin-button': {
     '-webkit-appearance': 'none',
-    margin: 0
+    margin: 0,
   },
   '& input[type=number]::-webkit-inner-spin-button': {
     '-webkit-appearance': 'none',
-    margin: 0
+    margin: 0,
   },
   '& input': {
     maxWidth: 64,
@@ -193,7 +195,11 @@ function TaskDialog({ task, open, onClose }: Props) {
     >
       <Grid container alignItems="center">
         <Grid item xs={8}>
-          <DialogTitle display="flex" alignItems="center">
+          <DialogTitle
+            display="flex"
+            justifyContent="space-between"
+            alignItems="flex-start"
+          >
             <TaskTitle
               onChange={(title) => handleUpdateTask('title', title)}
               task={task}
@@ -288,9 +294,10 @@ function TaskDialog({ task, open, onClose }: Props) {
                       <MemberPicker
                         selected={task?.assignee_id?.toString()}
                         onChange={(member) => {
-                          if (member)
-                            handleUpdateTask('assignee_id', member?.id);
-                          else handleUpdateTask('assignee_id', null);
+                          handleUpdateTask(
+                            'assignee_id',
+                            member?.id ? member?.id : null,
+                          );
                         }}
                       />
                     </TableCell>
@@ -304,9 +311,10 @@ function TaskDialog({ task, open, onClose }: Props) {
                         <MemberPicker
                           selected={task?.responsible_id?.toString()}
                           onChange={(member) => {
-                            if (member)
-                              handleUpdateTask('responsible_id', member?.id);
-                            else handleUpdateTask('responsible_id', null);
+                            handleUpdateTask(
+                              'responsible_id',
+                              member?.id ? member?.id : null,
+                            );
                           }}
                         />
                       </IconButton>
@@ -333,14 +341,16 @@ function TaskDialog({ task, open, onClose }: Props) {
                       <StandardTextField
                         type="number"
                         InputProps={{
-                          style: { width: "85px" },
-                          inputProps: { min: 0 }
+                          style: { width: '85px' },
+                          inputProps: { min: 0 },
                         }}
                         value={storyPoints}
                         onChange={handleChangeStoryPoints}
                         onBlur={() => {
                           if (parseInt(storyPoints) > 2147483647) {
-                            setStoryError("Story point should be less then 2147483647");
+                            setStoryError(
+                              'Story point should be less then 2147483647',
+                            );
                           } else {
                             setStoryError('');
                             handleUpdateTask('story_points', storyPoints);
