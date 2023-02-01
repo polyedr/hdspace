@@ -1229,11 +1229,13 @@ def calculate_margins(node):
         # previous_sibling_y1 is calculated for a parent node, if the node has the first order
         # next_sibling_y2 is calculated for a parent node, if the node has the last order
         array_siblings_y1_min = 0
-        try:
+        if siblings:
             array_siblings_y1 = min(siblings, key=lambda i: abs(i.y1 - node.y2))
             array_siblings_y1_min = min((array_siblings_y1.y1 - node.y2), (node.parent.y2 - node.y2))
-        except Exception:
-            pass
+            if array_siblings_y1_min < 0:
+                array_siblings_y1_min = node.parent.y2 - node.y2
+        else:
+            array_siblings_y1_min = node.parent.y2 - node.y2
         """
         print(node.parent.direction, " direction ", len(siblings), " siblings")
         print("compare: ", node.y2, array_siblings_y1.y1)
@@ -1248,31 +1250,75 @@ def calculate_margins(node):
 
     # A horizontal case
     if node.parent.direction == 1:
-        array_siblings_x1 = min(siblings, key=lambda i: abs(node.x1 - i.x2))
-        array_siblings_x1_min = min((node.x1 - array_siblings_x1.x2), (node.x1 - node.parent.x1))
+        if siblings:
+            array_siblings_x1 = min(siblings, key=lambda i: abs(node.x1 - i.x2))
+            array_siblings_x1_min = min((node.x1 - array_siblings_x1.x2), (node.x1 - node.parent.x1))
+            if array_siblings_x1_min < 0:
+                array_siblings_x1_min = node.x1 - node.parent.x1
+        else:
+            array_siblings_x1_min = node.x1 - node.parent.x1
 
-        '''
-        print(node.parent.direction, " direction ", len(siblings), " siblings")
-        print("compare: ", node.x1, array_siblings_x1.x2)
-        for sibling in siblings:
-            print("x1, 2: ", sibling.x1, sibling.x2)
+        if node.element_assigned == "checkbox":
+            print(node.parent.direction, " direction ", len(siblings), " siblings")
+            print("compare: ", node.x1, array_siblings_x1.x2)
+            for sibling in siblings:
+                print("x1, 2: ", sibling.x1, sibling.x2)
 
-        print("margin:", array_siblings_x1_min)
-        '''
+            print("margin:", array_siblings_x1_min)
+
 
         # Filter out positive margins
         if array_siblings_x1_min > 0:
             margin_left = array_siblings_x1_min
 
-    # A final case
+    '''
+    # A final case, one node at the level
     if node.parent.direction == 2:
-        array_siblings_y1_min = node.parent.y2 - node.y2
+        array_siblings_y2_min = node.parent.y2 - node.y2
         array_siblings_x1_min = node.x1 - node.parent.x1
+        # Filter out positive margins
+        if array_siblings_x1_min > 0:
+            margin_left = array_siblings_x1_min
+        # Filter out positive margins
+        if array_siblings_y2_min > 0:
+            margin_bottom = array_siblings_y2_min
+    '''
+
+
+    # A final case, many nodes at the level
+    if node.parent.direction == 2:
+        array_siblings_y1_min = 0
+        array_siblings_x1_min = 0
+        x_siblings = []
+        y_siblings = []
+
+        # if y-overlap, don't calculate the sibling for margin-top
+        # if x-overlap, don't calculate the sibling for margin-left
+
+        for xs in siblings:
+            if not((node.x1 < xs.x1 < node.x2) or (node.x1 < xs.x2 < node.x2)):
+                x_siblings.append(xs)
+        for ys in siblings:
+            if not((node.y1 < ys.y1 < node.y2) or (node.y1 < ys.y2 < node.y2)):
+                y_siblings.append(ys)
+
+        # print("length_siblings", len(siblings), len(y_siblings), len(x_siblings))
+
+        if y_siblings:
+            array_siblings_y1 = min(y_siblings, key=lambda i: abs(i.y1 - node.y2))
+            array_siblings_y1_min = min((array_siblings_y1.y1 - node.y2), (node.parent.y2 - node.y2))
+        else:
+            array_siblings_y1_min = (node.parent.y2 - node.y2)
+
+        if x_siblings:
+            array_siblings_x1 = min(x_siblings, key=lambda i: abs(node.x1 - i.x2))
+            array_siblings_x1_min = min((node.x1 - array_siblings_x1.x2), (node.x1 - node.parent.x1))
+        else:
+            array_siblings_x1_min = (node.x1 - node.parent.x1)
 
         # Filter out positive margins
         if array_siblings_x1_min > 0:
             margin_left = array_siblings_x1_min
-
         # Filter out positive margins
         if array_siblings_y1_min > 0:
             margin_bottom = array_siblings_y1_min
@@ -1748,7 +1794,7 @@ def elements_rootblock(
         else:
             # Calculate margins for vertically and horizontally stacked items
             margin_bottom, margin_left = calculate_margins(node)
-            print(node.element_assigned, node.types, margin_bottom, margin_left)
+            # print(node.element_assigned, node.types, margin_bottom, margin_left)
             # input()
             node.styles["margin-bottom"] = str(margin_bottom) + "px"
             node.styles["margin-left"] = str(margin_left) + "px"
