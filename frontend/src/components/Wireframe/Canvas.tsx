@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Xarrow, { Xwrapper, useXarrow } from 'react-xarrows';
 import DraggableScreen from './DraggableScreen';
@@ -80,6 +80,7 @@ const Canvas: React.FC<{
   const [zoom, setZoom] = useState(0.4);
 
   const [screens] = useState<Screens>(buildScreenData(_screens));
+  const xArrowUpdateInterval = useRef(null);
 
   const connections = useSelector(selectCompleteConnections);
 
@@ -89,15 +90,25 @@ const Canvas: React.FC<{
 
   const dispatch = useDispatch();
 
+  const onCanvasMovements = () => {
+    if (xArrowUpdateInterval.current) {
+      clearInterval(xArrowUpdateInterval.current);
+    }
+
+    xArrowUpdateInterval.current = setInterval(updateXArrow, 10);
+    setTimeout(() => clearInterval(xArrowUpdateInterval.current), 2000);
+    xArrowUpdateInterval.current = null;
+  };
+
   const onDrag = () => {
     setIsMoveable(true);
-    updateXArrow();
+    onCanvasMovements();
     // etc
   };
 
   const onStop = () => {
     setIsMoveable(false);
-    updateXArrow();
+    onCanvasMovements();
     // etc
   };
 
@@ -112,11 +123,9 @@ const Canvas: React.FC<{
       }),
     );
 
-    const timer = setInterval(updateXArrow, 10);
-
-    return () => {
-      clearInterval(timer);
-    };
+    setTimeout(() => {
+      updateXArrow();
+    }, 100);
   }, []);
 
   useEffect(() => {
@@ -137,9 +146,9 @@ const Canvas: React.FC<{
         centerOnInit={true}
         minScale={0.01}
         initialScale={zoom}
-        onPanning={updateXArrow}
-        onPanningStop={updateXArrow}
-        onWheel={updateXArrow}
+        onPanning={onCanvasMovements}
+        onPanningStop={onCanvasMovements}
+        onWheel={onCanvasMovements}
         panning={{
           excluded: ['wireframe-screen-frame', 'screen-control'],
         }}
