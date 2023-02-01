@@ -212,6 +212,7 @@
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-favicon": "^1.0.8",
     "vite-plugin-favicons-inject": "^2.1.0",
+    "vite-plugin-static-copy": "^0.13.0",
     "vitest": "^0.26.2"
   }
 }
