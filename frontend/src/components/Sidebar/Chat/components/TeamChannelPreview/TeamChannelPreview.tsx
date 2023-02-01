@@ -7,6 +7,7 @@ import {
 
 import './TeamChannelPreview.css';
 
+import { TeamTypingIndicator } from '../TeamTypingIndicator/TeamTypingIndicator';
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -15,7 +16,6 @@ import type {
   TeamMessageType,
   TeamReactionType,
 } from '../../client';
-import { TeamTypingIndicator } from '../TeamTypingIndicator/TeamTypingIndicator';
 
 type Props = ChannelPreviewUIComponentProps & {
   setIsCreating: React.Dispatch<React.SetStateAction<boolean>>;

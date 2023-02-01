@@ -10,7 +10,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import FormControl from '@mui/material/FormControl';
 import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
-import type { ChannelFilters } from 'stream-chat';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
+import { CloseCreateChannel } from '../../assets';
+import { UserList } from './UserList';
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -19,10 +22,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
 } from '../../client';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
-import { CloseCreateChannel } from '../../assets';
-import { UserList } from './UserList';
+import type { ChannelFilters } from 'stream-chat';
 
 interface InputProps {
   channelName: string;

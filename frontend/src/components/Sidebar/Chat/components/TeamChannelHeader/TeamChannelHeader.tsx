@@ -5,7 +5,11 @@ import {
   useChannelStateContext,
   useChatContext,
 } from 'stream-chat-react';
+import Avatar from '@Components/UI/Avatar';
 
+import './TeamChannelHeader.css';
+
+import { ChannelInfo, PinIcon } from '../../assets';
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -15,12 +19,6 @@ import type {
   TeamReactionType,
   TeamUserType,
 } from '../../client';
-
-import Avatar from '@Components/UI/Avatar';
-
-import './TeamChannelHeader.css';
-
-import { ChannelInfo, PinIcon } from '../../assets';
 
 interface Props {
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;

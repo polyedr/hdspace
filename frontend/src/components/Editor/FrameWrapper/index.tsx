@@ -16,7 +16,7 @@ import Frame, {
 } from 'react-frame-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { DndContext } from 'react-dnd';
-import GridLines from 'react-gridlines';
+import _GridLines from 'react-gridlines';
 import { CacheProvider } from '@emotion/react';
 import { setEditorDocument } from '@Redux/project/actions';
 import { theme } from '@Src/styles/Theme';
@@ -50,6 +50,8 @@ const useStyles = makeStyles({
     alignItems: 'center',
   },
 });
+
+const GridLines = _GridLines.default ? _GridLines.default : _GridLines.default;
 
 const CustomHead: FC = () => {
   const uiFramework = useSelector(selectCurrentUIFramework);

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Avatar, useChatContext } from 'stream-chat-react';
 
+import { channelByUser, ChannelOrUserType, isChannel } from './utils';
 import type { Channel, UserResponse } from 'stream-chat';
 import type {
   TeamAttachmentType,
@@ -11,7 +12,6 @@ import type {
   TeamReactionType,
   TeamUserType,
 } from '../../client';
-import { channelByUser, ChannelOrUserType, isChannel } from './utils';
 
 type SearchResultProps = Pick<
   ResultsDropdownProps,

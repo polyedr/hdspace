@@ -13,6 +13,11 @@ import { styled } from '@mui/material/styles';
 
 import { useSelector } from 'react-redux';
 import { formatDistanceToNowStrict } from 'date-fns';
+import {
+  selectAllUsersPermissions,
+  selectUserPermissions,
+} from '@Redux/permissions/selectors';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import type { ChannelFilters, UserResponse } from 'stream-chat';
 import type {
   TeamAttachmentType,
@@ -23,11 +28,6 @@ import type {
   TeamReactionType,
   TeamUserType,
 } from '../../client';
-import {
-  selectAllUsersPermissions,
-  selectUserPermissions,
-} from '@Redux/permissions/selectors';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 
 const StyledTableCell = styled(TableCell)({
   '&.MuiTableCell-root': {

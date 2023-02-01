@@ -30,15 +30,14 @@ module.exports = {
       "error",
       {
         "groups": [
-          "external",
           "builtin",
-          "type",
+          "external",
           "internal",
-          "index",
           "parent",
           "sibling",
-         
+          "type",
           "object",
+          "index",
         ]
       }
     ],

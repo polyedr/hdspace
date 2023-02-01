@@ -7,6 +7,7 @@ import {
 
 import './PinnedMessageList.css';
 
+import { CloseThreadIcon } from '../../assets';
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -15,8 +16,6 @@ import type {
   TeamMessageType,
   TeamReactionType,
 } from '../../client';
-
-import { CloseThreadIcon } from '../../assets';
 
 interface Props {
   setPinsOpen?: React.Dispatch<React.SetStateAction<boolean>>;

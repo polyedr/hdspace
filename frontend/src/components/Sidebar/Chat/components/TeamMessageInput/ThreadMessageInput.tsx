@@ -6,6 +6,15 @@ import {
   useMessageInputContext,
 } from 'stream-chat-react';
 
+// eslint-disable-next-line import/no-cycle
+import { GiphyContext } from '../ChannelContainer/ChannelInner';
+
+import './ThreadMessageInput.css';
+
+// eslint-disable-next-line import/no-cycle
+import { LightningBoltSmall, SendButton, SmileyFace } from '../../assets';
+import { Props } from './TeamMessageInput';
+
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -15,15 +24,6 @@ import type {
   TeamReactionType,
   TeamUserType,
 } from '../../client';
-
-// eslint-disable-next-line import/no-cycle
-import { GiphyContext } from '../ChannelContainer/ChannelInner';
-
-import './ThreadMessageInput.css';
-
-// eslint-disable-next-line import/no-cycle
-import { LightningBoltSmall, SendButton, SmileyFace } from '../../assets';
-import { Props } from './TeamMessageInput';
 
 export const ThreadMessageInput: React.FC<Props> = () => {
   const { giphyState, setGiphyState } = useContext(GiphyContext);

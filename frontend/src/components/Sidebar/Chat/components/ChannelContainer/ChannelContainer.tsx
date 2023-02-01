@@ -3,15 +3,6 @@ import { Channel, useChatContext, ThreadHeaderProps } from 'stream-chat-react';
 
 import './ChannelContainer.css';
 
-import type { ChannelFilters } from 'stream-chat';
-import type {
-  TeamAttachmentType,
-  TeamChannelType,
-  TeamCommandType,
-  TeamEventType,
-  TeamMessageType,
-  TeamReactionType,
-} from '../../client';
 import { ChannelEmptyState } from '../ChannelEmptyState/ChannelEmptyState';
 import { CreateChannel } from '../CreateChannel/CreateChannel';
 import { EditChannel } from '../EditChannel/EditChannel';
@@ -20,6 +11,15 @@ import { TeamMessageInput } from '../TeamMessageInput/TeamMessageInput';
 
 import { CloseThreadIcon } from '../../assets';
 import { ChannelInner } from './ChannelInner';
+import type {
+  TeamAttachmentType,
+  TeamChannelType,
+  TeamCommandType,
+  TeamEventType,
+  TeamMessageType,
+  TeamReactionType,
+} from '../../client';
+import type { ChannelFilters } from 'stream-chat';
 
 interface Props {
   createType: string;
