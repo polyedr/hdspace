@@ -62,7 +62,6 @@ export default ({ mode }) => {
       eslint({
         failOnError: process.env.NODE_ENV !== 'development',
       }),
-
       vitePluginFaviconsInject('./src/assets/sprites/favicon.png'),
     ],
     css: {
