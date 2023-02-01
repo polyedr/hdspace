@@ -1,8 +1,8 @@
-import {
-  PropertyAccordianSummary,
-  PropertyAccordion,
-  PropertyAccordionDetails,
-} from '@Components/styledComponents';
+// import {
+//   PropertyAccordianSummary,
+//   PropertyAccordion,
+//   PropertyAccordionDetails,
+// } from '@Components/styledComponents';
 import { selectAllElements } from '@Redux/project/selectors/element';
 import { WireframeConnection } from '@Redux/types';
 import { setActiveElement, updateConnection } from '@Redux/wireframe/wireframe';
@@ -14,7 +14,13 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  styled,
 } from '@mui/material';
+import { Remove as RemoveIcon, Add as AddIcon } from '@mui/icons-material';
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -26,6 +32,24 @@ interface Props {
 }
 
 const events = [{ value: 'click', label: 'Click' }];
+
+const MuiAccordion = styled(Accordion)({
+  '&.MuiAccordion-root': {
+    backgroundColor: 'transparent',
+    borderBottom: '1px solid #e4e6eb',
+  },
+  '&	.MuiTypography-root': {
+    fontWeight: 700,
+  },
+
+  '& .MuiAccordionSummary-expandIconWrapper': {
+    transform: 'none',
+  },
+
+  '&	.MuiAccordionDetails-root': {
+    paddingTop: 0,
+  },
+});
 
 const Connect: React.FC<Props> = ({
   activeElement,
@@ -96,10 +120,79 @@ const Connect: React.FC<Props> = ({
     [connection],
   );
 
+  const [expanded, setExpanded] = React.useState<string | false>(false);
+  const handleChange =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
   return (
-    <PropertyAccordion defaultExpanded>
-      <PropertyAccordianSummary>Connect</PropertyAccordianSummary>
-      <PropertyAccordionDetails>
+    // <PropertyAccordion defaultExpanded>
+    //   <PropertyAccordianSummary expandIcon={<AddIcon />}>
+    //     Connect
+    //   </PropertyAccordianSummary>
+    //   <PropertyAccordionDetails>
+    //     <Box component="form" noValidate>
+    //       <FormControl margin="dense" fullWidth variant="standard">
+    //         <InputLabel id="wireframe-sidebar-element">Element</InputLabel>
+    //         <Select
+    //           labelId="wireframe-sidebar-element"
+    //           value={connection.sourceElement}
+    //           label="Element"
+    //           onChange={handleElementChange}
+    //         >
+    //           {screenElements.map((element) => (
+    //             <MenuItem value={element.id} key={element.id.toString()}>
+    //               {element.name}
+    //             </MenuItem>
+    //           ))}
+    //         </Select>
+    //       </FormControl>
+    //       <FormControl margin="dense" fullWidth variant="standard">
+    //         <InputLabel id="wireframe-sidebar-event">Event</InputLabel>
+    //         <Select
+    //           labelId="wireframe-sidebar-event"
+    //           value={connection.event}
+    //           label="Event"
+    //           onChange={handleEventChange}
+    //         >
+    //           {events.map((event) => (
+    //             <MenuItem key={event.value} value={event.value}>
+    //               {event.label}
+    //             </MenuItem>
+    //           ))}
+    //         </Select>
+    //       </FormControl>
+    //       <FormControl margin="dense" fullWidth variant="standard">
+    //         <InputLabel id="wireframe-sidebar-target">Target</InputLabel>
+    //         <Select
+    //           labelId="wireframe-sidebar-target"
+    //           value={connection.destinationScreen}
+    //           label="Target"
+    //           onChange={handleTargetChange}
+    //         >
+    //           {selectableScreens.map((screen) => (
+    //             <MenuItem value={screen.id} key={screen.id}>
+    //               {screen.name}
+    //             </MenuItem>
+    //           ))}
+    //         </Select>
+    //       </FormControl>
+    //     </Box>
+    //   </PropertyAccordionDetails>
+    // </PropertyAccordion>
+
+    <MuiAccordion
+      expanded={expanded === 'panel1'}
+      onChange={handleChange('panel1')}
+      disableGutters
+      elevation={0}
+    >
+      <AccordionSummary
+        expandIcon={expanded === 'panel1' ? <RemoveIcon /> : <AddIcon />}
+      >
+        <Typography>Connect</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
         <Box component="form" noValidate>
           <FormControl margin="dense" fullWidth variant="standard">
             <InputLabel id="wireframe-sidebar-element">Element</InputLabel>
@@ -147,8 +240,8 @@ const Connect: React.FC<Props> = ({
             </Select>
           </FormControl>
         </Box>
-      </PropertyAccordionDetails>
-    </PropertyAccordion>
+      </AccordionDetails>
+    </MuiAccordion>
   );
 };
 

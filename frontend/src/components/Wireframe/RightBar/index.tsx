@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { styled, Box, Button } from '@mui/material';
+import { styled, Box, IconButton } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectCurrentWireframeElement,
@@ -7,6 +7,7 @@ import {
   selectCurrentWireframeScreenConnections,
 } from '@Redux/wireframe/selectors';
 import Connect from './Connect';
+import AddIcon from '@mui/icons-material/Add';
 import { addConnection } from '@Redux/wireframe/wireframe';
 import Scrollbar from '@Components/UI/Scrollbar';
 
@@ -41,9 +42,6 @@ const RightSidebar = ({ screens }) => {
   return (
     <RightpanelBox>
       <Scrollbar>
-        <Button variant="contained" onClick={handleAddConnection}>
-          Add Connection
-        </Button>
         {currentScreenConnections.map((connection) => (
           <Connect
             key={connection.id}
@@ -53,6 +51,11 @@ const RightSidebar = ({ screens }) => {
             activeScreen={selectedScreenId}
           />
         ))}
+        <Box display={'flex'} justifyContent={'center'} marginTop={2}>
+          <IconButton onClick={handleAddConnection}>
+            <AddIcon />
+          </IconButton>
+        </Box>
       </Scrollbar>
     </RightpanelBox>
   );
