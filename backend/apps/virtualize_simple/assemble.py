@@ -1178,7 +1178,7 @@ def print_clusters(
         cv2.imwrite(imgpath, image_clusters)
 
 
-def htmltree_initialize(fname, bcolour_container_value, img_width, img_height, imgpath, SAVE_DIR):
+def htmltree_initialize(fname, bcolour_container_value, img_width, img_height, imgpath, SAVE_DIR, o):
     root = ET.Element("html", version="5.0")
     # Передайте родительский узел, имя дочернего узла,
     # и любое количество дополнительных атрибутов
@@ -1200,8 +1200,9 @@ def htmltree_initialize(fname, bcolour_container_value, img_width, img_height, i
     # Add this to view a processed image containing clusters with elements
     clustersel_image_name =  SAVE_DIR + "/allclusters_with_elements_" + fname
 
-    styles["background"] = "url(" + input_image_name + ") no-repeat center"
-    styles["background"] = "url(" + clustersel_image_name + ") no-repeat center"
+    if o.netloc == "127.0.0.1:8000":
+        styles["background"] = "url(" + input_image_name + ") no-repeat center"
+        styles["background"] = "url(" + clustersel_image_name + ") no-repeat center"
     # The magic number 30 to solve presence of wide elements have been measured with px
     # styles["width"] = str(img_width + 30) + "px"
     # For the pixel perfect floating solutions
@@ -1236,6 +1237,7 @@ def calculate_margins(node):
                 array_siblings_y1_min = node.parent.y2 - node.y2
         else:
             array_siblings_y1_min = node.parent.y2 - node.y2
+
         """
         print(node.parent.direction, " direction ", len(siblings), " siblings")
         print("compare: ", node.y2, array_siblings_y1.y1)
@@ -1243,6 +1245,7 @@ def calculate_margins(node):
             print("y1, 2: ", sibling.y1, sibling.y2)
 
         print("margin:", array_siblings_y1_min)
+        input()
         """
         # Filter out negative margins
         if array_siblings_y1_min > 0:
@@ -1886,7 +1889,10 @@ def elements_rootblock(
 
                 # Text assignment
                 if text_elem_ocr:
-                    node.parameters["textContent"] = text_elem_ocr
+                    # if o.netloc == "127.0.0.1:8000": # Placeholders are for the localhost
+                    node.parameters["placeholder"] = text_elem_ocr
+                    # Better fill the placeholder for inputs rather than textContent
+                    # node.parameters["textContent"] = text_elem_ocr
 
                 # Paddings calculations block
                 if text_elem_ocr:
@@ -1993,10 +1999,22 @@ def elements_rootblock(
                 cv2.imwrite(elem_image_name, elem_image)
                 # Setting path to the image source
                 elem_image_sourcename = fname + "/" + elem_image_name
+                os.chmod(MEDIA_ROOT + "/" + elem_image_sourcename, 0o755)
 
                 node.parameters["imageURL"] = (
                     "https://" + o.netloc + MEDIA_URL + elem_image_sourcename
                 )
+
+                # HTTP image loading for the localhost
+                if o.netloc == "127.0.0.1:8000":
+                    node.parameters["imageURL"] = (
+                            "http://" + o.netloc + MEDIA_URL + elem_image_sourcename
+                    )
+                else:
+                    node.parameters["imageURL"] = (
+                            "https://" + o.netloc + MEDIA_URL + elem_image_sourcename
+                    )
+
 
             elif node.element_assigned == "button":
                 node.styles["width"] = "auto"
@@ -2091,6 +2109,9 @@ def elements_rootblock(
             elif node.element_assigned in {"radiobutton"}:
                 element.tag = "input"
                 element.set("type", "radio")
+            elif node.element_assigned in {"input"}:
+                # Text assignment for the placeholder
+                element.set("placeholder", node.parameters["placeholder"])
             elif node.element_assigned in {"text", "ocrtext"}:
                 element.tag = "div"
             elif node.element_assigned in {"textarea"}:
@@ -2305,7 +2326,7 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
 
         # HTML tree initialize function call
         root, outer_div, styles, parameters = htmltree_initialize(
-            fname, bcolour_container_value, img_width, img_height, imgpath, SAVE_DIR
+            fname, bcolour_container_value, img_width, img_height, imgpath, SAVE_DIR, o
         )
 
         # Detect elements for the root block
