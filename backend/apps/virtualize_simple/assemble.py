@@ -1893,8 +1893,10 @@ def elements_rootblock(
                     node.parameters["placeholder"] = text_elem_ocr
                     # Better fill the placeholder for inputs rather than textContent
                     # node.parameters["textContent"] = text_elem_ocr
+                else:
+                    node.parameters["placeholder"] = ""
 
-                # Paddings calculations block
+                    # Paddings calculations block
                 if text_elem_ocr:
                     padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
                 else:
