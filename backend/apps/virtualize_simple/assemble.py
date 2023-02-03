@@ -1403,6 +1403,8 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
 
         # Calculate the number of letters recognized in lines:
         length_lines = len(lines)
+        # print(length_lines, lines)
+        # input()
         if length_lines > 7:
             # Calculate the average x-size for the long lines
             for line in lines:
@@ -1431,20 +1433,22 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
                     "u",
                 }
                 if chars[0] in xsize_chars:
-                    # print(chars[0])
+                    # print(chars[0], lines)
+                    # input()
                     try:
                         font_size.append(float(chars[4]) - float(chars[2]))
+                        # print(chars[0], font_size)
                     except Exception:
                         pass
 
-        try:
-            # Filter out errors of recognition with median_low.
-            # Probably should switch to quantiles with next statistics Python versions
-            font_size_value = median_low(font_size)[0] * 1.9 / 4.0
-        except Exception:
-            font_size_value = 14.0
-        finally:
-            pass
+        if length_lines > 8:
+            try:
+                # Filter out errors of recognition with median_low.
+                # Probably should switch to quantiles with next statistics Python versions
+                font_size_value = median_low(font_size) * 1.7 / 4.0
+                # print(1)
+            except Exception:
+                font_size_value = 14.0
 
         font_size_value = int(font_size_value)
 
@@ -1455,6 +1459,8 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
         # Show tesseract results only when font is larger than 14
         if font_size_value < 14:
             text_elem_tesseract = ""
+        else:
+            font_size_value = 14 # Set a fixed value for the font size
 
         text_elem_ocr = text_elem_tesseract
     # Detect the font-size with tesseract for some element end
@@ -1508,7 +1514,7 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
         try:
             # Filter out errors of recognition with median_low.
             # Probably should switch to quantiles with next statistics Python versions
-            font_size_value = median_low(font_size)[0] * 1.9 / 4.0
+            font_size_value = median_low(font_size) * 1.9 / 4.0
         except Exception:
             font_size_value = 14.0
         finally:
@@ -1574,7 +1580,7 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
         try:
             # Filter out errors of recognition with median_low.
             # Probably should switch to quantiles with next statistics Python versions
-            font_size_value = median_low(font_size)[0] * 1.9 / 4.0
+            font_size_value = median_low(font_size) * 1.9 / 4.0
         except Exception:
             font_size_value = 14.0
         finally:
@@ -1877,6 +1883,8 @@ def elements_rootblock(
                 font_size_value, text_elem_ocr, text_width, text_leftc, text_rightc, alltext_height = ocr_recognition(
                     elem_image, ocr_engine="tesseract"
                 )
+                # print(font_size_value)
+                # input()
 
             node.styles["text-transform"] = "none"
             node.styles["font-size"] = font_size_value
