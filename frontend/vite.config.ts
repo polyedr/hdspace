@@ -23,36 +23,37 @@ export default ({ mode }) => {
     },
     plugins: [
       react(),
+      vitePluginFaviconsInject('./src/assets/sprites/favicon.png'),
       viteStaticCopy({
         targets: [
           {
-            src: path.resolve(__dirname, 'src/styles/export/clock.css'),
+            src: path.resolve(__dirname, './src/styles/export/clock.css'),
             dest: path.resolve(__dirname, 'public/styles'),
           },
           {
-            src: path.resolve(__dirname, 'src/export/js/app.js'),
+            src: path.resolve(__dirname, './src/export/js/app.js'),
             dest: path.resolve(__dirname, 'public/js/export'),
           },
           {
-            src: path.resolve(__dirname, 'src/export/js/map.js'),
+            src: path.resolve(__dirname, './src/export/js/map.js'),
             dest: path.resolve(__dirname, 'public/js/export'),
           },
           {
-            src: path.resolve(__dirname, 'src/export/js/clock-widget.js'),
+            src: path.resolve(__dirname, './src/export/js/clock-widget.js'),
             dest: path.resolve(__dirname, 'public/js/export'),
           },
           {
-            src: path.resolve(__dirname, 'src/export/js/clock.js'),
+            src: path.resolve(__dirname, './src/export/js/clock.js'),
             dest: path.resolve(__dirname, 'public/js/export'),
           },
           {
-            src: path.resolve(__dirname, 'src/export/js/calendar.js'),
+            src: path.resolve(__dirname, './src/export/js/calendar.js'),
             dest: path.resolve(__dirname, 'public/js/export'),
           },
           {
             src: path.resolve(
               __dirname,
-              'node_modules/css-ripple-effect/dist/ripple.css',
+              './node_modules/css-ripple-effect/dist/ripple.css',
             ),
             dest: path.resolve(__dirname, 'public/styles'),
           },
@@ -62,7 +63,6 @@ export default ({ mode }) => {
       eslint({
         failOnError: process.env.NODE_ENV !== 'development',
       }),
-      vitePluginFaviconsInject('./src/assets/sprites/favicon.png'),
     ],
     css: {
       preprocessorOptions: {

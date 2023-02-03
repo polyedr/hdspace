@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
 import { makeStyles } from '@mui/styles';
+import _GridLines from 'react-gridlines';
 import TreeCanvas from '@Components/Editor/TreeCanvas';
 import MasterScreen from '@Components/Editor/MasterScreen';
 import { FrameWrapper } from '@Components/Editor/FrameWrapper';
@@ -13,6 +14,7 @@ import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import {
   selectLayout,
   selectScreenRotated,
+  selectShowingGrid,
 } from '@Redux/project/selectors/base';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
@@ -20,6 +22,28 @@ import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import { DOMHandler } from './DOMHandler';
+
+const GridLines = _GridLines.default ? _GridLines.default : _GridLines;
+
+const WrapInGridLine: React.FC<{ wrap: boolean }> = ({ wrap, children }) => {
+  const props = wrap
+    ? { backgroundColor: 'white' }
+    : { style: { background: 'white' } };
+
+  return (
+    <div style={{ backgroundColor: 'white' }}>
+      <GridLines
+        className="grid-area"
+        {...props}
+        cellWidth={60}
+        strokeWidth={2}
+        cellWidth2={12}
+      >
+        {children}
+      </GridLines>
+    </div>
+  );
+};
 
 const useStyles = makeStyles({
   workspace: {
@@ -91,6 +115,7 @@ const Workspace: React.FC<Props> = () => {
   const format = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+  const showGrid = useSelector(selectShowingGrid);
 
   const classes = useStyles(rotated);
   const ref = useRef<HTMLDivElement | null>(null);
@@ -117,17 +142,19 @@ const Workspace: React.FC<Props> = () => {
                   setScrollLeft(event.currentTarget.scrollLeft);
                 }}
               >
-                {freeCanvasMode ? (
-                  <FreeCanvas />
-                ) : (
-                  <>
-                    {masterScreenEnabled ? (
-                      <MasterScreen scrollRef={scrollRef} />
-                    ) : (
-                      <TreeCanvas scrollRef={scrollRef} />
-                    )}
-                  </>
-                )}
+                <WrapInGridLine wrap={showGrid}>
+                  {freeCanvasMode ? (
+                    <FreeCanvas />
+                  ) : (
+                    <>
+                      {masterScreenEnabled ? (
+                        <MasterScreen scrollRef={scrollRef} />
+                      ) : (
+                        <TreeCanvas scrollRef={scrollRef} />
+                      )}
+                    </>
+                  )}
+                </WrapInGridLine>
                 {!freeCanvasMode && !isPrototypeMode && (
                   <ElementsInteractions posRight={scrollLeft} />
                 )}

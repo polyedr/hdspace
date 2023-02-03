@@ -94,18 +94,16 @@ const ElementsInteractions: React.FC<Props> = (props) => {
 
   const borderedElementsIds = !showBorders
     ? [
-        ...new Set(
-          [
-            ...selectedElementsIds,
-            activeElementId,
-            hoveredElementId,
-            dropTargetParams?.id,
-            preSelectedElementId,
-            currentScreen.element,
-          ].filter((id) => !!id),
-        ),
-      ]
+        ...selectedElementsIds,
+        activeElementId,
+        hoveredElementId,
+        dropTargetParams?.id,
+        preSelectedElementId,
+        currentScreen.element,
+      ].filter((id) => !!id)
     : DOMHandler.INSTANCE.visibleElementsIds;
+
+  console.log(borderedElementsIds);
 
   const updateStyles = useCallback(
     (styles: React.CSSProperties) => {
