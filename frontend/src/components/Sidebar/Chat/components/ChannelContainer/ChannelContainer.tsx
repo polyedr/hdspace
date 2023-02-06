@@ -3,8 +3,6 @@ import { Channel, useChatContext, ThreadHeaderProps } from 'stream-chat-react';
 
 import './ChannelContainer.css';
 
-import type { ChannelFilters } from 'stream-chat';
-import { ChannelInner } from './ChannelInner';
 import { ChannelEmptyState } from '../ChannelEmptyState/ChannelEmptyState';
 import { CreateChannel } from '../CreateChannel/CreateChannel';
 import { EditChannel } from '../EditChannel/EditChannel';
@@ -12,7 +10,7 @@ import { TeamMessage } from '../TeamMessage/TeamMessage';
 import { TeamMessageInput } from '../TeamMessageInput/TeamMessageInput';
 
 import { CloseThreadIcon } from '../../assets';
-
+import { ChannelInner } from './ChannelInner';
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -20,16 +18,16 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from '../../client';
+import type { ChannelFilters } from 'stream-chat';
 
-type Props = {
+interface Props {
   createType: string;
   isCreating: boolean;
   isEditing?: boolean;
   setIsCreating: React.Dispatch<React.SetStateAction<boolean>>;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 type HeaderProps = ThreadHeaderProps & {
   setPinsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -65,8 +63,7 @@ export const ChannelContainer: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const [pinsOpen, setPinsOpen] = useState(false);

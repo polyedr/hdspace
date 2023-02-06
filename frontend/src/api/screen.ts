@@ -11,10 +11,10 @@ import {
 import { convertScreenFromResponse } from './converters/fromResponse';
 import { handleError, onError, parseResult } from './helper';
 
-export const apiGetScreen = (
+export const apiGetScreen = async (
   props: MyAxiosProps & { id: string },
 ): Promise<Screen> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'GET',
     url: `/projects/project-screens/${props.id}/`,
@@ -22,8 +22,10 @@ export const apiGetScreen = (
     .then((res) => convertScreenFromResponse(parseResult(res)))
     .catch(onError);
 
-export const apiCreateScreen = (props: MyAxiosProps): Promise<Result<Screen>> =>
-  myAxios({
+export const apiCreateScreen = async (
+  props: MyAxiosProps,
+): Promise<Result<Screen>> =>
+  await myAxios({
     ...props,
     method: 'POST',
     url: '/projects/project-screens/',
@@ -33,10 +35,10 @@ export const apiCreateScreen = (props: MyAxiosProps): Promise<Result<Screen>> =>
     }))
     .catch(handleError);
 
-export const apiUpdateScreen = (
+export const apiUpdateScreen = async (
   props: MyAxiosProps & { id: string },
 ): Promise<Result<Screen>> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'PATCH',
     url: `/projects/project-screens/${props.id}/`,
@@ -44,10 +46,10 @@ export const apiUpdateScreen = (
     .then((res) => ({ result: convertScreenFromResponse(parseResult(res)) }))
     .catch(handleError);
 
-export const apiPostFreeCanvas = (
+export const apiPostFreeCanvas = async (
   props: MyAxiosProps & { tree: LibraryElement<'root'> },
-): Promise<Result<ServerElement<any>>> => {
-  return myAxios({
+): Promise<Result<ServerElement<any>>> =>
+  await myAxios({
     ...props,
     method: 'POST',
     url: '/virtualize_simple/freecanvas/',
@@ -55,4 +57,3 @@ export const apiPostFreeCanvas = (
   })
     .then((res) => ({ result: res.data }))
     .catch(handleError);
-};

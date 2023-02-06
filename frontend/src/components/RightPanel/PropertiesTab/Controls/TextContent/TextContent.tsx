@@ -1,24 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
-import {
-  Checkbox,
-  FormControlLabel,
-  MenuItem,
-  FormLabel,
-} from '@material-ui/core';
-import { StyledTextField } from '@Components/styledComponents';
+import { Checkbox, FormControlLabel, MenuItem, FormLabel } from '@mui/material';
 import { useDebouncedCallback } from 'use-debounce';
+import { useSelector } from 'react-redux';
+import { convertToHTML } from 'draft-convert';
+import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
+import { StyledTextField } from '@Components/styledComponents';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectScreensWithoutMaster } from '@Redux/project/selectors/screen';
-import { useSelector } from 'react-redux';
 import {
   CONTROLS_NOT_ALLOW_LINK,
   CONTROLS_NOT_ALLOW_RICHTEXTBOX,
 } from '@Src/types';
-import { convertToHTML } from 'draft-convert';
 import RichTextContent from '@Components/RightPanel/PropertiesTab/helperComponents/RichTextContent/RichTextContent';
 
-const TextContent = ({ element, updateParams, canEdit }) => {
+function TextContent({ element, updateParams, canEdit }) {
   const { link, isLink, textContent, screenName, screenLink } =
     element.parameters;
   const [input, setInput] = useState(link);
@@ -196,6 +191,6 @@ const TextContent = ({ element, updateParams, canEdit }) => {
       )}
     </>
   );
-};
+}
 
 export default TextContent;

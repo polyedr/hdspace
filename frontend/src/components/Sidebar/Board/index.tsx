@@ -1,12 +1,5 @@
 import { Stack, styled, TextField } from '@mui/material';
 import fuzzysort from 'fuzzysort';
-import {
-  fetchBoard,
-  updateColumnsOrder,
-} from '@Redux/pmtools/board/actions/columns';
-import { updateTasksOrder } from '@Redux/pmtools/board/actions/tasks';
-import { selectBoard } from '@Redux/pmtools/board/selectors';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +7,13 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { selectBoard } from '@Redux/pmtools/board/selectors';
+import { updateTasksOrder } from '@Redux/pmtools/board/actions/tasks';
+import {
+  fetchBoard,
+  updateColumnsOrder,
+} from '@Redux/pmtools/board/actions/columns';
 import { selectUserData } from '@Redux/user/selectors';
 import Column from './Column';
 import { NewColumn } from './NewColumn';
@@ -77,7 +77,7 @@ const StyledForm = styled('div')(() => ({
 const StyledButton = styled(Button)<{ active?: boolean }>(
   ({ active = false, theme }) => ({
     backgroundColor: active ? theme.palette.primary.main : '#F3F4F6',
-    color: active ? `#fff` : '#81818E',
+    color: active ? '#fff' : '#81818E',
     borderRadius: 4,
     boxShadow: 'none',
     textTransform: 'capitalize',
@@ -103,7 +103,7 @@ const PrimaryButton = styled(Button)(({ theme }) => ({
   textTransform: 'capitalize',
 }));
 
-const Board = () => {
+function Board() {
   const [showCreateColumn, setShowCreateColumn] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState<number[]>([]);
   const [searchText, setSearchText] = useState('');
@@ -182,8 +182,8 @@ const Board = () => {
 
     if (filteredUsers.length) {
       filteredColumns = filteredColumns.map((column) => {
-        const tasks = column.tasks.filter(
-          (t) => filteredUsers.indexOf(t.assignee_id ?? 0) !== -1,
+        const tasks = column.tasks.filter((t) =>
+          filteredUsers.includes(t.assignee_id ?? 0),
         );
 
         return {
@@ -238,7 +238,7 @@ const Board = () => {
                 <StyledButton
                   onClick={() => toggleFilteredUsers(activeUserId)}
                   variant="contained"
-                  active={filteredUsers.indexOf(activeUserId) !== -1}
+                  active={filteredUsers.includes(activeUserId)}
                 >
                   Only my tasks
                 </StyledButton>
@@ -301,6 +301,6 @@ const Board = () => {
       />
     </>
   );
-};
+}
 
 export default React.memo(Board);

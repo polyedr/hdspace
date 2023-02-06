@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, memo, useMemo } from 'react';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { useSelector } from 'react-redux';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
@@ -13,16 +13,15 @@ enum Unit {
 
 type UnitName = keyof typeof Unit;
 
-type SelectedUnit = {
+interface SelectedUnit {
   width: UnitName;
   height: UnitName;
-};
+}
 
 type SizeName = keyof SelectedUnit;
 
-const getUnitFromValue = (value: string | number): UnitName => {
-  return Unit[value.toString().replace(/[0-9, \d+.\d+]/g, '')] || Unit.px;
-};
+const getUnitFromValue = (value: string | number): UnitName =>
+  Unit[value.toString().replace(/[0-9, \d+.\d+]/g, '')] || Unit.px;
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   backgroundSize?: React.CSSProperties['backgroundSize'];

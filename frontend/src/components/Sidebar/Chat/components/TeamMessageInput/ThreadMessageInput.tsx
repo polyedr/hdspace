@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback, useContext } from 'react';
 import {
   ChatAutoComplete,
@@ -11,9 +12,8 @@ import { GiphyContext } from '../ChannelContainer/ChannelInner';
 import './ThreadMessageInput.css';
 
 // eslint-disable-next-line import/no-cycle
-import { Props } from './TeamMessageInput';
-
 import { LightningBoltSmall, SendButton, SmileyFace } from '../../assets';
+import { Props } from './TeamMessageInput';
 
 import type {
   TeamAttachmentType,
@@ -59,12 +59,14 @@ export const ThreadMessageInput: React.FC<Props> = () => {
     [giphyState, messageInput, setGiphyState],
   );
 
-  const GiphyIcon = () => (
-    <div className="giphy-icon__wrapper">
-      <LightningBoltSmall />
-      <p className="giphy-icon__text">GIPHY</p>
-    </div>
-  );
+  function GiphyIcon() {
+    return (
+      <div className="giphy-icon__wrapper">
+        <LightningBoltSmall />
+        <p className="giphy-icon__text">GIPHY</p>
+      </div>
+    );
+  }
 
   return (
     <div className="thread-message-input__wrapper">

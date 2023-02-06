@@ -3,10 +3,10 @@ import { ChannelList, ChannelListProps } from 'stream-chat-react';
 
 import './ChannelListContainer.css';
 
-import type { Channel, ChannelFilters } from 'stream-chat';
 import { ChannelSearch } from '../ChannelSearch/ChannelSearch';
 import { TeamChannelList } from '../TeamChannelList/TeamChannelList';
 import { TeamChannelPreview } from '../TeamChannelPreview/TeamChannelPreview';
+import type { Channel, ChannelFilters } from 'stream-chat';
 
 type Props = Omit<ChannelListProps, 'filters'> & {
   setCreateType: React.Dispatch<React.SetStateAction<string>>;
@@ -15,13 +15,11 @@ type Props = Omit<ChannelListProps, 'filters'> & {
   filters: ChannelFilters[];
 };
 
-const customChannelTeamFilter = (channels: Channel[]) => {
-  return channels.filter((channel) => channel.type === 'team');
-};
+const customChannelTeamFilter = (channels: Channel[]) =>
+  channels.filter((channel) => channel.type === 'team');
 
-const customChannelMessagingFilter = (channels: Channel[]) => {
-  return channels.filter((channel) => channel.type === 'messaging');
-};
+const customChannelMessagingFilter = (channels: Channel[]) =>
+  channels.filter((channel) => channel.type === 'messaging');
 
 export const ChannelListContainer: React.FC<Props> = (props) => {
   const { filters, options, setCreateType, setIsCreating, setIsEditing, sort } =

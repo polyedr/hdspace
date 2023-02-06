@@ -5,9 +5,8 @@ import { fireEvent, render, RenderResult } from '@testing-library/react';
 import { mockState, mockVIAState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import VIADescription from '@Components/Editor/VIA/VIADescription';
-import { MuiThemeProvider } from '@material-ui/core/styles';
 import TYPES from '@Redux/actionTypes';
-import { themeOld as theme } from '../../../../styles/Theme';
+import { AppThemeProvider } from '../../../../styles/Theme';
 
 describe('VIADescription', () => {
   let store: MockStoreEnhanced<AppReduxState>;
@@ -28,9 +27,9 @@ describe('VIADescription', () => {
 
     ui = render(
       <Provider store={store}>
-        <MuiThemeProvider theme={theme}>
+        <AppThemeProvider>
           <VIADescription region={region} />
-        </MuiThemeProvider>
+        </AppThemeProvider>
       </Provider>,
     );
   });

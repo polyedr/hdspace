@@ -3,6 +3,7 @@ import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { render, RenderResult } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { AppReduxState } from '@Redux/types';
+import { AppThemeProvider } from '@Src/styles/Theme';
 import { mockState } from '../../test-utils';
 import Profile from '../../../../components/User/Profile';
 
@@ -16,7 +17,9 @@ describe('Profile', () => {
 
     ui = render(
       <Provider store={store}>
-        <Profile />
+        <AppThemeProvider>
+          <Profile />
+        </AppThemeProvider>
       </Provider>,
     );
   });

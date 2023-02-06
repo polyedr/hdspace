@@ -9,8 +9,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { selectLabels } from '@Redux/pmtools/board/selectors';
 import fuzzysort from 'fuzzysort';
+import { selectLabels } from '@Redux/pmtools/board/selectors';
 import { requestDeleteProjectLabel } from '@Redux/pmtools/board/actions/labels';
 import AddTag from './AddTag';
 import ListItem from './ListItem';
@@ -65,11 +65,11 @@ const Button = styled(MuiButton)({
 });
 interface Props {
   selected: number[];
-  onChange(labels: number[]): void;
-  onClose(): void;
+  onChange: (labels: number[]) => void;
+  onClose: () => void;
 }
 
-const AllTags = ({ selected, onChange, onClose }: Props) => {
+function AllTags({ selected, onChange, onClose }: Props) {
   const labels = useSelector(selectLabels);
 
   const dispatch = useDispatch();
@@ -163,7 +163,7 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
       >
         {filteredLabels.map((label) => (
           <ListItem
-            selected={selected.indexOf(label.id) !== -1}
+            selected={selected.includes(label.id)}
             key={label.id.toString()}
             label={label}
             onToggle={handleToggle}
@@ -173,6 +173,6 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
       </List>
     </SearchWrapper>
   );
-};
+}
 
 export default AllTags;

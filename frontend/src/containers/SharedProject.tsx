@@ -2,7 +2,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import {
   selectCurrentProjectId,
   selectProjectByIdWrapper,
@@ -14,7 +15,6 @@ import {
   getSharedProject,
 } from '@Redux/project/actions';
 import LeftPanel from '@Components/LeftPanel';
-import { makeStyles } from '@material-ui/core/styles';
 import { selectSortedScreens } from '@Redux/project/selectors/screen';
 import { Screen } from '@Src/types';
 import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
@@ -40,11 +40,11 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   projectId: number;
   screenId?: number;
   elementId?: string;
-};
+}
 
 const SharedProject: React.FC<Props> = ({ projectId, screenId }) => {
   const dispatch = useDispatch();

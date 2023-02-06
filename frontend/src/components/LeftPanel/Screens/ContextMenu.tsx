@@ -1,10 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Menu, MenuItem, styled } from '@mui/material';
 import { duplicateScreen } from '@Redux/project/actions';
 import { selectScreensLength } from '@Redux/project/selectors/screen';
-import { Menu, MenuItem } from '@material-ui/core';
 import { Screen } from '@Src/types';
-import { styled } from '@mui/material';
 import Icon from '../../UI/Icon';
 
 const StyledMenu = styled(Menu)({
@@ -30,14 +29,14 @@ const StyledMenu = styled(Menu)({
   },
 });
 
-type Props = {
+interface Props {
   screen: Screen;
   open: boolean;
   onClose: () => void;
   openEdit: () => void;
   openDelete: () => void;
   anchorPosition: any;
-};
+}
 
 const ContextMenu: React.FC<Props> = ({
   screen,

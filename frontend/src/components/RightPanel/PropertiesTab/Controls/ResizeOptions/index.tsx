@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
+import { FormControlLabel, Switch } from '@mui/material';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { FormControlLabel, Switch } from '@material-ui/core';
 
 const useStyles = makeStyles({
   root: {
@@ -30,6 +30,7 @@ const ResizeOptionsControl: React.FC<
             checked={keepAspectRatio || false}
             onChange={handleSwitchChange}
             disabled={!canEdit}
+            color={'secondary'}
           />
         }
         label="Keep Aspect Ratio"

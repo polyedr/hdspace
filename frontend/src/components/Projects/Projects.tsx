@@ -1,15 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import {
-  selectAreProjectsLoading,
-  selectProjectCreateLoader,
-  selectProjects,
-  selectProjectsDataNext,
-} from '@Redux/project/selectors/base';
-import Searchbar from '@Components/Projects/Searchbar';
-import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
+import { createStyles, makeStyles } from '@mui/styles';
 import {
   Typography,
   Table,
@@ -21,20 +13,29 @@ import {
   TableContainer,
   Container,
   CircularProgress,
-} from '@material-ui/core';
+  Theme,
+} from '@mui/material';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import {
+  selectAreProjectsLoading,
+  selectProjectCreateLoader,
+  selectProjects,
+  selectProjectsDataNext,
+} from '@Redux/project/selectors/base';
+import Searchbar from '@Components/Projects/Searchbar';
+import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
 import {
   createProject,
   getProjectList,
   setProjectError,
 } from '@Redux/project/actions';
 import { getSubscriptionData } from '@Redux/permissions/actions';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
 import { selectSubscriptionData } from '@Redux/user/selectors';
 import { selectProjectError } from '@Redux/project/selectors/via';
 import ProjectListItem from './ProjectListItem';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       // textAlign: 'center',
@@ -53,7 +54,9 @@ const useStyles = makeStyles((theme) =>
       alignItems: 'center',
     },
     headerText: {
-      fontWeight: 'bold',
+      '&.MuiTypography-root': {
+        fontWeight: 'bold',
+      },
     },
     table: {
       padding: theme.spacing(1),
@@ -62,11 +65,15 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: '#dedede',
     },
     loader: {
-      padding: '1em',
-      textAlign: 'center',
+      '&.MuiTableCell-root': {
+        padding: '1em',
+        textAlign: 'center',
+      },
     },
     createButton: {
-      minWidth: 160,
+      '&.MuiButton-root': {
+        minWidth: 160,
+      },
     },
     cellStatus: {
       width: 200,
@@ -159,11 +166,10 @@ const Projects: React.FC = () => {
     (a, b) => b.created.getTime() - a.created.getTime(),
   );
 
-  const handleProjectAdd = () => {
-    return userSubscriptionData === null
+  const handleProjectAdd = () =>
+    userSubscriptionData === null
       ? setShowModal(true)
       : dispatch(createProject('AProject'));
-  };
   const handleModalClose = () => {
     dispatch(setProjectError(null));
     setShowModal(false);

@@ -4,11 +4,6 @@ import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
 
-type Size = {
-  width: number;
-  height: number;
-};
-
 const useStyles = makeComponentStyles('image');
 
 const Image = React.forwardRef<HTMLImageElement, RendererProps>(

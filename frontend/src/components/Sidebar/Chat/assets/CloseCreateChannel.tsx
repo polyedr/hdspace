@@ -1,11 +1,11 @@
 import React from 'react';
 
-type Props = {
+interface Props {
   setIsCreating?: React.Dispatch<React.SetStateAction<boolean>>;
   setIsEditing?: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
-export const CloseCreateChannel = (props: Props) => {
+export function CloseCreateChannel(props: Props) {
   const { setIsCreating, setIsEditing } = props;
 
   return (
@@ -43,4 +43,4 @@ export const CloseCreateChannel = (props: Props) => {
       </svg> */}
     </>
   );
-};
+}

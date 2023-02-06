@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux';
 import { createProjectLabel } from '@Redux/pmtools/board/actions/labels';
 
 const colors = [
-  '#F3F4F6',
+  '#007500',
   '#EF3052',
   '#FAB200',
   '#FF9A50',
@@ -30,7 +30,7 @@ const ColorSquare = styled(ButtonBase)<{ color: string; selected: boolean }>(
     height: 24,
     width: 24,
     borderRadius: 4,
-    transform: selected ? `scale(1.1)` : 'scale(1)',
+    transform: selected ? 'scale(1.1)' : 'scale(1)',
 
     '& svg': {
       color: '#81818E',
@@ -70,8 +70,8 @@ const AddTag = ({
   onClose,
 }: {
   tags: string[] | undefined;
-  onBack?(): void;
-  onClose(): void;
+  onBack?: () => void;
+  onClose: () => void;
 }) => {
   const [value, setValue] = useState('');
   const [duplicateCheckError, setDuplicateCheck] = useState<string>('');
@@ -92,9 +92,7 @@ const AddTag = ({
     [setValue],
   );
 
-  const handleChangeColor = useCallback((color) => {
-    return () => seColour(color);
-  }, []);
+  const handleChangeColor = useCallback((color) => () => seColour(color), []);
 
   const handleSubmit = useCallback(() => {
     dispatch(createProjectLabel(value, colour));

@@ -1,8 +1,8 @@
 import React from 'react';
+import cn from 'classnames';
 import { RendererProps } from '@Components/UI/RenderElements/types';
 import { makeComponentStyles } from '@Components/UI/RenderElements/styles';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
-import cn from 'classnames';
 
 const useStyles = makeComponentStyles('columns', {
   columnsResizeable: {

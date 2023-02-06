@@ -1,44 +1,56 @@
 import React, { useState, useCallback, MouseEvent } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useHistory } from 'react-router';
+import {
+  ListItem,
+  ListItemIcon,
+  Box,
+  Modal,
+  Button,
+  Typography,
+  Theme,
+} from '@mui/material';
 import {
   editScreenNameAndData,
   setActiveElement,
   deleteScreen,
 } from '@Redux/project/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { ListItem, ListItemIcon } from '@material-ui/core';
-
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { Screen } from '../../../types';
 import ScreenLogo from './ScreenLogo';
 import ScreenEditDialog from './ScreenEditDialog';
 import ScreenLongName from './ScreenLongName';
 import ContextMenu from './ContextMenu';
 
-const useStyles = makeStyles(({ typography }) => ({
+const useStyles = makeStyles<Theme>(({ typography }) => ({
   listItem: {
-    '&:hover': {
-      backgroundColor: '#F3F4F6',
+    '&.MuiListItem-root': {
+      whiteSpace: 'nowrap',
+      padding: '.5em',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      '&:hover': {
+        backgroundColor: '#F3F4F6',
+      },
+      '&, &:hover, &:active, &:link, &:visited, &:focus': {
+        color: 'inherit',
+        textDecoration: 'none',
+      },
     },
-    '&, &:hover, &:active, &:link, &:visited, &:focus': {
-      color: 'inherit',
-      textDecoration: 'none',
+  },
+  icon: {
+    '&.MuiListItemIcon-root': {
+      minWidth: 0,
     },
-    whiteSpace: 'nowrap',
-    padding: '.5em',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   active: {
-    backgroundColor: '#F3F4F6',
+    '&.MuiListItem-root': {
+      backgroundColor: '#F3F4F6',
+    },
   },
   screenData: {
     marginLeft: '6px',
@@ -46,11 +58,11 @@ const useStyles = makeStyles(({ typography }) => ({
     alignItems: 'center',
     gap: '15px',
   },
-  icon: {
-    color: '#81818E',
-    minWidth: 0,
-    paddingRight: '.1em',
-  },
+  // icon: {
+  //   color: '#81818E',
+  //   minWidth: 0,
+  //   paddingRight: '.1em',
+  // },
   name: {
     fontFamily: typography.fontFamily,
     fontSize: 11,
@@ -63,15 +75,15 @@ const useStyles = makeStyles(({ typography }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   screen: Screen;
   index: number;
   active: boolean;
-};
-type State = {
+}
+interface State {
   mouseX: number | null;
   mouseY: number | null;
-};
+}
 
 const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const dispatch = useDispatch();

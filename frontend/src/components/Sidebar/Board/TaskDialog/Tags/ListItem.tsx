@@ -7,9 +7,9 @@ import {
   ListItemText as MuiListItemText,
   styled,
 } from '@mui/material';
-import { BoardLabel } from '@Redux/pmtools/types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import React, { useCallback, useState } from 'react';
+import { BoardLabel } from '@Redux/pmtools/types';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 
 const ListItemIcon = styled(MuiListItemIcon)({
@@ -58,16 +58,17 @@ const IconButton = styled(MuiIconButton)({
 interface Props {
   label: BoardLabel;
   selected: boolean;
-  onToggle(id: number): void;
-  onDelete(id: number): void;
+  onToggle: (id: number) => void;
+  onDelete: (id: number) => void;
 }
 
-const ListItem = ({ label, selected, onToggle, onDelete }: Props) => {
+function ListItem({ label, selected, onToggle, onDelete }: Props) {
   const [showDelete, setShowDelete] = useState(false);
 
-  const handleShowDelete = useCallback((show: boolean) => {
-    return () => setShowDelete(show);
-  }, []);
+  const handleShowDelete = useCallback(
+    (show: boolean) => () => setShowDelete(show),
+    [],
+  );
 
   const labelId = `checkbox-list-label-${label.id}`;
 
@@ -110,13 +111,13 @@ const ListItem = ({ label, selected, onToggle, onDelete }: Props) => {
       </MuiListItem>
       <ConfirmModal
         show={showDelete}
-        elementText="Label"
-        actionText="Delete"
+        elementText="tag"
+        actionText="delete"
         action={() => onDelete(label.id)}
         hide={handleShowDelete(false)}
       />
     </>
   );
-};
+}
 
 export default ListItem;

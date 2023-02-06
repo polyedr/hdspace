@@ -1,11 +1,12 @@
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
-import { selectIsRegionActive } from '@Redux/project/selectors/via';
-import prevent from '@Utils/preventEvent';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import cn from 'classnames';
 import React, { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
+import prevent from '@Utils/preventEvent';
+import { selectIsRegionActive } from '@Redux/project/selectors/via';
+import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
 import { VIARegion } from '../../../types';
 import VIABorders from './VIABorders';
 
@@ -65,9 +66,9 @@ const useStyles = makeStyles<
   },
 });
 
-type Props = {
+interface Props {
   region: VIARegion;
-};
+}
 
 const Region: FC<Props> = ({ region }) => {
   const dispatch = useDispatch();

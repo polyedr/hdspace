@@ -3,7 +3,6 @@ import { useChatContext } from 'stream-chat-react';
 
 import './CreateChannel.css';
 
-import type { ChannelFilters } from 'stream-chat';
 import logger from 'loglevel';
 import Stack from '@mui/material/Stack';
 import { Button, TextField } from '@mui/material';
@@ -13,10 +12,8 @@ import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
-import { UserList } from './UserList';
-
 import { CloseCreateChannel } from '../../assets';
-
+import { UserList } from './UserList';
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -24,13 +21,13 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from '../../client';
+import type { ChannelFilters } from 'stream-chat';
 
-type InputProps = {
+interface InputProps {
   channelName: string;
   setChannelName: (value: React.SetStateAction<string>) => void;
-};
+}
 
 const InputWrapper = styled(FormControl)({
   position: 'relative',
@@ -120,11 +117,11 @@ const ChannelNameInput: React.FC<InputProps> = (props) => {
   );
 };
 
-type Props = {
+interface Props {
   createType: string;
   filters: ChannelFilters[];
   setIsCreating: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 export const CreateChannel: React.FC<Props> = (props) => {
   const { createType, filters, setIsCreating } = props;
@@ -137,8 +134,7 @@ export const CreateChannel: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const projectId = useSelector(selectCurrentProjectId);

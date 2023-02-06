@@ -1,8 +1,8 @@
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ChannelFilters, ChannelSort } from 'stream-chat';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 
 // import 'stream-chat-react/dist/css/index.css';
 import './App.css';
@@ -20,7 +20,7 @@ const sort: ChannelSort<TeamChannelType> = {
   updated_at: -1,
 };
 
-const App = () => {
+function App() {
   const projectId = useSelector(selectCurrentProjectId);
 
   const filters: ChannelFilters[] = [
@@ -32,7 +32,7 @@ const App = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  useChecklist({ chatClient: client, targetOrigin: targetOrigin! });
+  useChecklist({ chatClient: client, targetOrigin });
 
   useEffect(() => {
     const handleColorChange = (color: string) => {
@@ -54,31 +54,29 @@ const App = () => {
   }, []);
 
   return (
-    <>
-      <div className="app__wrapper">
-        <ChannelListContainer
-          {...{
-            isCreating,
-            filters,
-            options,
-            setCreateType,
-            setIsCreating,
-            setIsEditing,
-            sort,
-          }}
-        />
-        <ChannelContainer
-          {...{
-            createType,
-            isCreating,
-            isEditing,
-            setIsCreating,
-            setIsEditing,
-          }}
-        />
-      </div>
-    </>
+    <div className="app__wrapper">
+      <ChannelListContainer
+        {...{
+          isCreating,
+          filters,
+          options,
+          setCreateType,
+          setIsCreating,
+          setIsEditing,
+          sort,
+        }}
+      />
+      <ChannelContainer
+        {...{
+          createType,
+          isCreating,
+          isEditing,
+          setIsCreating,
+          setIsEditing,
+        }}
+      />
+    </div>
   );
-};
+}
 
 export default App;

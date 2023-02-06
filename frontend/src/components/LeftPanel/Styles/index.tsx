@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ControlSection from '@Components/RightPanel/PropertiesTab/helperComponents/ControlSection';
 import sectionTitleEnum from '@Components/LeftPanel/Styles/Enums/sectionTitle';
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElement,
   selectCurrentEditableStyles,
@@ -25,7 +25,7 @@ import CONTROLS_CLASSES from '@Components/LeftPanel/Styles/controlClasses';
 
 const SECTION_CONTROLS = ['indents', 'typography', 'headingType', 'border'];
 
-const Styles = () => {
+function Styles() {
   const dispatch = useDispatch();
 
   const activeElement = useSelector(selectActiveElement);
@@ -96,6 +96,6 @@ const Styles = () => {
       </ControlSection>
     </>
   );
-};
+}
 
 export default Styles;

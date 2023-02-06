@@ -1,3 +1,4 @@
+import { put, call, takeLatest } from 'redux-saga/effects';
 import {
   apiAddActions,
   apiClearHistory,
@@ -9,7 +10,6 @@ import { reqWrapper } from '@Redux/project/sagas/shared';
 import { ActionSagaGenerator } from '@Src/types/pmtools/generators';
 import { ActionTypePM } from '@Src/types/pmtools/types';
 import { ServerProject } from '@Src/types';
-import { put, call, takeLatest } from 'redux-saga/effects';
 import * as actions from './actions';
 
 function* getActionSaga({
@@ -19,7 +19,9 @@ function* getActionSaga({
     const { project_data_activity_json } = yield call(
       reqWrapper,
       apiGetActions,
-      { project: payload },
+      {
+        project: payload,
+      },
     );
     yield put(
       actions.successGetAction(

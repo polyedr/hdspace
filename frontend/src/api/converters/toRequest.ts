@@ -29,10 +29,10 @@ export const convertCreatedElementToRequest = <
   parameters?: any,
   shared?: boolean,
   styles?: any,
-): ServerElement<T, ServerElement<Entity>[], K> => {
+): ServerElement<T, Array<ServerElement<Entity>>, K> => {
   const libraryElement = LIBRARY_ELEMENTS[
     elementType
-  ]() as unknown as ServerElement<T, ServerElement<Entity>[], K>;
+  ]() as unknown as ServerElement<T, Array<ServerElement<Entity>>, K>;
   const { name } = libraryElement;
   return {
     ...libraryElement,
@@ -53,22 +53,22 @@ export const convertElementToRequest = <
   K extends Entity,
   P extends ServerElement<T>['parameters'],
 >(
-  element: LibraryElement<T, LibraryElement<K>[], P>,
+  element: LibraryElement<T, Array<LibraryElement<K>>, P>,
   convertFn?: (
-    originalEl: LibraryElement<T, LibraryElement<K>[], P>,
-    convertedEl: ServerElement<T, ServerElement<K>[], P>,
-  ) => ServerElement<T, ServerElement<K>[], P>,
-): ServerElement<T, ServerElement<K>[], P> => {
+    originalEl: LibraryElement<T, Array<LibraryElement<K>>, P>,
+    convertedEl: ServerElement<T, Array<ServerElement<K>>, P>,
+  ) => ServerElement<T, Array<ServerElement<K>>, P>,
+): ServerElement<T, Array<ServerElement<K>>, P> => {
   const { id, name, children, type, buoyancy, image, parameters, styles } =
     element;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { pseudoClassViewStyles, ...serverStyles } = styles;
-  const serverEl: ServerElement<T, ServerElement<K>[], P> = {
+  const serverEl: ServerElement<T, Array<ServerElement<K>>, P> = {
     id: Number(id),
     name,
     children: children.map((child) =>
       convertElementToRequest(
-        child as any as LibraryElement<T, LibraryElement<K>[], P>,
+        child as any as LibraryElement<T, Array<LibraryElement<K>>, P>,
         convertFn,
       ),
     ) as any[],
@@ -97,8 +97,8 @@ export const convertElementToPatchRequest = <
   K extends Entity,
   P extends ServerElement<T>['parameters'],
 >(
-  element: LibraryElement<T, LibraryElement<K>[], P>,
-): ServerElement<T, ServerElement<K>[], P> => {
+  element: LibraryElement<T, Array<LibraryElement<K>>, P>,
+): ServerElement<T, Array<ServerElement<K>>, P> => {
   const { id, name, type, buoyancy, parameters, styles, shared } = element;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -186,7 +186,7 @@ export const convertCreatedProjectToRequest = (
         },
         typography: {
           color: '#323232',
-          fontFamily: `"Arial", sans-serif`,
+          fontFamily: '"Arial", sans-serif',
           fontSize: '14px',
           fontWeight: 100,
           textAlign: 'center',
@@ -288,9 +288,7 @@ export const convertUserDataToRequest = ({
 export const convertProfileDataToRequest = ({
   hourlyRate,
   ...rest
-}: Partial<ProfileData>): Partial<ServerProfileData> => {
-  return {
-    hourly_rate: hourlyRate,
-    ...rest,
-  };
-};
+}: Partial<ProfileData>): Partial<ServerProfileData> => ({
+  hourly_rate: hourlyRate,
+  ...rest,
+});

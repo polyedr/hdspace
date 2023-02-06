@@ -1,12 +1,12 @@
-import { renderElementButtons } from '@Components/RightPanel/ElementsTab/ElementsBlock';
-import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
-import { Button, TextField } from '@material-ui/core';
-import { convertElementToData } from '@Utils/elementsHierarchy';
+import { Button, TextField } from '@mui/material';
 import React, { FC, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { uniq } from 'ramda';
+import { convertElementToData } from '@Utils/elementsHierarchy';
+import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
+import { renderElementButtons } from '@Components/RightPanel/ElementsTab/ElementsBlock';
 
 const useStyles = makeStyles({
   root: {
@@ -35,9 +35,9 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   onClose: (...args: any) => void;
-};
+}
 
 const UseEditorForm: FC<Props> = ({ onClose }) => {
   const classes = useStyles();

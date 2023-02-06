@@ -1,23 +1,21 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectProjectByIdWrapper } from '@Redux/project/selectors/base';
 import {
+  Checkbox,
+  FormControlLabel as MuiFormControlLabel,
+  IconButton,
   Dialog as MuiDialog,
   DialogContent as MuiDialogContent,
   DialogTitle as MuiDialogTitle,
   DialogActions as MuiDialogActions,
   Button,
   Typography,
-} from '@material-ui/core';
-import {
-  Checkbox,
-  FormControlLabel as MuiFormControlLabel,
-  IconButton,
 } from '@mui/material';
-import * as Actions from '@Redux/permissions/actions';
 import CloseIcon from '@mui/icons-material/Close';
-import { UserData, UserProjectPermission } from '@Src/types';
 import { styled } from '@mui/material/styles';
+import { selectProjectByIdWrapper } from '@Redux/project/selectors/base';
+import * as Actions from '@Redux/permissions/actions';
+import { UserData, UserProjectPermission } from '@Src/types';
 import InviteUserSearch from './InviteUserSearch';
 
 const Dialog = styled(MuiDialog)({
@@ -47,10 +45,10 @@ const DialogActions = styled(MuiDialogActions)({
   padding: '0 20px 24px',
 });
 
-type Props = {
+interface Props {
   onClose: () => void;
   projectId: number | null;
-};
+}
 
 const UserPermissionsModal: React.FC<Props> = ({
   onClose,
@@ -86,7 +84,7 @@ const UserPermissionsModal: React.FC<Props> = ({
 
       onClose();
     }
-  }, [selectedUsers, projectId, writePermission, onClose]);
+  }, [projectId, dispatch, selectedUsers, writePermission, onClose]);
 
   if (!project) {
     return null;

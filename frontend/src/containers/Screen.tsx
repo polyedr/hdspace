@@ -4,6 +4,9 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
+import Tour, { ReactourStep } from 'reactour';
+import { useTheme, makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import {
   selectAssetsListsLoader,
   selectCurrentProjectId,
@@ -14,8 +17,6 @@ import VIA from '@Components/Editor/VIA';
 import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
 import { activateScreen, loadAssetLists } from '@Redux/project/actions';
 import ELEMENT_IDS from '@Constants/elementIds';
-import Tour, { ReactourStep } from 'reactour';
-import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { selectUserGuideActive } from '@Redux/user/selectors';
 import {
   setUserGuideActive,
@@ -103,7 +104,7 @@ const tourSteps: ReactourStep[] = [
     content: 'Here you can enable the master screen of the current project.',
   },
   {
-    selector: ``,
+    selector: '',
     content: 'Congratulation. Well done. Thanks for following me.',
   },
 ];
@@ -118,9 +119,9 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   screenId: number;
-};
+}
 
 const Screen: React.FC<Props> = ({ screenId }) => {
   const classes = useStyles();
@@ -150,7 +151,7 @@ const Screen: React.FC<Props> = ({ screenId }) => {
   }, [assetLists, dispatch, currentProjectId, assetListsLoading]);
 
   const userGuideActive = useSelector(selectUserGuideActive);
-  const { shape } = useTheme();
+  const { shape } = useTheme<Theme>();
 
   return (
     <div className={classes.screen}>

@@ -1,15 +1,15 @@
-import { Asset, PaginatedArray, ParsedImagePalette } from '@Src/types';
 import { AxiosResponse } from 'axios';
+import { Asset, PaginatedArray, ParsedImagePalette } from '@Src/types';
 
-export type ServerAsset = {
+export interface ServerAsset {
   id: string;
   image: string | null;
   created: string;
   modified: string;
   illustration_set: string | null;
-};
+}
 
-export type ServerImagePalette = {
+export interface ServerImagePalette {
   id: number;
   image: string;
   image_url: string;
@@ -18,7 +18,7 @@ export type ServerImagePalette = {
   illustration_set: number | null;
   fileurl: string | null;
   palette: string;
-};
+}
 
 export const convertFromServerAsset = (serverAsset: ServerAsset): Asset => {
   const { id, image, created, modified, illustration_set } = serverAsset;
@@ -37,9 +37,7 @@ export const convertResponseToAsset = (
 
 export const convertResponseToImagePalette = (
   response: AxiosResponse<ServerImagePalette>,
-): ParsedImagePalette => {
-  return JSON.parse(response.data.palette);
-};
+): ParsedImagePalette => JSON.parse(response.data.palette);
 
 export const convertResponseToPaginatedAssets = (
   response: AxiosResponse<PaginatedArray<ServerAsset>>,
@@ -56,8 +54,8 @@ export const convertResponseToPaginatedAssets = (
 
 export const convertToServerAsset = (
   asset: Partial<Asset>,
-): Partial<ServerAsset> => {
-  return Object.keys(asset).reduce((serverAsset, assetField) => {
+): Partial<ServerAsset> =>
+  Object.keys(asset).reduce((serverAsset, assetField) => {
     const serverAssetField =
       assetField === 'listId' ? 'illustration_set' : assetField;
     return {
@@ -65,4 +63,3 @@ export const convertToServerAsset = (
       [serverAssetField]: asset[assetField],
     };
   }, {});
-};

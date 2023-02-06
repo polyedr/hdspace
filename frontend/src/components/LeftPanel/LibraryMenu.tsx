@@ -1,4 +1,3 @@
-import ElementsBlock from '@Components/RightPanel/ElementsTab/ElementsBlock';
 import {
   TabsUnstyled,
   TabUnstyled,
@@ -6,13 +5,14 @@ import {
   TabPanelUnstyled,
 } from '@mui/base';
 import { styled } from '@mui/material';
-import { ElementData } from '@Src/types';
 import React from 'react';
+import { ElementData } from '@Src/types';
+import ElementsBlock from '@Components/RightPanel/ElementsTab/ElementsBlock';
 import AssetLists from './Assets/AssetLists';
 
 interface Props {
-  library: { [key: string]: { [key: string]: ElementData } };
-  templates: { [key: string]: ElementData };
+  library: Record<string, Record<string, ElementData>>;
+  templates: Record<string, ElementData>;
 }
 
 const CustomTabsListUnstyled = styled(TabsListUnstyled)({

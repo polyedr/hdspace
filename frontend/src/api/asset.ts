@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { myAxios } from '@Src/config/settings';
 import {
   Asset,
@@ -6,7 +7,6 @@ import {
   ParsedImagePalette,
   Result,
 } from '@Src/types';
-import { AxiosResponse } from 'axios';
 import {
   convertResponseToAsset,
   convertResponseToImagePalette,
@@ -17,22 +17,22 @@ import {
 } from './converters/asset/fromResponse';
 import { handleError } from './helper';
 
-export const apiGetAsset = (props: MyAxiosProps & { id: string }) => {
+export const apiGetAsset = async (props: MyAxiosProps & { id: string }) => {
   const { id, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     method: 'GET',
     url: `/projects/images/${id}`,
   }).then((res) => convertResponseToAsset(res));
 };
 
-export const apiCreateAsset = (
+export const apiCreateAsset = async (
   props: MyAxiosProps & { assetFormData: FormData },
 ): Promise<Result<Asset>> => {
   const { assetFormData, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
-    url: `/projects/images/`,
+    url: '/projects/images/',
     method: 'POST',
     contentType: 'multipart/form-data',
     data: assetFormData,
@@ -43,13 +43,13 @@ export const apiCreateAsset = (
     .catch(handleError);
 };
 
-export const apiDeleteAsset = (
+export const apiDeleteAsset = async (
   props: MyAxiosProps & {
     id: string;
   },
 ) => {
   const { id, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     url: `/projects/images/${id}/`,
     method: 'PATCH',
@@ -63,14 +63,14 @@ export const apiDeleteAsset = (
     .catch(handleError);
 };
 
-export const apiUpdateAsset = (
+export const apiUpdateAsset = async (
   props: MyAxiosProps & {
     id: string;
     asset: Partial<Asset>;
   },
 ) => {
   const { id, asset, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     url: `/projects/images/${id}/`,
     method: 'PATCH',
@@ -78,13 +78,13 @@ export const apiUpdateAsset = (
   });
 };
 
-export const apiGetAssets = (
+export const apiGetAssets = async (
   props: MyAxiosProps & { assetListId?: string; next: string },
 ) => {
   const { assetListId, next, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
-    url: next || `/projects/images/`,
+    url: next || '/projects/images/',
     method: 'GET',
     params: {
       ...(axiosProps.params || {}),
@@ -97,18 +97,18 @@ export const apiGetAssets = (
     .catch(handleError);
 };
 
-export const apiGenerateImagePalette = (
+export const apiGenerateImagePalette = async (
   props: MyAxiosProps & { imageUrl: string },
 ): Promise<ParsedImagePalette | { error: any }> => {
   const { imageUrl, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
-    url: `/projects/images_palette/`,
+    url: '/projects/images_palette/',
     method: 'POST',
     data: { fileurl: imageUrl },
   })
-    .then((response: AxiosResponse<ServerImagePalette>) => {
-      return convertResponseToImagePalette(response);
-    })
+    .then((response: AxiosResponse<ServerImagePalette>) =>
+      convertResponseToImagePalette(response),
+    )
     .catch(handleError);
 };

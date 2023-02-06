@@ -1,10 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { FormControlLabel, Typography, Checkbox } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { toggleGrid } from '@Redux/project/actions';
 import { selectShowingGrid } from '@Redux/project/selectors/base';
-
-import { FormControlLabel, Typography, Checkbox } from '@mui/material';
-import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(() => ({
   title: {

@@ -1,21 +1,19 @@
 import React, { FC, useState, useCallback } from 'react';
-import ShareIcon from '@material-ui/icons/Share';
-import { Button, Popover, Container } from '@material-ui/core';
+import ShareIcon from '@mui/icons-material/Share';
+import { Button, Popover, Container } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { enqueueSnackbar } from '@Redux/notification/actions';
 import ToggleButton from '@mui/material/ToggleButton';
+import { makeStyles } from '@mui/styles';
+import axios from 'axios';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
-  selectTokenPair,
   selectUserData,
   selectProjectViewTokenPair,
 } from '@Redux/user/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { selectActiveElementId } from '@Redux/project/selectors/element';
-import { makeStyles } from '@material-ui/core/styles';
 
 import { setProjectViewStart } from '@Redux/user/actions';
-import axios from 'axios';
 import { shorten_url_api_key } from '@Constants/defaultParams';
 import * as Actions from '@Redux/permissions/actions';
 
@@ -29,29 +27,33 @@ const useStyles = makeStyles({
     height: '16px',
   },
   togglebutton: {
-    width: '32px',
-    height: '32px',
-    border: 'none !important',
-    borderRadius: '50% !important',
-    color: '#81818E !important',
+    '&.MuiToggleButton-root': {
+      width: '32px',
+      height: '32px',
+      border: 'none',
+      borderRadius: '50%',
+      color: '#81818E',
+
+      '& svg': {
+        height: '20px',
+      },
+    },
     '&.Mui-selected': {
       color: '#000  !important',
     },
   },
 });
 
-type Props = {
+interface Props {
   className?: string;
-};
+}
 
 const Share: FC<Props> = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = useSelector(selectUserData);
-  const { access, refresh } = useSelector(selectTokenPair);
   const projectId = useSelector(selectCurrentProjectId);
   const screenId = useSelector(selectCurrentScreenId);
-  const activeElementId = useSelector(selectActiveElementId);
   const viewToken = useSelector(selectProjectViewTokenPair);
   localStorage.setItem('viewToken', JSON.stringify(viewToken));
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
@@ -100,8 +102,9 @@ const Share: FC<Props> = () => {
                 apikey: shorten_url_api_key,
               },
             })
-            .then((response) =>
-              navigator.clipboard.writeText(response.data.short_url),
+            .then(
+              async (response) =>
+                await navigator.clipboard.writeText(response.data.short_url),
             );
         });
       handleClose();
@@ -125,7 +128,7 @@ const Share: FC<Props> = () => {
         );
       }
     },
-    [access, activeElementId, dispatch, projectId, refresh, screenId, user.id],
+    [dispatch, projectId, screenId, user.id],
   );
   return (
     <>

@@ -1,7 +1,7 @@
-import { selectTokenPair, selectUserData } from '@Redux/user/selectors';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Chat, enTranslations, Streami18n } from 'stream-chat-react';
+import { selectTokenPair, selectUserData } from '@Redux/user/selectors';
 import client from './client';
 
 const i18nInstance = new Streami18n({
@@ -11,7 +11,7 @@ const i18nInstance = new Streami18n({
   },
 });
 
-const ChatProvider = ({ children, user, token }) => {
+function ChatProvider({ children, user, token }) {
   useEffect(() => {
     const payload = {
       id: user.id.toString(),
@@ -32,9 +32,9 @@ const ChatProvider = ({ children, user, token }) => {
       {children}
     </Chat>
   );
-};
+}
 
-export default ({ children }) => {
+export default function ({ children }) {
   const token = useSelector(selectTokenPair);
   const user = useSelector(selectUserData);
 
@@ -47,4 +47,4 @@ export default ({ children }) => {
   }
 
   return children;
-};
+}

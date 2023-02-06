@@ -1,4 +1,3 @@
-import { selectVIARegionsAsArray } from '@Redux/project/selectors/via';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AtlasTree, {
@@ -7,11 +6,11 @@ import AtlasTree, {
   TreeDestinationPosition,
   TreeSourcePosition,
 } from '@atlaskit/tree';
-import { MenuItem } from '@material-ui/core';
-import { NNModelName, VIARegion } from '@Src/types';
-import { makeStyles } from '@material-ui/core/styles';
-// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { MenuItem } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { NNModelName, VIARegion } from '@Src/types';
+import { selectVIARegionsAsArray } from '@Redux/project/selectors/via';
 import {
   StyledAccordion,
   StyledAccordionDetails,

@@ -1,4 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { MenuItem, Box } from '@mui/material';
+import { styled, makeStyles } from '@mui/styles';
+import { useSelector } from 'react-redux';
+import cn from 'classnames';
+import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
+import { useDebouncedCallback } from 'use-debounce';
 import {
   getPermissibleValue,
   safeMatch,
@@ -22,16 +28,8 @@ import {
   useDebouncedInputChange,
   useDebouncedValueChange,
 } from '@Utils/debounceHooks';
-import { MenuItem } from '@material-ui/core';
-import { Box } from '@mui/material';
-import { makeStyles } from '@material-ui/core/styles';
-import { useSelector } from 'react-redux';
 import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
-import cn from 'classnames';
 import BORDER_STYLE from '@Constants/borderStyle';
-import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
-import { useDebouncedCallback } from 'use-debounce';
-import { styled } from '@mui/styles';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
@@ -149,7 +147,7 @@ const BorderBlock: React.FC<Props> = ({
       return `${MIN_BORDER_RADIUS}px`;
     }
 
-    if (!radius || radius.indexOf('%') === -1) {
+    if (!radius || !radius.includes('%')) {
       return `${value > MAX_BORDER_RADIUS ? MAX_BORDER_RADIUS : value}px`;
     }
 
@@ -278,23 +276,19 @@ const BorderBlock: React.FC<Props> = ({
           }}
         >
           {/* {!isDefaultStyles && ( */}
-          <>
-            <div
-              className={cn(classes.labelTextField, classes.borderWidthLabel)}
-            >
-              W
-            </div>
-            <StyledTextField
-              style={{ marginBottom: 0 }}
-              type="number"
-              value={width ? parseFloat(width as string) : ''}
-              onChange={handleWidthChange}
-              margin="dense"
-              inputProps={{ className: classes.numberInput }}
-              className={classes.text}
-              disabled={!canEdit}
-            />
-          </>
+          <div className={cn(classes.labelTextField, classes.borderWidthLabel)}>
+            W
+          </div>
+          <StyledTextField
+            style={{ marginBottom: 0 }}
+            type="number"
+            value={width ? parseFloat(width as string) : ''}
+            onChange={handleWidthChange}
+            margin="dense"
+            inputProps={{ className: classes.numberInput }}
+            className={classes.text}
+            disabled={!canEdit}
+          />
           {/* )} */}
         </div>
         <StyledTextField

@@ -1,25 +1,24 @@
+import React, { ChangeEvent, FC } from 'react';
+import { Delete, FileCopy } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
+import { capitalize } from '@mui/material/utils';
+import { MenuItem, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import {
   StyledIconButton,
   StyledTextField,
 } from '@Components/styledComponents';
 import { Entity, VIARegion } from '@Src/types';
-import React, { ChangeEvent, FC } from 'react';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import { useDispatch } from 'react-redux';
 import {
   copyVIARegion,
   deleteVIARegion,
   updateVIARegion,
 } from '@Redux/project/actions';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
-import { capitalize } from '@material-ui/core/utils';
 import { splitWords } from '@Utils/stringHelper';
 import isValidAnnotationElement from '@Utils/validators/isValidAnnotationElement';
-import { MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles<Theme>(({ spacing }) => ({
   container: {
     display: 'flex',
     alignItems: 'center',
@@ -38,9 +37,9 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   region: VIARegion;
-};
+}
 
 const VIADescription: FC<Props> = ({ region }) => {
   const dispatch = useDispatch();
@@ -98,11 +97,11 @@ const VIADescription: FC<Props> = ({ region }) => {
         </StyledTextField>
 
         <StyledIconButton title="Copy region" onClick={handleCopyRegion}>
-          <FileCopyIcon />
+          <FileCopy />
         </StyledIconButton>
 
         <StyledIconButton title="Delete region" onClick={handleDeleteRegion}>
-          <DeleteIcon />
+          <Delete />
         </StyledIconButton>
       </div>
 

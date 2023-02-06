@@ -1,13 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import {
   selectCurrentScreenId,
   selectFreeCanvasMode,
 } from '@Redux/project/selectors/screen';
-import { makeStyles } from '@material-ui/core/styles';
 import Actions from './actions';
 
-const useStyles = makeStyles(({ typography, spacing }) => ({
+const useStyles = makeStyles<Theme>(({ typography, spacing }) => ({
   root: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -53,7 +54,7 @@ const TopBar: React.FC = () => {
       <Actions />
 
       <div className={classes.wrapper}>
-        <>{freeCanvasMode ? <div className={classes.magic} /> : null}</>
+        {freeCanvasMode ? <div className={classes.magic} /> : null}
       </div>
     </div>
   ) : (

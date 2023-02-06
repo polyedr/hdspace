@@ -1,17 +1,14 @@
+import { DropResult } from 'react-beautiful-dnd';
 import TYPES from '@Redux/actionTypes';
 // eslint-disable-next-line import/no-cycle
 import { BoardNewTask, BoardTask } from '@Redux/pmtools/types';
-import { DropResult } from 'react-beautiful-dnd';
 
 export const fetchTask = (taskId: number) => ({
   type: TYPES.BOARD_FETCH_TASK,
   taskId,
 });
 
-export const updateTask = (
-  task: BoardTask,
-  fields: { [key: string]: any },
-) => ({
+export const updateTask = (task: BoardTask, fields: Record<string, any>) => ({
   type: TYPES.BOARD_UPDATE_TASK,
   payload: { task, fields },
 });

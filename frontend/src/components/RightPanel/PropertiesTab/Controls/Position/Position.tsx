@@ -1,32 +1,32 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { MenuItem } from '@mui/material';
+import ClearIconMui from '@mui/icons-material/Clear';
+import { makeStyles } from '@mui/styles';
+import { useSelector } from 'react-redux';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import {
   StyledTextField,
   StyledToggleButton,
   StyledToggleButtonGroup,
 } from '@Components/styledComponents';
-import { MenuItem } from '@material-ui/core';
 import {
   positionsList,
   initialInsetStyles,
   particularPositionStyles,
 } from '@Components/RightPanel/PropertiesTab/Controls/Position/constants/constants';
-import ClearIconMui from '@mui/icons-material/Clear';
-import { makeStyles } from '@material-ui/core/styles';
 import FloatIcons from '@Components/RightPanel/PropertiesTab/Controls/Position/components/FloatIcons';
 import { IconType } from '@Components/RightPanel/PropertiesTab/Controls/Position/enums/IconTypes';
 import { POSITIONS } from '@Components/RightPanel/PropertiesTab/Controls/Position/enums/Positions';
 import ParticularPosition from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ParticularPosition';
 import Input from '@Components/RightPanel/PropertiesTab/Controls/Position/components/Input';
-import { useSelector } from 'react-redux';
 import { selectParentOfActiveElement } from '@Redux/project/selectors/element';
 import TargetIcon from '@Components/RightPanel/PropertiesTab/Controls/Position/components/TargetIcon';
 import ClearIcon from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ClearIcon';
 
-type ParsedInset = {
+interface ParsedInset {
   value: React.CSSProperties['top'] | null;
   name: string;
-};
+}
 
 const useStyles = makeStyles({
   align: {

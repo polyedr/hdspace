@@ -1,19 +1,20 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
+import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
 import ElementsBlock from '@Components/RightPanel/ElementsTab/ElementsBlock';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
-import React from 'react';
 import Scrollbar from '@Components/UI/Scrollbar';
-import { useSelector } from 'react-redux';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import FrameworkSection from '@Components/RightPanel/FrameworkSection';
 import Navigator from './Navigator';
 import Screens from './Screens';
 import {
   ElementsIcon,
-  ComponentIcon,
-  StylesIcon,
   ScreensIcon,
+  StylesIcon,
   LibraryIcon,
+  LayersIcon,
 } from './icons';
 import LibraryMenu from './LibraryMenu';
 import Styles from './Styles';
@@ -22,7 +23,7 @@ import VIANavigator from './VIANavigator';
 const { elements, templates, generators, library } =
   createElementsHierarchy(LIBRARY_ELEMENTS);
 
-const RenderElementGrid = ({ elements }: { elements: object }) => {
+function RenderElementGrid({ elements }: { elements: object }) {
   return (
     <>
       {Object.entries(elements).map(([key, value]) => (
@@ -30,12 +31,12 @@ const RenderElementGrid = ({ elements }: { elements: object }) => {
       ))}
     </>
   );
-};
+}
 
-const Layers = () => {
+function Layers() {
   const viaMode = useSelector(selectVIAModeEnabled);
   return viaMode ? <VIANavigator /> : <Navigator />;
-};
+}
 
 export const mainMenu = [
   {
@@ -51,13 +52,13 @@ export const mainMenu = [
   {
     id: 'screens',
     label: 'Screens',
-    icon: ComponentIcon,
+    icon: ScreensIcon,
     component: Screens,
   },
   {
     id: 'styles',
     label: 'Styles',
-    icon: ComponentIcon,
+    icon: StylesIcon,
     component: () => (
       <Scrollbar>
         <FrameworkSection />
@@ -68,13 +69,13 @@ export const mainMenu = [
   {
     id: 'layers-tab',
     label: 'Layers',
-    icon: StylesIcon,
+    icon: LayersIcon,
     component: Layers,
   },
   {
     id: 'generators',
     label: 'Generators',
-    icon: ScreensIcon,
+    icon: StyleOutlinedIcon,
     component: () => (
       <Scrollbar>
         <ElementsBlock title="Generators" elements={generators} expandable />
