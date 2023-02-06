@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectAnalyzerLoader } from '@Redux/project/selectors/base';
 import { Dialog, Typography } from '@mui/material';
 
 import { makeStyles } from '@mui/styles';
+import { selectAnalyzerLoader } from '@Redux/project/selectors/base';
 
 const useStyles = makeStyles({
   modal: {

@@ -28,7 +28,7 @@ export class DOMHandler {
    * Used for "show blocks" function
    */
   public get visibleElementsIds() {
-    return this._visibleElementsIds;
+    return [...this._visibleElementsIds];
   }
 
   public reset() {

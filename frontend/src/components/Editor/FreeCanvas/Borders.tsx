@@ -6,13 +6,12 @@ import {
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from '@mui/icons-material';
+import { Divider, IconButton } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { splitWords } from '@Utils/stringHelper';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { StateElement } from '@Src/types';
-import { Divider, IconButton } from '@mui/material';
-
-import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   crumb: {

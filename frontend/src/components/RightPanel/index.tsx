@@ -1,5 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import {
   PANEL_TRANSITION_DURATION,
@@ -7,8 +9,6 @@ import {
 } from '@Src/styles/Theme';
 // import { selectActiveElement } from '@Redux/project/selectors/element';
 import ELEMENT_IDS from '@Constants/elementIds';
-import { Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 // import { isAvailableChild } from '@Utils/AvailableChildrenHelper';
 import PropertiesTab from './PropertiesTab';
 // import ElementsTab from './ElementsTab';

@@ -1,11 +1,11 @@
 import { RenderItemParams } from '@atlaskit/tree';
 import { makeStyles } from '@mui/styles';
 import { lighten, Theme } from '@mui/material';
-import { setActiveVIARegion } from '@Redux/project/actions';
-import { selectIsRegionActive } from '@Redux/project/selectors/via';
 import cn from 'classnames';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectIsRegionActive } from '@Redux/project/selectors/via';
+import { setActiveVIARegion } from '@Redux/project/actions';
 
 const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
   root: {

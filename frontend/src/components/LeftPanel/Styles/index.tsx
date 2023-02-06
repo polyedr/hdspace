@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ControlSection from '@Components/RightPanel/PropertiesTab/helperComponents/ControlSection';
 import sectionTitleEnum from '@Components/LeftPanel/Styles/Enums/sectionTitle';
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElement,
   selectCurrentEditableStyles,

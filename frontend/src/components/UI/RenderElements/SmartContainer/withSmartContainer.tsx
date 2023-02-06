@@ -1,7 +1,7 @@
 import React from 'react';
-import SmartContainer from './SmartContainer';
 import { NNBlockType } from '../../../../types';
 import { RendererProps } from '../types';
+import SmartContainer from './SmartContainer';
 
 const withSmartContainer = (blockType: NNBlockType) =>
   React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => (

@@ -1,7 +1,7 @@
+import { DropResult } from 'react-beautiful-dnd';
 import TYPES from '@Redux/actionTypes';
 // eslint-disable-next-line import/no-cycle
 import { BoardColumn, BoardNewColumn } from '@Redux/pmtools/types';
-import { DropResult } from 'react-beautiful-dnd';
 
 export const setColumnsFetching = (fetching = true) => ({
   type: TYPES.BOARD_FETCH_COLUMNS_PENDING,

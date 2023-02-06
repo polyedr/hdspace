@@ -12,6 +12,7 @@ import { makeStyles } from '@mui/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
+import { convertToHTML } from 'draft-convert';
 import { deleteElement } from '@Redux/project/actions';
 import {
   selectCurrentScreenId,
@@ -23,7 +24,6 @@ import {
   StyledAccordionSummary,
   StyledTextField,
 } from '@Components/styledComponents';
-import { convertToHTML } from 'draft-convert';
 import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
 import RichTextContent from '../../helperComponents/RichTextContent/RichTextContent';
 

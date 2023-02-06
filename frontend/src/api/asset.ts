@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { myAxios } from '@Src/config/settings';
 import {
   Asset,
@@ -6,7 +7,6 @@ import {
   ParsedImagePalette,
   Result,
 } from '@Src/types';
-import { AxiosResponse } from 'axios';
 import {
   convertResponseToAsset,
   convertResponseToImagePalette,

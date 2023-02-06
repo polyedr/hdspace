@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 

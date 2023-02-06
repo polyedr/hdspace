@@ -8,9 +8,9 @@ import {
 } from '@mui/material';
 import React, { useCallback, useMemo, useState } from 'react';
 import CircleIcon from '@mui/icons-material/Circle';
-import { BoardTask, BoardTaskComment } from '@Redux/pmtools/types';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { useDispatch } from 'react-redux';
+import { BoardTask, BoardTaskComment } from '@Redux/pmtools/types';
 import {
   deleteComment,
   requestUpdateComment,

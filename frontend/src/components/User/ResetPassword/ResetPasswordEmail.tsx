@@ -3,8 +3,6 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Form } from 'react-final-form';
-import { sendResetPasswordMail } from '@Redux/user/actions';
-
 import {
   InputAdornment,
   Typography,
@@ -13,9 +11,10 @@ import {
   Grid,
   Box,
 } from '@mui/material';
+import { Alert } from '@mui/lab';
+import { sendResetPasswordMail } from '@Redux/user/actions';
 
 import PATH_NAMES from '@Constants/pathNames';
-import { Alert } from '@mui/lab';
 import { composeValidators, isRequired, isValidEmail } from '@Utils/validators';
 import { TextField } from '../FormField';
 import Info from '../Info';

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
-import type { Channel, UserResponse } from 'stream-chat';
 import { useChatContext } from 'stream-chat-react';
 import _debounce from 'lodash.debounce';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -8,12 +7,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
+
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { channelByUser, ChannelOrUserType, isChannel } from './utils';
 import { ResultsDropdown } from './ResultsDropdown';
-
-import './ChannelSearch.css';
-
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -23,6 +20,9 @@ import type {
   TeamReactionType,
   TeamUserType,
 } from '../../client';
+import type { Channel, UserResponse } from 'stream-chat';
+
+import './ChannelSearch.css';
 
 const SearchTextField = styled(TextField)({
   '& .MuiInputBase-root': {

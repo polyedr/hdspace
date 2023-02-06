@@ -6,6 +6,8 @@ import {
   select,
   fork,
 } from 'redux-saga/effects';
+import { compose } from 'redux';
+import logger from 'loglevel';
 import {
   removeProjectStyles,
   updateDefaultStyles,
@@ -39,10 +41,24 @@ import {
   updateUsersPermissionsForProjectSaga,
 } from '@Redux/permissions/sagas';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
-import { compose } from 'redux';
-import logger from 'loglevel';
-import nnSaga from './nn';
 import { updateUISettingsParametersSaga } from '../../user/sagas';
+import TYPES from '../../actionTypes';
+import { enqueueSnackbar } from '../../notification/actions';
+import * as Actions from '../actions';
+import { selectCurrentProject } from '../selectors/base';
+import {
+  selectActiveElement,
+  selectActiveElementId,
+  selectAllElements,
+  selectElementAsTree,
+  selectItemToCopyInfo,
+  selectScreenRootElement,
+  selectScreen,
+  selectParentOfActiveElement,
+} from '../selectors/element';
+import { selectCurrentScreen } from '../selectors/screen';
+import withActionsHistory from '../wrappers/withActionsHistory';
+import nnSaga from './nn';
 import {
   moveElementSaga,
   removeElementStylesSaga,
@@ -100,22 +116,7 @@ import {
   updateProjectSaga,
   getSharedProjectSaga,
 } from './project';
-import TYPES from '../../actionTypes';
 import { projectUpdateHelperSaga } from './shared';
-import { enqueueSnackbar } from '../../notification/actions';
-import * as Actions from '../actions';
-import { selectCurrentProject } from '../selectors/base';
-import {
-  selectActiveElement,
-  selectActiveElementId,
-  selectAllElements,
-  selectElementAsTree,
-  selectItemToCopyInfo,
-  selectScreenRootElement,
-  selectScreen,
-  selectParentOfActiveElement,
-} from '../selectors/element';
-import { selectCurrentScreen } from '../selectors/screen';
 import {
   loadAssetsSaga,
   loadAssetListsSaga,
@@ -138,7 +139,6 @@ import {
   executeUndoActionsSaga,
   addHistoryActionsSaga,
 } from './control';
-import withActionsHistory from '../wrappers/withActionsHistory';
 import viaSaga from './via';
 
 const removeSharedStylesSaga = compose(

@@ -1,9 +1,8 @@
 import React from 'react';
 import { Avatar, useChatContext } from 'stream-chat-react';
 
-import type { Channel, UserResponse } from 'stream-chat';
 import { channelByUser, ChannelOrUserType, isChannel } from './utils';
-
+import type { Channel, UserResponse } from 'stream-chat';
 import type {
   TeamAttachmentType,
   TeamChannelType,

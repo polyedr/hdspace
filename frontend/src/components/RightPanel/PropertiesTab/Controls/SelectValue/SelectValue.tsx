@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { MenuItem } from '@mui/material';
 import { PropertiesChangeProps, SelectElement } from '@Src/types';
 import {
   selectActiveElementChildren,
   selectActiveElementParams,
 } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
-import { MenuItem } from '@mui/material';
 
 const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
   updateParams,

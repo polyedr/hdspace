@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { selectHoveredElementId } from '@Redux/project/selectors/element';
 import { FrameContext } from 'react-frame-component';
 import { useDispatch, useSelector } from 'react-redux';
 import CopyAllIcon from '@mui/icons-material/CopyAll';
+import { selectHoveredElementId } from '@Redux/project/selectors/element';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 
 const HoverInterations: React.FC = () => {

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Switch, FormControlLabel } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { Entity, PropertiesChangeProps, SmartElement } from '@Src/types';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
-import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   wrapper: {

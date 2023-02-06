@@ -1,6 +1,10 @@
 // @ts-nocheck
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import logger from 'loglevel';
+import ToggleButton from '@mui/material/ToggleButton';
+import { ToggleButtonGroup } from '@mui/material';
 import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';
 import {
   selectActiveElement,
@@ -43,14 +47,10 @@ import {
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { makeStyles } from '@mui/styles';
 
-import logger from 'loglevel';
-import ToggleButton from '@mui/material/ToggleButton';
-import { ToggleButtonGroup } from '@mui/material';
+import Scrollbar from '../../UI/Scrollbar';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
-import Scrollbar from '../../UI/Scrollbar';
 import ControlSection from './helperComponents/ControlSection';
 import PseudoSelectorsSection from './PseudoSelectorsSection';
 import ElementType from './Controls/ElementType/ElementType';
