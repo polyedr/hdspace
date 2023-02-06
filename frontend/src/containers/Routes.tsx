@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PATH_NAMES from '@Constants/pathNames';
 import MarketplaceLayout from '@Components/Marketplace/components/Layout/index';
+import Spinner from '@Components/UI/Spinner';
 import Layout from '../components/Layout';
 import { selectIsLoggedIn } from '../redux/user/selectors';
 
@@ -54,7 +55,7 @@ const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
 };
 
 const Routes: React.FC = () => (
-  <Suspense fallback={<div>Loading...</div>}>
+  <Suspense fallback={<Spinner active />}>
     <Switch>
       <Route path={PATH_NAMES.user.signin} component={Signin} />
 

@@ -27,7 +27,6 @@ import {
   SmileyFace,
   StrikeThroughIcon,
 } from '../../assets';
-
 import type {
   TeamAttachmentType,
   TeamChannelType,

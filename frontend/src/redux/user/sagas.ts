@@ -1,5 +1,6 @@
 import { takeLatest, call, put, takeEvery, select } from 'redux-saga/effects';
 import { FORM_ERROR } from 'final-form';
+import _ from 'lodash';
 import {
   convertProfileDataFromResponse,
   convertUserDataFromResponse,
@@ -32,12 +33,11 @@ import {
 } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { updateUISettingsParameters } from '@Redux/project/actions';
-import _ from 'lodash';
 import { USERNAME_VIEW, PASSWORD_VIEW } from '@Constants/defaultParams';
 import TYPES from '../actionTypes';
-import * as Actions from './actions';
 import { reqWrapper } from '../project/sagas/shared';
 import { openProjects, openSignScreen } from '../history';
+import * as Actions from './actions';
 import { loginComplete } from './actions';
 import { selectProfileData, selectUserData } from './selectors';
 

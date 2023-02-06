@@ -1,10 +1,19 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Close as CloseIcon, Add as AddIcon } from '@mui/icons-material';
+import {
+  Select,
+  MenuItem,
+  IconButton,
+  TextField,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import {
   selectAllAssetLists,
   selectCurrentAssetListId,
 } from '@Redux/project/selectors/asset';
-import { Close as CloseIcon, Add as AddIcon } from '@mui/icons-material';
 import {
   addAssetList,
   loadAssetLists,
@@ -12,9 +21,7 @@ import {
 } from '@Redux/project/actions';
 import { UserProjectPermission } from '@Src/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { Select, MenuItem, IconButton, TextField } from '@mui/material';
 
-import { makeStyles } from '@mui/styles';
 import {
   selectAssetsListsLoader,
   selectCurrentProjectId,
@@ -124,23 +131,41 @@ const AssetLists: React.FC<Props> = ({ isDefaultStyles = false }) => {
           }}
         />
       ) : (
-        <Select
-          label="Asset list"
-          value={currentAssetListId}
-          className={classes.assetsSelector}
-          onChange={(event) => handleListChange(event.target.value || null)}
-          inputProps={{
-            className: isDefaultStyles
-              ? classes.leftSideColor
-              : classes.rightSideColor,
-          }}
-        >
-          {assetLists.map((list) => (
-            <MenuItem key={`list-${list.id}`} value={list.id}>
-              {list.name}
-            </MenuItem>
-          ))}
-        </Select>
+        // <Select
+        //   label="Asset list"
+        //   value={currentAssetListId}
+        //   className={classes.assetsSelector}
+        //   onChange={(event) => handleListChange(event.target.value || null)}
+        //   inputProps={{
+        //     className: isDefaultStyles
+        //       ? classes.leftSideColor
+        //       : classes.rightSideColor,
+        //   }}
+        // >
+        //   {assetLists.map((list) => (
+        //     <MenuItem key={`list-${list.id}`} value={list.id}>
+        //       {list.name}
+        //     </MenuItem>
+        //   ))}
+        // </Select>
+        <FormControl variant="standard" fullWidth>
+          <InputLabel>Asset List</InputLabel>
+          <Select
+            value={currentAssetListId}
+            onChange={(event) => handleListChange(event.target.value || null)}
+            inputProps={{
+              className: isDefaultStyles
+                ? classes.leftSideColor
+                : classes.rightSideColor,
+            }}
+          >
+            {assetLists.map((list) => (
+              <MenuItem key={`list-${list.id}`} value={list.id}>
+                {list.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       )}
 
       <IconButton

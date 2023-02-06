@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
-import { BoundingStyles, StyleProps } from '@Src/types';
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material';
+import { BoundingStyles, StyleProps } from '@Src/types';
 import BorderPosition from '../constants';
 
 interface Props {

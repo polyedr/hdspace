@@ -17,8 +17,8 @@ import {
 import { useSelector } from 'react-redux';
 import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import Avatar from '@Components/UI/Avatar';
-import { IconButton } from './StyledComponents';
 import User, { username } from '../User';
+import { IconButton } from './StyledComponents';
 
 const Popover = styled(MuiPopover)({
   boxShadow:

@@ -1,13 +1,13 @@
+import React, { FC, useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Tabs, Tab, Box, SwipeableDrawer } from '@mui/material';
+import { makeStyles, styled } from '@mui/styles';
+import { components, TABS_PMTOOLS } from '@Constants/pmtools/tabsNamesSidebar';
+import { setSidebarOpen } from '@Redux/project/actions';
 import {
   selectCurrentProjectId,
   selectSidebarOpen,
 } from '@Redux/project/selectors/base';
-import React, { FC, useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Tabs, Tab, Box, SwipeableDrawer } from '@mui/material';
-import { components, TABS_PMTOOLS } from '@Constants/pmtools/tabsNamesSidebar';
-import { setSidebarOpen } from '@Redux/project/actions';
-import { makeStyles, styled } from '@mui/styles';
 
 const useStyles = makeStyles({
   root: {

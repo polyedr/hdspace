@@ -1,24 +1,5 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectLayout,
-  selectScreenRotated,
-  selectCurrentProjectDataJson,
-  selectCurrentProject,
-} from '@Redux/project/selectors/base';
-
-import {
-  changeLayout,
-  rotateScreenFormat,
-  updateLayoutProject,
-} from '@Redux/project/actions';
-
-import {
-  additionalLayoutPhone,
-  additionalLayoutDesktop,
-  additionalLayoutTablet,
-  Layout,
-} from '@Src/types';
 
 import {
   Select,
@@ -33,6 +14,23 @@ import DesktopWindowsOutlinedIcon from '@mui/icons-material/DesktopWindowsOutlin
 import TabletIcon from '@mui/icons-material/Tablet';
 import PhoneIphoneSharpIcon from '@mui/icons-material/PhoneIphoneSharp';
 import { createStyles, makeStyles } from '@mui/styles';
+import {
+  additionalLayoutPhone,
+  additionalLayoutDesktop,
+  additionalLayoutTablet,
+  Layout,
+} from '@Src/types';
+import {
+  changeLayout,
+  rotateScreenFormat,
+  updateLayoutProject,
+} from '@Redux/project/actions';
+import {
+  selectLayout,
+  selectScreenRotated,
+  selectCurrentProjectDataJson,
+  selectCurrentProject,
+} from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import ELEMENT_IDS from '@Constants/elementIds';
 

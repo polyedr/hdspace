@@ -1,13 +1,13 @@
 import React from 'react';
-import { StyledTextField } from '@Components/styledComponents';
 import { MenuItem } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { StyledTextField } from '@Components/styledComponents';
 import {
   updateElement,
   updateElementParameters,
   setActiveElement,
   addChildToElement,
 } from '@Redux/project/actions';
-import { useDispatch, useSelector } from 'react-redux';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import IMAGES from '@Constants/images';

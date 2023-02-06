@@ -2,8 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { Stack, Box, styled, Typography, ButtonBase } from '@mui/material';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { setSidebarOpen } from '@Redux/project/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import { setSidebarOpen } from '@Redux/project/actions';
 import { selectSidebarOpen } from '@Redux/project/selectors/base';
 import {
   SettingIcon,
@@ -25,6 +25,7 @@ const IconButton = styled(ButtonBase)<{ active: boolean }>(
 
     '& svg': {
       height: 30,
+      color: '#B0B0BD',
     },
 
     '& path': {

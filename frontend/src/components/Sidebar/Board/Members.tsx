@@ -1,8 +1,8 @@
 import { AvatarGroup, styled } from '@mui/material';
-import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
-import { selectUserData } from '@Redux/user/selectors';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
+import { selectUserData } from '@Redux/user/selectors';
 import User from './User';
 
 const UserAvatar = styled(User)<{ active: boolean }>(({ active, theme }) => ({

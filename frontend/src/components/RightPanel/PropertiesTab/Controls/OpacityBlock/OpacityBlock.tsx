@@ -1,10 +1,10 @@
 import React from 'react';
+import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material';
 import RemoveStyles from '@Components/RightPanel/PropertiesTab/helperComponents/RemoveStyles';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledSlider, StyledTextField } from '@Components/styledComponents';
-import { makeStyles } from '@mui/styles';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
-import { styled } from '@mui/material';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   opacity: React.CSSProperties['opacity'];

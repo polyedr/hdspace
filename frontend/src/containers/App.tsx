@@ -2,14 +2,14 @@ import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { CssBaseline } from '@mui/material';
-import ChatProvider from '@Components/Sidebar/Chat/ChatProvider';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { SnackbarProvider } from 'notistack';
+import ChatProvider from '@Components/Sidebar/Chat/ChatProvider';
 import history from '@/redux/history';
-import Routes from './Routes';
 import { AppThemeProvider } from '@/styles/Theme';
 import Notifier from '@/components/Notifier';
+import Routes from './Routes';
 import { BrowserRouter } from 'react-router-dom';
 
 const App: React.FC = () => (

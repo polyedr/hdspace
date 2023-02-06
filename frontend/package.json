@@ -182,7 +182,7 @@
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@typescript-eslint/parser": "^5.47.0",
-    "@vitejs/plugin-react": "^3.0.0",
+    "@vitejs/plugin-react": "^3.0.1",
     "awesome-typescript-loader": "^5.2.1",
     "babel-core": "^4.7.16",
     "babel-loader": "^8.0.0",
@@ -213,10 +213,11 @@
     "redux-saga-testing": "^2.0.2",
     "sass": "^1.57.1",
     "typescript": "^4.9.4",
-    "vite": "^4.0.3",
+    "vite": "^4.0.4",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-favicon": "^1.0.8",
-    "vite-plugin-favicons-inject": "^2.1.0",
+    "vite-plugin-favicons-inject": "^2.2.0",
+    "vite-plugin-static-copy": "^0.13.0",
     "vitest": "^0.26.2"
   }
 }

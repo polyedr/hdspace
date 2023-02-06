@@ -1,5 +1,5 @@
-import { MyAxiosProps } from '@Src/types';
 import axios from 'axios';
+import { MyAxiosProps } from '@Src/types';
 
 export const env = import.meta.env.MODE;
 

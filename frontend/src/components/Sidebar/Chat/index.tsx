@@ -1,8 +1,8 @@
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ChannelFilters, ChannelSort } from 'stream-chat';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 
 // import 'stream-chat-react/dist/css/index.css';
 import './App.css';

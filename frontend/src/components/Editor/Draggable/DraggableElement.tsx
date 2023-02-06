@@ -4,6 +4,7 @@ import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import logger from 'loglevel';
 import { useDebouncedCallback } from 'use-debounce';
+import Scrollbars from 'react-custom-scrollbars';
 import {
   processDropElement,
   processDropTargetParams,
@@ -24,7 +25,6 @@ import {
 import { ElementType } from '@Constants/dragAndDrop';
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import useLayout from '@Components/Editor/hooks/useLayout';
-import Scrollbars from 'react-custom-scrollbars';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import RENDERERS from '../../UI/RenderElements';

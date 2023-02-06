@@ -5,8 +5,8 @@ import {
   Stack,
   styled,
 } from '@mui/material';
-import { BoardTask } from '@Redux/pmtools/types';
 import React, { useCallback, useState } from 'react';
+import { BoardTask } from '@Redux/pmtools/types';
 import Editor, { RenderEditorHtml } from './Editor';
 
 const Box = styled(MuiBox)({

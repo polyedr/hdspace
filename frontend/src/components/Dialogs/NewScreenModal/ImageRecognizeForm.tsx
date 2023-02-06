@@ -1,10 +1,10 @@
 import React, { FC, useState, MouseEvent } from 'react';
 import { Button, Menu, MenuItem, Theme } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import { NNBlockType } from '@Src/types';
-import { useSelector } from 'react-redux';
 import { selectCurrentRootId } from '@Redux/project/selectors/element';
-import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles<Theme>(({ spacing, palette }) => ({
   wrapper: {

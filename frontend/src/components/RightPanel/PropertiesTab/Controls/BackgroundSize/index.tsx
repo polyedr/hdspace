@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, memo, useMemo } from 'react';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { useSelector } from 'react-redux';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 

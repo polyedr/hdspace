@@ -1,11 +1,26 @@
 /* eslint-disable no-alert */
+import {
+  Button,
+  FormControl,
+  Icon,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Theme,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import React, {
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
-  useEffect,
 } from 'react';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { useDispatch, useSelector } from 'react-redux';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   AssetsList,
   ElementTypeName,
@@ -13,38 +28,24 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '@Src/types';
-import { makeStyles } from '@mui/styles';
+import { StyledTextField } from '@Components/styledComponents';
+import { URL_REGEX } from '@Constants/defaultParams';
 import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Icon,
-  Button,
-  Theme,
-  SelectChangeEvent,
-  styled,
-} from '@mui/material';
-import { enqueueSnackbar } from '@Redux/notification/actions';
-
-import { useDispatch, useSelector } from 'react-redux';
+  setBackgroundList,
+  updateElementStyles,
+  uploadElementAsset,
+  uploadImageByUrl,
+} from '@Redux/project/actions';
 import {
   selectAllAssetLists,
   selectBackGroundAssetsList,
   selectCurrentAssetListId,
 } from '@Redux/project/selectors/asset';
-import {
-  setBackgroundList,
-  uploadElementAsset,
-  uploadImageByUrl,
-} from '@Redux/project/actions';
+import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
-import { URL_REGEX } from '@Constants/defaultParams';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import PositionSelector, { BackgroundPosition } from './PositionSelector';
-
 interface StyleProperties {
   backgroundColor?: React.CSSProperties['backgroundColor'];
   backgroundImage?: React.CSSProperties['backgroundImage'];
@@ -90,6 +91,15 @@ enum BackgroundClip {
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
+  imageIcon: {
+    position: 'absolute',
+    top: '6px',
+    right: '5px',
+    color: 'black',
+    height: '15px',
+    width: '15px',
+    background: 'white',
+  },
   root: {
     // padding: '0 16px',
   },
@@ -105,6 +115,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 100,
     background: '#ddd',
     borderRadius: 10,
+    position: 'relative',
     marginTop: theme.spacing(1),
     display: 'flex',
     alignItems: 'center',
@@ -126,11 +137,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
   },
 }));
-
-const ImageIcon = styled(Icon)({
-  width: 'auto',
-  height: 'auto',
-});
 
 const DEFAULT_BACKGROUND_COLOR = 'transparent';
 
@@ -195,7 +201,7 @@ const BackgroundBlock: React.FC<Props> = ({
   }, [element.id]);
 
   const currentScreenId = useSelector(selectCurrentScreenId);
-
+  const activeElementId = useSelector(selectActiveElementId);
   const fileSelectorRef = useRef<HTMLInputElement>(null);
 
   const currentAssetListId = useSelector(selectCurrentAssetListId);
@@ -341,6 +347,24 @@ const BackgroundBlock: React.FC<Props> = ({
     [element, currentScreenId],
   );
 
+  const imageRemoveHandler = useCallback(
+    (e) => {
+      dispatch(
+        updateElementStyles(
+          activeElementId,
+          {
+            backgroundImage: 'unset',
+          },
+          {
+            screenId: currentScreenId,
+          },
+        ),
+      );
+      e.stopPropagation();
+    },
+    [activeElementId],
+  );
+
   const handleChangePosition = useCallback(
     (backgroundPosition) => {
       updateCSS('backgroundPosition', backgroundPosition);
@@ -369,10 +393,10 @@ const BackgroundBlock: React.FC<Props> = ({
     return (
       <>
         <div className={classes.formControl}>
-          <InputLabel sx={{ margin: '5px 0' }}>Background Image</InputLabel>
+          <InputLabel>Background Image</InputLabel>
           <div
-            className={classes.imageWrapper}
             onClick={handleSelectImage}
+            className={classes.imageWrapper}
             style={{
               backgroundImage,
               backgroundPosition: 'center',
@@ -380,9 +404,27 @@ const BackgroundBlock: React.FC<Props> = ({
               backgroundSize: 'cover',
             }}
           >
-            {!backgroundImage ? (
-              <ImageIcon fontSize="medium">image</ImageIcon>
+            {['none', 'unset'].includes(backgroundImage) ? (
+              <Icon fontSize="small">image</Icon>
             ) : null}
+            {!['none', 'unset'].includes(backgroundImage) ? (
+              <IconButton
+                onClick={imageRemoveHandler}
+                style={{
+                  position: 'absolute',
+                  top: '6px',
+                  right: '5px',
+                  color: 'black',
+                  height: '15px',
+                  width: '15px',
+                  background: 'white',
+                }}
+              >
+                <RemoveIcon style={{ fontSize: '10px' }} />
+              </IconButton>
+            ) : (
+              ''
+            )}
           </div>
         </div>
 

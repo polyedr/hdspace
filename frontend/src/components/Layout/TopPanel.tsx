@@ -1,5 +1,21 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  styled,
+  AppBar as MUIAppbar,
+  Toolbar,
+  IconButton,
+  Box,
+  Theme,
+} from '@mui/material';
+import ToggleButton from '@mui/material/ToggleButton';
+import { makeStyles } from '@mui/styles';
+import {
+  HelpOutline as HelpOutlineIcon,
+  SettingsBackupRestore as SettingsBackupRestoreIcon,
+  Apps as AppsIcon,
+  ViewWeek as ViewWeekIcon,
+} from '@mui/icons-material';
 import { selectIsPrototypeMode, selectUserData } from '@Redux/user/selectors';
 import {
   selectCurrentProject,
@@ -17,35 +33,23 @@ import {
   selectVIAResultId,
 } from '@Redux/project/selectors/via';
 
-import {
-  styled,
-  AppBar as MUIAppbar,
-  Toolbar,
-  IconButton,
-  Box,
-  Theme,
-} from '@mui/material';
-import ToggleButton from '@mui/material/ToggleButton';
-
-import { makeStyles } from '@mui/styles';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { StyledIconButton } from '@Components/styledComponents';
 import { HELP_LINK } from '@Src/config/settings';
 import Dialog from '../Dialogs/Dialog';
+import Logo from '../UI/Logo';
 import Layouts from './TopBar/Layouts';
 import RenameProjectBar from './TopBar/RenameProjectBar';
 import TopBar from './TopBar';
 import History from './History';
-import Logo from '../UI/Logo';
 import Avatar from './Avatar';
-import { ShowGridIcon, ShowBlockIcon } from './icons';
+// import { ShowGridIcon, ShowBlockIcon } from './icons';
 import ToggleMode from './TopBar/ToggleMode';
 
 const Appbar = styled(MUIAppbar)({
   '&.MuiAppBar-root': {
     boxShadow: 'none',
     borderBottom: '1px solid #E4E6EB',
+    zIndex: 1200,
 
     '& .MuiToolbar-root': {
       padding: 0,
@@ -71,6 +75,7 @@ const useStyles = makeStyles<Theme>(({ typography, palette }) => ({
     alignItems: 'center',
     minHeight: 44,
     gap: '8px',
+    paddingRight: 5,
   },
   topbarsections: {
     display: 'flex',
@@ -93,13 +98,24 @@ const useStyles = makeStyles<Theme>(({ typography, palette }) => ({
     fontWeight: 'bold',
   },
   togglebutton: {
-    width: '32px',
-    height: '32px',
-    border: 'none !important',
-    borderRadius: '50% !important',
-    color: '#81818E !important',
+    '&.MuiToggleButton-root': {
+      width: '32px',
+      height: '32px',
+      border: 'none',
+      borderRadius: '50%',
+      color: '#81818E',
+
+      '& svg': {
+        height: '20px',
+      },
+
+      '&.Mui-disabled': {
+        color: 'rgba(0, 0, 0, 0.26)',
+        border: 'none',
+      },
+    },
     '&.Mui-selected': {
-      color: '#000  !important',
+      color: '#000',
     },
   },
   iconbutton: {
@@ -184,7 +200,7 @@ function TopPanel() {
                 disabled={!bordersEnabled && !isProtoMode}
                 onClick={() => dispatch(toggleContainersBorders(!showBorders))}
               >
-                <ShowBlockIcon />
+                <ViewWeekIcon />
               </ToggleButton>
             </Box>
             <Box>
@@ -194,7 +210,7 @@ function TopPanel() {
                 className={classes.togglebutton}
                 onClick={() => dispatch(toggleGrid(!showGrid))}
               >
-                <ShowGridIcon />
+                <AppsIcon />
               </ToggleButton>
             </Box>
             <a target="_blank" href={HELP_LINK} rel="noreferrer noopener">

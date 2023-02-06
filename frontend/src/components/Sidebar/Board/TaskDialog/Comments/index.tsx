@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { styled } from '@mui/material/styles';
-import { BoardTask } from '@Redux/pmtools/types';
 import { useDispatch, useSelector } from 'react-redux';
+import { BoardTask } from '@Redux/pmtools/types';
 import { createComment } from '@Redux/pmtools/board/actions/comments';
 import { selectComments } from '@Redux/pmtools/board/selectors';
 import CommentInput from './CommentInput';

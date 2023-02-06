@@ -2,12 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import AddIcon from '@mui/icons-material/Add';
 import { makeStyles } from '@mui/styles';
-import { addChildToElement } from '@Redux/project/actions';
-import { selectActiveItemChildren } from '@Redux/project/selectors/element';
-import {
-  selectCurrentScreenId,
-  selectScreensWithoutMaster,
-} from '@Redux/project/selectors/screen';
 import {
   IconButton,
   Checkbox,
@@ -18,6 +12,12 @@ import {
   Theme,
 } from '@mui/material';
 import { useDebouncedCallback } from 'use-debounce';
+import { addChildToElement } from '@Redux/project/actions';
+import { selectActiveItemChildren } from '@Redux/project/selectors/element';
+import {
+  selectCurrentScreenId,
+  selectScreensWithoutMaster,
+} from '@Redux/project/selectors/screen';
 import {
   StyledTextField,
   StyledAccordionDetails,

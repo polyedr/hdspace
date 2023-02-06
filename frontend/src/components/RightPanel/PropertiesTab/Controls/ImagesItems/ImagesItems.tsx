@@ -2,14 +2,14 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import AddIcon from '@mui/icons-material/Add';
 import { makeStyles } from '@mui/styles';
+import { IconButton, lighten } from '@mui/material';
+import { useDebouncedCallback } from 'use-debounce';
 import { addChildToElement } from '@Redux/project/actions';
 import { BreadcrumbItemElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { IconButton, lighten } from '@mui/material';
 import ImagesItem from '@Components/RightPanel/PropertiesTab/Controls/ImagesItems/ImagesItem';
 import { StyledTextField } from '@Components/styledComponents';
-import { useDebouncedCallback } from 'use-debounce';
 
 const useStyles = makeStyles(() => ({
   row: {
