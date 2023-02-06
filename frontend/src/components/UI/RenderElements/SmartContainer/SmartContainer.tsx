@@ -14,13 +14,13 @@ import {
   Sync as SyncIcon,
   CloudUpload as CloudUploadIcon,
 } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
 import useUrlImageToFile from '@Utils/useUrlImageToFile';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
 import { NNBlockType } from '@Src/types';
 import { updateElementParameters } from '@Redux/project/actions';
 import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { IconButton } from '@mui/material';
 import useAnalyzePucture from '@Utils/nn/hooks/useAnalyzePucture';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';

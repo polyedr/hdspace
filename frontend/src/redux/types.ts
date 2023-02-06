@@ -1,8 +1,8 @@
 import { RouterState } from 'connected-react-router';
 import React from 'react';
 import { OptionsObject, SnackbarKey } from 'notistack';
-import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import { XYCoord } from 'react-dnd';
+import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import {
   CreatedElement,
   DropTargetParams,

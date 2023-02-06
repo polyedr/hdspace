@@ -1,7 +1,7 @@
 import React, { LegacyRef } from 'react';
+import cn from 'classnames';
 import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
-import cn from 'classnames';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 

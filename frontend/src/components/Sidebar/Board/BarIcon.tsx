@@ -1,6 +1,6 @@
 import { styled } from '@mui/material';
-import { PriorityOptions } from '@Redux/pmtools/types';
 import React, { useMemo } from 'react';
+import { PriorityOptions } from '@Redux/pmtools/types';
 
 const Container = styled('div')<{ size: number }>(({ size }) => ({
   display: 'flex',

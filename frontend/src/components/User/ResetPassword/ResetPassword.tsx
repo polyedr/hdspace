@@ -3,6 +3,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link, useRouteMatch, useHistory } from 'react-router-dom';
 import { Form } from 'react-final-form';
+import {
+  Grid,
+  InputAdornment,
+  Typography,
+  Container,
+  Button,
+  Box,
+} from '@mui/material';
 import * as Actions from '@Redux/user/actions';
 import {
   composeValidators,
@@ -13,14 +21,6 @@ import {
 import { AppReduxState } from '@Redux/types';
 
 import PATH_NAMES from '@Constants/pathNames';
-import {
-  Grid,
-  InputAdornment,
-  Typography,
-  Container,
-  Button,
-  Box,
-} from '@mui/material';
 import { TextField } from '../FormField';
 
 import Info from '../Info';

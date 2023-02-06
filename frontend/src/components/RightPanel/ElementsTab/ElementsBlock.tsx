@@ -1,16 +1,16 @@
 import React, { memo } from 'react';
-import { splitWords } from '@Utils/stringHelper';
-import { ElementData } from '@Src/types';
 import { makeStyles } from '@mui/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Grid } from '@mui/material';
-import ElementButton from './ElementButton';
-import ElementDropdown from './ElementDropdown';
+import { splitWords } from '@Utils/stringHelper';
+import { ElementData } from '@Src/types';
 import {
   PropertyAccordion,
   PropertyAccordianSummary,
   PropertyAccordionDetails,
 } from '../../styledComponents';
+import ElementButton from './ElementButton';
+import ElementDropdown from './ElementDropdown';
 
 interface Props {
   title?: string;

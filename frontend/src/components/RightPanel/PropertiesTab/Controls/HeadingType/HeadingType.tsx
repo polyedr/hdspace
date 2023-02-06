@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unused-prop-types */
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { MenuItem } from '@mui/material';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import {
   HeadingElement,
@@ -9,7 +10,6 @@ import {
 } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { MenuItem } from '@mui/material';
 import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
 
 interface StateProps {

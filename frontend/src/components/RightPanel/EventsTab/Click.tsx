@@ -1,21 +1,21 @@
 import React, { FC, MouseEvent, useEffect } from 'react';
 import ToggleButtonGroup from '@mui/lab/ToggleButtonGroup';
 import {
-  StyledTextField,
-  StyledToggleButton,
-} from '@Components/styledComponents';
-import {
   InsertDriveFile as InsertDriveFileIcon,
   Link as LinkIcon,
 } from '@mui/icons-material';
-import { ElementClickEvent, LinkType } from '@Src/types';
 import { useSelector } from 'react-redux';
+import { MenuItem } from '@mui/material';
+import {
+  StyledTextField,
+  StyledToggleButton,
+} from '@Components/styledComponents';
+import { ElementClickEvent, LinkType } from '@Src/types';
 import {
   selectCurrentScreenId,
   selectSortedScreens,
 } from '@Redux/project/selectors/screen';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { MenuItem } from '@mui/material';
 
 interface Props {
   eventData: ElementClickEvent['data'];

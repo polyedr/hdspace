@@ -3,11 +3,11 @@ import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { render, RenderResult, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { ProjectsSearchParameter } from '@Src/types';
+import { AppThemeProvider } from '@Src/styles/Theme';
 import { mockState } from '../../test-utils';
 import { AppReduxState } from '../../../../redux/types';
 import TYPES from '../../../../redux/actionTypes';
 import Searchbar from '../../../../components/Projects/Searchbar';
-import { AppThemeProvider } from '@Src/styles/Theme';
 
 describe('Searchbar', () => {
   let store: MockStoreEnhanced<AppReduxState>;

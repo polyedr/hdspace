@@ -12,9 +12,8 @@ import { GiphyContext } from '../ChannelContainer/ChannelInner';
 import './ThreadMessageInput.css';
 
 // eslint-disable-next-line import/no-cycle
-import { Props } from './TeamMessageInput';
-
 import { LightningBoltSmall, SendButton, SmileyFace } from '../../assets';
+import { Props } from './TeamMessageInput';
 
 import type {
   TeamAttachmentType,

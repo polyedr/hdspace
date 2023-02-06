@@ -1,8 +1,4 @@
 import { AxiosResponse } from 'axios';
-import {
-  convertProjectFromResponse,
-  convertProjectWithScreensFromResponse,
-} from './converters/fromResponse';
 import { myAxios } from '../config/settings';
 import {
   MyAxiosProps,
@@ -13,6 +9,10 @@ import {
   ServerProject,
   ServerProjectWithScreens,
 } from '../types';
+import {
+  convertProjectFromResponse,
+  convertProjectWithScreensFromResponse,
+} from './converters/fromResponse';
 
 import {
   handleError,

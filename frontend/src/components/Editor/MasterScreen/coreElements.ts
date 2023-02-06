@@ -1,3 +1,4 @@
+import { capitalize } from '@mui/material/utils';
 import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import { makeSection } from '@Domain/libraryElements/blocksTemplates/blocksTemplates';
 import {
@@ -25,7 +26,6 @@ import {
   makeParagraph,
   makeTextBlock,
 } from '@Domain/libraryElements/typographyElements/typographyElements';
-import { capitalize } from '@mui/material/utils';
 import { Entity, ServerElement } from '@Src/types';
 
 const CORE_MASTER_RESPONSE_ELEMENTS = [

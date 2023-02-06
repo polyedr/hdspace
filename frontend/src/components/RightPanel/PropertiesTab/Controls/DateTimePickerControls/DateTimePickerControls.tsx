@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
+import { MenuItem } from '@mui/material';
+import { useSelector } from 'react-redux';
 import {
   DateTimePickerElement,
   DateTimePickerType,
   PropertiesChangeProps,
 } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { MenuItem } from '@mui/material';
-import { useSelector } from 'react-redux';
 import {
   selectActiveElementParamByName,
   selectActiveElementParams,

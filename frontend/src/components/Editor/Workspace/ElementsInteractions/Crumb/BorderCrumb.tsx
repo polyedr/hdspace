@@ -3,6 +3,9 @@ import React, { memo, useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
+import ShareIcon from '@mui/icons-material/Share';
 import { BoundingStyles, StateElement } from '@Src/types';
 import {
   makeButtons,
@@ -25,12 +28,8 @@ import {
   selectCurrentRootId,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import ShareIcon from '@mui/icons-material/Share';
-import { makeStyles } from '@mui/styles';
-import { Theme } from '@mui/material';
-import Icon from '../../../../UI/Icon';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-
+import Icon from '../../../../UI/Icon';
 interface Props {
   element: StateElement;
   show: boolean;

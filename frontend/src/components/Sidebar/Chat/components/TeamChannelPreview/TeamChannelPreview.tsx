@@ -8,7 +8,6 @@ import {
 import './TeamChannelPreview.css';
 
 import { TeamTypingIndicator } from '../TeamTypingIndicator/TeamTypingIndicator';
-
 import type {
   TeamAttachmentType,
   TeamChannelType,

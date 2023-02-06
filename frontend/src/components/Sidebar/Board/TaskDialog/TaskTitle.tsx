@@ -1,5 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import { IconButton as MuiIconButton, Input } from '@mui/material';
+import {
+  Box,
+  IconButton as MuiIconButton,
+  TextareaAutosize,
+} from '@mui/material';
 import { styled } from '@mui/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
@@ -30,7 +34,7 @@ function TaskTitle({ task, onChange }: Props) {
   const [taskTitle, setTaskTitle] = useState(task.title);
 
   const handleChangeTaskTitle = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setTaskTitle(e.target.value);
     },
     [],
@@ -50,18 +54,30 @@ function TaskTitle({ task, onChange }: Props) {
     <>
       {editMode ? (
         <>
-          <Input value={taskTitle} onChange={handleChangeTaskTitle} />
-          <IconButton
-            disabled={taskTitle.trim().length < 1}
-            onClick={handleSaveTitle}
-            // variant="text"
-          >
-            <CheckIcon />
-          </IconButton>
-          <IconButton onClick={handleSetEditMode(false)}>
-            {/* <CancelIcon /> */}
-            <CloseIcon />
-          </IconButton>
+          <TextareaAutosize
+            value={taskTitle}
+            onChange={handleChangeTaskTitle}
+            style={{
+              width: 'calc(100% - 90px)',
+              border: 'none',
+              minHeight: 40,
+              borderBottom: '1px solid #000',
+              outline: 'none',
+            }}
+          />
+          <Box>
+            <IconButton
+              disabled={taskTitle.trim().length < 1}
+              onClick={handleSaveTitle}
+              // variant="text"
+            >
+              <CheckIcon />
+            </IconButton>
+            <IconButton onClick={handleSetEditMode(false)}>
+              {/* <CancelIcon /> */}
+              <CloseIcon />
+            </IconButton>
+          </Box>
         </>
       ) : (
         <>

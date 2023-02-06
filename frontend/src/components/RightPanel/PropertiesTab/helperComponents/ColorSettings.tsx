@@ -3,8 +3,8 @@ import { toState } from 'react-color/lib/helpers';
 import { ColorResult } from 'react-color';
 import { Checkbox, styled, FormControlLabel } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { getPermissibleValue } from '@Utils/NumberHelper';
 import ClearIcon from '@mui/icons-material/Clear';
+import { getPermissibleValue } from '@Utils/NumberHelper';
 import { ColorPicker, normalizeColor, useColor } from '../../../UI/ColorPicker';
 import { StyledTextField } from '../../../styledComponents';
 

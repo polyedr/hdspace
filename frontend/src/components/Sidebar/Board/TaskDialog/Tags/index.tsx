@@ -12,8 +12,8 @@ import {
   Popover as MuiPopover,
   styled,
 } from '@mui/material';
-import { BoardLabel, BoardTask } from '@Redux/pmtools/types';
 import { useSelector } from 'react-redux';
+import { BoardLabel, BoardTask } from '@Redux/pmtools/types';
 import { selectLabels } from '@Redux/pmtools/board/selectors';
 import { IconButton } from '../StyledComponents';
 import AllTags from './AllTags';

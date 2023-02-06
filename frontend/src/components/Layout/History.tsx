@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { Undo as UndoIcon, Redo as RedoIcon } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
 import { selectCanUndo, selectCanRedo } from '@Redux/project/selectors/control';
 import { executeUndoActions, executeRedoActions } from '@Redux/project/actions';
 import { StyledIconButton } from '@Components/styledComponents';
-import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   root: {

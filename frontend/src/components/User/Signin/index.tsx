@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import Alert from '@mui/lab/Alert';
-import { selectConfirmMessage } from '@Redux/user/selectors';
 import { Grid } from '@mui/material';
+import { selectConfirmMessage } from '@Redux/user/selectors';
 import LoginForm from '../LoginForm';
 import Info from '../Info';
 import useStyles from '../LoginRegistration/LoginRegistrationStyles';

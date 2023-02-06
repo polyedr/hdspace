@@ -2,18 +2,18 @@ import React, { FC, useState, useCallback } from 'react';
 import ShareIcon from '@mui/icons-material/Share';
 import { Button, Popover, Container } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { enqueueSnackbar } from '@Redux/notification/actions';
 import ToggleButton from '@mui/material/ToggleButton';
+import { makeStyles } from '@mui/styles';
+import axios from 'axios';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   selectUserData,
   selectProjectViewTokenPair,
 } from '@Redux/user/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { makeStyles } from '@mui/styles';
 
 import { setProjectViewStart } from '@Redux/user/actions';
-import axios from 'axios';
 import { shorten_url_api_key } from '@Constants/defaultParams';
 import * as Actions from '@Redux/permissions/actions';
 
@@ -27,11 +27,17 @@ const useStyles = makeStyles({
     height: '16px',
   },
   togglebutton: {
-    width: '32px',
-    height: '32px',
-    border: 'none !important',
-    borderRadius: '50% !important',
-    color: '#81818E !important',
+    '&.MuiToggleButton-root': {
+      width: '32px',
+      height: '32px',
+      border: 'none',
+      borderRadius: '50%',
+      color: '#81818E',
+
+      '& svg': {
+        height: '20px',
+      },
+    },
     '&.Mui-selected': {
       color: '#000  !important',
     },

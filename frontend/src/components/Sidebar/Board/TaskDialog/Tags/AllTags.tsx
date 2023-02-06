@@ -9,8 +9,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { selectLabels } from '@Redux/pmtools/board/selectors';
 import fuzzysort from 'fuzzysort';
+import { selectLabels } from '@Redux/pmtools/board/selectors';
 import { requestDeleteProjectLabel } from '@Redux/pmtools/board/actions/labels';
 import AddTag from './AddTag';
 import ListItem from './ListItem';

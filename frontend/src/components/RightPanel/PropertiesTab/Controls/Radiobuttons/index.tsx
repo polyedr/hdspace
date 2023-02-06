@@ -1,14 +1,14 @@
 import React from 'react';
-import { PropertiesChangeProps, RadiobuttonElement } from '@Src/types';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectActiveElementChildren } from '@Redux/project/selectors/element';
-import { addChildToElement } from '@Redux/project/actions';
-import generateUniqueName from '@Utils/generateUniqueName';
 import { v4 } from 'uuid';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { makeStyles } from '@mui/styles';
 import { IconButton, lighten, Theme } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { PropertiesChangeProps, RadiobuttonElement } from '@Src/types';
+import { selectActiveElementChildren } from '@Redux/project/selectors/element';
+import { addChildToElement } from '@Redux/project/actions';
+import generateUniqueName from '@Utils/generateUniqueName';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import RadiobuttonControl from './RadiobuttonControl';
 
 const useStyles = makeStyles<Theme>(({ palette }) => ({

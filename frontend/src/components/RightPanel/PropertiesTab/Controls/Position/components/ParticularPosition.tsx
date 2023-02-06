@@ -1,8 +1,8 @@
 import React from 'react';
+import { MenuItem } from '@mui/material';
 import PositionSelector from '@Components/RightPanel/PropertiesTab/Controls/BackgroundBlock/PositionSelector';
 import { StyledTextField } from '@Components/styledComponents';
 import { particularPosition } from '@Components/RightPanel/PropertiesTab/Controls/Position/constants/constants';
-import { MenuItem } from '@mui/material';
 
 interface Props {
   particularPositionState: string | number;

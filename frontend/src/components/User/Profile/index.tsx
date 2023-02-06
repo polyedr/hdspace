@@ -5,21 +5,6 @@ import { styled } from '@mui/material/styles';
 import { createStyles, makeStyles } from '@mui/styles';
 import Alert from '@mui/lab/Alert';
 import {
-  selectProfileData,
-  selectSubscriptionData,
-  selectUserData,
-  selectUserGuideWatched,
-} from '@Redux/user/selectors';
-import {
-  changeProfileData,
-  setUserExperience,
-  sendResetPasswordMail,
-  changeUserData,
-  changeProfileAvatar,
-} from '@Redux/user/actions';
-import { ROLES } from '@Constants/defaultParams';
-import { Experience, ProfileData } from '@Src/types';
-import {
   Typography,
   Box,
   Button,
@@ -43,8 +28,23 @@ import {
   Avatar,
   Theme,
 } from '@mui/material';
-import ImageCropper from '@Components/CropImage';
 import { useHistory } from 'react-router';
+import {
+  selectProfileData,
+  selectSubscriptionData,
+  selectUserData,
+  selectUserGuideWatched,
+} from '@Redux/user/selectors';
+import {
+  changeProfileData,
+  setUserExperience,
+  sendResetPasswordMail,
+  changeUserData,
+  changeProfileAvatar,
+} from '@Redux/user/actions';
+import { ROLES } from '@Constants/defaultParams';
+import { Experience, ProfileData } from '@Src/types';
+import ImageCropper from '@Components/CropImage';
 import { getSubscriptionData } from '@Redux/permissions/actions';
 import { isRequired } from '@Utils/validators';
 import SubmitError from '../SubmitError';

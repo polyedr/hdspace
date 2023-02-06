@@ -1,4 +1,3 @@
-import Avatar from '@Components/UI/Avatar';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -22,10 +21,11 @@ import Slide from '@mui/material/Slide';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { TransitionProps } from '@mui/material/transitions';
-import { fetchTask, updateTask } from '@Redux/pmtools/board/actions/tasks';
-import { BoardTask } from '@Redux/pmtools/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { fetchTask, updateTask } from '@Redux/pmtools/board/actions/tasks';
+import { BoardTask } from '@Redux/pmtools/types';
+import Avatar from '@Components/UI/Avatar';
 import Checklist from './Checklist';
 import Comment from './Comments';
 import Description from './Description';
@@ -195,7 +195,11 @@ function TaskDialog({ task, open, onClose }: Props) {
     >
       <Grid container alignItems="center">
         <Grid item xs={8}>
-          <DialogTitle display="flex" alignItems="center">
+          <DialogTitle
+            display="flex"
+            justifyContent="space-between"
+            alignItems="flex-start"
+          >
             <TaskTitle
               onChange={(title) => handleUpdateTask('title', title)}
               task={task}
@@ -290,9 +294,10 @@ function TaskDialog({ task, open, onClose }: Props) {
                       <MemberPicker
                         selected={task?.assignee_id?.toString()}
                         onChange={(member) => {
-                          if (member)
-                            handleUpdateTask('assignee_id', member?.id);
-                          else handleUpdateTask('assignee_id', null);
+                          handleUpdateTask(
+                            'assignee_id',
+                            member?.id ? member?.id : null,
+                          );
                         }}
                       />
                     </TableCell>
@@ -306,9 +311,10 @@ function TaskDialog({ task, open, onClose }: Props) {
                         <MemberPicker
                           selected={task?.responsible_id?.toString()}
                           onChange={(member) => {
-                            if (member)
-                              handleUpdateTask('responsible_id', member?.id);
-                            else handleUpdateTask('responsible_id', null);
+                            handleUpdateTask(
+                              'responsible_id',
+                              member?.id ? member?.id : null,
+                            );
                           }}
                         />
                       </IconButton>

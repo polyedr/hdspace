@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { ElementClickEvent } from '@Src/types';
 import { useSelector } from 'react-redux';
+import { ElementClickEvent } from '@Src/types';
 import { selectScreenByIdWrapper } from '@Redux/project/selectors/screen';
 
 interface Props {

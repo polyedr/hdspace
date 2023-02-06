@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { put, select, call } from 'redux-saga/effects';
+import { compose } from 'redux';
+import logger from 'loglevel';
 import {
   apiCreateAsset,
   apiDeleteAsset,
@@ -22,9 +24,7 @@ import {
 } from '@Src/types';
 import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
 import { HistoryMeta, UploadAssetData } from '@Redux/types';
-import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
-import logger from 'loglevel';
 import {
   selectAllAssetLists,
   selectCurrentAssetListId,
@@ -34,10 +34,10 @@ import {
 } from '../selectors/asset';
 import { selectScreenByIdWrapper } from '../selectors/screen';
 import { selectCurrentProjectId } from '../selectors/base';
-import { reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectElementById } from '../selectors/element';
 import withActionsHistory from '../wrappers/withActionsHistory';
+import { reqWrapper } from './shared';
 
 // eslint-disable-next-line consistent-return
 export function* uploadAssetHelper(
@@ -153,7 +153,10 @@ export function* loadAssetListsSaga(
         projectId: action.payload,
       },
     );
-    yield put(Actions.setSelectedAssetListId(assetLists.results[0].id));
+
+    if (assetLists.results.length > 0) {
+      yield put(Actions.setSelectedAssetListId(assetLists.results[0].id));
+    }
     yield put(Actions.setAssetLists(assetLists));
     yield put(Actions.setAssetsListsLoader(false));
   } catch (error) {

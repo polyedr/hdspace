@@ -1,4 +1,5 @@
 import React from 'react';
+import { XYCoord } from 'react-dnd';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import {
   ChildEntity,
@@ -37,7 +38,6 @@ import {
   canvasData,
   ParsedImagePalette,
 } from '@Src/types';
-import { XYCoord } from 'react-dnd';
 import {
   UpdateUISettingsParameters,
   Action,

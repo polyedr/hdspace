@@ -3,11 +3,9 @@ import { useChatContext } from 'stream-chat-react';
 
 import './EditChannel.css';
 
-import type { ChannelFilters } from 'stream-chat';
 import { UserList } from '../CreateChannel/UserList';
-
 import { CloseCreateChannel } from '../../assets';
-
+import type { ChannelFilters } from 'stream-chat';
 import type {
   TeamAttachmentType,
   TeamChannelType,
