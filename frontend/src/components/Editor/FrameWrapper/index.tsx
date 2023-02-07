@@ -84,9 +84,9 @@ const CustomHead: FC = () => {
                           -ms-overflow-style: none;  /* IE and Edge */
                           scrollbar-width: none;  /* Firefox */
                         }
-                        .root{
-                          height:100vh;
-                        }`}
+                        // .root{
+                        //   height:100vh;
+                        // }`}
       </style>
 
       {frameworkVersion && (
