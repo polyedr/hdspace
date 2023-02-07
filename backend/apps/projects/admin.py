@@ -5,7 +5,7 @@ from simple_history.admin import SimpleHistoryAdmin
 
 
 from apps.projects.models import ScreenScenario, ScenarioElement, ElementComment, ProjectIllustrationSet, \
-    ProjectImage, ProjectColumn, ColumnTaskCheckitem, ColumnTaskCustomTag, ColumnTaskLabel
+    ProjectImage, ProjectColumn, ColumnTaskCheckitem, ColumnTaskCustomTag, ColumnTaskLabel, PCategory
 from .models import *  # noqa
 
 class ScenarioElementAdmin(MPTTModelAdmin):
@@ -13,6 +13,7 @@ class ScenarioElementAdmin(MPTTModelAdmin):
 
 # admin.site.register(Project, GuardedModelAdmin)
 admin.site.register(Project, SimpleHistoryAdmin)
+admin.site.register(PCategory)
 # admin.site.register(ScreenEvent)
 admin.site.register(ProjectScreen)
 admin.site.register(ScreenScenario)

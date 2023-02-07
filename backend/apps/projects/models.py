@@ -112,6 +112,15 @@ class Project(TimeStampedModel):
         ]
 
 
+class PCategory(TimeStampedModel):
+    name = models.CharField(max_length=50, unique=True)
+    project = models.ForeignKey(
+        Project, related_name="projectcategory", on_delete=models.CASCADE, null=True
+    )
+    def __str__(self):
+        return self.name
+
+
 class ProjectScreen(TimeStampedModel):
     SCREEN_ON_HOLD = "on_hold"
     SCREEN_IN_PROGRESS = "in_progress"
@@ -132,6 +141,7 @@ class ProjectScreen(TimeStampedModel):
     project = models.ForeignKey(
         Project, related_name="projectscreen", on_delete=models.CASCADE, null=True
     )
+    category = models.ForeignKey(PCategory, related_name='ctscreens', on_delete=models.PROTECT, null=True)
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -144,7 +154,7 @@ class ProjectScreen(TimeStampedModel):
     screen_data_text = models.TextField(blank=True)
     screen_data_json = JSONField(blank=True, default=[])
 
-    history = HistoricalRecords()
+    history = HistoricalRecords(excluded_fields=['category'])
 
     def get_screen_url(self):
         return reverse(

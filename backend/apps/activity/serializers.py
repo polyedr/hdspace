@@ -20,6 +20,7 @@ class ColumnTaskHistorySerializer(serializers.ModelSerializer):
             return None
     '''
 
+
 class ProjectScreenHistorySerializer(serializers.ModelSerializer):
     history_user = UserSimpleSerializer()
     # model = serializers.CharField()
@@ -27,6 +28,7 @@ class ProjectScreenHistorySerializer(serializers.ModelSerializer):
         model = ProjectScreen.history.model
         fields = (
             "history_id",
+            # "category_id",
             "id",
             "modified",
             "name",

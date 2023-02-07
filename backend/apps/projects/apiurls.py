@@ -41,7 +41,8 @@ from .apiviews import (
     ScreencopyView, ElementcopyView, ElementmpttcopyView, ColumnsReorder, TasksReorder, ColumnTaskCheckitemList,
     ColumnTaskCheckitemDetail, ColumnTaskCommentList, ColumnTaskCommentDetail, ColumnTaskLabelList,
     ColumnTaskLabelDetail, ColumnTaskCheckitemDelete, AssignPermissionsmapsProject, ProjectScreenExportDetail,
-    ProjectScreenImportDetail, ScreeScenarioImportExportViewSet, ProjectImportExportViewSet, ProjectScreenTags)
+    ProjectScreenImportDetail, ScreeScenarioImportExportViewSet, ProjectImportExportViewSet, ProjectScreenTags,
+    PCategoryViewSet)
 
 app_name = "projects"
 
@@ -232,6 +233,7 @@ router.register(r"scenario-elements", ScenarioElementViewSet)
 router.register(r"scenario-elements-recursive", ScenarioElementRecursiveViewSet)
 router.register(r"projects", ProjectViewSet)
 router.register(r"projectimportexports", ProjectImportExportViewSet)
+router.register(r"projectcategories", PCategoryViewSet)
 # router.register(r"projects-copying", ProjectCopyingViewSet, base_name="projects_copying")
 router.register(r"screens-for-project", ProjectWithScreensViewSet)
 router.register(r"columns-for-project", ProjectWithColumnsViewSet)

@@ -41,7 +41,7 @@ from .models import (
     elements,
     scenarios,
     ElementComment, ProjectIllustrationSet, ProjectImage, ProjectColumn, ColumnTask, ColumnTaskComment,
-    ColumnTaskCheckitem, ColumnTaskLabel)
+    ColumnTaskCheckitem, ColumnTaskLabel, PCategory)
 from .serializers import (
     ProjectSerializer,
     ProjectMemberSerializer,
@@ -73,7 +73,7 @@ from .serializers import (
     duplicate_model_with_descendants, copy_element_node, copy_children, ColumnTaskCommentSerializer,
     ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer,  # ProjectScreenExportSerializer,
     ProjectScreenImportSerializer, ScreenScenarioExportSerializer, ScreenScenarioImportSerializer,
-    ProjectImportExportSerializer, ProjectScreenTagsSerializer)
+    ProjectImportExportSerializer, ProjectScreenTagsSerializer, PCategorySerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -167,6 +167,12 @@ class ProjectImportExportViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectImportExportSerializer
     # filter_backends = [DjangoFilterBackend, filters.ObjectPermissionsFilter]  # Django-Guardian&DjangoFilterBackend
+
+
+class PCategoryViewSet(viewsets.ModelViewSet):
+    # permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = PCategory.objects.all()
+    serializer_class = PCategorySerializer
 
 
 class ColumnWithTasksViewSet(viewsets.ModelViewSet):

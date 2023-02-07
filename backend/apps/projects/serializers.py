@@ -46,7 +46,7 @@ from .models import (
     ColumnTask,
     ColumnTaskComment,
     ColumnTaskCheckitem,
-    ColumnTaskLabel,
+    ColumnTaskLabel, PCategory,
 )
 
 from collections import OrderedDict
@@ -759,6 +759,12 @@ class ProjectWithScreensSerializer(TaggitSerializer, serializers.ModelSerializer
     def setup_eager_loading(qs):
         queryset = qs.select_related("user").prefetch_related("projectscreen")
         return queryset
+
+
+class PCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PCategory
+        fields = ('name',)
 
 
 class ScreenEventSerializer(serializers.ModelSerializer):
