@@ -1,4 +1,5 @@
 import { RouterState } from 'connected-react-router';
+import { StateWithHistory } from 'redux-undo';
 import React from 'react';
 import { OptionsObject, SnackbarKey } from 'notistack';
 import { XYCoord } from 'react-dnd';
@@ -242,7 +243,7 @@ export interface WireframeState {
 }
 export interface AppReduxState {
   user: UserState;
-  wireframe: WireframeState;
+  wireframe: StateWithHistory<WireframeState>;
   project: ProjectState;
   router: RouterState;
   notification: NotificationState;

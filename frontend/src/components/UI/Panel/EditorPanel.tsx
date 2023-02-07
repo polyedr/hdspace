@@ -1,9 +1,9 @@
 import React from 'react';
+import { Box, SxProps } from '@mui/material';
 import {
   PANEL_TRANSITION_DURATION,
   RIGHT_PANEL_WIDTH,
 } from '@Src/styles/Theme';
-import { Box, SxProps } from '@mui/material';
 import ELEMENT_IDS from '@Constants/elementIds';
 
 const styles: SxProps = {

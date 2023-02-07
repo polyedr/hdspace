@@ -3,14 +3,15 @@ import Draggable, {
   DraggableData,
   DraggableEventHandler,
 } from 'react-draggable';
-import Screen from './Screen';
-import { type WireframeScreen } from './Canvas';
 import { Box, SxProps } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentWireframeScreen } from '@Redux/wireframe/selectors';
 import { GRID_CELL_SPACE } from '@/constants/grid';
 import { editScreenNameAndData } from '@Redux/project/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { setActiveScreen } from '@Redux/wireframe/wireframe';
+import { type WireframeScreen } from './Canvas';
+import Screen from './Screen';
 
 interface Props {
   data: WireframeScreen;
@@ -48,6 +49,10 @@ const DraggableScreen: React.FC<Props> = ({ data, zoom, onDrag, onStop }) => {
     [onStop, dispatch, currentProjectId, data, editScreenNameAndData],
   );
 
+  const handleSetActiveScreen = () => {
+    dispatch(setActiveScreen(data.id.toString()));
+  };
+
   return (
     <Draggable
       defaultPosition={{ x, y }}
@@ -57,6 +62,7 @@ const DraggableScreen: React.FC<Props> = ({ data, zoom, onDrag, onStop }) => {
       handle={`.handle-${data.id}`}
       grid={[GRID_CELL_SPACE * zoom, GRID_CELL_SPACE * zoom]}
       bounds="parent"
+      onMouseDown={handleSetActiveScreen}
     >
       <Box
         sx={styles}

@@ -1,10 +1,10 @@
 import { put, select, takeEvery } from 'redux-saga/effects';
-import { updateConnection } from './wireframe';
-import { selectCurrentWireframeConnections } from './selectors';
 import { WireframeConnection } from '@Redux/types';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { Project } from '@Src/types';
 import { updateProject } from '@Redux/project/actions';
+import { selectCurrentWireframeConnections } from './selectors';
+import { updateConnection } from './wireframe';
 
 function* updateScreenConnections() {
   const connections: WireframeConnection[] = yield select(

@@ -5,12 +5,12 @@ import { CssBaseline } from '@mui/material';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { SnackbarProvider } from 'notistack';
+import { BrowserRouter } from 'react-router-dom';
 import ChatProvider from '@Components/Sidebar/Chat/ChatProvider';
 import history from '@/redux/history';
 import { AppThemeProvider } from '@/styles/Theme';
 import Notifier from '@/components/Notifier';
 import Routes from './Routes';
-import { BrowserRouter } from 'react-router-dom';
 
 const App: React.FC = () => (
   <SnackbarProvider

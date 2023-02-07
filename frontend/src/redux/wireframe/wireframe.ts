@@ -1,11 +1,13 @@
-import { WireframeConnection, WireframeState } from '@Redux/types';
 import { PayloadAction, createSlice, nanoid } from '@reduxjs/toolkit';
+import undoable, { includeAction } from 'redux-undo';
+import { WireframeConnection } from '@Redux/types';
+import TYPES from '@Redux/actionTypes';
 
 const initialState = {
   activeScreen: undefined,
   activeElement: undefined,
   connections: [],
-} as WireframeState;
+};
 
 const wireframeSlice = createSlice({
   initialState,
@@ -59,4 +61,13 @@ export const {
   initConnections,
 } = wireframeSlice.actions;
 
-export default wireframeSlice.reducer;
+export default undoable(wireframeSlice.reducer, {
+  filter: includeAction([
+    addConnection.toString(),
+    updateConnection.toString(),
+    setActiveScreen.toString(),
+  ]),
+  ignoreInitialState: true,
+  undoType: TYPES.WIREFRAME_UNDO,
+  redoType: TYPES.WIREFRAME_REDO,
+});

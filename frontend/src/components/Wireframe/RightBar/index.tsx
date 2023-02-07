@@ -1,15 +1,15 @@
 import React, { useCallback } from 'react';
 import { styled, Box, IconButton } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import AddIcon from '@mui/icons-material/Add';
 import {
   selectCurrentWireframeElement,
   selectCurrentWireframeScreen,
   selectCurrentWireframeScreenConnections,
 } from '@Redux/wireframe/selectors';
-import Connect from './Connect';
-import AddIcon from '@mui/icons-material/Add';
 import { addConnection } from '@Redux/wireframe/wireframe';
 import Scrollbar from '@Components/UI/Scrollbar';
+import Connect from './Connect';
 
 const RightpanelBox = styled(Box)({
   backgroundColor: 'white',

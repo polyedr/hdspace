@@ -80,5 +80,6 @@ module.exports = {
     '@typescript-eslint/restrict-template-expressions': 'off',
     '@typescript-eslint/no-base-to-string': 'off',
     'react-hooks/exhaustive-deps': 'off',
+    'react/react-in-jsx-scope': 'off',
   },
 };

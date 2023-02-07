@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { Stack, Grid } from '@mui/material';
-import Canvas from './Canvas';
-import { getProject } from '@Redux/project/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import { getProject } from '@Redux/project/actions';
 import {
   selectCurrentProject,
   selectCurrentProjectId,
 } from '@Redux/project/selectors/base';
 import { selectScreens } from '@Redux/project/selectors/screen';
+import Canvas from './Canvas';
 import RightSidebar from './RightBar';
 import LeftSidebar from './LeftBar';
 

@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { type WireframeScreen } from './Canvas';
 import {
   Card as MuiCard,
   styled,
@@ -9,11 +8,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectAllElements } from '@Redux/project/selectors/element';
 import RENDERERS from '@Components/UI/RenderElements';
 import useLayout from '@Components/Editor/hooks/useLayout';
-import ScreenFrame from './ScreenFrame';
 import { setActiveElement, setActiveScreen } from '@Redux/wireframe/wireframe';
 import { selectCurrentWireframeElement } from '@Redux/wireframe/selectors';
 import { type Screen as ScreenType } from '@Src/types';
 import { GRID_CELL_SPACE } from '@Constants/grid';
+import ScreenFrame from './ScreenFrame';
+import { type WireframeScreen } from './Canvas';
 
 interface Props {
   data: WireframeScreen;
@@ -26,12 +26,12 @@ const ElementWrapper = styled('div')<{ active: boolean }>(({ active }) => ({
   padding: 5,
 }));
 
-const Card = styled(MuiCard)<{ active: boolean }>(({ active }) => ({
+const Card = styled(MuiCard)({
   // boxShadow: `0 0 1px ${active ? 4 : 1}px rgba(0,0,0,.2)`,
   backgroundColor: 'transparent',
   boxShadow: 'none',
   overflow: 'inherit',
-}));
+});
 
 const Typography = styled(MuiTypography)({
   fontWeight: 400,
@@ -97,18 +97,13 @@ const RenderElement: React.FC<RenderElementProps> = ({
 const Screen: React.FC<Props> = ({ data, active }) => {
   const rootId = data.element;
   const allElements = useSelector(selectAllElements);
-  const dispatch = useDispatch();
-
-  const handleSceeenClick = () => {
-    dispatch(setActiveScreen(data.id.toString()));
-  };
 
   return (
-    <Card active={active} onClick={handleSceeenClick}>
+    <Card>
       <Typography variant="h6" className={`handle-${data.id} screen-control`}>
         {data.name}
       </Typography>
-      <ScreenFrame>
+      <ScreenFrame active={active}>
         <RenderElement
           screen={data}
           elementId={rootId}

@@ -3,10 +3,6 @@
 //   PropertyAccordion,
 //   PropertyAccordionDetails,
 // } from '@Components/styledComponents';
-import { selectAllElements } from '@Redux/project/selectors/element';
-import { WireframeConnection } from '@Redux/types';
-import { setActiveElement, updateConnection } from '@Redux/wireframe/wireframe';
-import { Normalized, Screen, StateElement } from '@Src/types';
 import {
   Box,
   FormControl,
@@ -23,6 +19,10 @@ import {
 import { Remove as RemoveIcon, Add as AddIcon } from '@mui/icons-material';
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectAllElements } from '@Redux/project/selectors/element';
+import { WireframeConnection } from '@Redux/types';
+import { setActiveElement, updateConnection } from '@Redux/wireframe/wireframe';
+import { Normalized, Screen, StateElement } from '@Src/types';
 
 interface Props {
   activeScreen?: string;

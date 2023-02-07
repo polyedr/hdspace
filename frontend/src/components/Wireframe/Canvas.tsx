@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Xarrow, { Xwrapper, useXarrow } from 'react-xarrows';
-import DraggableScreen from './DraggableScreen';
-import type { Normalized, Project, Screen as ProjectScren } from '@/types';
 import GridLines from 'react-gridlines';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -11,9 +9,11 @@ import {
 } from '@/redux/project/actions';
 import { FRAMEWORKS_LIST } from '@/constants/frameworks';
 import { GRID_CELL_SPACE, GRID_STROKE_WIDTH } from '@/constants/grid';
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from './constants';
 import { selectCompleteConnections } from '@/redux/wireframe/selectors';
 import { initConnections } from '@Redux/wireframe/wireframe';
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from './constants';
+import DraggableScreen from './DraggableScreen';
+import type { Normalized, Project, Screen as ProjectScren } from '@/types';
 
 export type WireframeScreen = ProjectScren & {
   position: { x: number; y: number };
@@ -81,6 +81,7 @@ const Canvas: React.FC<{
 
   const [screens] = useState<Screens>(buildScreenData(_screens));
   const xArrowUpdateInterval = useRef(null);
+  const xArrowUpdateIntervalTimeout = useRef(null);
 
   const connections = useSelector(selectCompleteConnections);
 
@@ -95,9 +96,16 @@ const Canvas: React.FC<{
       clearInterval(xArrowUpdateInterval.current);
     }
 
+    if (xArrowUpdateIntervalTimeout.current) {
+      clearTimeout(xArrowUpdateIntervalTimeout.current);
+    }
+
     xArrowUpdateInterval.current = setInterval(updateXArrow, 10);
-    setTimeout(() => clearInterval(xArrowUpdateInterval.current), 2000);
-    xArrowUpdateInterval.current = null;
+    xArrowUpdateIntervalTimeout.current = setTimeout(() => {
+      clearInterval(xArrowUpdateInterval.current);
+      xArrowUpdateInterval.current = null;
+      xArrowUpdateIntervalTimeout.current = null;
+    }, 2000);
   };
 
   const onDrag = () => {
@@ -141,6 +149,9 @@ const Canvas: React.FC<{
   return (
     <Xwrapper>
       <TransformWrapper
+        ref={(ref) => {
+          window.wireframeCanvas = ref;
+        }}
         disabled={isMoveable}
         limitToBounds={true}
         centerOnInit={true}

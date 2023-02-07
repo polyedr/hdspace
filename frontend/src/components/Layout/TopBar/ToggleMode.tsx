@@ -1,6 +1,7 @@
-import React from 'react';
 import { Box, Button, ToggleButton, styled } from '@mui/material';
 import { NavLink, useParams, useRouteMatch } from 'react-router-dom';
+import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
+import { useWireframe } from '@Src/hooks/useWireframe';
 import { EditorModeIcon, WireframeModeIcon } from './../icons';
 
 const AlignButton = styled(Button)(({ theme }) => ({
@@ -63,10 +64,14 @@ const ToggleMode = () => {
     screenId ? `/${screenId}` : ''
   }`;
 
-  const isWireframeMode = useRouteMatch({
-    path: wireframePath,
-    exact: true,
-  });
+  const { isWireframeMode } = useWireframe();
+
+  const handleAlign = () => {
+    if (window.wireframeCanvas) {
+      const canvas = window.wireframeCanvas as ReactZoomPanPinchRef;
+      canvas.centerView();
+    }
+  };
 
   return (
     <>
@@ -82,7 +87,7 @@ const ToggleMode = () => {
         </ActiveLink>
       </ModeToggleBox>
       {isWireframeMode && (
-        <AlignButton variant="contained" disableElevation>
+        <AlignButton onClick={handleAlign} variant="contained" disableElevation>
           Auto align
         </AlignButton>
       )}

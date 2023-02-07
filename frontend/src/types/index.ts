@@ -4,8 +4,8 @@ import { SvgIconTypeMap } from '@mui/material';
 import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
-import { IBoardForUI } from './pmtools/board';
 import { WireframeConnection } from '@Redux/types';
+import { IBoardForUI } from './pmtools/board';
 
 export type IconType = OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
 
