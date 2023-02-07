@@ -1,17 +1,17 @@
 import { combineReducers } from 'redux';
-import dataReducer from './data';
 import TYPES from '../../actionTypes';
 import { initialEdit, initialUi } from '../initial';
-import controlReducer from './control';
-import editReducer from './edit';
-import communicationReducer from './communication';
 import { composeReducers, makeResetStateReducer } from '../../../shared/redux';
-import uiReducer from './ui';
 import {
   ProjectEditState,
   ProjectUiState,
   ResetProjectState,
 } from '../../types';
+import dataReducer from './data';
+import controlReducer from './control';
+import editReducer from './edit';
+import communicationReducer from './communication';
+import uiReducer from './ui';
 
 export default combineReducers({
   data: dataReducer,

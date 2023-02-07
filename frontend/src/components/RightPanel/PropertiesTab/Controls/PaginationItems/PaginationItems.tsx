@@ -2,11 +2,11 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import AddIcon from '@mui/icons-material/Add';
 import { makeStyles } from '@mui/styles';
+import { IconButton, lighten, Theme } from '@mui/material';
 import { addChildToElement } from '@Redux/project/actions';
 import { BreadcrumbItemElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { IconButton, lighten, Theme } from '@mui/material';
 import PaginationItem from './PaginationItem';
 
 const useStyles = makeStyles<Theme>(({ palette }) => ({

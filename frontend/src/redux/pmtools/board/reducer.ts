@@ -1,11 +1,11 @@
 import { createReducer, Handlers } from 'reduxsauce';
 import TYPES from '@Redux/actionTypes';
+import { BoardAction, BoardState, BoardTask } from '../types';
 import * as columnActions from './actions/columns';
 import * as taskActions from './actions/tasks';
 import * as commentActions from './actions/comments';
 import * as labelsActions from './actions/labels';
 import * as checklistActions from './actions/checklist';
-import { BoardAction, BoardState, BoardTask } from '../types';
 
 const INITIAL_STATE: BoardState = {
   fetching: true,

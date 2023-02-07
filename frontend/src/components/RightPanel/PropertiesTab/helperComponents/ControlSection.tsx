@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { splitWords } from '@Utils/stringHelper';
 import { AccordionDetails } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useDispatch } from 'react-redux';
+import { splitWords } from '@Utils/stringHelper';
 import {
   PropertyAccordianSummary,
   PropertyAccordion,
 } from '@Components/styledComponents';
 // import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { setImageList } from '@Redux/project/actions';
-import { useDispatch } from 'react-redux';
 
 interface Props {
   title: string;

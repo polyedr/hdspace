@@ -13,8 +13,8 @@ import {
 import { Form, Field } from 'react-final-form';
 import { ColorPicker, createColor } from 'mui-color';
 import { useDispatch } from 'react-redux';
-import { updateColumn } from '@Redux/pmtools/board/actions/columns';
 import CloseIcon from '@mui/icons-material/Close';
+import { updateColumn } from '@Redux/pmtools/board/actions/columns';
 
 const StyledDialog = styled(Dialog)({
   '& .MuiPaper-root': {

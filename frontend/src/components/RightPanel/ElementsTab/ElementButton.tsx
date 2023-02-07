@@ -9,6 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
 import ReactTooltip from 'react-tooltip';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+import { Button, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import Scrollbars from 'react-custom-scrollbars';
 import { splitWords } from '@Utils/stringHelper';
 import { isAvailableChild } from '@Utils/AvailableChildrenHelper';
 import { createElements } from '@Redux/project/actions';
@@ -19,9 +22,6 @@ import {
 } from '@Redux/project/selectors/element';
 import { ElementType } from '@Constants/dragAndDrop';
 import { ElementData } from '@Src/types';
-import { Button, Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import Scrollbars from 'react-custom-scrollbars';
 import PreviewCanvas from '@Components/Editor/PreviewCanvas/index';
 import ElementButtonIcon from './ElementButtonIcon';
 

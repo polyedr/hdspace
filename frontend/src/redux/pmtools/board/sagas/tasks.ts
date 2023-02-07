@@ -1,7 +1,7 @@
-import { BoardColumn } from '@Redux/pmtools/types';
-import * as tasksApi from '@Api/pmtools/board/tasksApi';
 import { call } from 'ramda';
 import { put, select } from 'redux-saga/effects';
+import { BoardColumn } from '@Redux/pmtools/types';
+import * as tasksApi from '@Api/pmtools/board/tasksApi';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import * as taskActions from '../actions/tasks';

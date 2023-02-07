@@ -16,7 +16,6 @@ import { PinnedMessageList } from '../PinnedMessageList/PinnedMessageList';
 import { TeamChannelHeader } from '../TeamChannelHeader/TeamChannelHeader';
 // eslint-disable-next-line import/no-cycle
 import { ThreadMessageInput } from '../TeamMessageInput/ThreadMessageInput';
-
 import type {
   TeamAttachmentType,
   TeamChannelType,

@@ -7,12 +7,6 @@ import {
   Delete as DeleteIcon,
   Group as GroupIcon,
 } from '@mui/icons-material';
-import convertDateToRelative from '@Utils/convertDateToRelative';
-import {
-  deleteProject,
-  updateNameAndTagsProject,
-} from '@Redux/project/actions';
-import { selectUserData } from '@Redux/user/selectors';
 import {
   TableRow,
   TableCell,
@@ -20,6 +14,12 @@ import {
   IconButton,
   Theme,
 } from '@mui/material';
+import convertDateToRelative from '@Utils/convertDateToRelative';
+import {
+  deleteProject,
+  updateNameAndTagsProject,
+} from '@Redux/project/actions';
+import { selectUserData } from '@Redux/user/selectors';
 import Dialog from '../Dialogs/Dialog';
 import { Project } from '../../types';
 import TagsList from './TagsList';

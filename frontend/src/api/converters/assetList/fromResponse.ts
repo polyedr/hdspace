@@ -1,5 +1,5 @@
-import { AssetsList, PaginatedArray } from '@Src/types';
 import { AxiosResponse } from 'axios';
+import { AssetsList, PaginatedArray } from '@Src/types';
 import { ServerAsset } from '../asset/fromResponse';
 
 export interface ServerAssetList {

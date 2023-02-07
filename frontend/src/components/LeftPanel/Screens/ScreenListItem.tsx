@@ -5,12 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useHistory } from 'react-router';
 import {
-  editScreenNameAndData,
-  setActiveElement,
-  deleteScreen,
-} from '@Redux/project/actions';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import {
   ListItem,
   ListItemIcon,
   Box,
@@ -19,6 +13,12 @@ import {
   Typography,
   Theme,
 } from '@mui/material';
+import {
+  editScreenNameAndData,
+  setActiveElement,
+  deleteScreen,
+} from '@Redux/project/actions';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { Screen } from '../../../types';
 import ScreenLogo from './ScreenLogo';
 import ScreenEditDialog from './ScreenEditDialog';

@@ -2,9 +2,9 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
+import { AppThemeProvider } from '@Src/styles/Theme';
 import Navigator from '../../../../components/LeftPanel/Navigator';
 import { mockState } from '../../test-utils';
-import { AppThemeProvider } from '@Src/styles/Theme';
 
 describe('Navigator', () => {
   let store;

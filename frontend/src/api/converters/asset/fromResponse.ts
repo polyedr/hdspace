@@ -1,5 +1,5 @@
-import { Asset, PaginatedArray, ParsedImagePalette } from '@Src/types';
 import { AxiosResponse } from 'axios';
+import { Asset, PaginatedArray, ParsedImagePalette } from '@Src/types';
 
 export interface ServerAsset {
   id: string;

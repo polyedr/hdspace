@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormControlLabel, MenuItem } from '@mui/material';
 import {
   ColumnsElement,
   PropertiesChangeProps,
@@ -6,7 +7,6 @@ import {
 } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
-import { FormControlLabel, MenuItem } from '@mui/material';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/NativeColumns/styles';
 

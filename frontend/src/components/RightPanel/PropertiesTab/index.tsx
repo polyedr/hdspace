@@ -1,6 +1,10 @@
 // @ts-nocheck
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import logger from 'loglevel';
+import ToggleButton from '@mui/material/ToggleButton';
+import { ToggleButtonGroup } from '@mui/material';
 import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';
 import {
   selectActiveElement,
@@ -43,14 +47,10 @@ import {
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { makeStyles } from '@mui/styles';
 
-import logger from 'loglevel';
-import ToggleButton from '@mui/material/ToggleButton';
-import { ToggleButtonGroup } from '@mui/material';
+import Scrollbar from '../../UI/Scrollbar';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
-import Scrollbar from '../../UI/Scrollbar';
 import ControlSection from './helperComponents/ControlSection';
 import PseudoSelectorsSection from './PseudoSelectorsSection';
 import ElementType from './Controls/ElementType/ElementType';
@@ -88,6 +88,15 @@ const useStyles = makeStyles({
     fontWeight: 'bold',
     fontSize: '12px',
     letterSpacing: '145%',
+  },
+  rightEmptyPanel: {
+    color: '#fff',
+    height: '100%',
+    display: 'flex',
+    overflow: 'hidden',
+    transition: 'width 250ms ease',
+    flexDirection: 'column',
+    backgroundColor: '#fff',
   },
   toggleButton: {
     color: '#81818E',
@@ -147,8 +156,6 @@ const PropertiesTab: React.FC = () => {
     setShowRemoveGroupDialog(false);
     setEditedStyles(null);
   }, []);
-
-  useEffect(() => {});
 
   const handleConfirmSourceUnbinding = () => {
     if (!editedStyles) {
@@ -442,7 +449,7 @@ const PropertiesTab: React.FC = () => {
     !activeElement ||
     [masterCoreElementId, masterGroupsElementId].includes(activeElement.id)
   ) {
-    return null;
+    return <div className={classes.rightEmptyPanel}></div>;
   }
 
   const collapseAll = () => {

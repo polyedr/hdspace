@@ -1,5 +1,5 @@
-import { VIARegion } from '@Src/types';
 import { v4 } from 'uuid';
+import { VIARegion } from '@Src/types';
 
 export const addId = <T extends Record<string, any>>(item: T) => {
   if (

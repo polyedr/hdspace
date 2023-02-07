@@ -14,6 +14,9 @@ import AtlasTree, {
   TreeSourcePosition,
   TreeItem as TreeItemType,
 } from '@atlaskit/tree';
+import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import logger from 'loglevel';
 import TreeItem from '@Components/LeftPanel/Navigator/components/TreeItem';
 import {
   copyActiveElement,
@@ -32,7 +35,6 @@ import {
 } from '@Components/LeftPanel/Navigator/utils';
 import { canElementBeAdded } from '@Utils/normalizedStateHelpers';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   Normalized,
   StateElement,
@@ -51,9 +53,7 @@ import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu'
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { makeStyles } from '@mui/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import logger from 'loglevel';
 import Scrollbar from '../../../UI/Scrollbar';
 
 const useStyles = makeStyles({

@@ -1,5 +1,5 @@
-import { STREAM_CHAT_CLIENT_ID } from '@Src/config/settings';
 import { StreamChat, LiteralStringForUnion } from 'stream-chat';
+import { STREAM_CHAT_CLIENT_ID } from '@Src/config/settings';
 
 export type TeamAttachmentType = Record<string, unknown>;
 export type TeamChannelType = Record<string, unknown>;

@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectProjectByIdWrapper } from '@Redux/project/selectors/base';
 import {
   Checkbox,
   FormControlLabel as MuiFormControlLabel,
@@ -12,10 +11,11 @@ import {
   Button,
   Typography,
 } from '@mui/material';
-import * as Actions from '@Redux/permissions/actions';
 import CloseIcon from '@mui/icons-material/Close';
-import { UserData, UserProjectPermission } from '@Src/types';
 import { styled } from '@mui/material/styles';
+import { selectProjectByIdWrapper } from '@Redux/project/selectors/base';
+import * as Actions from '@Redux/permissions/actions';
+import { UserData, UserProjectPermission } from '@Src/types';
 import InviteUserSearch from './InviteUserSearch';
 
 const Dialog = styled(MuiDialog)({

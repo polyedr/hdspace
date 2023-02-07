@@ -3,6 +3,8 @@ import React, { memo, useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import { BoundingStyles, StateElement } from '@Src/types';
 import {
   makeButtons,
@@ -26,8 +28,6 @@ import {
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
-import { makeStyles } from '@mui/styles';
-import { Theme } from '@mui/material';
 import Icon from '../../../../UI/Icon';
 
 interface Props {

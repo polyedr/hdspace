@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import CodeEditor from '@Components/UI/CodeEditor';
 import { cssCamelize, cssDecamelize } from '@Utils/CSSConverter';
 

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentProject } from '@Redux/project/selectors/base';
-import { updateNameAndTagsProject } from '@Redux/project/actions';
 import { AppBar, Toolbar, Box } from '@mui/material';
 import styled from 'styled-components';
+import { selectCurrentProject } from '@Redux/project/selectors/base';
+import { updateNameAndTagsProject } from '@Redux/project/actions';
 import Dialog from '../../../Dialogs/Dialog';
-import Avatar from './Avatar';
 import Logo from '../../../UI/Logo';
+import Avatar from './Avatar';
 import TopbarTabs from './TopbarTabs';
 
 const CustomeToolBar = styled(Toolbar)`

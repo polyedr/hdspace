@@ -11,6 +11,10 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch, useSelector } from 'react-redux';
+import prettyBytes from 'pretty-bytes';
+import { useDebouncedCallback } from 'use-debounce';
+import { createStyles, makeStyles } from '@mui/styles';
+import Skeleton from 'react-loading-skeleton';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   importHtml,
@@ -19,13 +23,9 @@ import {
   setValueImport,
 } from '@Redux/project/actions';
 
-import prettyBytes from 'pretty-bytes';
 import prevent from '@Utils/preventEvent';
-import { useDebouncedCallback } from 'use-debounce';
-import { createStyles, makeStyles } from '@mui/styles';
 import { selectCanImportSite } from '@Redux/project/selectors/screen';
 import { selectImportValue } from '@Redux/project/selectors/base';
-import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 const useStyles = makeStyles<Theme>(({ palette, shape, spacing }) =>

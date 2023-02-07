@@ -4,10 +4,10 @@ import { useDispatch } from 'react-redux';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import { Popover, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { createElementsGroup } from '@Redux/project/actions';
 import logger from 'loglevel';
 
 import { makeStyles } from '@mui/styles';
+import { createElementsGroup } from '@Redux/project/actions';
 import { StateElement } from '@Src/types';
 import { useButtonStyles } from '../hooks/styles';
 
