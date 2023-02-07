@@ -52,7 +52,7 @@ export function EditorModeIcon() {
         y="3"
         width="16"
         height="16"
-        stroke="#B7B9BD"
+        stroke="currentColor"
         strokeWidth="1.75"
       />
       <rect
@@ -61,7 +61,7 @@ export function EditorModeIcon() {
         width="4"
         height="4"
         fill="white"
-        stroke="#B7B9BD"
+        stroke="currentColor"
         strokeWidth="1.75"
       />
       <rect
@@ -70,7 +70,7 @@ export function EditorModeIcon() {
         width="4"
         height="4"
         fill="white"
-        stroke="#B7B9BD"
+        stroke="currentColor"
         strokeWidth="1.75"
       />
       <rect
@@ -79,7 +79,7 @@ export function EditorModeIcon() {
         width="4"
         height="4"
         fill="white"
-        stroke="#B7B9BD"
+        stroke="currentColor"
         strokeWidth="1.75"
       />
       <rect
@@ -88,7 +88,7 @@ export function EditorModeIcon() {
         width="4"
         height="4"
         fill="white"
-        stroke="#B7B9BD"
+        stroke="currentColor"
         strokeWidth="1.75"
       />
     </svg>
@@ -110,12 +110,12 @@ export function WireframeModeIcon() {
         width="10"
         height="19"
         rx="1"
-        stroke="#B7B9BD"
+        stroke="currentColor"
         strokeWidth="2"
       />
       <path
         d="M24.2071 11.7071C24.5976 11.3166 24.5976 10.6834 24.2071 10.2929L17.8431 3.92893C17.4526 3.53841 16.8195 3.53841 16.4289 3.92893C16.0384 4.31946 16.0384 4.95262 16.4289 5.34315L22.0858 11L16.4289 16.6569C16.0384 17.0474 16.0384 17.6805 16.4289 18.0711C16.8195 18.4616 17.4526 18.4616 17.8431 18.0711L24.2071 11.7071ZM6.5 12L23.5 12L23.5 10L6.5 10L6.5 12Z"
-        fill="#B7B9BD"
+        fill="currentColor"
       />
     </svg>
   );

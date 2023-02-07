@@ -45,8 +45,14 @@ const ModeToggleBox = styled(Box)(({ theme }) => ({
   height: '36px',
   overflow: 'hidden',
 
-  '& button': {
+  '& 	.MuiButtonBase-root': {
     borderRadius: 0,
+    border: 'none',
+    color: '#B7B9BD',
+
+    '&.active': {
+      color: '#5064FF',
+    },
 
     '&:hover': {
       backgroundColor: theme.palette.grey[200],
