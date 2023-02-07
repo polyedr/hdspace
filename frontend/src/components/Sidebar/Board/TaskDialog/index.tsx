@@ -19,19 +19,19 @@ import {
 } from '@mui/material';
 import Slide from '@mui/material/Slide';
 import Stack from '@mui/material/Stack';
+import { useDispatch } from 'react-redux';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
 import { TransitionProps } from '@mui/material/transitions';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import DeleteIcon from '@mui/icons-material/Delete';
+import Avatar from '@Components/UI/Avatar';
+import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
+import { BoardTask } from '@Redux/pmtools/types';
 import {
   deleteTask,
   fetchTask,
   updateTask,
 } from '@Redux/pmtools/board/actions/tasks';
-import { BoardTask } from '@Redux/pmtools/types';
-import Avatar from '@Components/UI/Avatar';
-import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import Checklist from './Checklist';
 import Comment from './Comments';
 import Description from './Description';
@@ -159,7 +159,8 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
   const [showDelete, setShowDelete] = useState(false);
   const [storyPoints, setStoryPoints] = useState(task.story_points.toString());
   const [time, setTime] = useState(task.time);
-  
+  const [error, setStoryError] = useState('');
+
   useEffect(() => {
     if (open) {
       dispatch(fetchTask(task.id));
@@ -243,6 +244,143 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                 <CloseIcon />
               </ActionIconwrapper>
             </Stack>
+            <TableContainer>
+              <Table aria-label="simple table">
+                <TableBody>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Status
+                    </TableCell>
+                    <TableCell>
+                      <Status
+                        onChange={(status) =>
+                          handleUpdateTask('status', status)
+                        }
+                        task={task}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Due Date
+                    </TableCell>
+                    <TableCell>
+                      <DueDate
+                        date={task.due_date}
+                        onChange={(date) => handleUpdateTask('due_date', date)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Assignee
+                    </TableCell>
+                    <TableCell>
+                      <MemberPicker
+                        selected={task?.assignee_id?.toString()}
+                        onChange={(member) => {
+                          handleUpdateTask(
+                            'assignee_id',
+                            member?.id ? member?.id : null,
+                          );
+                        }}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Responsible
+                    </TableCell>
+                    <TableCell>
+                      <IconButton>
+                        <MemberPicker
+                          selected={task?.responsible_id?.toString()}
+                          onChange={(member) => {
+                            handleUpdateTask(
+                              'responsible_id',
+                              member?.id ? member?.id : null,
+                            );
+                          }}
+                        />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Priority
+                    </TableCell>
+                    <TableCell>
+                      <Priority
+                        onChange={(priority) =>
+                          handleUpdateTask('priority', priority)
+                        }
+                        task={task}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Story Points
+                    </TableCell>
+                    <TableCell>
+                      <StandardTextField
+                        type="number"
+                        InputProps={{
+                          style: { width: '85px' },
+                          inputProps: { min: 0 },
+                        }}
+                        value={storyPoints}
+                        onChange={handleChangeStoryPoints}
+                        onBlur={() => {
+                          if (parseInt(storyPoints) > 2147483647) {
+                            setStoryError(
+                              'Story point should be less then 2147483647',
+                            );
+                          } else {
+                            setStoryError('');
+                            handleUpdateTask('story_points', storyPoints);
+                          }
+                        }}
+                        error={error !== ''}
+                        helperText={error}
+                        variant="standard"
+                        autoComplete="off"
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Time
+                    </TableCell>
+                    <TableCell>
+                      <StandardTextField
+                        onChange={handleChangeTime}
+                        type="text"
+                        variant="standard"
+                        autoComplete="off"
+                        onBlur={() => handleUpdateTask('time', time)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Author
+                    </TableCell>
+                    <TableCell>
+                      <AuthorButton variant="text">
+                        <AuthorAvatar
+                          alt={`${task.author.first_name} ${task.author.last_name}`}
+                          src={task.author.profile_avatar}
+                          uniqueKey={task.author.id}
+                          tooltipDisabled
+                        />
+                        <span>{`${task.author.first_name} ${task.author.last_name}`}</span>
+                      </AuthorButton>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Grid>
         </Grid>
 
