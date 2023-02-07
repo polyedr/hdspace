@@ -163,11 +163,13 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 class ProjectScreenTagsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
+        '''
         fields = (
             "id",
             "name",
         )
-        # fields = "__all__"
+        '''
+        fields = "__all__"
 
 
 class ProjectScreenMultipleSerializer(BulkSerializerMixin, serializers.ModelSerializer):

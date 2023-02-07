@@ -310,9 +310,13 @@ class ProjectScreenTags(viewsets.ViewSet):
     '''
 
     def list(self, request):
-        queryset = ProjectScreen.tags.all()
+        # queryset = ProjectScreen.objects.all()
+        # queryset = queryset.filter(project__id=2)
+        # queryset = queryset.tags.all()
+        # queryset = ProjectScreen.filter(project__id=2).tags.all()
         # print("a", queryset)
-    # serializer_class = ProjectScreenTagsSerializer
+        # serializer_class = ProjectScreenTagsSerializer
+        queryset = ProjectScreen.tags.all()
         serializer = ProjectScreenTagsSerializer(queryset, many=True)
         return Response(serializer.data)
 
