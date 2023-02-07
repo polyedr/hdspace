@@ -2,6 +2,7 @@
 from urllib.parse import urlparse
 
 from django.core.mail import send_mail
+from django.db.models import Count
 from django_bulk_update.helper import bulk_update
 import json
 
@@ -70,9 +71,9 @@ from .serializers import (
     ImageSerializer,
     ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer, ImagePaletteSerializer,
     duplicate_model_with_descendants, copy_element_node, copy_children, ColumnTaskCommentSerializer,
-    ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer,# ProjectScreenExportSerializer,
+    ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer,  # ProjectScreenExportSerializer,
     ProjectScreenImportSerializer, ScreenScenarioExportSerializer, ScreenScenarioImportSerializer,
-    ProjectImportExportSerializer)
+    ProjectImportExportSerializer, ProjectScreenTagsSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -165,7 +166,7 @@ class ProjectImportExportViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Project.objects.all()
     serializer_class = ProjectImportExportSerializer
-    # filter_backends = [DjangoFilterBackend, filters.ObjectPermissionsFilter]  # Django-Guardian and DjangoFilterBackend
+    # filter_backends = [DjangoFilterBackend, filters.ObjectPermissionsFilter]  # Django-Guardian&DjangoFilterBackend
 
 
 class ColumnWithTasksViewSet(viewsets.ModelViewSet):
@@ -297,6 +298,25 @@ class ProjectScreenList(generics.ListCreateAPIView):
     serializer_class = ProjectScreenSerializer
 
 
+class ProjectScreenTags(viewsets.ViewSet):
+    """
+    List all project screens, or create a new project screen.
+    """
+    '''
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = {'tags__name': ['exact'], 'name': ['exact'], 'project': ['exact'],
+                        'status': ['exact'], 'created': ['lte', 'gte', 'lt', 'gt'],
+                        'updated': ['lte', 'gte', 'lt', 'gt']}
+    '''
+
+    def list(self, request):
+        queryset = ProjectScreen.tags.all()
+        # print("a", queryset)
+    # serializer_class = ProjectScreenTagsSerializer
+        serializer = ProjectScreenTagsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
 class ProjectScreenDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a project screen
@@ -414,10 +434,12 @@ def send_email_confirmation(instance):
         from_email = "Adevi Admin <info@adevi.info>"
 
         # message = get_template('email/email.html').render(order_information)
-        message = "The task " + str(instance.id) + " " + str(instance.description) + " subscription list have been changed recently. " + ",".join(to_email)
+        message = "The task " + str(instance.id) + " " + str(instance.description) + \
+                  " subscription list have been changed recently. " + ",".join(to_email)
         send_mail(subject, message, from_email, to_email, fail_silently=False)
     except IOError as e:
         return e
+
 
 class ColumnTaskDetail(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -1132,7 +1154,8 @@ class ProjectcopyView(APIView):
     # user = serializers.PrimaryKeyRelatedField(default=serializers.CurrentUserDefault())
 
     def post(self, request, format=None):
-        WHITELIST = ['projects', 'projectscreen', 'screenscenario', 'elements', 'children', 'projectillustrationset', 'images']
+        WHITELIST = ['projects', 'projectscreen', 'screenscenario', 'elements', 'children', 'projectillustrationset',
+                     'images']
         projectid = request.data['projectid']
         project = Project.objects.get(pk=projectid)
         project_clone = duplicate_model_with_descendants(project, WHITELIST)
@@ -1255,4 +1278,3 @@ class TasksReorder(APIView):
         if affected_rows:
             return Response({'affected_rows': affected_rows})
         return Response({}, status.HTTP_204_NO_CONTENT)
-

@@ -16,6 +16,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
 from rest_framework_recursive.fields import RecursiveField
+from taggit.models import Tag
 
 from taggit_serializer.serializers import TagListSerializerField, TaggitSerializer
 
@@ -157,6 +158,16 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             "tags",
         )
         extra_kwargs = {"screenscenario": {"read_only": True}}
+
+
+class ProjectScreenTagsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = (
+            "id",
+            "name",
+        )
+        # fields = "__all__"
 
 
 class ProjectScreenMultipleSerializer(BulkSerializerMixin, serializers.ModelSerializer):
@@ -799,7 +810,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class ColumnTaskCommentSerializer(serializers.ModelSerializer):
     user = UserSimpleSerializer(read_only=True)
-    # user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='user', read_only=True)
+
     class Meta:
         model = ColumnTaskComment
         fields = ("id", "text", "created", "modified", "user", "columntask")

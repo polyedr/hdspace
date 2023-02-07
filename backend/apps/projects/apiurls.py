@@ -41,7 +41,7 @@ from .apiviews import (
     ScreencopyView, ElementcopyView, ElementmpttcopyView, ColumnsReorder, TasksReorder, ColumnTaskCheckitemList,
     ColumnTaskCheckitemDetail, ColumnTaskCommentList, ColumnTaskCommentDetail, ColumnTaskLabelList,
     ColumnTaskLabelDetail, ColumnTaskCheckitemDelete, AssignPermissionsmapsProject, ProjectScreenExportDetail,
-    ProjectScreenImportDetail, ScreeScenarioImportExportViewSet, ProjectImportExportViewSet)
+    ProjectScreenImportDetail, ScreeScenarioImportExportViewSet, ProjectImportExportViewSet, ProjectScreenTags)
 
 app_name = "projects"
 
@@ -97,6 +97,8 @@ api_column_task_patterns = [
 api_project_screen_patterns = [
     path("project-screens/", ProjectScreenList.as_view(),
          name="api_project_screens"),
+    path("project-screens-tags/", ProjectScreenTags.as_view({'get': 'list'}),
+         name="api_project_screens_tags"),
     path(
         "project-screens-multiple/",
         ProjectScreenMultipleView.as_view(),
