@@ -38,7 +38,11 @@ const useStyles = makeStyles<Theme, { isActive: boolean }>({
     width: '8px !important',
     height: '8px !important',
     backgroundColor: 'white',
-    border: '1px #5A899D solid',
+    border: '1px #128A72 solid',
+
+    '&:hover': {
+      border: '1px #128A72 solid',
+    },
   },
   topHandle: {
     transform: 'translateX(-50%)',
@@ -341,7 +345,7 @@ const Borders: React.FC<Props> = ({
         <Rnd
           position={{ x: left, y: top }}
           size={{ width, height }}
-          style={{ border: '1px #5A899D solid' }}
+          style={{ border: '1px #128A72 solid' }}
           onResize={onResize}
           onResizeStop={onResize}
           disableDragging

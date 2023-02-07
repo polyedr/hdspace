@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '12px',
     lineHeight: 1,
     color: theme.palette.common.white,
-    background: '#5A899D',
+    background: '#128A72',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
