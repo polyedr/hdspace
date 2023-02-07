@@ -130,6 +130,7 @@ const Share: FC<Props> = () => {
     },
     [dispatch, projectId, screenId, user.id],
   );
+
   return (
     <>
       <ToggleButton

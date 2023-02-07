@@ -26,6 +26,7 @@ const UnstyledInput = React.forwardRef<HTMLInputElement, RendererProps>(
           classes.ownStyles,
           isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
+        value={textContent}
         type={type}
         readOnly={isDisabled}
         defaultValue={textContent}

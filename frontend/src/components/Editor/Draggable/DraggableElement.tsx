@@ -95,7 +95,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       !element.parameters.sourceElementId &&
       canDragAndDrop &&
       !isProto,
-    end: (dragSource, monitor) => {
+    end: (_, monitor) => {
       if (!monitor.didDrop()) {
         dispatch(setCurrentDropTargetParams(null));
       }
@@ -213,7 +213,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       onMouseLeave={mouseLeaveHandler}
       onClick={clickHandler}
     >
-      {element.children.map((childId: string, index: number) => (
+      {element.children.map((childId: string) => (
         <DraggableElement
           key={childId.toString()}
           elementId={childId}
