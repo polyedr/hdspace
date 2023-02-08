@@ -73,7 +73,7 @@ from .serializers import (
     duplicate_model_with_descendants, copy_element_node, copy_children, ColumnTaskCommentSerializer,
     ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer,  # ProjectScreenExportSerializer,
     ProjectScreenImportSerializer, ScreenScenarioExportSerializer, ScreenScenarioImportSerializer,
-    ProjectImportExportSerializer, ProjectScreenTagsSerializer, PCategorySerializer)
+    ProjectImportExportSerializer, ProjectScreenTagsSerializer, PCategorySerializer, ProjectWithCategoriesSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -169,10 +169,21 @@ class ProjectImportExportViewSet(viewsets.ModelViewSet):
     # filter_backends = [DjangoFilterBackend, filters.ObjectPermissionsFilter]  # Django-Guardian&DjangoFilterBackend
 
 
+class ProjectWithCategoriesViewSet(viewsets.ModelViewSet):
+    # permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = Project.objects.all()
+    serializer_class = ProjectWithCategoriesSerializer
+    # filter_backends = [DjangoFilterBackend, filters.ObjectPermissionsFilter]  # Django-Guardian&DjangoFilterBackend
+
+
 class PCategoryViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = PCategory.objects.all()
     serializer_class = PCategorySerializer
+    filter_backends = [DjangoFilterBackend]  # Django-Guardian and DjangoFilterBackend
+    filterset_fields = {'project': ['exact'], 'name': ['exact'],
+                        'created': ['lte', 'gte', 'lt', 'gt'],
+                        'modified': ['lte', 'gte', 'lt', 'gt']}
 
 
 class ColumnWithTasksViewSet(viewsets.ModelViewSet):

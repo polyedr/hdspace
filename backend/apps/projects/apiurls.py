@@ -42,7 +42,7 @@ from .apiviews import (
     ColumnTaskCheckitemDetail, ColumnTaskCommentList, ColumnTaskCommentDetail, ColumnTaskLabelList,
     ColumnTaskLabelDetail, ColumnTaskCheckitemDelete, AssignPermissionsmapsProject, ProjectScreenExportDetail,
     ProjectScreenImportDetail, ScreeScenarioImportExportViewSet, ProjectImportExportViewSet, ProjectScreenTags,
-    PCategoryViewSet)
+    PCategoryViewSet, ProjectWithCategoriesViewSet)
 
 app_name = "projects"
 
@@ -237,6 +237,7 @@ router.register(r"projectcategories", PCategoryViewSet)
 # router.register(r"projects-copying", ProjectCopyingViewSet, base_name="projects_copying")
 router.register(r"screens-for-project", ProjectWithScreensViewSet)
 router.register(r"columns-for-project", ProjectWithColumnsViewSet)
+router.register(r"categories-for-project", ProjectWithCategoriesViewSet)
 router.register(r"members-for-project", ProjectWithMembersViewSet)
 router.register(r"tasks-for-column", ColumnWithTasksViewSet)
 

@@ -146,6 +146,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
         fields = (
             "status",
             "project",
+            "category",
             "name",
             "buoyancy",
             "id",
@@ -726,6 +727,20 @@ class ProjectPermissionsSerializer(
     pass
 
 
+class PCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PCategory
+        fields = ('id', 'name', 'project', 'buyoancy',)
+
+
+class PCategoryDetailSerializer(serializers.ModelSerializer):
+    # ctscreens = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    ctscreens = ProjectScreenSerializer(many=True, read_only=True)
+    class Meta:
+        model = PCategory
+        fields = ('id', 'name', 'project', 'buyoancy', 'ctscreens')
+
+
 class ProjectWithScreensSerializer(TaggitSerializer, serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     projectscreen = ProjectScreenSerializer(many=True, read_only=True)
@@ -761,10 +776,22 @@ class ProjectWithScreensSerializer(TaggitSerializer, serializers.ModelSerializer
         return queryset
 
 
-class PCategorySerializer(serializers.ModelSerializer):
+class ProjectWithCategoriesSerializer(serializers.ModelSerializer):
+    # user = UserSerializer(read_only=True)
+    # projectscreen = ProjectScreenSerializer(many=True, read_only=True)
+    projectcategory = PCategoryDetailSerializer(many=True, read_only=True)
+
     class Meta:
-        model = PCategory
-        fields = ('name',)
+        model = Project
+        fields = (
+            "name",
+            "projectcategory",
+            "projectscreen",
+            # "user",
+            "id",
+        )
+        extra_kwargs = {
+        }
 
 
 class ScreenEventSerializer(serializers.ModelSerializer):
