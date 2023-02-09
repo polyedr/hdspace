@@ -587,36 +587,38 @@ def blocks_split(block, image_opencv_input, overlay, root_firstcluster):
     if (len(ob1_x_merged) == 1) and (len(ob1_y_merged) == 1):
         block.direction = 2
 
-    # Assign the children based on direction
-    if block.direction == 0:
-        for interval in ob1_y_merged:
-            ccluster = ClusterClass(
-                block.x1, interval[0], block.x2, interval[1], parent=block
-            )
-            ccluster.types = "ccluster"
-            # clusters_in.append(ccluster)
-            # cv2.rectangle(
-            #     image_opencv_input,
-            #     (block.x1, interval[0]),
-            #     (block.x2, interval[1]),
-            #     (120, 140, 97),
-            #     -1,
-            # )
+    # Split only cclusters. For dbcluster, only detect the direction
+    if block.types == "ccluster":
+        # Assign the children based on direction
+        if block.direction == 0:
+            for interval in ob1_y_merged:
+                ccluster = ClusterClass(
+                    block.x1, interval[0], block.x2, interval[1], parent=block
+                )
+                ccluster.types = "ccluster"
+                # clusters_in.append(ccluster)
+                # cv2.rectangle(
+                #     image_opencv_input,
+                #     (block.x1, interval[0]),
+                #     (block.x2, interval[1]),
+                #     (120, 140, 97),
+                #     -1,
+                # )
 
-    if block.direction == 1:
-        for interval in ob1_x_merged:
-            ccluster = ClusterClass(
-                interval[0], block.y1, interval[1], block.y2, parent=block
-            )
-            ccluster.types = "ccluster"
-            # clusters_in.append(ccluster)
-            # cv2.rectangle(
-            #     image_opencv_input,
-            #     (interval[0], block.y1),
-            #     (interval[1], block.y2),
-            #     (120, 150, 97),
-            #     -1,
-            # )
+        if block.direction == 1:
+            for interval in ob1_x_merged:
+                ccluster = ClusterClass(
+                    interval[0], block.y1, interval[1], block.y2, parent=block
+                )
+                ccluster.types = "ccluster"
+                # clusters_in.append(ccluster)
+                # cv2.rectangle(
+                #     image_opencv_input,
+                #     (interval[0], block.y1),
+                #     (interval[1], block.y2),
+                #     (120, 150, 97),
+                #     -1,
+                # )
 
     # For the top level (children of the block) cclusters only
     # Go through all the top level cclusters obtained after the ternary algorithm

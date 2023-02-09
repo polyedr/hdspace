@@ -325,7 +325,7 @@ def ternary_assembling_run(
     # Split each block
     for pre, fill, node in RenderTree(root_block):
         if node != root_block:
-            if node.types in {"ccluster"}:
+            if node.types in {"ccluster", "dbcluster"}:
                 blocks_split(node, image_opencv_input, overlay, root_firstcluster)
                 # pass
 
