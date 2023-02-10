@@ -325,9 +325,10 @@ def ternary_assembling_run(
     # Split each block
     for pre, fill, node in RenderTree(root_block):
         if node != root_block:
-            if node.types in {"ccluster", "dbcluster"}:
-                blocks_split(node, image_opencv_input, overlay, root_firstcluster)
-                # pass
+            # if node.types in {"ccluster", "dbcluster"}:
+            # Only ccluster are processed with split, for other clusters only the detecting of the direction is
+            blocks_split(node, image_opencv_input, overlay, root_firstcluster)
+            # pass
 
     # It seems possible to split complex dbclusters and re-arrange their child nodes to descendants
 
@@ -1178,7 +1179,7 @@ def print_clusters(
         cv2.imwrite(imgpath, image_clusters)
 
 
-def htmltree_initialize(fname, bcolour_container_value, img_width, img_height, imgpath, SAVE_DIR, o):
+def htmltree_initialize(fname, bcolour_container_value, img_width, img_height, imgpath, SAVE_DIR, o, styles_on):
     root = ET.Element("html", version="5.0")
     # Передайте родительский узел, имя дочернего узла,
     # и любое количество дополнительных атрибутов
@@ -1192,17 +1193,21 @@ def htmltree_initialize(fname, bcolour_container_value, img_width, img_height, i
 
     styles = {}
     parameters = {}
-    # styles["background-color"] = "rgba(" + bcolour_container_value + ")"
-    # Set the background image
-    print("fname", fname)
+
+    # print("fname", fname)
     input_image_name = imgpath
 
     # Add this to view a processed image containing clusters with elements
     clustersel_image_name =  SAVE_DIR + "/allclusters_with_elements_" + fname
 
-    if o.netloc == "127.0.0.1:8000":
+    # if o.netloc == "127.0.0.1:8000":
+    if styles_on:
+        styles["background-color"] = "rgba(" + bcolour_container_value + ")"
+    else:
+        # Set the background image
         styles["background"] = "url(" + input_image_name + ") no-repeat center"
         styles["background"] = "url(" + clustersel_image_name + ") no-repeat center"
+
     # The magic number 30 to solve presence of wide elements have been measured with px
     # styles["width"] = str(img_width + 30) + "px"
     # For the pixel perfect floating solutions
@@ -1798,7 +1803,6 @@ def elements_rootblock(
             )
             node.div.set("style", str_styles)
             node.div.set("buoyancy", "0")
-            # node.parameters["textContent"] = ""
 
         else:
             # Calculate margins for vertically and horizontally stacked items
@@ -1807,7 +1811,6 @@ def elements_rootblock(
             # input()
             node.styles["margin-bottom"] = str(margin_bottom) + "px"
             node.styles["margin-left"] = str(margin_left) + "px"
-
 
             # str_styles = "; ".join(
             #     "{}:{}".format(key, val) for key, val in node.styles.items()
@@ -1860,6 +1863,16 @@ def elements_rootblock(
             elem_image_name = uuid.uuid4().hex + fname
             # Cropping to the border box end
 
+            # Background and font colours detection start
+            if styles_on:
+                bcolour_elem_value, fcolour_elem_value = extract_colour_palette(elem_image)
+                # Set the background colour for styles
+                node.styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
+                node.styles["color"] = "rgba(" + fcolour_elem_value + ")"
+            else:
+                node.styles["outline"] = "1px solid yellow"
+            # Background and font colours detection end
+
             # Detect the font-size with tesseract for some elements
             font_size_value = 14.0
             text_width = 0
@@ -1888,8 +1901,7 @@ def elements_rootblock(
 
             node.styles["text-transform"] = "none"
             node.styles["font-size"] = font_size_value
-
-            bcolour_elem_value, fcolour_elem_value = extract_colour_palette(elem_image)
+            node.styles["box-sizing"] = "border-box"
 
             if node.element_assigned in {"textinput", "input"}:
                 node.styles["max-width"] = str(node_width) + "px"
@@ -1906,7 +1918,8 @@ def elements_rootblock(
 
                     # Paddings calculations block
                 if text_elem_ocr:
-                    padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
+                    # padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
+                    padding_top = padding_bottom = int((node_height - alltext_height) / 2.0)
                 else:
                     padding_top = padding_bottom = 3 # A default value when the text is not at the input
 
@@ -1929,7 +1942,7 @@ def elements_rootblock(
 
                 node.styles["border-width"] = "1px"
                 node.styles["border-color"] = "rgba(244, 244, 244, 1)"
-                node.styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
+                # node.styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
 
             elif node.element_assigned in {"checkbox"}:
                 node.styles["width"] = str(min(node_width, node_height)) + "px"
@@ -1943,7 +1956,7 @@ def elements_rootblock(
                 node.styles["height"] = str(node_height) + "px"
 
                 # Paddings calculations block
-                padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
+                padding_top = padding_bottom = int((node_height - alltext_height) / 2.0)
                 padding_left = padding_right = abs(int(text_leftc - node.x1))
                 node.styles["padding-top"] = str(padding_top) + "px"
                 node.styles["padding-bottom"] = str(padding_bottom) + "px"
@@ -1980,8 +1993,8 @@ def elements_rootblock(
                 node.styles["padding-left"] = str(padding_left) + "px"
                 node.styles["padding-right"] = str(padding_right) + "px"
 
-                node.styles["color"] = "rgba(" + fcolour_elem_value + ")"
-                node.styles["box-sizing"] = "border-box"
+                # node.styles["color"] = "rgba(" + fcolour_elem_value + ")"
+                # node.styles["box-sizing"] = "border-box"
 
                 # Text assignment
                 if text_elem_ocr:
@@ -2025,12 +2038,11 @@ def elements_rootblock(
                             "https://" + o.netloc + MEDIA_URL + elem_image_sourcename
                     )
 
-
             elif node.element_assigned == "button":
                 node.styles["width"] = "auto"
                 node.styles["min-width"] = str(node_width) + "px"
                 # Paddings calculations block
-                padding_top = padding_bottom = int((node_height - font_size_value) / 2.0 / 2.0) # Empyrical constants are placed after the first 2.0 value placed
+                padding_top = padding_bottom = int((node_height - alltext_height) / 2.0 / 2.0) # Empyrical constants are placed after the first 2.0 value placed
                 padding_left = padding_right = int((node_width - text_width) / 2.0 * 5.0 / 6.0)
                 # print(node_height, node_width, text_width)
                 # input()
@@ -2038,19 +2050,13 @@ def elements_rootblock(
                 node.styles["padding-bottom"] = str(padding_bottom) + "px"
                 node.styles["padding-left"] = str(padding_left) + "px"
                 node.styles["padding-right"] = str(padding_right) + "px"
-
                 # styles["max-height"] = str(node_height) + "px"
-                node.styles["color"] = "rgba(" + fcolour_elem_value + ")"
 
                 # Text assignment
                 if text_elem_ocr:
                     node.parameters["textContent"] = text_elem_ocr
                 else:
                     node.parameters["textContent"] = lorem.get_word(count=1)
-
-                if styles_on:
-                    # Set the background colour for styles
-                    node.styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
 
             elif node.element_assigned in {"menu", "list"}:
                 # Hide the bullets
@@ -2064,30 +2070,27 @@ def elements_rootblock(
                     node.parameters["textContent"] = lorem.get_word(count=1)
 
                 # Paddings calculations block
-                # Vertical direction
-                if (node.parent.direction == 0):
-                    padding_top = padding_bottom = 5
-                    padding_left = padding_right = 10
-                    node.styles["padding-top"] = str(padding_top) + "px"
-                    node.styles["padding-bottom"] = str(padding_bottom) + "px"
-                    node.styles["padding-left"] = str(padding_left) + "px"
-                    node.styles["padding-right"] = str(padding_right) + "px"
-                # Horizontal direction
-                elif (node.parent.direction == 1):
-                    padding_top = padding_bottom = 5
-                    padding_left = padding_right = 5
-                    node.styles["padding-top"] = str(padding_top) + "px"
-                    node.styles["padding-bottom"] = str(padding_bottom) + "px"
-                    node.styles["padding-left"] = str(padding_left) + "px"
-                    node.styles["padding-right"] = str(padding_right) + "px"
-                # Other cases
+                # The same was developed for the ocrtext
+                if text_elem_ocr:
+                    padding_top = padding_bottom = int((node_height - alltext_height) / 2.0)
                 else:
-                    padding_top = padding_bottom = 5
-                    padding_left = padding_right = 5
-                    node.styles["padding-top"] = str(padding_top) + "px"
-                    node.styles["padding-bottom"] = str(padding_bottom) + "px"
-                    node.styles["padding-left"] = str(padding_left) + "px"
-                    node.styles["padding-right"] = str(padding_right) + "px"
+                    padding_top = padding_bottom = 3 # A default value when the text is not at the input
+
+                if text_leftc > 0:
+                    padding_left = int(text_leftc)
+                else:
+                    padding_left = 3
+
+                if (node.x2 - node.x1 - text_rightc) > 0:
+                    padding_right = int(node.x2 - node.x1 - text_rightc)
+                else:
+                    padding_right = 3
+
+                # padding_left = padding_right = padding
+                node.styles["padding-top"] = str(padding_top) + "px"
+                node.styles["padding-bottom"] = str(padding_bottom) + "px"
+                node.styles["padding-left"] = str(padding_left) + "px"
+                node.styles["padding-right"] = str(padding_right) + "px"
 
     # A simple tree rendering to assign kwargs
     for pre, fill, node in RenderTree(root_block):
@@ -2162,10 +2165,7 @@ def sortchildrenby(parent, attr):
 
 
 # Serializing: assemble, freecanvas
-def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0, 0), serializing="assemble"):
-    # Define styles variable switching on, this variable is placed at parameters with other serializers as a flag
-    styles_on = 1
-
+def pipeline_assemble(region_dataset, fdict, o, dbclusters_on, styles_on, localparams, freecanvasimg_hw=(0, 0), serializing="assemble"):
     # Create the recognized_elements array start
     """
     if imgpath:
@@ -2300,7 +2300,8 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
         if region_dataset in ["headers", "footers", "webpages"]:
             # Calculate dbclusters function calling
             # DBclusters are adding to firstclusters in an appropriate order
-            root_firstcluster = calculate_dbclusters(region_dataset, root_firstcluster)
+            if dbclusters_on:
+                root_firstcluster = calculate_dbclusters(region_dataset, root_firstcluster)
 
         # Print all the clusters after the dbclusters step
         # Localhost only
@@ -2336,7 +2337,7 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
 
         # HTML tree initialize function call
         root, outer_div, styles, parameters = htmltree_initialize(
-            fname, bcolour_container_value, img_width, img_height, imgpath, SAVE_DIR, o
+            fname, bcolour_container_value, img_width, img_height, imgpath, SAVE_DIR, o, styles_on
         )
 
         # Detect elements for the root block

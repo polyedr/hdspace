@@ -1362,6 +1362,8 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
     children = RecursiveField(required=False, allow_null=True, many=True)
     container = serializers.PrimaryKeyRelatedField(source="node.id", read_only=True)
     parent_id = serializers.IntegerField()
+    dbclusters_on = serializers.IntegerField(required=False)
+    styles_on = serializers.IntegerField(required=False)
 
     class Meta:
         model = ScenarioElement
@@ -1371,6 +1373,8 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             "name",
             "children",
             "parent_id",
+            "dbclusters_on",
+            "styles_on",
             "struct_type",
             "func_type",
             "direction",
@@ -1383,6 +1387,8 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "struct_type": {"read_only": True},
             "func_type": {"read_only": True},
+            "dbclusters_on": {"write_only": True},
+            "styles_on": {"write_only": True},
         }
 
     def create(self, validated_data):
@@ -1396,6 +1402,22 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         # Pre-Root element assignment
         # Serializer only
         element_root_pre = ScenarioElement.objects.get(id=validated_data["parent_id"])
+
+        # dbclusters calculation is optional
+        dbclusters_on = 1 # Calculate dbclusters
+        try:
+            dbclusters_on = validated_data["dbclusters_on"]
+        except Exception:
+            pass
+
+        # Define styles variable switching on,
+        # this variable is plased at parameters with other serializers as a flag
+        # styles calculation is optional
+        styles_on = 0 # Calculate styles
+        try:
+            styles_on = validated_data["styles_on"]
+        except Exception:
+            pass
 
         # Read the region annotation from parameters
         # Serializer only
@@ -1431,7 +1453,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
         # Calculate a chain of functions to assemble
         parameters, styles, root_block = pipeline_assemble(
-            region_dataset, fdict, o, localparams, serializing="assemble"
+            region_dataset, fdict, o, dbclusters_on, styles_on, localparams, serializing="assemble"
         )
 
         # Define the export node
@@ -1489,8 +1511,6 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
         }
         # Nested elements should be detected at the free canvas later
 
-        # Define styles variable switching on, this variable is plased at parameters with other serializers as a flag
-        styles_on = 1
         # Pre-Root element assignment
         element_root_pre = ScenarioElement.objects.get(id=validated_data["parent_id"])
 
