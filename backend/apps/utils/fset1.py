@@ -620,19 +620,22 @@ def blocks_split(block, image_opencv_input, overlay, root_firstcluster):
                 #     -1,
                 # )
 
-    # For the top level (children of the block) cclusters only
-    # Go through all the top level cclusters obtained after the ternary algorithm
-    # Check if there are non-elment firstclusters, fclusters, dbclusters in
-    # Attach them to these cclusters
-    # Special sorting is necessary to prevent a double iteration
-    for node in block.children:  # the novel set of the block children, cclusters
-        for node1 in clusters_in:  # the previous set of the block children
-            if (node != node1):
-                # Check if (node1 in node):
-                r1_e = (node.x1, node.y1, node.x2, node.y2)
-                r2_e = (node1.x1, node1.y1, node1.x2, node1.y2)
-                if contains_rectangle(r1_e, r2_e):
-                    node1.parent = node
+    try:
+        # For the top level (children of the block) cclusters only
+        # Go through all the top level cclusters obtained after the ternary algorithm
+        # Check if there are non-elment firstclusters, fclusters, dbclusters in
+        # Attach them to these cclusters
+        # Special sorting is necessary to prevent a double iteration
+        for node in block.children:  # the novel set of the block children, cclusters
+            for node1 in clusters_in:  # the previous set of the block children
+                if (node != node1):
+                    # Check if (node1 in node):
+                    r1_e = (node.x1, node.y1, node.x2, node.y2)
+                    r2_e = (node1.x1, node1.y1, node1.x2, node1.y2)
+                    if contains_rectangle(r1_e, r2_e):
+                        node1.parent = node
+    except Exception:
+        pass
 
     # Go through all the blocks obtained from the current one
     # Split that blocks which were unsplitted yet

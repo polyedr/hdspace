@@ -1223,6 +1223,7 @@ def htmltree_initialize(fname, bcolour_container_value, img_width, img_height, i
 def calculate_margins(node):
     # Calculate margins for vertically stacked items start
     margin_bottom = 0
+    margin_top = 0
     margin_left = 0
 
     # Extract siblings
@@ -1238,10 +1239,18 @@ def calculate_margins(node):
         if siblings:
             array_siblings_y1 = min(siblings, key=lambda i: abs(i.y1 - node.y2))
             array_siblings_y1_min = min((array_siblings_y1.y1 - node.y2), (node.parent.y2 - node.y2))
+
+            array_siblings_margintop = min(siblings, key=lambda i: abs(node.y1 - i.y2))
+            margintop = min((node.y1 - array_siblings_margintop.y2), (node.y1 - node.parent.y1))
+
             if array_siblings_y1_min < 0:
                 array_siblings_y1_min = node.parent.y2 - node.y2
+
+            if margintop < 0:
+                margintop = node.y1 - node.parent.y1
         else:
             array_siblings_y1_min = node.parent.y2 - node.y2
+            margintop = node.y1 - node.parent.y1
 
         """
         print(node.parent.direction, " direction ", len(siblings), " siblings")
@@ -1256,24 +1265,40 @@ def calculate_margins(node):
         if array_siblings_y1_min > 0:
             margin_bottom = array_siblings_y1_min
 
+        # Filter out negative margins
+        if margintop > 0:
+            margin_top = margintop
+
     # A horizontal case
     if node.parent.direction == 1:
         if siblings:
-            array_siblings_x1 = min(siblings, key=lambda i: abs(node.x1 - i.x2))
-            array_siblings_x1_min = min((node.x1 - array_siblings_x1.x2), (node.x1 - node.parent.x1))
-            if array_siblings_x1_min < 0:
-                array_siblings_x1_min = node.x1 - node.parent.x1
-        else:
-            array_siblings_x1_min = node.x1 - node.parent.x1
+            # array_siblings_x1 = min(siblings, key=lambda i: abs(node.x1 - i.x2))
+            # array_siblings_x1 = min(siblings, key=lambda i: (node.x1 - i.x2) if ((node.x1 - i.x2) > 0) else 0)
 
-        if node.element_assigned == "checkbox":
+            # Initializing the array of differences
+            # The initial delta is a special one for the parent node
+            delta = (node.x1 - node.parent.x1) # Should be always >0, otherwise the annotation error
+            for i in siblings:
+                diff = node.x1 - i.x2
+                if(diff > 0):
+                    delta = diff
+
+            # Calculate the minimal difference
+            for i in siblings:
+                diff = node.x1 - i.x2
+                if(diff > 0) and (diff < delta):
+                    delta = diff
+
+            array_siblings_x1_min = delta
+
+        if node.element_assigned == "image":
+            print("##########")
             print(node.parent.direction, " direction ", len(siblings), " siblings")
-            print("compare: ", node.x1, array_siblings_x1.x2)
+            print("compare: ", node.x1, delta)
             for sibling in siblings:
                 print("x1, 2: ", sibling.x1, sibling.x2)
-
             print("margin:", array_siblings_x1_min)
-
+            input()
 
         # Filter out positive margins
         if array_siblings_x1_min > 0:
@@ -1292,9 +1317,8 @@ def calculate_margins(node):
             margin_bottom = array_siblings_y2_min
     '''
 
-
     # A final case, many nodes at the level
-    if node.parent.direction == 2:
+    if node.parent.direction in {2}:
         array_siblings_y1_min = 0
         array_siblings_x1_min = 0
         x_siblings = []
@@ -1315,8 +1339,12 @@ def calculate_margins(node):
         if y_siblings:
             array_siblings_y1 = min(y_siblings, key=lambda i: abs(i.y1 - node.y2))
             array_siblings_y1_min = min((array_siblings_y1.y1 - node.y2), (node.parent.y2 - node.y2))
+
+            array_siblings_margintop = min(siblings, key=lambda i: abs(node.y1 - i.y2))
+            margintop = min((node.y1 - array_siblings_margintop.y2), (node.y1 - node.parent.y1))
         else:
             array_siblings_y1_min = (node.parent.y2 - node.y2)
+            margintop = node.y1 - node.parent.y1
 
         if x_siblings:
             array_siblings_x1 = min(x_siblings, key=lambda i: abs(node.x1 - i.x2))
@@ -1330,8 +1358,11 @@ def calculate_margins(node):
         # Filter out positive margins
         if array_siblings_y1_min > 0:
             margin_bottom = array_siblings_y1_min
+        # Filter out positive margins
+        if margintop > 0:
+            margin_top = margintop
 
-    return margin_bottom, margin_left
+    return margin_bottom, margin_left, margin_top
     # Calculate margins for vertically stacked items end
 
 
@@ -1727,6 +1758,8 @@ def elements_rootblock(
             # Horizontal
             if node.parent.direction == 1:
                 node.styles["display"] = "inline-block"
+                # node.styles["vertical-align"] = "middle"
+                node.styles["overflow"] = "hidden"
                 # node.styles["display"] = "block"
                 # node.styles["float"] = "left"
                 # node.styles["clear"] = "both"
@@ -1806,10 +1839,11 @@ def elements_rootblock(
 
         else:
             # Calculate margins for vertically and horizontally stacked items
-            margin_bottom, margin_left = calculate_margins(node)
-            # print(node.element_assigned, node.types, margin_bottom, margin_left)
+            margin_bottom, margin_left, margin_top = calculate_margins(node)
+            # margin_bottom, margin_left, margin_top = (0, 0, 0)
+            # print(node.element_assigned, node.types, margin_top, margin_left)
             # input()
-            node.styles["margin-bottom"] = str(margin_bottom) + "px"
+            node.styles["margin-top"] = str(margin_top) + "px"
             node.styles["margin-left"] = str(margin_left) + "px"
 
             # str_styles = "; ".join(
@@ -1875,9 +1909,9 @@ def elements_rootblock(
 
             # Detect the font-size with tesseract for some elements
             font_size_value = 14.0
-            text_width = 0
-            text_leftc = 0
-            text_rightc = 0
+            text_width = node.x2 - node.x1
+            text_leftc = node.x1
+            text_rightc = node.x2
             if node.element_assigned in {
                 "textinput",
                 "input",
@@ -1896,6 +1930,12 @@ def elements_rootblock(
                 font_size_value, text_elem_ocr, text_width, text_leftc, text_rightc, alltext_height = ocr_recognition(
                     elem_image, ocr_engine="tesseract"
                 )
+
+                # Fix the paddings calculations while no text
+                if (text_leftc, text_rightc) == (0, 0):
+                    text_width = node.x2 - node.x1
+                    text_leftc = node.x1
+                    text_rightc = node.x2
                 # print(font_size_value)
                 # input()
 
@@ -1921,7 +1961,7 @@ def elements_rootblock(
                     # padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
                     padding_top = padding_bottom = int((node_height - alltext_height) / 2.0)
                 else:
-                    padding_top = padding_bottom = 3 # A default value when the text is not at the input
+                    padding_top = padding_bottom = 3  # A default value when the text is not at the input
 
                 if (text_leftc - node.x1) > 0:
                     # padding = int(text_leftc - node.x1)
@@ -1971,7 +2011,7 @@ def elements_rootblock(
                 if text_elem_ocr:
                     padding_top = padding_bottom = int((node_height - alltext_height) / 2.0)
                 else:
-                    padding_top = padding_bottom = 3 # A default value when the text is not at the input
+                    padding_top = padding_bottom = 3  # A default value when the text is not at the input
 
                 if text_leftc > 0:
                     padding_left = int(text_leftc)
@@ -2042,7 +2082,8 @@ def elements_rootblock(
                 node.styles["width"] = "auto"
                 node.styles["min-width"] = str(node_width) + "px"
                 # Paddings calculations block
-                padding_top = padding_bottom = int((node_height - alltext_height) / 2.0 / 2.0) # Empyrical constants are placed after the first 2.0 value placed
+                # Empyrical constants are placed after the first 2.0 value placed
+                padding_top = padding_bottom = int((node_height - alltext_height) / 2.0 / 2.0)
                 padding_left = padding_right = int((node_width - text_width) / 2.0 * 5.0 / 6.0)
                 # print(node_height, node_width, text_width)
                 # input()
@@ -2074,7 +2115,7 @@ def elements_rootblock(
                 if text_elem_ocr:
                     padding_top = padding_bottom = int((node_height - alltext_height) / 2.0)
                 else:
-                    padding_top = padding_bottom = 3 # A default value when the text is not at the input
+                    padding_top = padding_bottom = 3  # A default value when the text is not at the input
 
                 if text_leftc > 0:
                     padding_left = int(text_leftc)
@@ -2106,7 +2147,6 @@ def elements_rootblock(
             "buoyancy": node.buoyancy,
         }
         print(node.styles)
-
 
     # Should add a block of the ET element creation
     for pre, fill, node in RenderTree(root_block):
