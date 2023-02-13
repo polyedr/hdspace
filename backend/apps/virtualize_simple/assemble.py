@@ -1230,14 +1230,14 @@ def calculate_margins(node):
 
     # Extract siblings
     siblings = node.siblings
-    print(node.parent.direction, "direction")
-
+    # print(node.parent.direction, "direction")
+    '''
     # A vertical case
     if node.parent.direction == 0:
         # Check if the node has the first order, the last order, or the node is internal, extract node.siblings
         # previous_sibling_y1 is calculated for a parent node, if the node has the first order
         # next_sibling_y2 is calculated for a parent node, if the node has the last order
-        '''
+
         array_siblings_y1_min = 0
         if siblings:
             array_siblings_y1 = min(siblings, key=lambda i: abs(i.y1 - node.y2))
@@ -1286,17 +1286,8 @@ def calculate_margins(node):
             margin_left = delta  # Should filter out positive margins
         else:
             margin_left = (node.x1 - node.parent.x1)  # Should filter out positive margins
-        '''
-        '''
-        if node.element_assigned == "image":
-            print("##########")
-            print(node.parent.direction, " direction ", len(siblings), " siblings")
-            print("compare: ", node.x1, delta)
-            for sibling in siblings:
-                print("x1, 2: ", sibling.x1, sibling.x2)
-            print("margin:", array_siblings_x1_min)
-            input()
-        '''
+    '''
+
     '''
     # A final case, one node at the level
     if node.parent.direction == 2:
