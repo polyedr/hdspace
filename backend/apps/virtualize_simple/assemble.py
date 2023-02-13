@@ -428,6 +428,8 @@ def calculate_dbclusters(region_dataset, root_firstcluster):
         )
         # Assign an unordered HTML list to the dbcluster
         dbcluster.element_assigned = "list"
+        # print(dbcluster.direction)
+        # input()
         # Check the direction with some function
         # dbcluster.direction = ?
         # Check later if cluster contains one element only maybe
@@ -1289,8 +1291,10 @@ def calculate_margins(node):
                 if(diff > 0) and (diff < delta):
                     delta = diff
 
-            array_siblings_x1_min = delta
-
+            margin_left = delta  # Should filter out positive margins
+        else:
+            margin_left = (node.x1 - node.parent.x1)  # Should filter out positive margins
+        '''
         if node.element_assigned == "image":
             print("##########")
             print(node.parent.direction, " direction ", len(siblings), " siblings")
@@ -1299,11 +1303,7 @@ def calculate_margins(node):
                 print("x1, 2: ", sibling.x1, sibling.x2)
             print("margin:", array_siblings_x1_min)
             input()
-
-        # Filter out positive margins
-        if array_siblings_x1_min > 0:
-            margin_left = array_siblings_x1_min
-
+        '''
     '''
     # A final case, one node at the level
     if node.parent.direction == 2:
@@ -1318,7 +1318,7 @@ def calculate_margins(node):
     '''
 
     # A final case, many nodes at the level
-    if node.parent.direction in {2}:
+    if node.parent.direction in {1, 2}:
         array_siblings_y1_min = 0
         array_siblings_x1_min = 0
         x_siblings = []
@@ -1347,8 +1347,21 @@ def calculate_margins(node):
             margintop = node.y1 - node.parent.y1
 
         if x_siblings:
-            array_siblings_x1 = min(x_siblings, key=lambda i: abs(node.x1 - i.x2))
-            array_siblings_x1_min = min((node.x1 - array_siblings_x1.x2), (node.x1 - node.parent.x1))
+            # array_siblings_x1 = min(x_siblings, key=lambda i: abs(node.x1 - i.x2))
+            # array_siblings_x1_min = min((node.x1 - array_siblings_x1.x2), (node.x1 - node.parent.x1))
+            delta = (node.x1 - node.parent.x1) # Should be always >0, otherwise the annotation error
+            for i in siblings:
+                diff = node.x1 - i.x2
+                if(diff > 0):
+                    delta = diff
+
+            # Calculate the minimal difference
+            for i in siblings:
+                diff = node.x1 - i.x2
+                if(diff > 0) and (diff < delta):
+                    delta = diff
+
+            array_siblings_x1_min = delta  # Should filter out positive margins
         else:
             array_siblings_x1_min = (node.x1 - node.parent.x1)
 
@@ -1419,7 +1432,7 @@ def detect_text_gcv(path):
         return ""
 
 
-def ocr_recognition(elem_image, ocr_engine="tesseract"):
+def ocr_recognition(elem_image, node, node_height, ocr_engine="tesseract"):
     font_size_value = 14
     alltext_width = 0
     alltext_height = 0
@@ -1682,7 +1695,24 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
                 '''
     # Getting the bounding box of the recognized words end
 
-    return font_size_value, text_elem_ocr, alltext_width, leftmin, maxright, alltext_height
+    # Paddings calculations block start
+    if text_elem_ocr:
+        padding_top = padding_bottom = int((node_height - alltext_height) / 2.0)
+    else:
+        padding_top = padding_bottom = 3  # A default value when the text is not at the input
+
+    if leftmin > 0:
+        padding_left = int(leftmin)
+    else:
+        padding_left = 3
+
+    if (node.x2 - node.x1 - maxright) > 0:
+        padding_right = int(node.x2 - node.x1 - maxright)
+    else:
+        padding_right = 3
+    # Paddings calculations block end
+
+    return font_size_value, text_elem_ocr, alltext_width, leftmin, maxright, alltext_height, padding_top, padding_right, padding_bottom, padding_left
 
 
 # Create the elements for the elements_rootblock function
@@ -1927,8 +1957,9 @@ def elements_rootblock(
                 # Defiine a scenarioelement_inner dictionary
                 scenarioelement_inner_kwargs = {}
                 # A choice for ocr_engine is {"tesseract", "lorem", "googlecloud"}
-                font_size_value, text_elem_ocr, text_width, text_leftc, text_rightc, alltext_height = ocr_recognition(
-                    elem_image, ocr_engine="tesseract"
+                font_size_value, text_elem_ocr, text_width, text_leftc, text_rightc, alltext_height, \
+                padding_top, padding_right, padding_bottom, padding_left = ocr_recognition(
+                    elem_image, node, node_height, ocr_engine="tesseract"
                 )
 
                 # Fix the paddings calculations while no text
@@ -2007,25 +2038,8 @@ def elements_rootblock(
                 node.styles["min-width"] = str(node_width) + "px"
                 node.styles["min-height"] = str(node_height) + "px"
 
-                # Paddings calculations block
-                if text_elem_ocr:
-                    padding_top = padding_bottom = int((node_height - alltext_height) / 2.0)
-                else:
-                    padding_top = padding_bottom = 3  # A default value when the text is not at the input
-
-                if text_leftc > 0:
-                    padding_left = int(text_leftc)
-                else:
-                    padding_left = 3
-
-                if (node.x2 - node.x1 - text_rightc) > 0:
-                    padding_right = int(node.x2 - node.x1 - text_rightc)
-                else:
-                    padding_right = 3
-
                 print("x1 x2 tlc trc", node.types, node.element_assigned, node.x1, node.x2, text_leftc, text_rightc)
                 print("left right", node.types, node.element_assigned, (text_leftc - node.x1), (text_rightc - node.x2))
-                # input()
 
                 # padding_left = padding_right = padding
                 node.styles["padding-top"] = str(padding_top) + "px"
@@ -2109,23 +2123,6 @@ def elements_rootblock(
                     node.parameters["textContent"] = text_elem_ocr
                 else:
                     node.parameters["textContent"] = lorem.get_word(count=1)
-
-                # Paddings calculations block
-                # The same was developed for the ocrtext
-                if text_elem_ocr:
-                    padding_top = padding_bottom = int((node_height - alltext_height) / 2.0)
-                else:
-                    padding_top = padding_bottom = 3  # A default value when the text is not at the input
-
-                if text_leftc > 0:
-                    padding_left = int(text_leftc)
-                else:
-                    padding_left = 3
-
-                if (node.x2 - node.x1 - text_rightc) > 0:
-                    padding_right = int(node.x2 - node.x1 - text_rightc)
-                else:
-                    padding_right = 3
 
                 # padding_left = padding_right = padding
                 node.styles["padding-top"] = str(padding_top) + "px"
@@ -2335,8 +2332,34 @@ def pipeline_assemble(region_dataset, fdict, o, dbclusters_on, styles_on, localp
         if localparams["page"] == 1:
             print_clusters_length(root_firstcluster)
 
-        # print(region_dataset)
-        # input()
+        # Filtered out the nested annotations start
+        # The case was observed on headers, 2638_catalog_ilchiro_org_1.png
+        # Maybe do this at the merge.py later
+        # nodes_to_remove = set()
+        for pre, fill, node1 in RenderTree(root_firstcluster):
+            if (node1.element_assigned) in {"li", "listItem"}:
+                r1 = (node1.x1, node1.y1, node1.x2, node1.y2)
+                for pre, fill, node2 in RenderTree(root_firstcluster):
+                    if ((node2.element_assigned) in {"li", "listItem"}) and node2 != node1:
+                        r2 = (node2.x1, node2.y1, node2.x2, node2.y2)
+                        if (contains_rectangle(r1, r2) is True) or (r1 == r2):
+                        # if (r1 == r2):
+                            node2.parent = None
+                            # nodes_to_remove.add(node2)
+                            # break
+        '''
+        for node in nodes_to_remove:
+            print(node)
+        input()
+        for pre, fill, node1 in RenderTree(root_firstcluster):
+            for node2 in nodes_to_remove:
+                if (node1 == node2):
+                    print(node2)
+                    input()
+                    node2.parent = None
+        '''
+        # Filtered out the nested annotations end
+
         if region_dataset in ["headers", "footers", "webpages"]:
             # Calculate dbclusters function calling
             # DBclusters are adding to firstclusters in an appropriate order
@@ -2362,9 +2385,9 @@ def pipeline_assemble(region_dataset, fdict, o, dbclusters_on, styles_on, localp
             print_clusters(
                 clusters_name, image_opencv_input, root_firstcluster, SAVE_DIR, fname
             )
-
+            '''
             # Elements-based clusters printing
-            for pre, fill, node in RenderTree(root_firstcluster):
+            for pre, fill, node in RenderTree(root_block):
                 treestr = u"%s%s" % (pre, node.name)
                 print(
                     treestr.ljust(8),
@@ -2374,6 +2397,8 @@ def pipeline_assemble(region_dataset, fdict, o, dbclusters_on, styles_on, localp
                     (node.x1, node.y1),
                     (node.x2, node.y2),
                 )
+            input()
+            '''
 
         # HTML tree initialize function call
         root, outer_div, styles, parameters = htmltree_initialize(
