@@ -1413,7 +1413,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         # Define styles variable switching on,
         # this variable is plased at parameters with other serializers as a flag
         # styles calculation is optional
-        styles_on = 0 # Calculate styles
+        styles_on = 1 # Calculate styles
         try:
             styles_on = validated_data["styles_on"]
         except Exception:
