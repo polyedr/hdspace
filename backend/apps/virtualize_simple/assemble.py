@@ -2099,6 +2099,14 @@ def elements_rootblock(
                 else:
                     node.parameters["textContent"] = lorem.get_word(count=2)
 
+                # Process the text on the image start
+                if (node.parent.element_assigned) == "image":
+                    node.styles["position"] = "absolute"
+                    node.styles["top"] = str(node.y1) + "px"
+                    node.styles["right"] = str(node.x1) + "px"
+                    node.styles["background-color"] = "transparent"
+                # Process the text on the image end
+
             elif node.element_assigned in {"textarea"}:
                 if text_elem_ocr:
                     node.parameters["placeholder"] = text_elem_ocr
