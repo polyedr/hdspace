@@ -739,7 +739,9 @@ class PCategoryDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = PCategory
         fields = ('id', 'name', 'project', 'buyoancy', 'ctscreens')
-
+        extra_kwargs = {
+            "ctscreens": {"read_only": True},
+        }
 
 class ProjectWithScreensSerializer(TaggitSerializer, serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

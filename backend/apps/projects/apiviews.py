@@ -73,7 +73,7 @@ from .serializers import (
     duplicate_model_with_descendants, copy_element_node, copy_children, ColumnTaskCommentSerializer,
     ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer,  # ProjectScreenExportSerializer,
     ProjectScreenImportSerializer, ScreenScenarioExportSerializer, ScreenScenarioImportSerializer,
-    ProjectImportExportSerializer, ProjectScreenTagsSerializer, PCategorySerializer, ProjectWithCategoriesSerializer)
+    ProjectImportExportSerializer, ProjectScreenTagsSerializer, PCategoryDetailSerializer, ProjectWithCategoriesSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -179,7 +179,7 @@ class ProjectWithCategoriesViewSet(viewsets.ModelViewSet):
 class PCategoryViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = PCategory.objects.all()
-    serializer_class = PCategorySerializer
+    serializer_class = PCategoryDetailSerializer
     filter_backends = [DjangoFilterBackend]  # Django-Guardian and DjangoFilterBackend
     filterset_fields = {'project': ['exact'], 'name': ['exact'],
                         'created': ['lte', 'gte', 'lt', 'gt'],
