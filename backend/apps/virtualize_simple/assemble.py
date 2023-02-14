@@ -1967,7 +1967,14 @@ def elements_rootblock(
             if styles_on:
                 bcolour_elem_value, fcolour_elem_value = extract_colour_palette(elem_image)
                 # Set the background colour for styles
-                node.styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
+                # Check the node parent background colour value
+                # Maybe do this filtering at the separate loop later
+                try:
+                    if (node.parent.styles["background-color"] != "rgba(" + bcolour_elem_value + ")"):
+                        node.styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
+                except Exception:
+                    node.styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
+
                 node.styles["color"] = "rgba(" + fcolour_elem_value + ")"
             else:
                 node.styles["outline"] = "1px solid yellow"
@@ -2379,21 +2386,7 @@ def pipeline_assemble(region_dataset, fdict, o, dbclusters_on, styles_on, localp
                     if ((node2.element_assigned) in {"li", "listItem"}) and node2 != node1:
                         r2 = (node2.x1, node2.y1, node2.x2, node2.y2)
                         if (contains_rectangle(r1, r2) is True) or (r1 == r2):
-                        # if (r1 == r2):
                             node2.parent = None
-                            # nodes_to_remove.add(node2)
-                            # break
-        '''
-        for node in nodes_to_remove:
-            print(node)
-        input()
-        for pre, fill, node1 in RenderTree(root_firstcluster):
-            for node2 in nodes_to_remove:
-                if (node1 == node2):
-                    print(node2)
-                    input()
-                    node2.parent = None
-        '''
         # Filtered out the nested annotations end
 
         if region_dataset in ["headers", "footers", "webpages"]:
