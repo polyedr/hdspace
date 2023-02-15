@@ -1843,6 +1843,7 @@ def elements_rootblock(
                 node.styles["display"] = "block"
             # Define the direction of the container end
 
+        # A pixel-perfect attempt for the flexbox containerization
         elif layout_styling == "flexbox":
             # Define the direction of the container start
             # Horizontal
@@ -1850,8 +1851,10 @@ def elements_rootblock(
                 node.styles["display"] = "flex"
                 if not styles_on:
                     node.styles["background"] = "aliceblue"
+                '''
                 if region_dataset in ["headers", "footers"]:
                     node.styles["justify-content"] = "space-between"
+                '''
             # Vertical
             elif node.direction == 0:
                 node.styles["display"] = "block"
@@ -1860,6 +1863,39 @@ def elements_rootblock(
             # Inseparable
             elif node.direction == 2:
                 node.styles["display"] = "flex"
+                if (node.types == "ccluster") or (
+                    region_dataset in ["headers", "webpages"]
+                ):
+
+                    if not styles_on:
+                        node.styles["background"] = "lightblue"
+                else:
+
+                    if not styles_on:
+                        node.styles["background"] = "lightgreen"
+                    # Sometimes node_width and height are 0, should check this.
+                    if node_width:
+                        node.styles["width"] = str(node_width) + "px"
+                    if node_height:
+                        node.styles["height"] = str(node_height) + "px"
+            # Define the direction of the container end
+
+        # A pixel-perfect attempt for the grid containerization
+        elif layout_styling == "grid":
+            # Define the direction of the container start
+            # Horizontal
+            if node.direction == 1:
+                node.styles["display"] = "grid"
+                if not styles_on:
+                    node.styles["background"] = "aliceblue"
+            # Vertical
+            elif node.direction == 0:
+                node.styles["display"] = "block"
+                if not styles_on:
+                    node.styles["background"] = "lavenderblush"
+            # Inseparable
+            elif node.direction == 2:
+                node.styles["display"] = "grid"
                 if (node.types == "ccluster") or (
                     region_dataset in ["headers", "webpages"]
                 ):
@@ -2104,7 +2140,7 @@ def elements_rootblock(
                     node.styles["position"] = "absolute"
                     node.styles["top"] = str(node.y1) + "px"
                     node.styles["right"] = str(node.x1) + "px"
-                    node.styles["background-color"] = "transparent"
+                    # node.styles["background-color"] = "transparent"
                 # Process the text on the image end
 
             elif node.element_assigned in {"textarea"}:
