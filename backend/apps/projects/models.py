@@ -114,7 +114,7 @@ class Project(TimeStampedModel):
 
 class PCategory(TimeStampedModel):
     name = models.CharField(max_length=50)
-    buyoancy = models.IntegerField(default=0)
+    buoyancy = models.IntegerField(null=True, blank=True)
     project = models.ForeignKey(
         Project, related_name="projectcategory", on_delete=models.CASCADE, null=True
     )

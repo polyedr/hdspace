@@ -184,6 +184,8 @@ class PCategoryViewSet(viewsets.ModelViewSet):
     filterset_fields = {'project': ['exact'], 'name': ['exact'],
                         'created': ['lte', 'gte', 'lt', 'gt'],
                         'modified': ['lte', 'gte', 'lt', 'gt']}
+    ordering_fields = ['buyoancy', 'id']
+    ordering = ['buyoancy']
 
 
 class ColumnWithTasksViewSet(viewsets.ModelViewSet):
@@ -1322,11 +1324,11 @@ class CategoriesReorder(APIView):
         # sorted dict uses column pk as key and new order as value
         # print(pk)
         categories = PCategory.objects.filter(project=pk)
-        # print(columns)
+        print(categories)
         for category in categories:
-            # print(category.id)
-            category.buyoancy = sorted_dict[category.id]
-        affected_rows = bulk_update(categories, update_fields=['buyoancy'])
+            print(category.id)
+            category.buoyancy = sorted_dict[category.id]
+        affected_rows = bulk_update(categories, update_fields=['buoyancy'])
         if affected_rows:
             return Response({'affected_rows': affected_rows})
         return Response({}, status.HTTP_204_NO_CONTENT)
@@ -1354,9 +1356,9 @@ class ScreensReorder(APIView):
         screens = ProjectScreen.objects.filter(category=pk)
         print(screens)
         for screen in screens:
-            print(screen.id)
-            screen.buyoancy = sorted_dict[screen.id]
-        affected_rows = bulk_update(screens, update_fields=['buyoancy'])
+            screen.buoyancy = sorted_dict[screen.id]
+            # print(screen.id, screen.buoyancy)
+        affected_rows = bulk_update(screens, update_fields=['buoyancy'])
         if affected_rows:
             return Response({'affected_rows': affected_rows})
         return Response({}, status.HTTP_204_NO_CONTENT)

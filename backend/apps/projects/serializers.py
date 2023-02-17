@@ -730,7 +730,7 @@ class ProjectPermissionsSerializer(
 class PCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = PCategory
-        fields = ('id', 'name', 'project', 'buyoancy',)
+        fields = ('id', 'name', 'project', 'buoyancy',)
 
 
 class PCategoryDetailSerializer(serializers.ModelSerializer):
@@ -738,7 +738,7 @@ class PCategoryDetailSerializer(serializers.ModelSerializer):
     ctscreens = ProjectScreenSerializer(many=True, read_only=True)
     class Meta:
         model = PCategory
-        fields = ('id', 'name', 'project', 'buyoancy', 'ctscreens')
+        fields = ('id', 'name', 'project', 'buoyancy', 'ctscreens')
         extra_kwargs = {
             "ctscreens": {"read_only": True},
         }
