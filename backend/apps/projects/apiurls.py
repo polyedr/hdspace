@@ -42,7 +42,7 @@ from .apiviews import (
     ColumnTaskCheckitemDetail, ColumnTaskCommentList, ColumnTaskCommentDetail, ColumnTaskLabelList,
     ColumnTaskLabelDetail, ColumnTaskCheckitemDelete, AssignPermissionsmapsProject, ProjectScreenExportDetail,
     ProjectScreenImportDetail, ScreeScenarioImportExportViewSet, ProjectImportExportViewSet, ProjectScreenTags,
-    PCategoryViewSet, ProjectWithCategoriesViewSet)
+    PCategoryViewSet, ProjectWithCategoriesViewSet, CategoriesReorder, ScreensReorder)
 
 app_name = "projects"
 
@@ -226,6 +226,16 @@ api_update_tasks_order = [
          name="api_update_tasks_order"),
 ]
 
+api_update_categories_order = [
+    path("project/update_categories_order/<int:pk>/", CategoriesReorder.as_view(),
+         name="api_update_categories_order"),
+]
+
+api_update_screens_order = [
+    path("category/update_screens_order/<int:pk>/", ScreensReorder.as_view(),
+         name="api_update_screens_order"),
+]
+
 router = routers.DefaultRouter()
 router.register(r"screen-scenarios", ScreeScenarioViewSet)
 router.register(r"screen-scenarioimportexports", ScreeScenarioImportExportViewSet)
@@ -330,6 +340,8 @@ urlpatterns = [
     path("", include(api_copying_elements)),
     path("", include(api_update_children_order)),
     path("", include(api_update_tasks_order)),
+    path("", include(api_update_categories_order)),
+    path("", include(api_update_screens_order)),
     path("", include(api_element_comment_patterns)),
     path("", include(api_columntask_comment_patterns)),
     path("", include(api_columntask_checkitem_patterns)),
