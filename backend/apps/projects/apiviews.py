@@ -1351,7 +1351,7 @@ class ScreensReorder(APIView):
 
         # sorted dict uses task pk as key and new order as value
         # print(pk)
-        screens = ProjectScreen.objects.filter(column=pk)
+        screens = ProjectScreen.objects.filter(category=pk)
         print(screens)
         for screen in screens:
             print(screen.id)
