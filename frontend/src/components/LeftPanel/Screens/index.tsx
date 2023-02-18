@@ -1,6 +1,6 @@
 import { MouseEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import AddIcon from '@mui/icons-material/Add';
+import { VisibilityOutlined, Add } from '@mui/icons-material';
 import {
   Typography,
   List,
@@ -33,8 +33,7 @@ import ScreenFolder from './ScreenFolder';
 import FolderListItem from './FolderListItem';
 
 const TitleContainer = styled(Box)({
-  paddingLeft: 16,
-  paddingRight: 6,
+  padding: '5px 6px 5px 16px',
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
@@ -136,19 +135,26 @@ function Screens() {
     <>
       <TitleContainer>
         <Title>Screens</Title>
-        <ScreenFolder />
-        <StyledIconButton
-          title="Create Screen"
-          size="small"
-          onClick={handleMenuOpen}
-          disabled={screenCreateLoader}
-        >
-          {!screenCreateLoader ? (
-            <AddIcon />
-          ) : (
-            <CircularProgress size={24} color="secondary" />
-          )}
-        </StyledIconButton>
+        <Box>
+          <StyledIconButton size="small">
+            <VisibilityOutlined />
+          </StyledIconButton>
+          <StyledIconButton
+            title="Create Screen"
+            size="small"
+            onClick={handleMenuOpen}
+            disabled={screenCreateLoader}
+          >
+            {!screenCreateLoader ? (
+              <Add />
+            ) : (
+              <CircularProgress size={24} color="secondary" />
+            )}
+          </StyledIconButton>
+          <StyledIconButton size="small">
+            <ScreenFolder />
+          </StyledIconButton>
+        </Box>
         <Menu
           anchorEl={anchorEl}
           keepMounted

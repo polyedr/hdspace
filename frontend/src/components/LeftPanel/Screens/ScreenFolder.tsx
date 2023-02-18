@@ -9,7 +9,8 @@ import {
   TextField,
   styled,
 } from '@mui/material';
-import FolderIcon from '@mui/icons-material/Folder';
+// import FolderIcon from '@mui/icons-material/Folder';
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createScreenFolder } from '@Redux/project/actions';
@@ -87,7 +88,7 @@ const ScreenFolder = () => {
         size="small"
         onClick={handleClickOpen}
       >
-        <FolderIcon />
+        <FolderOutlinedIcon />
       </StyledIconButton>
     </>
   );
