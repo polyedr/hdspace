@@ -3,6 +3,7 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Xarrow, { Xwrapper, useXarrow } from 'react-xarrows';
 import GridLines from 'react-gridlines';
 import { useDispatch, useSelector } from 'react-redux';
+import { styled } from '@mui/material';
 import {
   setCurrentScreenId,
   updateCurrentUIFramework,
@@ -72,6 +73,12 @@ function buildScreenData(_screens: Normalized<ProjectScren>): Screens {
 
   return screens;
 }
+
+const CanvasBox = styled('div')({
+  '&:active': {
+    cursor: 'grabbing',
+  },
+});
 
 const Canvas: React.FC<{
   screens: Normalized<ProjectScren>;
@@ -184,7 +191,7 @@ const Canvas: React.FC<{
             strokeWidth={GRID_STROKE_WIDTH}
             cellWidth2={GRID_CELL_SPACE}
           >
-            <div
+            <CanvasBox
               style={{
                 minWidth: calculateCanvasSize(screensCount, SCREEN_WIDTH),
                 minHeight: calculateCanvasSize(screensCount, SCREEN_HEIGHT),
@@ -199,7 +206,7 @@ const Canvas: React.FC<{
                   onStop={onStop}
                 />
               ))}
-            </div>
+            </CanvasBox>
           </GridLines>
         </TransformComponent>
       </TransformWrapper>
