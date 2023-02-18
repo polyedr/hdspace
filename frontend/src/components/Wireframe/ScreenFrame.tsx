@@ -8,8 +8,11 @@ const MuiBox = styled(Box)<{ active: boolean }>(({ active, theme }) => ({
   overflow: 'auto',
   backgroundColor: 'white',
   boxShadow: `0 0 ${active ? 10 : 6}px 0 rgba(0, 0, 0, 0.08)`,
-  border: `4px solid ${active ? 'black' : 'white'}`,
+  border: `2px solid ${active ? 'black !important' : 'white'}`,
   cursor: 'auto',
+  '&:hover': {
+    border: '2px solid purple',
+  },
 }));
 
 const ScreenFrame: React.FC<{ active: boolean }> = ({ children, active }) => {

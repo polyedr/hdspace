@@ -1,6 +1,5 @@
 import React, { ReactElement, useRef } from 'react';
 import {
-  IconButtonProps,
   IconButton,
   SvgIconTypeMap,
   styled as MuiStyled,
@@ -15,14 +14,37 @@ import {
   ToggleButtonProps,
   Slider,
   SliderProps,
+  Menu,
+  alpha,
 } from '@mui/material';
 
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
 import ToggleButton from '@mui/material/ToggleButton';
-import { makeStyles } from '@mui/styles';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import styled from 'styled-components';
+
+export const ContextMenu = MuiStyled(Menu)(({ theme }) => ({
+  '& .MuiPaper-root': {
+    minWidth: 120,
+  },
+  '& .MuiMenu-list': {
+    padding: '4px 0',
+  },
+  '& .MuiMenuItem-root': {
+    '& .MuiSvgIcon-root': {
+      fontSize: 18,
+      color: theme.palette.text.secondary,
+      marginRight: theme.spacing(1),
+    },
+    '&:active': {
+      backgroundColor: alpha(
+        theme.palette.primary.main,
+        theme.palette.action.selectedOpacity,
+      ),
+    },
+  },
+}));
 
 export const PropertyAccordianSummary = MuiStyled(AccordionSummary)({
   flexDirection: 'row-reverse',
@@ -180,17 +202,6 @@ const CustomToggleButton = styled(ToggleButton)`
   }
 `;
 
-const useIconButtonClasses = makeStyles(() => ({
-  iconButton: {
-    width: '32px',
-    height: '32px',
-    color: '#5064FF',
-    '&.disabled': {
-      color: '#81818E',
-    },
-  },
-}));
-
 const Accordion = MuiStyled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(() => ({
@@ -281,17 +292,14 @@ export const StyledToggleButtonGroup: React.FC<ToggleButtonGroupProps> = (
   props,
 ) => <CustomToggleButtonGroup {...props} />;
 
-export const StyledIconButton: React.FC<IconButtonProps> = ({
-  children,
-  ...props
-}) => {
-  const classes = useIconButtonClasses();
-  return (
-    <IconButton className={classes.iconButton} {...props}>
-      {children}
-    </IconButton>
-  );
-};
+export const StyledIconButton = MuiStyled(IconButton)({
+  width: '32px',
+  height: '32px',
+  color: '#5064FF',
+  '&.disabled': {
+    color: '#81818E',
+  },
+});
 
 export const TabPanel: React.FC<{
   index: number;

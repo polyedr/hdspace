@@ -13,21 +13,22 @@ import { selectCurrentWireframeElement } from '@Redux/wireframe/selectors';
 import { type Screen as ScreenType } from '@Src/types';
 import { GRID_CELL_SPACE } from '@Constants/grid';
 import ScreenFrame from './ScreenFrame';
-import { type WireframeScreen } from './Canvas';
+import { type WireframeScreen } from './helpers';
+import { CLICKABLE_ELEMENT_TYPES } from './constants';
 
 interface Props {
   data: WireframeScreen;
   active: boolean;
 }
 
-const ElementWrapper = styled('div')<{ active: boolean }>(({ active }) => ({
-  display: 'inline-block',
-  border: `1px solid ${active ? 'blue' : 'white'}`,
-  padding: 5,
-}));
+const ElementWrapper = styled('div')<{ active?: boolean }>(
+  ({ active = false }) => ({
+    display: 'inline-block',
+    outline: `1px solid ${active ? 'blue' : 'white'}`,
+  }),
+);
 
 const Card = styled(MuiCard)({
-  // boxShadow: `0 0 1px ${active ? 4 : 1}px rgba(0,0,0,.2)`,
   backgroundColor: 'transparent',
   boxShadow: 'none',
   overflow: 'inherit',
@@ -78,8 +79,15 @@ const RenderElement: React.FC<RenderElementProps> = ({
     return null;
   }
 
+  const wrapperProps = CLICKABLE_ELEMENT_TYPES.includes(element.type)
+    ? {
+        active: activeElement === elementId,
+        onClick: handleClick,
+      }
+    : {};
+
   return (
-    <ElementWrapper active={activeElement === elementId} onClick={handleClick}>
+    <ElementWrapper id={`element-link-${element.id}`} {...wrapperProps}>
       <ElementRenderer isDisplayed={isDisplayed} element={element}>
         {element.children.map((childId: string) => (
           <RenderElement

@@ -42,6 +42,7 @@ module.exports = {
         ]
       }
     ],
+    'no-console': 'error',
     'prettier/prettier': 'error',
     '@typescript-eslint/semi': 'off',
     '@typescript-eslint/space-before-function-paren': 'off',

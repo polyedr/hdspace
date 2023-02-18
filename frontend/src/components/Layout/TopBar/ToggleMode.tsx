@@ -1,6 +1,7 @@
-import { Box, Button, ToggleButton, styled } from '@mui/material';
+import { Box, Button, ToggleButton, Tooltip, styled } from '@mui/material';
 import { NavLink, useParams, useRouteMatch } from 'react-router-dom';
 import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
+import React from 'react';
 import { useWireframe } from '@Src/hooks/useWireframe';
 import { EditorModeIcon, WireframeModeIcon } from './../icons';
 
@@ -17,7 +18,10 @@ const AlignButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const ActiveLink = ({ to, children, ...props }) => {
+const ActiveLink = React.forwardRef<
+  any,
+  { to: string; children: React.ReactNode }
+>(({ to, children, ...props }, forwardRef) => {
   const match = useRouteMatch({
     path: '',
     exact: true,
@@ -25,6 +29,7 @@ const ActiveLink = ({ to, children, ...props }) => {
 
   return (
     <ToggleButton
+      ref={forwardRef}
       value={to}
       selected={!!match}
       {...props}
@@ -34,7 +39,7 @@ const ActiveLink = ({ to, children, ...props }) => {
       {children}
     </ToggleButton>
   );
-};
+});
 
 const ModeToggleBox = styled(Box)(({ theme }) => ({
   backgroundColor: '#F6F6F6',
@@ -82,15 +87,18 @@ const ToggleMode = () => {
   return (
     <>
       <ModeToggleBox>
-        <ActiveLink
-          to={`/project/${projectId}${screenId ? `/${screenId}` : ''}`}
-          aria-label="Editor Mode"
-        >
-          <EditorModeIcon />
-        </ActiveLink>
-        <ActiveLink to={wireframePath} aria-label="Wireframe Mode">
-          <WireframeModeIcon />
-        </ActiveLink>
+        <Tooltip title="Editor Mode">
+          <ActiveLink
+            to={`/project/${projectId}${screenId ? `/${screenId}` : ''}`}
+          >
+            <EditorModeIcon />
+          </ActiveLink>
+        </Tooltip>
+        <Tooltip title="Wireframe Mode">
+          <ActiveLink to={wireframePath}>
+            <WireframeModeIcon />
+          </ActiveLink>
+        </Tooltip>
       </ModeToggleBox>
       {isWireframeMode && (
         <AlignButton onClick={handleAlign} variant="contained" disableElevation>

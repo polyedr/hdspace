@@ -2,14 +2,10 @@ import React, { FC } from 'react';
 import { Undo as UndoIcon, Redo as RedoIcon } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@mui/styles';
+import { Tooltip } from '@mui/material';
 import { selectCanUndo, selectCanRedo } from '@Redux/project/selectors/control';
 import { executeUndoActions, executeRedoActions } from '@Redux/project/actions';
 import { StyledIconButton } from '@Components/styledComponents';
-import { useWireframe } from '@Src/hooks/useWireframe';
-import {
-  selectCanRedoWireframe,
-  selectCanUndoWireframe,
-} from '@Redux/wireframe/selectors';
 
 const useStyles = makeStyles({
   root: {
@@ -32,47 +28,27 @@ const History: FC = () => {
   const canUndoEditor = useSelector(selectCanUndo);
   const canRedoEditor = useSelector(selectCanRedo);
 
-  const canUndoWireframe = useSelector(selectCanUndoWireframe);
-  const canRedoWireframe = useSelector(selectCanRedoWireframe);
-
-  const { isWireframeMode, undo, redo } = useWireframe();
-
   const onHistoryBack = () => {
-    if (isWireframeMode) {
-      undo();
-    } else {
-      dispatch(executeUndoActions());
-    }
+    dispatch(executeUndoActions());
   };
 
   const onHistoryForward = () => {
-    if (isWireframeMode) {
-      redo();
-    } else {
-      dispatch(executeRedoActions());
-    }
+    dispatch(executeRedoActions());
   };
-
-  const canUndo = isWireframeMode ? canUndoWireframe : canUndoEditor;
-  const canRedo = isWireframeMode ? canRedoWireframe : canRedoEditor;
 
   return (
     <div className={classes.root}>
-      <StyledIconButton
-        onClick={onHistoryBack}
-        disabled={!canUndo}
-        title="Undo"
-      >
-        <UndoIcon className={classes.icon} />
-      </StyledIconButton>
+      <Tooltip title="Undo">
+        <StyledIconButton onClick={onHistoryBack} disabled={!canUndoEditor}>
+          <UndoIcon className={classes.icon} />
+        </StyledIconButton>
+      </Tooltip>
 
-      <StyledIconButton
-        onClick={onHistoryForward}
-        disabled={!canRedo}
-        title="Redo"
-      >
-        <RedoIcon className={classes.icon} />
-      </StyledIconButton>
+      <Tooltip title="Redo">
+        <StyledIconButton onClick={onHistoryForward} disabled={!canRedoEditor}>
+          <RedoIcon className={classes.icon} />
+        </StyledIconButton>
+      </Tooltip>
     </div>
   );
 };

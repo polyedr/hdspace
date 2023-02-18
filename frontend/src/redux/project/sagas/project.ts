@@ -245,6 +245,8 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
         yield call(getScreensSaga, result.projectscreen);
       }
 
+      yield put(Actions.fetchScreenFolders(id));
+
       yield put(Actions.setCurrentProjectId(result.id));
       yield put(Actions.setAssetLists(null));
       yield put(Actions.setSelectedAssetListId(null));

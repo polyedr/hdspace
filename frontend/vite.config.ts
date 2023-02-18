@@ -59,7 +59,7 @@ export default ({ mode }) => {
           },
         ],
       }),
-      splitVendorChunkPlugin(),
+      // splitVendorChunkPlugin(),
       eslint({
         failOnError: process.env.NODE_ENV !== 'development',
       }),

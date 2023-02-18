@@ -1,5 +1,4 @@
 import { RouterState } from 'connected-react-router';
-import { StateWithHistory } from 'redux-undo';
 import React from 'react';
 import { OptionsObject, SnackbarKey } from 'notistack';
 import { XYCoord } from 'react-dnd';
@@ -54,6 +53,7 @@ import {
   TemplatesSearchParameter,
 } from '../types';
 import TYPES from './actionTypes';
+import { createdScreenFolder, fetchedScreenFolders } from './project/actions';
 
 export interface PermissionsState {
   allUsersList: PaginatedData<UserData> & { search: string };
@@ -70,6 +70,7 @@ export interface ProjectDataState {
     parameter: [ProjectsSearchParameter, string | DateRange];
   };
   screens: Normalized<Screen>;
+  screenFolders: ScreenFolder[];
   elements: Normalized<StateElement>;
   customElementsData: PaginatedArray<LibraryElement<Entity>>;
   elementInputs: Record<string, File>;
@@ -228,22 +229,22 @@ export interface NotificationState {
   notifications: Notification[];
 }
 
-export interface WireframeConnection {
-  id: string;
+export interface Link {
+  isExternalLink: boolean;
+  elementId: string;
+  projectId?: string;
   screenId: string;
-  sourceElement: string;
-  event: string;
-  destinationScreen: string;
+  destinationScreenId?: string;
+  link?: string;
 }
 
 export interface WireframeState {
   activeScreen?: string;
   activeElement?: string;
-  connections: WireframeConnection[];
 }
 export interface AppReduxState {
   user: UserState;
-  wireframe: StateWithHistory<WireframeState>;
+  wireframe: WireframeState;
   project: ProjectState;
   router: RouterState;
   notification: NotificationState;
@@ -279,6 +280,12 @@ export interface RestoreChildrenData {
 }
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
+
+export type WireframePositionUpdate = IPlainAction<
+  typeof TYPES.WIREFRAME_UPDATE_SCREEN_POSITION
+>;
+
+export type ScreenFolderCreated = ReturnType<typeof createdScreenFolder>;
 
 export type GetSubscriptionDataType = IPlainAction<
   typeof TYPES.SUBSCRIPTION_DATA
@@ -1219,6 +1226,21 @@ export type SetAnnotatedElement = IAction<
   string
 >;
 
+export interface ScreenPosition {
+  x: number;
+  y: number;
+}
+
+export interface ScreenFolder {
+  [x: string]: any;
+  folder: any;
+  id: number;
+  buoyancy: number;
+  name: string;
+  projectId: number;
+  ctscreens: Screen[];
+}
+
 export type SetVIAResultId = IAction<typeof TYPES.SET_VIA_RESULT_ID, string>;
 
 export type UpdateVIARegionLayer = IAction<
@@ -1494,7 +1516,10 @@ export type Action =
   | SetImagePalette
   | GetSubscriptionDataType
   | SetMarketplaceListLoader
-  | ProjectError;
+  | ProjectError
+  | WireframePositionUpdate
+  | ScreenFolderCreated
+  | ReturnType<typeof fetchedScreenFolders>;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,

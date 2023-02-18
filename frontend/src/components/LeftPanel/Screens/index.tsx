@@ -1,4 +1,4 @@
-import React, { MouseEvent, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AddIcon from '@mui/icons-material/Add';
 import {
@@ -8,24 +8,29 @@ import {
   CircularProgress,
   Menu,
   MenuItem,
+  styled,
 } from '@mui/material';
 
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import Box from '@mui/material/Box';
-import { styled } from '@mui/material/styles';
-import { createScreen, changeScreensOrder } from '@Redux/project/actions';
+import {
+  createScreen,
+  changeScreensOrder,
+  changeScreenFolderOrder,
+} from '@Redux/project/actions';
 import {
   selectCurrentProjectId,
   selectScreenCreateLoader,
 } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
-  selectSortedScreens,
+  selectSortedFolders,
+  selectUncategoriesScreens,
 } from '@Redux/project/selectors/screen';
 import prevent from '@Utils/preventEvent';
-import { Indices } from '@Src/types';
-import Scrollbar from '../../UI/Scrollbar';
 import ScreenListItem from './ScreenListItem';
+import ScreenFolder from './ScreenFolder';
+import FolderListItem from './FolderListItem';
 
 const TitleContainer = styled(Box)({
   paddingLeft: 16,
@@ -54,19 +59,20 @@ const StyledIconButton = styled(IconButton)({
   },
 });
 
-const StyledCustomList = styled(List)`
-  width: 100%;
-  min-height: 259px;
-  padding: 0;
-  overflow-x: hidden;
-`;
+const StyledCustomList = styled(List)({
+  width: '100%',
+  padding: '0',
+  overflowX: 'hidden',
+  minHeight: 1,
+});
 
 function Screens() {
   const dispatch = useDispatch();
 
   const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const screens = useSelector(selectSortedScreens);
+  const uncategoriesScreens = useSelector(selectUncategoriesScreens);
+  const folders = useSelector(selectSortedFolders);
   const screenCreateLoader = useSelector(selectScreenCreateLoader);
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -85,25 +91,52 @@ function Screens() {
       createScreen({
         projectID: currentProjectId,
         name: 'Screen-1',
-        buoyancy: screens.length + 1, // + 1 because masterScreen should always have buoyancy 0
+        buoyancy: 1, // + 1 because masterScreen should always have buoyancy 0
         freeCanvas: isFreeCanvas,
       }),
     );
   };
 
-  const handleReorder = ({ destination, source }: DropResult) => {
-    if (!destination) return;
-    const indices: Indices = {
-      newIndex: destination.index,
-      oldIndex: source.index,
-    };
-    dispatch(changeScreensOrder(indices));
+  const handleReorder = ({ destination, source, draggableId }: DropResult) => {
+    if (
+      !destination ||
+      (source.index === destination.index &&
+        source.droppableId === destination.droppableId)
+    )
+      return;
+
+    if (source.droppableId === 'droppable-screen-folder') {
+      // return when no change in order
+      if (source.index === destination.index) {
+        return;
+      }
+
+      dispatch(
+        changeScreenFolderOrder({
+          newIndex: destination.index,
+          oldIndex: source.index,
+        }),
+      );
+
+      return;
+    }
+
+    dispatch(
+      changeScreensOrder({
+        newIndex: destination.index,
+        oldIndex: source.index,
+        screenId: Number(draggableId),
+        source: source.droppableId,
+        destination: destination.droppableId,
+      }),
+    );
   };
 
   return (
     <>
       <TitleContainer>
         <Title>Screens</Title>
+        <ScreenFolder />
         <StyledIconButton
           title="Create Screen"
           size="small"
@@ -143,30 +176,66 @@ function Screens() {
         </Menu>
       </TitleContainer>
       <DragDropContext onDragEnd={handleReorder}>
-        <Droppable droppableId="droppable">
-          {(provided) => (
-            <Scrollbar
-              autoHeightMin="calc(100vh - 90px)"
-              autoHeightMax="calc(100vh - 90px)"
-              style={{ backgroundColor: '#ffffff', overflow: 'hidden' }}
-            >
-              <StyledCustomList
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                {screens
-                  .filter((screen) => screen.id !== -1)
-                  .map((screen, i) => (
-                    <ScreenListItem
-                      key={screen.id}
-                      screen={screen}
-                      index={i}
-                      active={screen.id === currentScreenId}
-                    />
-                  ))}
-                {provided.placeholder}
-              </StyledCustomList>
-            </Scrollbar>
+        <Droppable
+          droppableId="droppable-screen-folder"
+          type="droppable-screen-folder"
+        >
+          {(mainProvided) => (
+            <div ref={mainProvided.innerRef} {...mainProvided.droppableProps}>
+              <Droppable droppableId={'-1'} type="droppable-screen">
+                {(provided) => (
+                  <StyledCustomList
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                  >
+                    {uncategoriesScreens
+                      .filter((screen) => screen.id !== -1)
+                      .map((screen, i) => (
+                        <ScreenListItem
+                          key={screen.id}
+                          screen={screen}
+                          index={i}
+                          active={screen.id === currentScreenId}
+                        />
+                      ))}
+                    {provided.placeholder}
+                  </StyledCustomList>
+                )}
+              </Droppable>
+
+              {folders.map((folder, folderIndex) => (
+                <FolderListItem
+                  folder={folder}
+                  key={folder.id}
+                  index={folderIndex}
+                >
+                  <Droppable
+                    droppableId={folder.id.toString()}
+                    type="droppable-screen"
+                  >
+                    {(provided) => (
+                      <StyledCustomList
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                      >
+                        {folder.ctscreens
+                          .filter((screen) => screen.id !== -1)
+                          .map((screen, i) => (
+                            <ScreenListItem
+                              key={screen.id}
+                              screen={screen}
+                              index={i}
+                              active={screen.id === currentScreenId}
+                            />
+                          ))}
+                        {provided.placeholder}
+                      </StyledCustomList>
+                    )}
+                  </Droppable>
+                </FolderListItem>
+              ))}
+              {mainProvided.placeholder}
+            </div>
           )}
         </Droppable>
       </DragDropContext>

@@ -371,7 +371,7 @@ export const uploadElementAssetSaga = withRequiredPermissions(
   const { screenId } = action.meta;
 
   const element = yield select(selectElementById, elementId);
-  console.log(element);
+
   try {
     const { imageURL, file, useInBackground } = asset;
     let finalImageUrl = imageURL;

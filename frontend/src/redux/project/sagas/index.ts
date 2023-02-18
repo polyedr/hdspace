@@ -32,6 +32,9 @@ import {
   setEditableScreenSaga,
   convertFreeCanvasSaga,
   clearEditableScreenSaga,
+  createScreenFolderSaga,
+  fetchScreenFoldersSaga,
+  changeScreenFolderOrderSaga,
 } from '@Redux/project/sagas/screen';
 import {
   getAllUsersProjectPermissionsSaga,
@@ -673,4 +676,12 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.SET_ENABLED_PSEUDO_CLASS, setEnabledPseudoClassSaga);
 
   yield takeLatest(TYPES.GENERATE_IMAGE_PALETTE, generateImagePaletteSaga);
+
+  // screen folder actions
+  yield takeEvery(TYPES.CREATE_SCREEN_FOLDER, createScreenFolderSaga);
+  yield takeLatest(TYPES.FETCH_SCREEN_FOLDERS, fetchScreenFoldersSaga);
+  yield takeEvery(
+    TYPES.CHANGE_SCREEN_FOLDER_ORDER,
+    changeScreenFolderOrderSaga,
+  );
 }

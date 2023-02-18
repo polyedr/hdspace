@@ -27,7 +27,14 @@ const dataReducer = produce(
         };
         break;
       }
-
+      case TYPES.FETCHED_SCREEN_FOLDERS: {
+        draft.screenFolders = action.payload.folders;
+        break;
+      }
+      case TYPES.SCREEN_FOLDER_CREATED: {
+        draft.screenFolders = [...draft.screenFolders, action.payload.folder];
+        break;
+      }
       case TYPES.SET_IMAGE_PALETTE: {
         draft.imagePalette = action.payload;
         break;

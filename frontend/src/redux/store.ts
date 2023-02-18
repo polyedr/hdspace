@@ -31,7 +31,7 @@ import boardReducer from './pmtools/board/reducer';
 import inviteReducer from './pmtools/invite/reducer';
 import pmToolsSaga from './pmtools/sagas';
 import marketplaceSaga from './marketplace/sagas';
-import { wireframeSagas } from './wireframe/sagas';
+import wireframeSaga from './wireframe/sagas';
 
 const userPersistConfig: PersistConfig = {
   key: 'user',
@@ -87,7 +87,7 @@ export function configureStore(): { store: Store<any>; persistor: Persistor } {
   sagaMiddleware.run(projectSaga as any); // TODO: type action types!
   sagaMiddleware.run(pmToolsSaga);
   sagaMiddleware.run(marketplaceSaga as any);
-  sagaMiddleware.run(wireframeSagas as any);
+  sagaMiddleware.run(wireframeSaga);
   const persistor = persistStore(store);
 
   return { store, persistor };

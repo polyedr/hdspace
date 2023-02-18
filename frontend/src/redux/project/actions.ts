@@ -37,6 +37,7 @@ import {
   VIARegions,
   canvasData,
   ParsedImagePalette,
+  NestedIndices,
 } from '@Src/types';
 import {
   UpdateUISettingsParameters,
@@ -209,6 +210,7 @@ import {
   ProjectError,
   PasteCopiedElementAtIndex,
   ElementMetaIndex,
+  ScreenFolder,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -313,7 +315,7 @@ export const resetCurrentUIFrameworkVariables = () => ({
   type: TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES,
 });
 
-export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({
+export const changeScreensOrder = (indices: NestedIndices) => ({
   type: TYPES.CHANGE_SCREENS_ORDER,
   payload: indices,
 });
@@ -1816,4 +1818,60 @@ export const setImagePalette = (
 ): SetImagePalette => ({
   type: TYPES.SET_IMAGE_PALETTE,
   payload: imagePalette,
+});
+
+export const createScreenFolder = (name: string, projectId: number) => ({
+  type: TYPES.CREATE_SCREEN_FOLDER,
+  payload: {
+    name,
+    projectId,
+  },
+});
+
+export const fetchScreenFolders = (projectId: number) => ({
+  type: TYPES.FETCH_SCREEN_FOLDERS,
+  payload: {
+    projectId,
+  },
+});
+
+export const fetchedScreenFolders = (folders: ScreenFolder[]) => ({
+  type: TYPES.FETCHED_SCREEN_FOLDERS,
+  payload: {
+    folders,
+  },
+});
+
+export const createdScreenFolder = (folder: ScreenFolder) => ({
+  type: TYPES.SCREEN_FOLDER_CREATED,
+  payload: { folder },
+});
+
+export const changeScreenFolderOrder = (indices: Indices) => ({
+  type: TYPES.CHANGE_SCREEN_FOLDER_ORDER,
+  payload: {
+    indices,
+  },
+});
+
+export const updateScreenFolder = (
+  params: Partial<ScreenFolder> & { id: number },
+) => ({
+  type: TYPES.UPDATE_SCREEN_FOLDER,
+  payload: { params },
+});
+
+export const updatedScreenFolder = (folder: ScreenFolder) => ({
+  type: TYPES.SCREEN_FOLDER_UPDATED,
+  payload: { folder },
+});
+
+export const deleteScreenFolder = (id: number) => ({
+  type: TYPES.DELETE_SCREEN_FOLDER,
+  payload: { id },
+});
+
+export const deletedScreenFolder = (id: number) => ({
+  type: TYPES.DELETED_SCREEN_FOLDER,
+  payload: { id },
 });

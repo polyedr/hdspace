@@ -32,6 +32,7 @@ interface ScreenBase {
   screenscenario: number[];
   buoyancy: number;
   element: string;
+  category?: number;
 }
 
 interface ProjectBase {
@@ -1070,6 +1071,12 @@ export interface DropTargetParams {
 export interface Indices {
   newIndex: number;
   oldIndex: number;
+}
+
+export interface NestedIndices extends Indices {
+  source: string;
+  destination: string;
+  screenId: number;
 }
 
 export type ElementsIndices = Record<string, number>;

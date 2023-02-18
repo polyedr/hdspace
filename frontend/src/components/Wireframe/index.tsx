@@ -52,9 +52,13 @@ const Wireframe: React.FC<Props> = ({ projectId, screenId: _ }) => {
             <LeftSidebar screens={screens} />
           </Grid>
           <Grid item xs={8}>
-            <Canvas project={project} screens={screens} />
+            <Canvas screens={screens} />
           </Grid>
-          <Grid style={{ position: 'relative', zIndex: 5 }} item xs={2}>
+          <Grid
+            style={{ position: 'relative', zIndex: 4, background: 'white' }}
+            item
+            xs={2}
+          >
             <RightSidebar screens={screens} />
           </Grid>
         </Grid>

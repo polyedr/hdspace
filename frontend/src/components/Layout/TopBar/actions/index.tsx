@@ -4,7 +4,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import ToggleButton from '@mui/material/ToggleButton';
-import { IconButton, Theme } from '@mui/material';
+import { IconButton, Theme, Tooltip } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { setBordersEnabled, exportScreenFlag } from '@Redux/project/actions';
 import { changePrototypeMode } from '@Redux/user/actions';
@@ -115,24 +115,23 @@ const Actions: React.FC = () => {
   return (
     <div className={classes.root}>
       <History />
-      <ToggleButton
-        className={classes.togglebutton}
-        value="Proto mode"
-        onClick={handleToggleProtoMode}
-        title="Proto mode"
-        disabled={imageLoader}
-        selected={isPrototypeMode}
-      >
-        <VisibilityOutlinedIcon className={classes.icon} />
-      </ToggleButton>
+      <Tooltip title="Proto mode">
+        <ToggleButton
+          className={classes.togglebutton}
+          value="Proto mode"
+          onClick={handleToggleProtoMode}
+          disabled={imageLoader}
+          selected={isPrototypeMode}
+        >
+          <VisibilityOutlinedIcon className={classes.icon} />
+        </ToggleButton>
+      </Tooltip>
 
-      <IconButton
-        onClick={handleExportScreen}
-        title="Export screen"
-        className={classes.iconButton}
-      >
-        <FileDownloadOutlinedIcon className={classes.icon} />
-      </IconButton>
+      <Tooltip title="Export screen">
+        <IconButton onClick={handleExportScreen} className={classes.iconButton}>
+          <FileDownloadOutlinedIcon className={classes.icon} />
+        </IconButton>
+      </Tooltip>
 
       <Share />
     </div>

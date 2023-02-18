@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useHistory } from 'react-router';
 import {
-  ListItem,
   ListItemIcon,
   Box,
   Modal,
   Button,
   Typography,
   Theme,
+  ListItemButton,
 } from '@mui/material';
 import {
   editScreenNameAndData,
@@ -45,11 +45,6 @@ const useStyles = makeStyles<Theme>(({ typography }) => ({
   icon: {
     '&.MuiListItemIcon-root': {
       minWidth: 0,
-    },
-  },
-  active: {
-    '&.MuiListItem-root': {
-      backgroundColor: '#F3F4F6',
     },
   },
   screenData: {
@@ -144,132 +139,134 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const handleClose = () => setState(initialState);
 
   return (
-    <Draggable draggableId={screen.id.toString()} index={index}>
-      {(provided) => (
-        <div
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-        >
-          <ListItem
-            button
-            onClick={handleClick}
-            onMouseLeave={handleMouseLeave}
-            onMouseOver={handleMouseOver}
-            onContextMenu={handleMenuOpen}
-            className={cn(classes.listItem, active && classes.active)}
+    <>
+      <Draggable draggableId={screen.id.toString()} index={index}>
+        {(provided) => (
+          <div
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            ref={provided.innerRef}
           >
-            <div className={classes.screenData}>
-              <ListItemIcon className={classes.icon}>
-                <ScreenLogo image={image} />
-              </ListItemIcon>
-              {name.length > 10 ? (
-                <ScreenLongName
-                  name={name}
-                  styles={{
-                    name: classes.name,
-                    popover: classes.popover,
-                    paper: classes.paper,
-                  }}
-                />
-              ) : (
-                <span className={classes.name}>{name}</span>
-              )}
-            </div>
-            <ContextMenu
-              open={state?.mouseY !== null}
-              screen={screen}
-              anchorPosition={
-                state.mouseY !== null && state.mouseX !== null
-                  ? { top: state.mouseY, left: state.mouseX }
-                  : undefined
-              }
-              onClose={handleClose}
-              openEdit={openEdit}
-              openDelete={handleDeleteOpen}
-            />
-          </ListItem>
-          <ScreenEditDialog
-            open={edit}
-            onSubmit={handleSubmit}
-            onClose={closeEdit}
-            titleDialog="Rename Screen"
-            initialValueName={name}
-            initialValueTags={screenData?.meta || {}}
-            currentScreenId={id}
-            project={project}
-          />
-          <Modal open={deleteModal}>
-            <Box
-              sx={{
-                position: 'absolute' as 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 420,
-                bgcolor: 'background.paper',
-                borderRadius: '6px',
-                boxShadow: 24,
-                p: 4,
-              }}
+            <ListItemButton
+              selected={active}
+              onClick={handleClick}
+              onMouseLeave={handleMouseLeave}
+              onMouseOver={handleMouseOver}
+              onContextMenu={handleMenuOpen}
+              className={cn(classes.listItem)}
             >
-              <Typography
-                sx={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  fontFamily: 'Roboto',
-                  color: '#2A2A2D',
-                }}
-              >
-                Delete Screen
-              </Typography>
-              <Typography
-                sx={{
-                  marginTop: '12px',
-                  fontSize: '14px',
-                  fontFamily: 'Roboto',
-                  color: '#2A2A2D',
-                }}
-              >
-                Are you sure you want to delete the {screen.name} screen?
-              </Typography>
+              <div className={classes.screenData}>
+                <ListItemIcon className={classes.icon}>
+                  <ScreenLogo image={image} />
+                </ListItemIcon>
+                {name.length > 10 ? (
+                  <ScreenLongName
+                    name={name}
+                    styles={{
+                      name: classes.name,
+                      popover: classes.popover,
+                      paper: classes.paper,
+                    }}
+                  />
+                ) : (
+                  <span className={classes.name}>{name}</span>
+                )}
+              </div>
+              <ContextMenu
+                open={state?.mouseY !== null}
+                screen={screen}
+                anchorPosition={
+                  state.mouseY !== null && state.mouseX !== null
+                    ? { top: state.mouseY, left: state.mouseX }
+                    : undefined
+                }
+                onClose={handleClose}
+                openEdit={openEdit}
+                openDelete={handleDeleteOpen}
+              />
+            </ListItemButton>
+            <ScreenEditDialog
+              open={edit}
+              onSubmit={handleSubmit}
+              onClose={closeEdit}
+              titleDialog="Rename Screen"
+              initialValueName={name}
+              initialValueTags={screenData?.meta || {}}
+              currentScreenId={id}
+              project={project}
+            />
+            <Modal open={deleteModal}>
               <Box
                 sx={{
-                  marginTop: '20px',
-                  display: 'flex',
-                  justifyContent: 'flex-end',
+                  position: 'absolute' as 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: 420,
+                  bgcolor: 'background.paper',
+                  borderRadius: '6px',
+                  boxShadow: 24,
+                  p: 4,
                 }}
-                gap={2}
               >
-                <Button
+                <Typography
                   sx={{
-                    color: '#81818E',
-                    fontWeight: '500',
-                    textTransform: 'capitalize',
-                  }}
-                  onClick={() => {
-                    setDeleteModal(false);
+                    fontSize: '18px',
+                    fontWeight: '600',
+                    fontFamily: 'Roboto',
+                    color: '#2A2A2D',
                   }}
                 >
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
+                  Delete Screen
+                </Typography>
+                <Typography
                   sx={{
-                    backgroundColor: '#5064FF',
-                    fontWeight: '500',
-                    textTransform: 'capitalize',
+                    marginTop: '12px',
+                    fontSize: '14px',
+                    fontFamily: 'Roboto',
+                    color: '#2A2A2D',
                   }}
-                  onClick={handleDeleteClose}
                 >
-                  Delete
-                </Button>
+                  Are you sure you want to delete the {screen.name} screen?
+                </Typography>
+                <Box
+                  sx={{
+                    marginTop: '20px',
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                  }}
+                  gap={2}
+                >
+                  <Button
+                    sx={{
+                      color: '#81818E',
+                      fontWeight: '500',
+                      textTransform: 'capitalize',
+                    }}
+                    onClick={() => {
+                      setDeleteModal(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: '#5064FF',
+                      fontWeight: '500',
+                      textTransform: 'capitalize',
+                    }}
+                    onClick={handleDeleteClose}
+                  >
+                    Delete
+                  </Button>
+                </Box>
               </Box>
-            </Box>
-          </Modal>
-        </div>
-      )}
-    </Draggable>
+            </Modal>
+          </div>
+        )}
+      </Draggable>
+    </>
   );
 };
 

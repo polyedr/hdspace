@@ -1,8 +1,3 @@
-// import {
-//   PropertyAccordianSummary,
-//   PropertyAccordion,
-//   PropertyAccordionDetails,
-// } from '@Components/styledComponents';
 import {
   Box,
   FormControl,
@@ -20,25 +15,26 @@ import { Remove as RemoveIcon, Add as AddIcon } from '@mui/icons-material';
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAllElements } from '@Redux/project/selectors/element';
-import { WireframeConnection } from '@Redux/types';
-import { setActiveElement, updateConnection } from '@Redux/wireframe/wireframe';
-import { Normalized, Screen, StateElement } from '@Src/types';
+import { Normalized, Screen, Params } from '@Src/types';
+import { Link } from '@Redux/types';
+import { setActiveElement } from '@Redux/wireframe/wireframe';
+import { updateElementParameters } from '@Redux/project/actions';
+import { CLICKABLE_ELEMENT_TYPES } from '../constants';
 
 interface Props {
   activeScreen?: string;
-  activeElement?: string;
   screens: Normalized<Screen>;
-  connection: WireframeConnection;
+  link: Link;
+  updateParams: (params: Params<any>) => void;
+  onSaved?: () => void;
 }
-
-const events = [{ value: 'click', label: 'Click' }];
 
 const MuiAccordion = styled(Accordion)({
   '&.MuiAccordion-root': {
     backgroundColor: 'transparent',
     borderBottom: '1px solid #e4e6eb',
   },
-  '&	.MuiTypography-root': {
+  '& .MuiTypography-root': {
     fontWeight: 700,
   },
 
@@ -51,136 +47,78 @@ const MuiAccordion = styled(Accordion)({
   },
 });
 
-const Connect: React.FC<Props> = ({
-  activeElement,
-  activeScreen,
-  screens,
-  connection,
-}) => {
-  const dispatch = useDispatch();
-
+const Connect: React.FC<Props> = ({ activeScreen, screens, link, onSaved }) => {
   const allElements = useSelector(selectAllElements);
   const screen = activeScreen ? screens[activeScreen] : null;
+  const [expanded, setExpanded] = React.useState<string | false>('panel1');
+  const dispatch = useDispatch();
+
+  const updateParams = useCallback(
+    (params: Params<any>) => {
+      dispatch(
+        updateElementParameters(link.elementId, params, {
+          screenId: Number(activeScreen),
+        }),
+      );
+
+      if (typeof onSaved === 'function') {
+        onSaved();
+      }
+    },
+
+    [activeScreen, link],
+  );
 
   const screenElements = useMemo(() => {
-    let elements = [];
-
-    function getElements(elementId, allElements: Normalized<StateElement>) {
+    function getElements(elementId: string) {
+      let elements = [];
       const element = allElements[elementId];
 
-      let elements = [];
-
-      if (!element) {
-        return [];
-      }
-
-      if (element.name !== 'Root') {
+      if (element && element.name !== 'Root') {
         elements.push(element);
       }
 
-      element.children.forEach((childElementId) => {
-        elements = [...elements, ...getElements(childElementId, allElements)];
+      element.children.forEach((childId) => {
+        elements = [...elements, ...getElements(childId)];
       });
 
       return elements;
     }
 
-    if (screen) {
-      elements = getElements(screen.element, allElements);
-    }
-
-    return elements;
+    return getElements(screen.element).filter((element) =>
+      CLICKABLE_ELEMENT_TYPES.includes(element?.type),
+    );
   }, [allElements, screen]);
+
+  const handleChangeScreen = (e: SelectChangeEvent) => {
+    if (e.target.value) {
+      updateParams({
+        screenLink: `${2403}/${e.target.value}`,
+      });
+    } else {
+      updateParams({
+        screenLink: '',
+      });
+    }
+  };
+
+  const handleChangeElement = (e: SelectChangeEvent) => {
+    dispatch(setActiveElement(e.target.value));
+  };
 
   const selectableScreens = useMemo(() => {
     return Object.values(screens).filter(
-      (s) => s.id !== parseInt(activeScreen) && s.name !== 'Master Screen',
+      (screen) =>
+        screen.id !== Number(activeScreen) && !screen.name.includes('Master'),
     );
   }, [screens, activeScreen]);
 
-  const handleElementChange = useCallback((e: SelectChangeEvent) => {
-    dispatch(
-      updateConnection({ ...connection, sourceElement: e.target.value }),
-    );
-    dispatch(setActiveElement(e.target.value));
-  }, []);
-
-  const handleEventChange = useCallback(
-    (e: SelectChangeEvent) => {
-      dispatch(updateConnection({ ...connection, event: e.target.value }));
-    },
-    [connection],
-  );
-
-  const handleTargetChange = useCallback(
-    (e: SelectChangeEvent) =>
-      dispatch(
-        updateConnection({ ...connection, destinationScreen: e.target.value }),
-      ),
-    [connection],
-  );
-
-  const [expanded, setExpanded] = React.useState<string | false>(false);
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
     };
-  return (
-    // <PropertyAccordion defaultExpanded>
-    //   <PropertyAccordianSummary expandIcon={<AddIcon />}>
-    //     Connect
-    //   </PropertyAccordianSummary>
-    //   <PropertyAccordionDetails>
-    //     <Box component="form" noValidate>
-    //       <FormControl margin="dense" fullWidth variant="standard">
-    //         <InputLabel id="wireframe-sidebar-element">Element</InputLabel>
-    //         <Select
-    //           labelId="wireframe-sidebar-element"
-    //           value={connection.sourceElement}
-    //           label="Element"
-    //           onChange={handleElementChange}
-    //         >
-    //           {screenElements.map((element) => (
-    //             <MenuItem value={element.id} key={element.id.toString()}>
-    //               {element.name}
-    //             </MenuItem>
-    //           ))}
-    //         </Select>
-    //       </FormControl>
-    //       <FormControl margin="dense" fullWidth variant="standard">
-    //         <InputLabel id="wireframe-sidebar-event">Event</InputLabel>
-    //         <Select
-    //           labelId="wireframe-sidebar-event"
-    //           value={connection.event}
-    //           label="Event"
-    //           onChange={handleEventChange}
-    //         >
-    //           {events.map((event) => (
-    //             <MenuItem key={event.value} value={event.value}>
-    //               {event.label}
-    //             </MenuItem>
-    //           ))}
-    //         </Select>
-    //       </FormControl>
-    //       <FormControl margin="dense" fullWidth variant="standard">
-    //         <InputLabel id="wireframe-sidebar-target">Target</InputLabel>
-    //         <Select
-    //           labelId="wireframe-sidebar-target"
-    //           value={connection.destinationScreen}
-    //           label="Target"
-    //           onChange={handleTargetChange}
-    //         >
-    //           {selectableScreens.map((screen) => (
-    //             <MenuItem value={screen.id} key={screen.id}>
-    //               {screen.name}
-    //             </MenuItem>
-    //           ))}
-    //         </Select>
-    //       </FormControl>
-    //     </Box>
-    //   </PropertyAccordionDetails>
-    // </PropertyAccordion>
 
+  return (
     <MuiAccordion
       expanded={expanded === 'panel1'}
       onChange={handleChange('panel1')}
@@ -198,9 +136,9 @@ const Connect: React.FC<Props> = ({
             <InputLabel id="wireframe-sidebar-element">Element</InputLabel>
             <Select
               labelId="wireframe-sidebar-element"
-              value={connection.sourceElement}
+              value={link.elementId}
               label="Element"
-              onChange={handleElementChange}
+              onChange={handleChangeElement}
             >
               {screenElements.map((element) => (
                 <MenuItem value={element.id} key={element.id.toString()}>
@@ -210,28 +148,14 @@ const Connect: React.FC<Props> = ({
             </Select>
           </FormControl>
           <FormControl margin="dense" fullWidth variant="standard">
-            <InputLabel id="wireframe-sidebar-event">Event</InputLabel>
-            <Select
-              labelId="wireframe-sidebar-event"
-              value={connection.event}
-              label="Event"
-              onChange={handleEventChange}
-            >
-              {events.map((event) => (
-                <MenuItem key={event.value} value={event.value}>
-                  {event.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl margin="dense" fullWidth variant="standard">
             <InputLabel id="wireframe-sidebar-target">Target</InputLabel>
             <Select
               labelId="wireframe-sidebar-target"
-              value={connection.destinationScreen}
+              value={link.destinationScreenId}
               label="Target"
-              onChange={handleTargetChange}
+              onChange={handleChangeScreen}
             >
+              <MenuItem value="">select an option</MenuItem>
               {selectableScreens.map((screen) => (
                 <MenuItem value={screen.id} key={screen.id}>
                   {screen.name}
