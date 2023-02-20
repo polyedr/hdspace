@@ -1,9 +1,8 @@
 import React, { useState, useCallback, MouseEvent } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { makeStyles } from '@mui/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import cn from 'classnames';
-import { useHistory } from 'react-router';
 import {
   ListItemIcon,
   Box,
@@ -13,12 +12,7 @@ import {
   Theme,
   ListItemButton,
 } from '@mui/material';
-import {
-  editScreenNameAndData,
-  setActiveElement,
-  deleteScreen,
-} from '@Redux/project/actions';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { editScreenNameAndData, deleteScreen } from '@Redux/project/actions';
 import { Screen } from '../../../types';
 import ScreenLogo from './ScreenLogo';
 import ScreenEditDialog from './ScreenEditDialog';
@@ -74,23 +68,27 @@ interface Props {
   screen: Screen;
   index: number;
   active: boolean;
+  onSelected: (screen: Screen) => void;
 }
 interface State {
   mouseX: number | null;
   mouseY: number | null;
 }
 
-const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
+const ScreenListItem: React.FC<Props> = ({
+  screen,
+  index,
+  active,
+  onSelected,
+}) => {
   const dispatch = useDispatch();
-  const { name, project, id, image, screenData, element } = screen;
+  const { name, project, id, image, screenData } = screen;
   const initialState: State = {
     mouseX: null,
     mouseY: null,
   };
   const [state, setState] = useState<State>(initialState);
   const classes = useStyles();
-  const history = useHistory();
-  const currentProjectId = useSelector(selectCurrentProjectId);
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -115,10 +113,6 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
       }),
     );
     closeEdit();
-  };
-  const handleClick = () => {
-    dispatch(setActiveElement(element));
-    history.push(`/project/${currentProjectId}/${screen.id}`);
   };
 
   const handleMenuOpen = (ev: MouseEvent<HTMLDivElement>) => {
@@ -149,7 +143,7 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
           >
             <ListItemButton
               selected={active}
-              onClick={handleClick}
+              onClick={() => onSelected(screen)}
               onMouseLeave={handleMouseLeave}
               onMouseOver={handleMouseOver}
               onContextMenu={handleMenuOpen}

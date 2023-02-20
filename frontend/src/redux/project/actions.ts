@@ -49,7 +49,6 @@ import {
   AddElements,
   CreateProject,
   CreateScreen,
-  ChangeScreensOrder,
   ClearAfterPrevScreen,
   CopyActiveElement,
   CopyElementStyles,
@@ -1855,13 +1854,15 @@ export const changeScreenFolderOrder = (indices: Indices) => ({
 });
 
 export const updateScreenFolder = (
-  params: Partial<ScreenFolder> & { id: number },
+  params: Partial<ScreenFolder> & { id: ScreenFolder['id'] },
 ) => ({
   type: TYPES.UPDATE_SCREEN_FOLDER,
   payload: { params },
 });
 
-export const updatedScreenFolder = (folder: ScreenFolder) => ({
+export const updatedScreenFolder = (
+  folder: Partial<ScreenFolder> & { id: ScreenFolder['id'] },
+) => ({
   type: TYPES.SCREEN_FOLDER_UPDATED,
   payload: { folder },
 });

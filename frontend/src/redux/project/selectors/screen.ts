@@ -34,7 +34,16 @@ export const selectFolders = (state: AppReduxState) =>
   state.project.data.screenFolders;
 
 export const selectSortedFolders = createSelector(selectFolders, (folders) => {
-  return Object.values(folders).sort((a, b) => a.buoyancy - b.buoyancy);
+  return Object.values(folders)
+    .map((folder) => {
+      return {
+        ...folder,
+        ctscreens: Object.values(folder.ctscreens).sort(
+          (a, b) => a.buoyancy - b.buoyancy,
+        ),
+      };
+    })
+    .sort((a, b) => a.buoyancy - b.buoyancy);
 });
 
 export const selectUncategoriesScreens = createSelector(

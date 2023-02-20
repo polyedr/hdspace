@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
 import ElementsBlock from '@Components/RightPanel/ElementsTab/ElementsBlock';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
@@ -7,6 +7,10 @@ import { createElementsHierarchy } from '@Utils/elementsHierarchy';
 import Scrollbar from '@Components/UI/Scrollbar';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import FrameworkSection from '@/components/RightPanel/FrameworkSection';
+import { setActiveElement } from '@Redux/project/actions';
+import { Screen } from '@Src/types';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { useHistory } from 'react-router-dom';
 import Navigator from './Navigator';
 import Screens from './Screens';
 import {
@@ -38,6 +42,19 @@ function Layers() {
   return viaMode ? <VIANavigator /> : <Navigator />;
 }
 
+const EditorScreens = () => {
+  const currentProjectId = useSelector(selectCurrentProjectId);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const handleClick = (screen: Screen) => {
+    dispatch(setActiveElement(screen.element));
+    history.push(`/project/${currentProjectId}/${screen.id}`);
+  };
+
+  return <Screens onSelected={handleClick} />;
+};
+
 export const mainMenu = [
   {
     id: 'elements-tab',
@@ -53,7 +70,7 @@ export const mainMenu = [
     id: 'screens',
     label: 'Screens',
     icon: ScreensIcon,
-    component: Screens,
+    component: EditorScreens,
   },
   {
     id: 'styles',

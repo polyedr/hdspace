@@ -175,13 +175,15 @@ const PropertiesTab: React.FC = () => {
   const isGroupElement = !!activeElement.parameters.sourceElementId;
   const isGroupSource = !!activeElement.parameters.groupElements;
 
-  const elementsControlsCollection = useMemo(
-    () =>
-      Object.keys(selectedElements).map(
-        (elementId) => AVAILABLE_CONTROLS[selectedElements[elementId].type],
-      ),
-    [selectedElements, AVAILABLE_CONTROLS],
-  );
+  const elementsControlsCollection = useMemo(() => {
+    return Object.keys(selectedElements)
+      .map((elementId) =>
+        selectedElements[elementId]?.type
+          ? AVAILABLE_CONTROLS[selectedElements[elementId].type]
+          : null,
+      )
+      .filter((item) => item);
+  }, [selectedElements, AVAILABLE_CONTROLS]);
 
   const SELECTION_CONTROLS = useMemo(() => {
     if (!elementsControlsCollection.length) {

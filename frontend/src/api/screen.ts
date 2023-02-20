@@ -49,6 +49,19 @@ export const apiUpdateScreenCategory = async ({
     .then((res) => parseResult(res))
     .catch(onError);
 
+export const apiDeleteScreenCategory = async ({
+  ...props
+}: MyAxiosProps & {
+  id: string;
+}) =>
+  await myAxios({
+    ...props,
+    method: 'delete',
+    url: `projects/projectcategories/${props.id}/`,
+  })
+    .then((res) => parseResult(res))
+    .catch(onError);
+
 export const apiGetScreenCategories = async (
   props: MyAxiosProps & { id: string },
 ): Promise<Screen> =>

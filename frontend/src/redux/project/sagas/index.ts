@@ -35,6 +35,8 @@ import {
   createScreenFolderSaga,
   fetchScreenFoldersSaga,
   changeScreenFolderOrderSaga,
+  updateScreenFolderSaga,
+  deleteScreenFolderSaga,
 } from '@Redux/project/sagas/screen';
 import {
   getAllUsersProjectPermissionsSaga,
@@ -684,4 +686,7 @@ export default function* projectSaga() {
     TYPES.CHANGE_SCREEN_FOLDER_ORDER,
     changeScreenFolderOrderSaga,
   );
+
+  yield takeEvery(TYPES.UPDATE_SCREEN_FOLDER, updateScreenFolderSaga);
+  yield takeEvery(TYPES.DELETE_SCREEN_FOLDER, deleteScreenFolderSaga);
 }

@@ -8,7 +8,9 @@ import {
   TextField,
 } from '@mui/material';
 import { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { ScreenFolder } from '@Redux/types';
+import { updateScreenFolder } from '@Redux/project/actions';
 
 interface Props {
   open: boolean;
@@ -23,7 +25,18 @@ const EditScreenFolder: React.FC<Props> = ({
 }) => {
   const [name, setName] = useState(folder.name);
 
-  const handleSubmit = useCallback(() => {}, []);
+  const dispatch = useDispatch();
+
+  const handleSubmit = useCallback(() => {
+    dispatch(
+      updateScreenFolder({
+        id: folder.id,
+        name,
+      }),
+    );
+
+    onRequestClose();
+  }, [folder, name, onRequestClose]);
 
   const handleChangeName = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +46,15 @@ const EditScreenFolder: React.FC<Props> = ({
   );
 
   return (
-    <Dialog open={open} onClose={onRequestClose}>
+    <Dialog
+      TransitionProps={{
+        onExited: () => {
+          setName(folder.name);
+        },
+      }}
+      open={open}
+      onClose={onRequestClose}
+    >
       <DialogTitle>Screen Folder</DialogTitle>
       <DialogContent>
         <DialogContentText>

@@ -53,7 +53,7 @@ import {
   TemplatesSearchParameter,
 } from '../types';
 import TYPES from './actionTypes';
-import { createdScreenFolder, fetchedScreenFolders } from './project/actions';
+import { createdScreenFolder, deletedScreenFolder, fetchedScreenFolders, updatedScreenFolder } from './project/actions';
 
 export interface PermissionsState {
   allUsersList: PaginatedData<UserData> & { search: string };
@@ -1519,7 +1519,9 @@ export type Action =
   | ProjectError
   | WireframePositionUpdate
   | ScreenFolderCreated
-  | ReturnType<typeof fetchedScreenFolders>;
+  | ReturnType<typeof fetchedScreenFolders>
+  | ReturnType<typeof updatedScreenFolder>
+  | ReturnType<typeof deletedScreenFolder>;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,

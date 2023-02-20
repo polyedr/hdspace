@@ -21,6 +21,7 @@ import {
   apiUpdateScreen,
   apiGetScreenCategories,
   apiUpdateScreenCategory,
+  apiDeleteScreenCategory,
 } from '@Api/screen';
 import {
   EditableScreenUser,
@@ -80,8 +81,8 @@ import { createScenarios } from './scenario';
 
 export const fetchScreenFoldersSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
-)(function* (props: ReturnType<typeof Actions.fetchScreenFolders>) {
-  const { projectId } = props.payload;
+)(function* (action: ReturnType<typeof Actions.fetchScreenFolders>) {
+  const { projectId } = action.payload;
 
   try {
     const folders = yield call(reqWrapper, apiGetScreenCategories, {
@@ -104,8 +105,8 @@ export const fetchScreenFoldersSaga = withRequiredPermissions(
 export const changeScreenFolderOrderSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
-)(function* (props: ReturnType<typeof Actions.changeScreenFolderOrder>) {
-  const { indices } = props.payload;
+)(function* (action: ReturnType<typeof Actions.changeScreenFolderOrder>) {
+  const { indices } = action.payload;
 
   const folders = (yield select(selectSortedFolders)) as ScreenFolder[];
   const foldersCopy = [...folders];
@@ -138,8 +139,8 @@ export const changeScreenFolderOrderSaga = withRequiredPermissions(
 export const createScreenFolderSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
-)(function* (props: ReturnType<typeof Actions.createScreenFolder>) {
-  const { name, projectId } = props.payload;
+)(function* (action: ReturnType<typeof Actions.createScreenFolder>) {
+  const { name, projectId } = action.payload;
 
   const folders = yield select(selectFolders);
 
@@ -157,6 +158,62 @@ export const createScreenFolderSaga = withRequiredPermissions(
         {
           message: e.message || 'Failed to create screen folder',
           options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+});
+
+export const updateScreenFolderSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* (action: ReturnType<typeof Actions.updateScreenFolder>) {
+  const { id, ...params } = action.payload.params;
+
+  try {
+    yield put(Actions.updatedScreenFolder(action.payload.params));
+
+    const screen = yield call(reqWrapper, apiUpdateScreenCategory, {
+      id,
+      data: {
+        ...params,
+      },
+    });
+
+    yield put(Actions.updatedScreenFolder(screen));
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
+        },
+        e,
+      ),
+    );
+  }
+});
+
+export const deleteScreenFolderSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* (action: ReturnType<typeof Actions.deleteScreenFolder>) {
+  const { id } = action.payload;
+
+  try {
+    yield put(Actions.deletedScreenFolder(id));
+    yield call(reqWrapper, apiDeleteScreenCategory, { id });
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
         },
         e,
       ),
@@ -866,6 +923,7 @@ export function* changeScreensOrder(
 
     // folder changed
     if (source !== destination) {
+      let screensForServer = [];
       const screen = screens.find((screen) => screen.id === screenId);
 
       const sourceFolderIndex = foldersCopy.findIndex(
@@ -884,7 +942,7 @@ export function* changeScreensOrder(
             ...foldersCopy[sourceFolderIndex].ctscreens
               .filter((screen) => screen.id !== screenId)
               .map((screen, index) => {
-                return { ...screen, buoyancy: index };
+                return { ...screen, buoyancy: index + 1 };
               }),
           ],
         };
@@ -898,8 +956,19 @@ export function* changeScreensOrder(
         };
 
         // re-order screens
-        foldersCopy[destinationFolderIndex].ctscreens.map((screen, index) => {
-          return { ...screen, buoyancy: index };
+        foldersCopy[destinationFolderIndex] = {
+          ...foldersCopy[destinationFolderIndex],
+          ctscreens: foldersCopy[destinationFolderIndex].ctscreens.map(
+            (screen, index) => {
+              return { ...screen, buoyancy: index + 1 };
+            },
+          ),
+        };
+      } else {
+        screensForServer.push({
+          ...screen,
+          buoyancy: newIndex + 1,
+          category: '',
         });
       }
 
@@ -907,7 +976,6 @@ export function* changeScreensOrder(
       yield put(Actions.fetchedScreenFolders(foldersCopy));
 
       // update categories order on server
-      let screensForServer = [];
 
       foldersCopy.forEach((folder) => {
         screensForServer = [
@@ -915,7 +983,7 @@ export function* changeScreensOrder(
           ...folder.ctscreens.map((screen) => ({
             id: screen.id,
             category: folder.id,
-            buoyancy: screen.buoyancy + 1,
+            buoyancy: screen.buoyancy,
           })),
         ];
       });
@@ -932,7 +1000,8 @@ export function* changeScreensOrder(
         ),
       );
     } else {
-      if (destination === '-1' && source === '-1') {
+      if (destination === '-1') {
+        // moved uncategories
         const screensCopy = [...screens];
         screensCopy.splice(newIndex, 0, screensCopy.splice(oldIndex, 1)[0]);
 
@@ -947,6 +1016,50 @@ export function* changeScreensOrder(
         // update screens on server
         yield all(
           newScreenList.map(({ id, buoyancy, category }) =>
+            call(reqWrapper, apiUpdateScreen, {
+              id,
+              data: {
+                buoyancy,
+                category,
+              },
+            }),
+          ),
+        );
+      } else if (source === destination) {
+        const foldersCopy = [...folders];
+
+        const folderIndex = foldersCopy.findIndex(
+          (folder) => folder.id === Number(source),
+        );
+
+        const screens = [...foldersCopy[folderIndex].ctscreens];
+        screens.splice(newIndex, 0, screens.splice(oldIndex, 1)[0]);
+
+        foldersCopy[folderIndex] = {
+          ...foldersCopy[folderIndex],
+          ctscreens: screens.map((screen, index) => ({
+            ...screen,
+            buoyancy: index + 1,
+          })),
+        };
+
+        yield put(Actions.fetchedScreenFolders(foldersCopy));
+
+        // update categories order on server
+        let screensForServer = [];
+
+        foldersCopy.forEach((folder) => {
+          screensForServer = [
+            ...screensForServer,
+            ...folder.ctscreens.map((screen, index) => ({
+              id: screen.id,
+              category: folder.id,
+            })),
+          ];
+        });
+
+        yield all(
+          screensForServer.map(({ id, buoyancy, category }) =>
             call(reqWrapper, apiUpdateScreen, {
               id,
               data: {

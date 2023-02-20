@@ -28,6 +28,7 @@ import {
   selectUncategoriesScreens,
 } from '@Redux/project/selectors/screen';
 import prevent from '@Utils/preventEvent';
+import { Screen } from '@Src/types';
 import ScreenListItem from './ScreenListItem';
 import ScreenFolder from './ScreenFolder';
 import FolderListItem from './FolderListItem';
@@ -65,7 +66,11 @@ const StyledCustomList = styled(List)({
   minHeight: 1,
 });
 
-function Screens() {
+interface Props {
+  onSelected: (screen: Screen) => void;
+}
+
+const Screens: React.FC<Props> = ({ onSelected }) => {
   const dispatch = useDispatch();
 
   const currentProjectId = useSelector(selectCurrentProjectId);
@@ -200,6 +205,7 @@ function Screens() {
                         <ScreenListItem
                           key={screen.id}
                           screen={screen}
+                          onSelected={onSelected}
                           index={i}
                           active={screen.id === currentScreenId}
                         />
@@ -231,6 +237,7 @@ function Screens() {
                               key={screen.id}
                               screen={screen}
                               index={i}
+                              onSelected={onSelected}
                               active={screen.id === currentScreenId}
                             />
                           ))}
@@ -247,6 +254,6 @@ function Screens() {
       </DragDropContext>
     </>
   );
-}
+};
 
 export default Screens;
