@@ -7,7 +7,7 @@ import useViewportHotkeys from '../hooks/useViewportHotkeys';
 const useStyles = makeStyles(() =>
   createStyles({
     editorViewport: {
-      height: '100vh',
+      // height: '100vh',
       position: 'relative',
       display: 'flex',
       flexGrow: 1,

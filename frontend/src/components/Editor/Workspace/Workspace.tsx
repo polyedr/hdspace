@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
 import { makeStyles } from '@mui/styles';
@@ -16,12 +16,14 @@ import {
   selectScreenRotated,
   selectShowingGrid,
 } from '@Redux/project/selectors/base';
+import ELEMENT_IDS from '@Constants/elementIds';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import { DOMHandler } from './DOMHandler';
+import HoverInterations from './ElementsInteractions/HoverInterations';
 
 const GridLines = _GridLines.default ? _GridLines.default : _GridLines;
 
@@ -112,6 +114,8 @@ const Workspace: React.FC<Props> = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
 
+  const [scrollbarRef, setScrollbarRef] = useState<Scrollbars | null>(null);
+
   const format = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
@@ -122,6 +126,32 @@ const Workspace: React.FC<Props> = () => {
   const scrollRef = useRef<Scrollbars | null>(null);
 
   const [scrollLeft, setScrollLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (scrollbarRef && params.has('moveToElement')) {
+      const canvas = document.getElementById(
+        ELEMENT_IDS.canvas,
+      ) as HTMLIFrameElement;
+
+      canvas.onload = () => {
+        const innerDoc =
+          canvas.contentDocument || canvas.contentWindow?.document;
+        const element = innerDoc?.getElementById(
+          params.get('moveToElement') || '',
+        );
+
+        if (element) {
+          element?.scrollIntoView({
+            block: 'center',
+            inline: 'nearest',
+            behavior: 'smooth',
+          });
+        }
+      };
+    }
+  }, [scrollbarRef]);
 
   return (
     <div className={classes.workspace} ref={ref}>
@@ -134,6 +164,7 @@ const Workspace: React.FC<Props> = () => {
                   if (!scrollbars) {
                     return;
                   }
+                  setScrollbarRef(scrollbars);
                   scrollRef.current = scrollbars;
                   DOMHandler.INSTANCE.watch(scrollbars.view);
                 }}
@@ -158,6 +189,7 @@ const Workspace: React.FC<Props> = () => {
                 {!freeCanvasMode && !isPrototypeMode && (
                   <ElementsInteractions posRight={scrollLeft} />
                 )}
+                {isPrototypeMode && <HoverInterations />}
               </Scrollbar>
             </EditorViewport>
             <NNProcessingModal />
