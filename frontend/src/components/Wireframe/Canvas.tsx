@@ -14,6 +14,7 @@ import { SCREEN_HEIGHT, SCREEN_WIDTH } from './constants';
 import DraggableScreen from './DraggableScreen';
 import { buildScreenData, calculateCanvasSize } from './helpers';
 import Arrows from './Arrows';
+import Frame from './Frame';
 import type { Normalized, Screen as ProjectScren } from '@/types';
 
 const CanvasBox = styled('div')({
@@ -50,63 +51,65 @@ const Canvas: React.FC<{
   const screensCount = screens.length;
 
   return (
-    <Xwrapper>
-      <TransformWrapper
-        ref={(ref) => {
-          window.wireframeCanvas = ref;
-        }}
-        limitToBounds={true}
-        centerOnInit={true}
-        minScale={0.01}
-        initialScale={zoom}
-        onTransformed={updateXArrow}
-        onPanning={updateXArrow}
-        onPanningStop={updateXArrow}
-        onWheel={updateXArrow}
-        panning={{
-          excluded: ['wireframe-screen-frame', 'screen-control'],
-        }}
-        pinch={{
-          excluded: ['wireframe-screen-frame', 'screen-control'],
-        }}
-        onZoom={(zoom) => {
-          setZoom(zoom.state.scale);
-        }}
-      >
-        <TransformComponent
-          wrapperStyle={{
-            height: 'calc(100vh - 60px)',
-            width: '100%',
-            backgroundColor: '#E5E3E8',
-            cursor: 'grab',
+    <Frame>
+      <Xwrapper>
+        <TransformWrapper
+          ref={(ref) => {
+            window.wireframeCanvas = ref;
+          }}
+          limitToBounds={true}
+          centerOnInit={true}
+          minScale={0.01}
+          initialScale={zoom}
+          onTransformed={updateXArrow}
+          onPanning={updateXArrow}
+          onPanningStop={updateXArrow}
+          onWheel={updateXArrow}
+          panning={{
+            excluded: ['wireframe-screen-frame', 'screen-control'],
+          }}
+          pinch={{
+            excluded: ['wireframe-screen-frame', 'screen-control'],
+          }}
+          onZoom={(zoom) => {
+            setZoom(zoom.state.scale);
           }}
         >
-          <GridLines
-            cellWidth={120}
-            strokeWidth={GRID_STROKE_WIDTH}
-            cellWidth2={GRID_CELL_SPACE}
+          <TransformComponent
+            wrapperStyle={{
+              height: 'calc(100vh - 60px)',
+              width: '100%',
+              backgroundColor: '#E5E3E8',
+              cursor: 'grab',
+            }}
           >
-            <CanvasBox
-              style={{
-                minWidth: calculateCanvasSize(screensCount, SCREEN_WIDTH),
-                minHeight: calculateCanvasSize(screensCount, SCREEN_HEIGHT),
-              }}
+            <GridLines
+              cellWidth={120}
+              strokeWidth={GRID_STROKE_WIDTH}
+              cellWidth2={GRID_CELL_SPACE}
             >
-              {screens.map((screen) => (
-                <DraggableScreen
-                  key={screen.id.toString()}
-                  zoom={zoom}
-                  data={screen}
-                  onDrag={updateXArrow}
-                  onStop={updateXArrow}
-                />
-              ))}
-            </CanvasBox>
-          </GridLines>
-        </TransformComponent>
-      </TransformWrapper>
-      <Arrows />
-    </Xwrapper>
+              <CanvasBox
+                style={{
+                  minWidth: calculateCanvasSize(screensCount, SCREEN_WIDTH),
+                  minHeight: calculateCanvasSize(screensCount, SCREEN_HEIGHT),
+                }}
+              >
+                {screens.map((screen) => (
+                  <DraggableScreen
+                    key={screen.id.toString()}
+                    zoom={zoom}
+                    data={screen}
+                    onDrag={updateXArrow}
+                    onStop={updateXArrow}
+                  />
+                ))}
+              </CanvasBox>
+            </GridLines>
+          </TransformComponent>
+        </TransformWrapper>
+        <Arrows />
+      </Xwrapper>
+    </Frame>
   );
 };
 
