@@ -290,8 +290,6 @@ export type WireframePositionUpdate = IPlainAction<
   typeof TYPES.WIREFRAME_UPDATE_SCREEN_POSITION
 >;
 
-export type ScreenFolderCreated = ReturnType<typeof createdScreenFolder>;
-
 export type GetSubscriptionDataType = IPlainAction<
   typeof TYPES.SUBSCRIPTION_DATA
 >;
@@ -1523,15 +1521,17 @@ export type Action =
   | SetMarketplaceListLoader
   | ProjectError
   | WireframePositionUpdate
-  | ScreenFolderCreated
-  | ReturnType<typeof fetchedScreenFolders>
-  | ReturnType<typeof updatedScreenFolder>
-  | ReturnType<typeof deletedScreenFolder>;
+  | HistoryAction<ReturnType<typeof createdScreenFolder>>
+  | HistoryAction<ReturnType<typeof fetchedScreenFolders>>
+  | HistoryAction<ReturnType<typeof updatedScreenFolder>>
+  | HistoryAction<ReturnType<typeof deletedScreenFolder>>;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,
   boolean
 >;
+
+export type HistoryAction<T> = T & { meta?: HistoryMeta };
 
 export type setImportValue = IAction<typeof TYPES.SET_IMPORT_VALUE, importData>;
 

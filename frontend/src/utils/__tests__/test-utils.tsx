@@ -218,6 +218,10 @@ export const mockMarketplace: Marketplace = {
 };
 export const mockInitialState: AppReduxState = {
   user: initialUserState,
+  wireframe: {
+    activeScreen: undefined,
+    activeElement: undefined,
+  },
   project: {
     data: initialData,
     edit: initialEdit,

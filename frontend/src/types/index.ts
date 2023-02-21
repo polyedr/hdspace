@@ -4,7 +4,6 @@ import { SvgIconTypeMap } from '@mui/material';
 import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
-import { WireframeConnection } from '@Redux/types';
 import { IBoardForUI } from './pmtools/board';
 
 export type IconType = OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
@@ -936,7 +935,6 @@ export interface ProjectData {
   defaultStyles: DefaultStyles;
   layout: LayoutData;
   uiFramework: UIFramework;
-  wireframeConnections?: WireframeConnection[];
 }
 export interface MarketplaceData {
   classes: ProjectClass[];
@@ -1213,7 +1211,6 @@ export interface WireframeScreenData {
     x: number;
     y: number;
   };
-  connections?: WireframeConnection[];
 }
 
 export interface ScreenData {
