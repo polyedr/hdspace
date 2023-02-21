@@ -1,8 +1,8 @@
 import React from 'react';
-import FrameComponent from 'react-frame-component';
+import FrameWrapper from '@Components/Editor/FrameWrapper';
 
 const Frame: React.FC = ({ children }) => {
-  return <FrameComponent>{children}</FrameComponent>;
+  return <FrameWrapper>{children}</FrameWrapper>;
 };
 
 export default Frame;

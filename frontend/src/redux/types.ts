@@ -53,7 +53,12 @@ import {
   TemplatesSearchParameter,
 } from '../types';
 import TYPES from './actionTypes';
-import { createdScreenFolder, deletedScreenFolder, fetchedScreenFolders, updatedScreenFolder } from './project/actions';
+import {
+  createdScreenFolder,
+  deletedScreenFolder,
+  fetchedScreenFolders,
+  updatedScreenFolder,
+} from './project/actions';
 
 export interface PermissionsState {
   allUsersList: PaginatedData<UserData> & { search: string };

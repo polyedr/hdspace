@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
+import { useHistory } from 'react-router-dom';
 import ElementsBlock from '@Components/RightPanel/ElementsTab/ElementsBlock';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
@@ -10,7 +11,6 @@ import FrameworkSection from '@/components/RightPanel/FrameworkSection';
 import { setActiveElement } from '@Redux/project/actions';
 import { Screen } from '@Src/types';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { useHistory } from 'react-router-dom';
 import Navigator from './Navigator';
 import Screens from './Screens';
 import {

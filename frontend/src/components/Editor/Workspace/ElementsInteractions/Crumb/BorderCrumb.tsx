@@ -203,8 +203,8 @@ const BorderCrumb: React.FC<Props> = (props) => {
   };
 
   const handleCopyLink = useCallback(() => {
-    const { origin, pathname, search } = window.location;
-    console.log(origin, 'search: ' + pathname, 'search: ' + search, element.id);
+    // const { origin, pathname, search } = window.location;
+    // console.log(origin, 'search: ' + pathname, 'search: ' + search, element.id);
   }, [element]);
 
   return element && show ? (
