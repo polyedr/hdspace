@@ -7,6 +7,7 @@ import {
   IconButton,
   Box,
   Theme,
+  Tooltip,
 } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
 import { makeStyles } from '@mui/styles';
@@ -35,6 +36,7 @@ import {
 
 import { StyledIconButton } from '@Components/styledComponents';
 import { HELP_LINK } from '@Src/config/settings';
+import { useWireframe } from '@Src/hooks/useWireframe';
 import Dialog from '../Dialogs/Dialog';
 import Logo from '../UI/Logo';
 import Layouts from './TopBar/Layouts';
@@ -43,6 +45,7 @@ import TopBar from './TopBar';
 import History from './History';
 import Avatar from './Avatar';
 // import { ShowGridIcon, ShowBlockIcon } from './icons';
+import ToggleMode from './TopBar/ToggleMode';
 
 const Appbar = styled(MUIAppbar)({
   '&.MuiAppBar-root': {
@@ -156,6 +159,8 @@ function TopPanel() {
     handleClose();
   };
 
+  const { isWireframeMode } = useWireframe();
+
   const tagsWithoutSpace = tags?.map((item, index) => {
     if (index === 0) return item;
     return ` ${item}`;
@@ -175,8 +180,10 @@ function TopPanel() {
             />
           )}
         </Box>
+
         <Box className={classes.topbarsections}>
-          <Layouts />
+          {projectName && <ToggleMode />}
+          {projectName && !isWireframeMode && <Layouts />}
         </Box>
 
         <Box className={classes.toolbar}>
@@ -189,31 +196,44 @@ function TopPanel() {
           )}
 
           <Box className={classes.toolbar}>
-            <Box>
-              <ToggleButton
-                selected={showBorders}
-                value="borders"
-                className={classes.togglebutton}
-                disabled={!bordersEnabled && !isProtoMode}
-                onClick={() => dispatch(toggleContainersBorders(!showBorders))}
-              >
-                <ViewWeekIcon />
-              </ToggleButton>
-            </Box>
-            <Box>
-              <ToggleButton
-                selected={showGrid}
-                value="grid"
-                className={classes.togglebutton}
-                onClick={() => dispatch(toggleGrid(!showGrid))}
-              >
-                <AppsIcon />
-              </ToggleButton>
-            </Box>
+            {!isWireframeMode && projectName !== '' && (
+              <>
+                <Box>
+                  <Tooltip title="Borders">
+                    <ToggleButton
+                      selected={showBorders}
+                      value="borders"
+                      className={classes.togglebutton}
+                      disabled={!bordersEnabled && !isProtoMode}
+                      onClick={() =>
+                        dispatch(toggleContainersBorders(!showBorders))
+                      }
+                    >
+                      <ViewWeekIcon />
+                    </ToggleButton>
+                  </Tooltip>
+                </Box>
+                <Box>
+                  <Tooltip title="Grid">
+                    <ToggleButton
+                      selected={showGrid}
+                      value="grid"
+                      className={classes.togglebutton}
+                      onClick={() => dispatch(toggleGrid(!showGrid))}
+                    >
+                      <AppsIcon />
+                    </ToggleButton>
+                  </Tooltip>
+                </Box>
+              </>
+            )}
+
             <a target="_blank" href={HELP_LINK} rel="noreferrer noopener">
-              <IconButton className={classes.iconbutton} title="Help">
-                <HelpOutlineIcon className={classes.icon} />
-              </IconButton>
+              <Tooltip title="Help">
+                <IconButton className={classes.iconbutton}>
+                  <HelpOutlineIcon className={classes.icon} />
+                </IconButton>
+              </Tooltip>
             </a>
             {!projectName && <Avatar />}
           </Box>

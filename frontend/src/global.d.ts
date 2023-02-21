@@ -1,5 +1,6 @@
 interface Window {
   renderTreeInfo: any;
+  wireframeCanvas: any;
 }
 
 declare module '*.module.scss?inline' {

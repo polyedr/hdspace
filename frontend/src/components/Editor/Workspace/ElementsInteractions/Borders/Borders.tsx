@@ -1,7 +1,7 @@
 import { makeStyles } from '@mui/styles';
 import { Menu, MenuItem, Theme } from '@mui/material';
 import cn from 'classnames';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd } from 'react-rnd';
 import ELEMENT_IDS from '@Constants/elementIds';
@@ -103,6 +103,12 @@ const Borders: React.FC<Props> = ({
   const emptyClipboard = !useSelector(selectItemToCopyInfo);
   const dispatch = useDispatch();
 
+  const frame = useMemo(() => {
+    return window.parent.document.getElementById(
+      ELEMENT_IDS.canvas,
+    ) as HTMLIFrameElement;
+  }, []);
+
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
     mouseY: number;
@@ -111,23 +117,16 @@ const Borders: React.FC<Props> = ({
   const handleContextMenu = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       event.preventDefault();
-
-      const frame = window.parent.document.getElementById(
-        ELEMENT_IDS.canvas,
-      ) as HTMLIFrameElement;
-
-      const { x, y } = frame.getBoundingClientRect();
-
       setContextMenu(
         contextMenu === null
           ? {
-              mouseX: event.clientX + x,
-              mouseY: event.clientY + y,
+              mouseX: event.clientX,
+              mouseY: event.clientY,
             }
           : null,
       );
     },
-    [elementId],
+    [elementId, frame],
   );
 
   const handleClose = () => {
@@ -215,6 +214,7 @@ const Borders: React.FC<Props> = ({
     <>
       {!canHaveChildren && (
         <Menu
+          container={frame.contentDocument.body}
           open={contextMenu !== null}
           onClose={handleClose}
           anchorReference="anchorPosition"

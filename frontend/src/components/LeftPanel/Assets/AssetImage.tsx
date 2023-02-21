@@ -44,8 +44,8 @@ const AssetImage = React.forwardRef<HTMLImageElement, Props>(
     const classes = useStyles({ sizeDirection } as StyleProps);
 
     const [, dragRef] = useDrag({
+      type: ElementType.CONSTRUCTOR,
       item: {
-        type: ElementType.CONSTRUCTOR,
         original: {
           type: 'image',
           name: 'Image asset',

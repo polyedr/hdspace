@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import { ScreenFolder } from '@Redux/types';
 import { myAxios } from '../config/settings';
 import {
   MyAxiosProps,
@@ -10,6 +11,67 @@ import {
 } from '../types';
 import { convertScreenFromResponse } from './converters/fromResponse';
 import { handleError, onError, parseResult } from './helper';
+
+export const apiCreateScreenCategory = async ({
+  id,
+  name,
+  buoyancy,
+  ...props
+}: MyAxiosProps & {
+  id: string;
+  name: string;
+  buoyancy: number;
+}): Promise<ScreenFolder> =>
+  await myAxios({
+    ...props,
+    method: 'post',
+    data: {
+      name,
+      project: id,
+      buoyancy,
+    },
+    url: 'projects/projectcategories/',
+  })
+    .then((res) => parseResult(res))
+    .catch(onError);
+
+export const apiUpdateScreenCategory = async ({
+  ...props
+}: MyAxiosProps & {
+  id: string;
+  data: Partial<{ name: string; buyoancy: number }>;
+}) =>
+  await myAxios({
+    ...props,
+    method: 'patch',
+    url: `projects/projectcategories/${props.id}/`,
+  })
+    .then((res) => parseResult(res))
+    .catch(onError);
+
+export const apiDeleteScreenCategory = async ({
+  ...props
+}: MyAxiosProps & {
+  id: string;
+}) =>
+  await myAxios({
+    ...props,
+    method: 'delete',
+    url: `projects/projectcategories/${props.id}/`,
+  })
+    .then((res) => parseResult(res))
+    .catch(onError);
+
+export const apiGetScreenCategories = async (
+  props: MyAxiosProps & { id: string },
+): Promise<Screen> =>
+  await myAxios({
+    ...props,
+    method: 'GET',
+    url: `/projects/projectcategories/?project=${props.id}`,
+  })
+    .then((res) => parseResult(res))
+    .catch(onError);
 
 export const apiGetScreen = async (
   props: MyAxiosProps & { id: string },

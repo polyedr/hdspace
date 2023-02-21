@@ -31,6 +31,7 @@ interface ScreenBase {
   screenscenario: number[];
   buoyancy: number;
   element: string;
+  category?: number;
 }
 
 interface ProjectBase {
@@ -1070,6 +1071,12 @@ export interface Indices {
   oldIndex: number;
 }
 
+export interface NestedIndices extends Indices {
+  source: string;
+  destination: string;
+  screenId: number;
+}
+
 export type ElementsIndices = Record<string, number>;
 
 export type SavedElementsValues = Record<
@@ -1199,6 +1206,13 @@ export interface ScreenMetaData {
   faviconUrl: string;
 }
 
+export interface WireframeScreenData {
+  position?: {
+    x: number;
+    y: number;
+  };
+}
+
 export interface ScreenData {
   meta?: ScreenMetaData;
   nnResult?: {
@@ -1210,6 +1224,7 @@ export interface ScreenData {
   uiFramework: UIFramework;
   freeCanvas: boolean;
   editableScreenUser: EditableScreenUser[] | [];
+  wireframePosition?: { x: number; y: number };
 }
 export interface EditableScreenUser {
   idUser: number;

@@ -7,7 +7,7 @@ exports[`VIA Right Panel > should render VIA Right Panel component 1`] = `
   >
     <div>
       <button
-        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-iconButton-3 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-18k1xzr-MuiButtonBase-root-MuiIconButton-root"
         tabindex="0"
         title="Create a region"
         type="button"
@@ -28,7 +28,7 @@ exports[`VIA Right Panel > should render VIA Right Panel component 1`] = `
         />
       </button>
       <button
-        class="MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-sizeMedium makeStyles-iconButton-3 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+        class="MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-sizeMedium css-18k1xzr-MuiButtonBase-root-MuiIconButton-root"
         disabled=""
         tabindex="-1"
         title="Paste a region"
@@ -51,7 +51,7 @@ exports[`VIA Right Panel > should render VIA Right Panel component 1`] = `
       class="makeStyles-buttonContainer-2"
     >
       <button
-        class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium css-f806wa-MuiButtonBase-root-MuiButton-root"
+        class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium css-19k23w-MuiButtonBase-root-MuiButton-root"
         tabindex="0"
         type="button"
       >
@@ -61,7 +61,7 @@ exports[`VIA Right Panel > should render VIA Right Panel component 1`] = `
         />
       </button>
       <button
-        class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-t53w0-MuiButtonBase-root-MuiButton-root"
+        class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1ibkd3a-MuiButtonBase-root-MuiButton-root"
         tabindex="0"
         type="button"
       >

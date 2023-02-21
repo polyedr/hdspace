@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { MyAxiosProps } from '@Src/types';
 
 export const env = import.meta.env.MODE;
 
@@ -26,7 +25,7 @@ const settings = {
 
 const { api } = settings[env] || settings.development;
 
-export const myAxios = async (props: MyAxiosProps) => {
+export const myAxios = async (props) => {
   const authorization = props.access
     ? { Authorization: `Bearer ${props.access}` }
     : {};

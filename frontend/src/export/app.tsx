@@ -90,7 +90,7 @@ const createArchive = async (
 };
 
 const exportHTML = (allScreensData, projectName) => {
-  const state = store.getState() as AppReduxState;
+  const state = store.getState() as unknown as AppReduxState;
   const allScreensHtmlData: any[] = [];
   const allScreensStyleData: any[] = [];
 

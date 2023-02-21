@@ -283,6 +283,7 @@ export function convertScreenFromResponse({
       uiFramework: screenDataJSON.uiFramework || NOT_SELECTED_FRAMEWORK,
       freeCanvas: screenDataJSON.freeCanvas,
       editableScreenUser: screenDataJSON.editableScreenUser || [],
+      wireframePosition: screenDataJSON?.wireframePosition || undefined,
     },
   };
 }

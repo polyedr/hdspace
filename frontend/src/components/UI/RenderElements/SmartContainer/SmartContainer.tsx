@@ -148,8 +148,8 @@ const SmartContainerRenderer = React.forwardRef<
   });
 
   const [, drag] = useDrag({
+    type: element.type,
     item: {
-      type: element.type,
       drop: () => {
         if (!imgRef.current) {
           return;
