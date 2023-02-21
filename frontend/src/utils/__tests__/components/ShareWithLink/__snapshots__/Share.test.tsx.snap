@@ -3,10 +3,11 @@
 exports[`Share > should render properly 1`] = `
 <div>
   <button
+    aria-label="Share"
     aria-pressed="false"
     class="MuiButtonBase-root MuiToggleButton-root MuiToggleButton-sizeMedium MuiToggleButton-standard makeStyles-togglebutton-3 css-ueukts-MuiButtonBase-root-MuiToggleButton-root"
+    data-mui-internal-clone-element="true"
     tabindex="0"
-    title="Share"
     type="button"
     value="Share"
   >

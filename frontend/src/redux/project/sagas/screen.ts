@@ -915,9 +915,9 @@ export function* changeScreensOrder(
     const { newIndex, oldIndex, source, destination, screenId } =
       action.payload;
     const screens: Screen[] = yield select(selectScreensWithoutMaster);
-    const folders = (yield select(selectSortedFolders)) as ScreenFolder[];
-
     const masterScreen = yield select(selectMasterScreen);
+
+    const folders = (yield select(selectSortedFolders)) as ScreenFolder[];
 
     const foldersCopy = [...folders];
 

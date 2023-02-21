@@ -351,6 +351,7 @@ export const createMasterScreenMock = (projectId: number): Screen => ({
 export const createScreenMock = (
   projectId: number,
   buoyancy: number = 1,
+  category: number = null,
 ): Screen => ({
   buoyancy,
   element: '99999',
@@ -358,6 +359,7 @@ export const createScreenMock = (
   image: null,
   name: 'Screen 1',
   project: projectId,
+  category,
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
     freeCanvas: false,
