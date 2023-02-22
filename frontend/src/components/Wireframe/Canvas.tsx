@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { Xwrapper, useXarrow } from 'react-xarrows';
-import GridLines from 'react-gridlines';
+import _GridLines from 'react-gridlines';
 import { useDispatch } from 'react-redux';
 import { styled } from '@mui/material';
 import {
@@ -15,6 +15,8 @@ import DraggableScreen from './DraggableScreen';
 import { buildScreenData, calculateCanvasSize } from './helpers';
 import Arrows from './Arrows';
 import type { Normalized, Screen as ProjectScren } from '@/types';
+
+const GridLines = _GridLines.default ? _GridLines.default : _GridLines;
 
 const CanvasBox = styled('div')({
   '&:active': {
