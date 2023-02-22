@@ -1,17 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { Xwrapper, useXarrow } from 'react-xarrows';
 import GridLines from 'react-gridlines';
 import { useDispatch } from 'react-redux';
 import { styled } from '@mui/material';
-import { useParams } from 'react-router';
 import {
   setCurrentScreenId,
   updateCurrentUIFramework,
 } from '@/redux/project/actions';
 import { FRAMEWORKS_LIST } from '@/constants/frameworks';
 import { GRID_CELL_SPACE, GRID_STROKE_WIDTH } from '@/constants/grid';
-import { useWireframe } from '@Src/hooks/useWireframe';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from './constants';
 import DraggableScreen from './DraggableScreen';
 import { buildScreenData, calculateCanvasSize } from './helpers';
@@ -27,8 +25,6 @@ const CanvasBox = styled('div')({
 const Canvas: React.FC<{
   screens: Normalized<ProjectScren>;
 }> = ({ screens: _screens }) => {
-  const { moveToScreen } = useWireframe();
-  const params = useParams<{ screenId: string }>();
   const [zoom, setZoom] = useState(0.4);
 
   const updateXArrow = useXarrow();
@@ -38,12 +34,6 @@ const Canvas: React.FC<{
   const screens = useMemo(() => {
     return Object.values(buildScreenData(_screens));
   }, [_screens]);
-
-  const focusToElement = useCallback(() => {
-    if (params?.screenId) {
-      moveToScreen(Number(params.screenId));
-    }
-  }, [moveToScreen]);
 
   useEffect(() => {
     dispatch(setCurrentScreenId(screens[Object.keys(screens)[0]].id));
@@ -62,12 +52,11 @@ const Canvas: React.FC<{
   return (
     <Xwrapper>
       <TransformWrapper
-        onInit={focusToElement}
         ref={(ref) => {
           window.wireframeCanvas = ref;
         }}
-        limitToBounds={true}
-        centerOnInit={true}
+        limitToBounds
+        centerOnInit
         minScale={0.01}
         initialScale={zoom}
         onTransformed={updateXArrow}

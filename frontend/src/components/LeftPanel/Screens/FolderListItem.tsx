@@ -103,7 +103,9 @@ const FolderListItem = ({ children, folder, index }) => {
               <PropertyAccordianSummary expandIcon={<ExpandMoreIcon />}>
                 {folder.name}
               </PropertyAccordianSummary>
-              <AccordionDetails>{children}</AccordionDetails>
+              <AccordionDetails style={{ padding: 0 }}>
+                {children}
+              </AccordionDetails>
             </PropertyAccordion>
           </div>
         )}
