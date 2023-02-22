@@ -23,7 +23,8 @@ export const useWireframe = () => {
       canvas.setTransform(
         ((matrix.m41 - viewport.clientWidth + element.clientWidth / 2) * -1) /
           2,
-        ((matrix.m42 - viewport.clientWidth + element.clientHeight) * -1) / 2,
+        ((matrix.m42 - viewport.clientHeight + element.clientHeight / 2) * -1) /
+          2,
         0.5,
       );
     }
