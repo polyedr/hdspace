@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Stack, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProject } from '@Redux/project/actions';
+import { getProject, setEditorDocument } from '@Redux/project/actions';
 import {
   selectCurrentProject,
   selectCurrentProjectId,
@@ -35,6 +35,10 @@ const Wireframe: React.FC<Props> = ({ projectId, screenId: _ }) => {
     }
   }, [dispatch, currentProjectId, projectId]);
 
+  useEffect(() => {
+    dispatch(setEditorDocument(document));
+  }, [project.name]);
+
   if (
     project.name === '' ||
     !currentProjectId ||
@@ -48,7 +52,11 @@ const Wireframe: React.FC<Props> = ({ projectId, screenId: _ }) => {
     <>
       <Stack sx={{ height: '100%' }}>
         <Grid container columnSpacing={0} flex={1}>
-          <Grid style={{ position: 'relative', zIndex: 4 }} item xs={2}>
+          <Grid
+            style={{ position: 'relative', zIndex: 4, background: 'white' }}
+            item
+            xs={2}
+          >
             <LeftSidebar />
           </Grid>
           <Grid item xs={8}>

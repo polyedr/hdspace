@@ -11,6 +11,7 @@ import FrameworkSection from '@/components/RightPanel/FrameworkSection';
 import { setActiveElement } from '@Redux/project/actions';
 import { Screen } from '@Src/types';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import Navigator from './Navigator';
 import Screens from './Screens';
 import {
@@ -43,6 +44,7 @@ function Layers() {
 }
 
 const EditorScreens = () => {
+  const currentScreenId = useSelector(selectCurrentScreenId);
   const currentProjectId = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -52,7 +54,7 @@ const EditorScreens = () => {
     history.push(`/project/${currentProjectId}/${screen.id}`);
   };
 
-  return <Screens onSelected={handleClick} />;
+  return <Screens selected={currentScreenId} onSelected={handleClick} />;
 };
 
 export const mainMenu = [

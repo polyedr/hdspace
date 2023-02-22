@@ -23,12 +23,12 @@ import {
   selectScreenCreateLoader,
 } from '@Redux/project/selectors/base';
 import {
-  selectCurrentScreenId,
   selectSortedFolders,
   selectUncategoriesScreens,
 } from '@Redux/project/selectors/screen';
 import prevent from '@Utils/preventEvent';
 import { Screen } from '@Src/types';
+import Scrollbar from '@Components/UI/Scrollbar';
 import ScreenListItem from './ScreenListItem';
 import ScreenFolder from './ScreenFolder';
 import FolderListItem from './FolderListItem';
@@ -68,13 +68,13 @@ const StyledCustomList = styled(List)({
 
 interface Props {
   onSelected: (screen: Screen) => void;
+  selected: number;
 }
 
-const Screens: React.FC<Props> = ({ onSelected }) => {
+const Screens: React.FC<Props> = ({ onSelected, selected }) => {
   const dispatch = useDispatch();
 
   const currentProjectId = useSelector(selectCurrentProjectId);
-  const currentScreenId = useSelector(selectCurrentScreenId);
   const uncategoriesScreens = useSelector(selectUncategoriesScreens);
   const folders = useSelector(selectSortedFolders);
   const screenCreateLoader = useSelector(selectScreenCreateLoader);
@@ -186,72 +186,74 @@ const Screens: React.FC<Props> = ({ onSelected }) => {
           </MenuItem>
         </Menu>
       </TitleContainer>
-      <DragDropContext onDragEnd={handleReorder}>
-        <Droppable
-          droppableId="droppable-screen-folder"
-          type="droppable-screen-folder"
-        >
-          {(mainProvided) => (
-            <div ref={mainProvided.innerRef} {...mainProvided.droppableProps}>
-              <Droppable droppableId={'-1'} type="droppable-screen">
-                {(provided) => (
-                  <StyledCustomList
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                  >
-                    {uncategoriesScreens
-                      .filter((screen) => screen.id !== -1)
-                      .map((screen, i) => (
-                        <ScreenListItem
-                          key={screen.id}
-                          screen={screen}
-                          onSelected={onSelected}
-                          index={i}
-                          active={screen.id === currentScreenId}
-                        />
-                      ))}
-                    {provided.placeholder}
-                  </StyledCustomList>
-                )}
-              </Droppable>
+      <Scrollbar>
+        <DragDropContext onDragEnd={handleReorder}>
+          <Droppable
+            droppableId="droppable-screen-folder"
+            type="droppable-screen-folder"
+          >
+            {(mainProvided) => (
+              <div ref={mainProvided.innerRef} {...mainProvided.droppableProps}>
+                <Droppable droppableId={'-1'} type="droppable-screen">
+                  {(provided) => (
+                    <StyledCustomList
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                    >
+                      {uncategoriesScreens
+                        .filter((screen) => screen.id !== -1)
+                        .map((screen, i) => (
+                          <ScreenListItem
+                            key={screen.id}
+                            screen={screen}
+                            onSelected={onSelected}
+                            index={i}
+                            active={selected === screen.id}
+                          />
+                        ))}
+                      {provided.placeholder}
+                    </StyledCustomList>
+                  )}
+                </Droppable>
 
-              {folders.map((folder, folderIndex) => (
-                <FolderListItem
-                  folder={folder}
-                  key={folder.id}
-                  index={folderIndex}
-                >
-                  <Droppable
-                    droppableId={folder.id.toString()}
-                    type="droppable-screen"
+                {folders.map((folder, folderIndex) => (
+                  <FolderListItem
+                    folder={folder}
+                    key={folder.id}
+                    index={folderIndex}
                   >
-                    {(provided) => (
-                      <StyledCustomList
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                      >
-                        {folder.ctscreens
-                          .filter((screen) => screen.id !== -1)
-                          .map((screen, i) => (
-                            <ScreenListItem
-                              key={screen.id}
-                              screen={screen}
-                              index={i}
-                              onSelected={onSelected}
-                              active={screen.id === currentScreenId}
-                            />
-                          ))}
-                        {provided.placeholder}
-                      </StyledCustomList>
-                    )}
-                  </Droppable>
-                </FolderListItem>
-              ))}
-              {mainProvided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+                    <Droppable
+                      droppableId={folder.id.toString()}
+                      type="droppable-screen"
+                    >
+                      {(provided) => (
+                        <StyledCustomList
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                        >
+                          {folder.ctscreens
+                            .filter((screen) => screen.id !== -1)
+                            .map((screen, i) => (
+                              <ScreenListItem
+                                key={screen.id}
+                                screen={screen}
+                                index={i}
+                                onSelected={onSelected}
+                                active={screen.id === selected}
+                              />
+                            ))}
+                          {provided.placeholder}
+                        </StyledCustomList>
+                      )}
+                    </Droppable>
+                  </FolderListItem>
+                ))}
+                {mainProvided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </Scrollbar>
     </>
   );
 };

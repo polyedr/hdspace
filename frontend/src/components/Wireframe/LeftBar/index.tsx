@@ -1,11 +1,33 @@
-import React from 'react';
-
+import { useHistory, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import Screens from '@Components/LeftPanel/Screens';
+import { Screen } from '@Src/types';
+import { useWireframe } from '@Src/hooks/useWireframe';
+import { setActiveScreen } from '@Redux/wireframe/wireframe';
+import { selectCurrentWireframeScreen } from '@Redux/wireframe/selectors';
+import { useUpdatedEffect } from '@Src/hooks';
 
 const LeftSidebar = () => {
-  const handleSelected = () => {};
+  const { moveToScreen } = useWireframe();
 
-  return <Screens onSelected={handleSelected} />;
+  const { projectId } = useParams<{ projectId: string }>();
+  const dispatch = useDispatch();
+
+  const history = useHistory();
+  const activeScreenId = useSelector(selectCurrentWireframeScreen);
+
+  const handleSelected = (screen: Screen) => {
+    moveToScreen(screen.id);
+    dispatch(setActiveScreen(screen.id.toString()));
+  };
+
+  useUpdatedEffect(() => {
+    history.push(`/wireframe/${projectId}/${activeScreenId}`);
+  }, [activeScreenId]);
+
+  return (
+    <Screens selected={Number(activeScreenId)} onSelected={handleSelected} />
+  );
 };
 
 export default LeftSidebar;
