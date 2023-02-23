@@ -1849,8 +1849,8 @@ def elements_rootblock(
             # Horizontal
             if node.direction == 1:
                 node.styles["display"] = "flex"
-                if not styles_on:
-                    node.styles["background"] = "aliceblue"
+                # if not styles_on:
+                #     node.styles["background"] = "aliceblue"
                 '''
                 if region_dataset in ["headers", "footers"]:
                     node.styles["justify-content"] = "space-between"
@@ -1858,21 +1858,24 @@ def elements_rootblock(
             # Vertical
             elif node.direction == 0:
                 node.styles["display"] = "block"
-                if not styles_on:
-                    node.styles["background"] = "lavenderblush"
+                # if not styles_on:
+                #     node.styles["background"] = "lavenderblush"
             # Inseparable
             elif node.direction == 2:
                 node.styles["display"] = "flex"
+
                 if (node.types == "ccluster") or (
                     region_dataset in ["headers", "webpages"]
                 ):
-
+                    pass
+                    '''
                     if not styles_on:
                         node.styles["background"] = "lightblue"
+                    '''
                 else:
 
-                    if not styles_on:
-                        node.styles["background"] = "lightgreen"
+                    # if not styles_on:
+                    #     node.styles["background"] = "lightgreen"
                     # Sometimes node_width and height are 0, should check this.
                     if node_width:
                         node.styles["width"] = str(node_width) + "px"
@@ -1886,26 +1889,42 @@ def elements_rootblock(
             # Horizontal
             if node.direction == 1:
                 node.styles["display"] = "grid"
-                if not styles_on:
-                    node.styles["background"] = "aliceblue"
+
+                if not node.is_leaf:
+                    # Sort children of the node
+                    sorted_children =  sorted(node.children, key=lambda item: item.x1)[::-1]
+                    # Calculate widths of items
+                    columns_list = (list(map(lambda x: str(int(x.x2 - x.x1))+'px', sorted_children)))
+                    node.styles["grid-template-columns"] = ' '.join(columns_list[::-1])
+
+                # if not styles_on:
+                #     node.styles["background"] = "aliceblue"
             # Vertical
             elif node.direction == 0:
-                node.styles["display"] = "block"
-                if not styles_on:
-                    node.styles["background"] = "lavenderblush"
+                node.styles["display"] = "grid"
+                if not node.is_leaf:
+                    # Sort children of the node
+                    sorted_children = sorted(node.children, key=lambda item: item.y1)[::-1]
+                    # Calculate widths of items
+                    columns_list = (list(map(lambda y: str(int(y.y2 - y.y1)) + 'px', sorted_children)))
+                    node.styles["grid-template-rows"] = ' '.join(columns_list[::-1])
+
+                # if not styles_on:
+                #     node.styles["background"] = "lavenderblush"
             # Inseparable
             elif node.direction == 2:
-                node.styles["display"] = "grid"
+                node.styles["display"] = "flex"
+                # node.styles["grid-area"] = "auto"
                 if (node.types == "ccluster") or (
                     region_dataset in ["headers", "webpages"]
                 ):
+                    pass
 
-                    if not styles_on:
-                        node.styles["background"] = "lightblue"
+                    # if not styles_on:
+                    #     node.styles["background"] = "lightblue"
                 else:
-
-                    if not styles_on:
-                        node.styles["background"] = "lightgreen"
+                    # if not styles_on:
+                    #     node.styles["background"] = "lightgreen"
                     # Sometimes node_width and height are 0, should check this.
                     if node_width:
                         node.styles["width"] = str(node_width) + "px"
@@ -2279,7 +2298,6 @@ def sortchildrenby(parent, attr):
     try:
         parent[:] = sorted(parent, key=lambda child: int(child.get(attr)))
         # print("sorted", parent[:])
-        # input()
 
     except Exception:
         # print("exception_sorted", parent[:])
