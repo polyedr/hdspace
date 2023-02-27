@@ -3,6 +3,8 @@ import json
 import os, sys
 
 import copy
+import shutil
+
 import lorem
 import numpy as np
 import math
@@ -2349,6 +2351,11 @@ def pipeline_assemble(region_dataset, fdict, o, dbclusters_on, styles_on, localp
 
         # Create a directory to save clusters for some image processed
         SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
+
+        # Remove the directory if exists
+        if os.path.exists(SAVE_DIR):
+            shutil.rmtree(SAVE_DIR)
+
         find_or_create_dir(SAVE_DIR)
 
         os.chmod(SAVE_DIR, 0o755)
