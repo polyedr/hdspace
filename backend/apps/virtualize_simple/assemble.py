@@ -1816,6 +1816,7 @@ def elements_rootblock(
 
         # Choose the layout styling
         # From the {"float", "flexbox", "grid"}
+        # Use grids for later styling of knots with symmetries
         layout_styling = "float"
 
         if layout_styling == "float" and (node != root_block):
@@ -2032,7 +2033,7 @@ def elements_rootblock(
 
                 node.styles["color"] = "rgba(" + fcolour_elem_value + ")"
             else:
-                node.styles["outline"] = "1px solid yellow"
+                node.styles["outline"] = "1px solid green"
             # Background and font colours detection end
 
             # Detect the font-size with tesseract for some elements

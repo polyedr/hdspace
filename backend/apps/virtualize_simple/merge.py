@@ -545,6 +545,19 @@ def print_contours(text_contours, rect_contours, region_dataset, choice = "OpenC
             regions_list.append(attributes_dict)
         # Printing contours with mask r cnn only end
 
+    # Filter out the equal regions
+    # They may appear for example when OpenCV and MaskRCNN are detecting the region with the same coordinates
+    # remove duplicated from list
+    # Shape attributes should be different, region attributes are not in comparison
+    result = []
+    result_shape_attributes = []
+    for region in regions_list:
+        if region["shape_attributes"] not in result_shape_attributes:
+            result.append(region)
+            result_shape_attributes.append(region["shape_attributes"])
+
+    regions_list = result
+
     return regions_list
 
 
