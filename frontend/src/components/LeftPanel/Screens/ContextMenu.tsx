@@ -1,33 +1,11 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Menu, MenuItem, styled } from '@mui/material';
+import { MenuItem } from '@mui/material';
+import { CopyAll, Delete, Edit } from '@mui/icons-material';
 import { duplicateScreen } from '@Redux/project/actions';
 import { selectScreensLength } from '@Redux/project/selectors/screen';
 import { Screen } from '@Src/types';
-import Icon from '../../UI/Icon';
-
-const StyledMenu = styled(Menu)({
-  paper: {
-    padding: 1,
-    borderRadius: 4,
-    backgroundColor: '#ffffff',
-    color: '#81818E',
-  },
-  list: {
-    padding: 0,
-    '& li': {
-      padding: '8px 16px 8px 16px',
-      fontSize: '.9em',
-      '&:hover': {
-        backgroundColor: '#B0B0BD',
-        color: '#2A2A2D',
-      },
-      '& svg': {
-        marginRight: 5,
-      },
-    },
-  },
-});
+import { ContextMenu as StyledContextMenu } from '@Components/styledComponents';
 
 interface Props {
   screen: Screen;
@@ -70,27 +48,27 @@ const ContextMenu: React.FC<Props> = ({
   };
 
   return (
-    <StyledMenu
+    <StyledContextMenu
       open={open}
       onClose={onClose}
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
     >
       <MenuItem onClick={handleRenameClick}>
-        <Icon icon="edit" size={16} color="black" />
+        <Edit />
         Edit
       </MenuItem>
 
       <MenuItem onClick={handleCopy}>
-        <Icon icon="copy" size={16} color="black" />
+        <CopyAll />
         Copy
       </MenuItem>
 
       <MenuItem onClick={handleDelete} disabled={!canDelete}>
-        <Icon icon="delete" size={16} color="black" />
+        <Delete />
         Delete
       </MenuItem>
-    </StyledMenu>
+    </StyledContextMenu>
   );
 };
 

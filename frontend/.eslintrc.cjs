@@ -11,6 +11,7 @@ module.exports = {
     'plugin:import/recommended',
   ],
   overrides: [],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -41,6 +42,7 @@ module.exports = {
         ]
       }
     ],
+    'no-console': 'error',
     'prettier/prettier': 'error',
     '@typescript-eslint/semi': 'off',
     '@typescript-eslint/space-before-function-paren': 'off',
@@ -79,5 +81,6 @@ module.exports = {
     '@typescript-eslint/restrict-template-expressions': 'off',
     '@typescript-eslint/no-base-to-string': 'off',
     'react-hooks/exhaustive-deps': 'off',
+    'react/react-in-jsx-scope': 'off',
   },
 };

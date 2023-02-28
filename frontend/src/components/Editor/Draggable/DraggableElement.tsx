@@ -83,24 +83,27 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     [elementId, parentIds],
   );
 
-  const [, drag, preview] = useDrag({
-    item: {
-      original: element,
-      parent,
+  const [, drag, preview] = useDrag(
+    () => ({
       type: ElementType.ELEMENT,
-    } as SyntheticElement<StateElement>,
-    canDrag: () =>
-      !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
-      !!parent &&
-      !element.parameters.sourceElementId &&
-      canDragAndDrop &&
-      !isProto,
-    end: (_, monitor) => {
-      if (!monitor.didDrop()) {
-        dispatch(setCurrentDropTargetParams(null));
-      }
-    },
-  });
+      item: {
+        original: element,
+        parent,
+      } as SyntheticElement<StateElement>,
+      canDrag: () =>
+        !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
+        !!parent &&
+        !element.parameters.sourceElementId &&
+        canDragAndDrop &&
+        !isProto,
+      end: (_, monitor) => {
+        if (!monitor.didDrop()) {
+          dispatch(setCurrentDropTargetParams(null));
+        }
+      },
+    }),
+    [element, canDragAndDrop, isProto],
+  );
 
   const [, drop] = useDrop({
     accept: [ElementType.ELEMENT, ElementType.CONSTRUCTOR],

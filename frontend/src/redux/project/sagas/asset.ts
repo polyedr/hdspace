@@ -371,7 +371,7 @@ export const uploadElementAssetSaga = withRequiredPermissions(
   const { screenId } = action.meta;
 
   const element = yield select(selectElementById, elementId);
-  console.log(element);
+
   try {
     const { imageURL, file, useInBackground } = asset;
     let finalImageUrl = imageURL;
@@ -415,8 +415,8 @@ export const uploadElementAssetSaga = withRequiredPermissions(
             ...element.parameters,
             imageURL: finalImageUrl,
             imageSize: {
-              width: 0,
-              height: 0,
+              width: '100px',
+              height: '100px',
             },
             width: 'auto',
             height: 'auto',

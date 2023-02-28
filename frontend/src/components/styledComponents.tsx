@@ -1,6 +1,5 @@
 import React, { ReactElement, useRef } from 'react';
 import {
-  IconButtonProps,
   IconButton,
   SvgIconTypeMap,
   styled as MuiStyled,
@@ -15,14 +14,37 @@ import {
   ToggleButtonProps,
   Slider,
   SliderProps,
+  Menu,
+  alpha,
 } from '@mui/material';
 
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
 import ToggleButton from '@mui/material/ToggleButton';
-import { makeStyles } from '@mui/styles';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import styled from 'styled-components';
+
+export const ContextMenu = MuiStyled(Menu)(({ theme }) => ({
+  '& .MuiPaper-root': {
+    minWidth: 120,
+  },
+  '& .MuiMenu-list': {
+    padding: '4px 0',
+  },
+  '& .MuiMenuItem-root': {
+    '& .MuiSvgIcon-root': {
+      fontSize: 18,
+      color: theme.palette.text.secondary,
+      marginRight: theme.spacing(1),
+    },
+    '&:active': {
+      backgroundColor: alpha(
+        theme.palette.primary.main,
+        theme.palette.action.selectedOpacity,
+      ),
+    },
+  },
+}));
 
 export const PropertyAccordianSummary = MuiStyled(AccordionSummary)({
   flexDirection: 'row-reverse',
@@ -50,14 +72,12 @@ export const PropertyAccordianSummary = MuiStyled(AccordionSummary)({
   },
 });
 
-export const PropertyAccordion = styled(MuiAccordion)({
+export const PropertyAccordion = MuiStyled(MuiAccordion)({
   '&.MuiAccordion-root': {
     boxShadow: 'none',
     margin: '0 !important',
     borderBottom: '1px solid #E4E6EB',
     borderRadius: 0,
-    // paddingBottom: 10,
-
     '&:before': {
       display: 'none',
     },
@@ -68,34 +88,7 @@ export const PropertyAccordion = styled(MuiAccordion)({
   },
 });
 
-export const PropertyAccordionDetails = styled(AccordionDetails)({
-  // '&.MuiAccordionDetails-root': {
-  //   display: 'flex',
-  //   flexFlow: 'row wrap',
-  //   padding: '0',
-  //   justifyContent: 'space-between',
-  //   '& .MuiButton-text ': {
-  //     width: '33%',
-  //     minHeight: '65px',
-  //     paddingTop: '8px',
-  //     '& svg': {
-  //       height: 20,
-  //     },
-  //     '& span': {
-  //       fontSize: 11,
-  //       color: '#81818E',
-  //       fontWeight: 400,
-  //     },
-  //   },
-  //   '& .MuiButton-text:hover': {
-  //     boxShadow: 'none',
-  //     backgroundColor: 'transparent',
-  //     '& span': {
-  //       color: 'black',
-  //     },
-  //   },
-  // },
-});
+export const PropertyAccordionDetails = MuiStyled(AccordionDetails)({});
 
 const MuiSlider = styled(Slider)`
   & .MuiSlider-thumb {
@@ -209,17 +202,6 @@ const CustomToggleButton = styled(ToggleButton)`
   }
 `;
 
-const useIconButtonClasses = makeStyles(() => ({
-  iconButton: {
-    width: '32px',
-    height: '32px',
-    color: '#5064FF',
-    '&.disabled': {
-      color: '#81818E',
-    },
-  },
-}));
-
 const Accordion = MuiStyled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(() => ({
@@ -310,17 +292,14 @@ export const StyledToggleButtonGroup: React.FC<ToggleButtonGroupProps> = (
   props,
 ) => <CustomToggleButtonGroup {...props} />;
 
-export const StyledIconButton: React.FC<IconButtonProps> = ({
-  children,
-  ...props
-}) => {
-  const classes = useIconButtonClasses();
-  return (
-    <IconButton className={classes.iconButton} {...props}>
-      {children}
-    </IconButton>
-  );
-};
+export const StyledIconButton = MuiStyled(IconButton)({
+  width: '32px',
+  height: '32px',
+  color: '#5064FF',
+  '&.disabled': {
+    color: '#81818E',
+  },
+});
 
 export const TabPanel: React.FC<{
   index: number;

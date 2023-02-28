@@ -44,6 +44,7 @@ const MaterialInput = React.forwardRef<HTMLLabelElement, RendererProps>(
           className="mdc-text-field__input"
           type={type}
           readOnly={isDisabled}
+          value={textContent}
           defaultValue={textContent}
           placeholder={placeholder}
           {...eventHandlers}

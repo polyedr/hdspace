@@ -30,6 +30,7 @@ import {
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import Icon from '../../../../UI/Icon';
+
 interface Props {
   element: StateElement;
   show: boolean;

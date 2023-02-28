@@ -7,7 +7,7 @@ exports[`VIADescription > should render a description 1`] = `
       class="makeStyles-container-1"
     >
       <div
-        class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-ifAKCX jqYcQU css-1z10yd4-MuiFormControl-root-MuiTextField-root"
+        class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-htpNat lbVVwN css-1z10yd4-MuiFormControl-root-MuiTextField-root"
       >
         <label
           class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-zvmd1m-MuiFormLabel-root-MuiInputLabel-root"
@@ -52,7 +52,7 @@ exports[`VIADescription > should render a description 1`] = `
         </div>
       </div>
       <button
-        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-iconButton-4 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-18k1xzr-MuiButtonBase-root-MuiIconButton-root"
         tabindex="0"
         title="Copy region"
         type="button"
@@ -73,7 +73,7 @@ exports[`VIADescription > should render a description 1`] = `
         />
       </button>
       <button
-        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-iconButton-4 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-18k1xzr-MuiButtonBase-root-MuiIconButton-root"
         tabindex="0"
         title="Delete region"
         type="button"
@@ -101,7 +101,7 @@ exports[`VIADescription > should render a description 1`] = `
         class="makeStyles-inputWrapper-3"
       >
         <div
-          class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-ifAKCX jqYcQU css-1z10yd4-MuiFormControl-root-MuiTextField-root"
+          class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-htpNat lbVVwN css-1z10yd4-MuiFormControl-root-MuiTextField-root"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-hcxejd-MuiFormLabel-root-MuiInputLabel-root"
@@ -137,7 +137,7 @@ exports[`VIADescription > should render a description 1`] = `
           </div>
         </div>
         <div
-          class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-ifAKCX jqYcQU css-1z10yd4-MuiFormControl-root-MuiTextField-root"
+          class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-htpNat lbVVwN css-1z10yd4-MuiFormControl-root-MuiTextField-root"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-hcxejd-MuiFormLabel-root-MuiInputLabel-root"
@@ -177,7 +177,7 @@ exports[`VIADescription > should render a description 1`] = `
         class="makeStyles-inputWrapper-3"
       >
         <div
-          class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-ifAKCX jqYcQU css-1z10yd4-MuiFormControl-root-MuiTextField-root"
+          class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-htpNat lbVVwN css-1z10yd4-MuiFormControl-root-MuiTextField-root"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-hcxejd-MuiFormLabel-root-MuiInputLabel-root"
@@ -213,7 +213,7 @@ exports[`VIADescription > should render a description 1`] = `
           </div>
         </div>
         <div
-          class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-ifAKCX jqYcQU css-1z10yd4-MuiFormControl-root-MuiTextField-root"
+          class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-htpNat lbVVwN css-1z10yd4-MuiFormControl-root-MuiTextField-root"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-hcxejd-MuiFormLabel-root-MuiInputLabel-root"

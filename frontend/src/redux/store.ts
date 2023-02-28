@@ -21,6 +21,7 @@ import projectReducer from './project/reducers';
 import notificationReducer from './notification/reducer';
 import permissionsReducer from './permissions/reducer';
 import marketplaceReducer from './marketplace/reducers';
+import wireframeReducer from './wireframe/wireframe';
 import projectSaga from './project/sagas';
 import userSaga from './user/sagas';
 import history from './history';
@@ -30,6 +31,7 @@ import boardReducer from './pmtools/board/reducer';
 import inviteReducer from './pmtools/invite/reducer';
 import pmToolsSaga from './pmtools/sagas';
 import marketplaceSaga from './marketplace/sagas';
+import wireframeSaga from './wireframe/sagas';
 
 const userPersistConfig: PersistConfig = {
   key: 'user',
@@ -56,6 +58,7 @@ const composeEnhancers =
 
 export const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
+  wireframe: wireframeReducer,
   project: projectReducer,
   router: connectRouter(history),
   notification: notificationReducer,
@@ -84,6 +87,7 @@ export function configureStore(): { store: Store<any>; persistor: Persistor } {
   sagaMiddleware.run(projectSaga as any); // TODO: type action types!
   sagaMiddleware.run(pmToolsSaga);
   sagaMiddleware.run(marketplaceSaga as any);
+  sagaMiddleware.run(wireframeSaga);
   const persistor = persistStore(store);
 
   return { store, persistor };

@@ -17,6 +17,7 @@ export const initialData: ProjectDataState = {
     loading: false,
   },
   screens: {},
+  screenFolders: [],
   elements: {},
   customElementsData: {
     previous: null,

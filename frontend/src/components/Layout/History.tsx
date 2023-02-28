@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Undo as UndoIcon, Redo as RedoIcon } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@mui/styles';
+import { Tooltip } from '@mui/material';
 import { selectCanUndo, selectCanRedo } from '@Redux/project/selectors/control';
 import { executeUndoActions, executeRedoActions } from '@Redux/project/actions';
 import { StyledIconButton } from '@Components/styledComponents';
@@ -24,29 +25,30 @@ const History: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const canUndo = useSelector(selectCanUndo);
-  const canRedo = useSelector(selectCanRedo);
-  const onHistoryBack = () => dispatch(executeUndoActions());
+  const canUndoEditor = useSelector(selectCanUndo);
+  const canRedoEditor = useSelector(selectCanRedo);
 
-  const onHistoryForward = () => dispatch(executeRedoActions());
+  const onHistoryBack = () => {
+    dispatch(executeUndoActions());
+  };
+
+  const onHistoryForward = () => {
+    dispatch(executeRedoActions());
+  };
 
   return (
     <div className={classes.root}>
-      <StyledIconButton
-        onClick={onHistoryBack}
-        disabled={!canUndo}
-        title="Undo"
-      >
-        <UndoIcon className={classes.icon} />
-      </StyledIconButton>
+      <Tooltip title="Undo">
+        <StyledIconButton onClick={onHistoryBack} disabled={!canUndoEditor}>
+          <UndoIcon className={classes.icon} />
+        </StyledIconButton>
+      </Tooltip>
 
-      <StyledIconButton
-        onClick={onHistoryForward}
-        disabled={!canRedo}
-        title="Redo"
-      >
-        <RedoIcon className={classes.icon} />
-      </StyledIconButton>
+      <Tooltip title="Redo">
+        <StyledIconButton onClick={onHistoryForward} disabled={!canRedoEditor}>
+          <RedoIcon className={classes.icon} />
+        </StyledIconButton>
+      </Tooltip>
     </div>
   );
 };
