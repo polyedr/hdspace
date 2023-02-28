@@ -10,16 +10,18 @@ import {
   ListItemText,
   Stack,
   styled,
+  ClickAwayListener,
   TextField as MuiTextField,
 } from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import EditIcon from '@mui/icons-material/Edit';
-import CloseIcon from '@mui/icons-material/Close';
-import { ClickAwayListener } from '@material-ui/core';
-import { BoardTask, BoardTaskCheckListItem } from '@Redux/pmtools/types';
+import {
+  Check as CheckIcon,
+  DeleteOutline as DeleteOutlineIcon,
+  AlternateEmail as AlternateEmailIcon,
+  Edit as EditIcon,
+  Close as CloseIcon,
+} from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
+import { BoardTask, BoardTaskCheckListItem } from '@Redux/pmtools/types';
 import {
   requestDeleteChecklistItem,
   requestUpdateChecklistItem,
@@ -89,7 +91,7 @@ interface Props {
   task: BoardTask;
 }
 
-const CheckItem = ({ item, task }: Props) => {
+function CheckItem({ item, task }: Props) {
   const [value, setValue] = useState(item.text);
   const [editing, setEditing] = useState(false);
   const [confirmDelete, showConfirmDelete] = useState(false);
@@ -105,9 +107,10 @@ const CheckItem = ({ item, task }: Props) => {
     );
   }, [item, task]);
 
-  const handleSetEditing = useCallback((editing: boolean) => {
-    return () => setEditing(editing);
-  }, []);
+  const handleSetEditing = useCallback(
+    (editing: boolean) => () => setEditing(editing),
+    [],
+  );
 
   const handleSave = useCallback(() => {
     setEditing(false);
@@ -246,6 +249,6 @@ const CheckItem = ({ item, task }: Props) => {
       />
     </>
   );
-};
+}
 
 export default CheckItem;

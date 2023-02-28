@@ -14,6 +14,9 @@ import AtlasTree, {
   TreeSourcePosition,
   TreeItem as TreeItemType,
 } from '@atlaskit/tree';
+import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import logger from 'loglevel';
 import TreeItem from '@Components/LeftPanel/Navigator/components/TreeItem';
 import {
   copyActiveElement,
@@ -32,7 +35,6 @@ import {
 } from '@Components/LeftPanel/Navigator/utils';
 import { canElementBeAdded } from '@Utils/normalizedStateHelpers';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   Normalized,
   StateElement,
@@ -51,9 +53,7 @@ import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu'
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { makeStyles } from '@material-ui/core/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import logger from 'loglevel';
 import Scrollbar from '../../../UI/Scrollbar';
 
 const useStyles = makeStyles({
@@ -71,17 +71,17 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   tree: TreeData;
   setTree: React.Dispatch<React.SetStateAction<TreeData>>;
   elements: Normalized<StateElement>;
-};
+}
 
-type State = {
+interface State {
   mouseX: number | null;
   mouseY: number | null;
   item: TreeItemType | null;
-};
+}
 
 const OFFSET = 15;
 
@@ -140,7 +140,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const handleClose = () => setState(initialState);
 
   const expandItemParents = useCallback((tree: TreeData, id: string) => {
-    // @ts-ignore
+    // @ts-expect-error
     const parentId = tree.items[id]?.parent;
     if (!parentId) return tree;
     if (tree.items[parentId] && !tree.items[parentId].isExpanded) {
@@ -333,7 +333,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     dispatch(
       moveElement(
         childId as string,
-        { newIndex: destination.index as number, oldIndex: source.index },
+        { newIndex: destination.index, oldIndex: source.index },
         {
           newParentId: destination.parentId as string,
           oldParentId: source.parentId as string,
@@ -348,7 +348,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   };
 
   const renderItem = (props: RenderItemParams) => {
-    const height = 25;
+    const height = 30;
 
     return (
       <TreeItem
@@ -372,9 +372,9 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     >
       <Scrollbar
         style={{
-          height: '50vh',
-          maxHeight: '50vh',
-          minHeight: '50vh',
+          // height: '50vh',
+          maxHeight: 'calc(100vh - 56px)',
+          minHeight: 'calc(100vh - 56px)',
         }}
       >
         <div
@@ -400,18 +400,16 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
       </Scrollbar>
 
       {state.item && !coreElementSelected && canEdit && (
-        <>
-          <ContextMenu
-            open={state?.mouseY !== null}
-            anchorPosition={
-              state.mouseY !== null && state.mouseX !== null
-                ? { top: state.mouseY, left: state.mouseX }
-                : undefined
-            }
-            onClose={handleClose}
-            item={state.item}
-          />
-        </>
+        <ContextMenu
+          open={state?.mouseY !== null}
+          anchorPosition={
+            state.mouseY !== null && state.mouseX !== null
+              ? { top: state.mouseY, left: state.mouseX }
+              : undefined
+          }
+          onClose={handleClose}
+          item={state.item}
+        />
       )}
     </div>
   );

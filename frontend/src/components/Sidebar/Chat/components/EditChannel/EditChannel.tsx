@@ -3,11 +3,9 @@ import { useChatContext } from 'stream-chat-react';
 
 import './EditChannel.css';
 
-import type { ChannelFilters } from 'stream-chat';
 import { UserList } from '../CreateChannel/UserList';
-
 import { CloseCreateChannel } from '../../assets';
-
+import type { ChannelFilters } from 'stream-chat';
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -15,13 +13,12 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from '../../client';
 
-type InputProps = {
+interface InputProps {
   channelName: string;
   setChannelName: (value: React.SetStateAction<string>) => void;
-};
+}
 
 const ChannelNameInput: React.FC<InputProps> = (props) => {
   const { channelName = '', setChannelName } = props;
@@ -48,10 +45,10 @@ const ChannelNameInput: React.FC<InputProps> = (props) => {
   );
 };
 
-type Props = {
+interface Props {
   filters: ChannelFilters[];
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 export const EditChannel: React.FC<Props> = (props) => {
   const { filters, setIsEditing } = props;
@@ -62,8 +59,7 @@ export const EditChannel: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const [channelName, setChannelName] = useState<string>(

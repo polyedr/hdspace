@@ -15,7 +15,7 @@ export const selectCurrentHistoryRecordIndex = ({ project }: AppReduxState) =>
 export const selectCurrentHistoryRecord = createSelector(
   selectHistory,
   selectCurrentHistoryRecordIndex,
-  (history, currentIndex) => (currentIndex < 1 ? null : history[currentIndex]),
+  (history, currentIndex) => (currentIndex < 0 ? null : history[currentIndex]),
 );
 
 export const selectCanUndo = createSelector(

@@ -1,15 +1,13 @@
+import React, { FC, useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Tabs, Tab, Box, SwipeableDrawer } from '@mui/material';
+import { makeStyles, styled } from '@mui/styles';
+import { components, TABS_PMTOOLS } from '@Constants/pmtools/tabsNamesSidebar';
+import { setSidebarOpen } from '@Redux/project/actions';
 import {
   selectCurrentProjectId,
   selectSidebarOpen,
 } from '@Redux/project/selectors/base';
-import React, { FC, useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import Box from '@mui/material/Box';
-import { Tabs, Tab } from '@material-ui/core';
-import { components, TABS_PMTOOLS } from '@Constants/pmtools/tabsNamesSidebar';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { setSidebarOpen } from '@Redux/project/actions';
-import { makeStyles, styled } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   root: {
@@ -125,11 +123,9 @@ const SideModule: FC = () => {
           {Object.values(TABS_PMTOOLS).map((tab, idx) => {
             const Tab = components[tab];
             return (
-              <>
-                <TabPanel value={selectedTabNumber} key={tab} index={idx}>
-                  <Tab />
-                </TabPanel>
-              </>
+              <TabPanel value={selectedTabNumber} key={tab} index={idx}>
+                <Tab />
+              </TabPanel>
             );
           })}
         </TabContent>

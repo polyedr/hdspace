@@ -1,13 +1,14 @@
 import { ReactElement } from 'react';
 import { StateElement } from '@Src/types';
 
-export type RendererProps = {
-  style?: Array<string>;
+export interface RendererProps {
+  style?: string[];
   element: StateElement;
   isDisabled?: boolean;
   children?: ReactElement[];
-};
+}
 
-export type EventHandlers<T extends HTMLElement> = {
-  [eventName: string]: (event: React.SyntheticEvent<T>) => void;
-};
+export type EventHandlers<T extends HTMLElement> = Record<
+  string,
+  (event: React.SyntheticEvent<T>) => void
+>;

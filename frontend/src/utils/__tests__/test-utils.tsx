@@ -1,5 +1,7 @@
-import { initialUserState } from '@Redux/user/initial';
 import MockDate from 'mockdate';
+import logger from 'loglevel';
+import { vi } from 'vitest';
+import { initialUserState } from '@Redux/user/initial';
 import {
   initialCommunication,
   initialControl,
@@ -14,7 +16,6 @@ import { defaultFreeCanvasParams } from '@Domain/core';
 import { DEFAULT_LAYOUT_LIST, DEFAULT_USER } from '@Constants/defaultParams';
 import { generateRandomInteger } from '@Utils/NumberHelper';
 import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
-import logger from 'loglevel';
 import {
   Project,
   StateElement,
@@ -145,7 +146,6 @@ export const mockUserData: UserData = {
     id: 888,
     experienced: Experience.EXPERIENCED,
     parameters: {
-      passwordZulip: '',
       avatarCrop: '',
       profileDataParameters: {
         autoSwitchTabs: false,
@@ -218,6 +218,10 @@ export const mockMarketplace: Marketplace = {
 };
 export const mockInitialState: AppReduxState = {
   user: initialUserState,
+  wireframe: {
+    activeScreen: undefined,
+    activeElement: undefined,
+  },
   project: {
     data: initialData,
     edit: initialEdit,
@@ -229,6 +233,7 @@ export const mockInitialState: AppReduxState = {
     action: 'POP',
     location: {
       hash: '',
+      query: {},
       key: '',
       pathname: '',
       search: '',
@@ -350,6 +355,7 @@ export const createMasterScreenMock = (projectId: number): Screen => ({
 export const createScreenMock = (
   projectId: number,
   buoyancy: number = 1,
+  category: number = null,
 ): Screen => ({
   buoyancy,
   element: '99999',
@@ -357,6 +363,7 @@ export const createScreenMock = (
   image: null,
   name: 'Screen 1',
   project: projectId,
+  category,
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
     freeCanvas: false,
@@ -420,8 +427,8 @@ export const projectScreensMock = [
 ];
 
 export const beforeSagaTest = () => {
-  logger.error = jest.fn();
+  logger.error = vi.fn();
   // stub current date and random value generator to pass enqueueSnackbar equality
   MockDate.set('2000-11-22');
-  jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
+  vi.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
 };

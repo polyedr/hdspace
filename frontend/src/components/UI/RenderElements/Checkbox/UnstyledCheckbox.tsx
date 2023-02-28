@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
-import { useHistory } from 'react-router';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -65,7 +65,9 @@ const UnstyledCheckbox = React.forwardRef<HTMLInputElement, RendererProps>(
             />
           ) : screenLink && screenName && isProtoMode && !exportScreenFlag ? (
             <label
-              ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
+              ref={
+                ref as unknown as React.MutableRefObject<HTMLLabelElement | null>
+              }
               id={id}
               role="presentation"
               onClick={() =>
@@ -94,7 +96,9 @@ const UnstyledCheckbox = React.forwardRef<HTMLInputElement, RendererProps>(
             />
           ) : (
             <label
-              ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
+              ref={
+                ref as unknown as React.MutableRefObject<HTMLLabelElement | null>
+              }
               id={id}
               data-ls-id={id}
               dangerouslySetInnerHTML={{ __html: element.parameters.value }}

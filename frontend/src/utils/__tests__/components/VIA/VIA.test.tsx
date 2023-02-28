@@ -2,6 +2,7 @@ import React from 'react';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { fireEvent, render, RenderResult } from '@testing-library/react';
+import { vi } from 'vitest';
 import { mockState, mockVIAState } from '@Utils/__tests__/test-utils';
 import VIA from '@Components/Editor/VIA/';
 import { AppReduxState } from '@Redux/types';
@@ -9,7 +10,7 @@ import TYPES from '@Redux/actionTypes';
 
 Object.defineProperty(URL, 'createObjectURL', {
   writable: true,
-  value: jest.fn(),
+  value: vi.fn(),
 });
 
 describe('VIA Region', () => {

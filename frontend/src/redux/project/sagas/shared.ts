@@ -1,9 +1,9 @@
+import { path } from 'ramda';
+import { call, put, select, take } from 'redux-saga/effects';
 import { convertProjectToPatchRequest } from '@Api/converters/toRequest';
 import { apiUpdateProject } from '@Api/project';
 import { apiRefreshToken } from '@Api/user';
 import getSavedValue from '@Utils/getSavedValue';
-import { path } from 'ramda';
-import { call, put, select, take } from 'redux-saga/effects';
 import { MAX_TOKEN_TRIALS } from '@Src/config/settings';
 import {
   LibraryElementUnion,

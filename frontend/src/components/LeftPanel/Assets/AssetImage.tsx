@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
-import { ElementType } from '@Constants/dragAndDrop';
-import { makeStyles } from '@material-ui/core/styles';
-import { Asset } from '@Src/types';
+import { makeStyles } from '@mui/styles';
 import { useDrag } from 'react-dnd';
+import { ElementType } from '@Constants/dragAndDrop';
+import { Asset } from '@Src/types';
 
 enum FullSizeDirection {
   VERTICAL,
   HORIZONTAL,
 }
 
-type Props = {
+interface Props {
   asset: Asset;
-};
+}
 
-type StyleProps = {
+interface StyleProps {
   sizeDirection: FullSizeDirection;
-};
+}
 
 const useStyles = makeStyles({
   assetWrapper: {
@@ -44,8 +44,8 @@ const AssetImage = React.forwardRef<HTMLImageElement, Props>(
     const classes = useStyles({ sizeDirection } as StyleProps);
 
     const [, dragRef] = useDrag({
+      type: ElementType.CONSTRUCTOR,
       item: {
-        type: ElementType.CONSTRUCTOR,
         original: {
           type: 'image',
           name: 'Image asset',

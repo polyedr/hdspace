@@ -1,11 +1,11 @@
 import { createReducer, Handlers } from 'reduxsauce';
 import TYPES from '@Redux/actionTypes';
+import { BoardAction, BoardState, BoardTask } from '../types';
 import * as columnActions from './actions/columns';
 import * as taskActions from './actions/tasks';
 import * as commentActions from './actions/comments';
 import * as labelsActions from './actions/labels';
 import * as checklistActions from './actions/checklist';
-import { BoardAction, BoardState, BoardTask } from '../types';
 
 const INITIAL_STATE: BoardState = {
   fetching: true,
@@ -15,9 +15,7 @@ const INITIAL_STATE: BoardState = {
   activeTask: null,
 };
 
-interface ActionHandler<T> {
-  (state: BoardState, action: T): BoardState;
-}
+type ActionHandler<T> = (state: BoardState, action: T) => BoardState;
 
 function findColumnIndex(state: BoardState, columnId: number) {
   return state.columns.findIndex((c) => c.id === columnId);
@@ -72,39 +70,47 @@ const updateColumn: ActionHandler<
 
 const deleteColumn: ActionHandler<
   ReturnType<typeof columnActions.deleteColumnFromState>
-> = (state = INITIAL_STATE, { columnId }) => {
-  return {
-    ...state,
-    columns: state.columns.filter((c) => c.id !== columnId),
-  };
-};
+> = (state = INITIAL_STATE, { columnId }) => ({
+  ...state,
+  columns: state.columns.filter((c) => c.id !== columnId),
+});
 
 const setColumns: ActionHandler<ReturnType<typeof columnActions.setColumns>> = (
   state = INITIAL_STATE,
   { columns },
-) => {
-  return {
-    ...state,
-    columns: columns.map((column: any) => {
-      column.tasks = column?.hasOwnProperty('tasks') ? column.tasks : [];
-      return column;
-    }),
-  };
-};
+) => ({
+  ...state,
+  columns: columns.map((column: any) => {
+    column.tasks = Object.prototype.hasOwnProperty.call(column, 'tasks')
+      ? column.tasks
+      : [];
+    return column;
+  }),
+});
 
 // tasks
 
 const setTasks: ActionHandler<ReturnType<typeof taskActions.setTasks>> = (
   state = INITIAL_STATE,
   { tasks },
+) => ({
+  ...state,
+  columns: state.columns.map((column) => {
+    column.tasks = tasks.filter((t) => t.column === column.id);
+    return column;
+  }),
+});
+
+const removeTask: ActionHandler<ReturnType<typeof taskActions.addTask>> = (
+  state = INITIAL_STATE,
+  { task },
 ) => {
-  return {
-    ...state,
-    columns: state.columns.map((column) => {
-      column.tasks = tasks.filter((t) => t.column === column.id);
-      return column;
-    }),
-  };
+  const newState = { ...state };
+  const columnIndex = findColumnIndex(state, task.column);
+  const taskIndex = findTaskIndex(state, task);
+
+  newState.columns[columnIndex].tasks.splice(taskIndex, 1);
+  return newState;
 };
 
 const addTask: ActionHandler<ReturnType<typeof taskActions.addTask>> = (
@@ -199,30 +205,24 @@ const removeComment: ActionHandler<
 
 const addProjectLabels: ActionHandler<
   ReturnType<typeof labelsActions.setProjectLabels>
-> = (state = INITIAL_STATE, { labels }) => {
-  return {
-    ...state,
-    labels,
-  };
-};
+> = (state = INITIAL_STATE, { labels }) => ({
+  ...state,
+  labels,
+});
 
 const addProjectLabel: ActionHandler<
   ReturnType<typeof labelsActions.addProjectLabel>
-> = (state = INITIAL_STATE, { label }) => {
-  return {
-    ...state,
-    labels: [...state.labels, label],
-  };
-};
+> = (state = INITIAL_STATE, { label }) => ({
+  ...state,
+  labels: [...state.labels, label],
+});
 
 const deleteProjectLabel: ActionHandler<
   ReturnType<typeof labelsActions.projectLabelDeleted>
-> = (state = INITIAL_STATE, { id }) => {
-  return {
-    ...state,
-    labels: state.labels.filter((l) => l.id !== id),
-  };
-};
+> = (state = INITIAL_STATE, { id }) => ({
+  ...state,
+  labels: state.labels.filter((l) => l.id !== id),
+});
 
 // checklist
 const addChecklistItem: ActionHandler<
@@ -302,6 +302,7 @@ const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_SET_COLUMNS]: setColumns,
   [TYPES.BOARD_FETCH_COLUMNS_PENDING]: setColumnsFetching,
   [TYPES.BOARD_SET_TASKS]: setTasks,
+  [TYPES.BOARD_REMOVE_TASK]: removeTask,
   [TYPES.BOARD_ADD_TASK]: addTask,
   [TYPES.BOARD_SET_TASK]: setTask,
   [TYPES.BOARD_ADD_COLUMN]: addColumn,

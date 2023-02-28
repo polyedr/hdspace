@@ -27,7 +27,32 @@ const dataReducer = produce(
         };
         break;
       }
+      case TYPES.FETCHED_SCREEN_FOLDERS: {
+        draft.screenFolders = action.payload.folders;
+        break;
+      }
+      case TYPES.SCREEN_FOLDER_CREATED: {
+        draft.screenFolders = [...draft.screenFolders, action.payload.folder];
+        break;
+      }
+      case TYPES.SCREEN_FOLDER_UPDATED: {
+        const folderIndex = draft.screenFolders.findIndex(
+          (folder) => folder.id === action.payload.folder.id,
+        );
 
+        draft.screenFolders[folderIndex] = {
+          ...draft.screenFolders[folderIndex],
+          ...action.payload.folder,
+        };
+
+        break;
+      }
+      case TYPES.DELETED_SCREEN_FOLDER: {
+        draft.screenFolders = draft.screenFolders.filter(
+          (folder) => folder.id !== action.payload.id,
+        );
+        break;
+      }
       case TYPES.SET_IMAGE_PALETTE: {
         draft.imagePalette = action.payload;
         break;
@@ -79,7 +104,19 @@ const dataReducer = produce(
 
       case TYPES.ADD_STATE_ELEMENTS: {
         const { elements } = action.payload;
-        draft.elements = addMapElements(draft.elements, elements);
+
+        const index = action.meta?.index;
+
+        if (!index) {
+          draft.elements = addMapElements(draft.elements, elements);
+        } else {
+          elements.forEach((element) => {
+            element.index = index;
+          });
+
+          draft.elements = addMapElements(draft.elements, elements);
+        }
+
         break;
       }
 

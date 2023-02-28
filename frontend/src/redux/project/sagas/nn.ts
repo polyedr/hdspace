@@ -1,5 +1,8 @@
 // @ts-nocheck
 import { put, call, select, takeEvery } from 'redux-saga/effects';
+import { compose } from 'redux';
+import { omit } from 'ramda';
+import logger from 'loglevel';
 import {
   selectAnnotatedElementId,
   selectBlockType,
@@ -33,10 +36,7 @@ import { reqWrapper } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import * as Actions from '@Redux/project/actions';
 import withActionsHistory from '@Redux/project/wrappers/withActionsHistory';
-import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
-import { omit } from 'ramda';
-import logger from 'loglevel';
 import { selectCurrentScreenId } from '../selectors/screen';
 
 const recognizeImageSaga = compose(
@@ -103,7 +103,7 @@ const recognizeImageSaga = compose(
     if (recognizeError) throw new Error(recognizeError);
   } catch (e) {
     logger.error('Could not upload image for NN. Error: ', e.message);
-    if (process.env.NODE_ENV === 'development') {
+    if (process.import.meta.env.MODE === 'development') {
       logger.trace(e);
     }
     yield put(
@@ -317,7 +317,7 @@ const autoAnalyzeImageSaga = compose(
     if (nnError) throw new Error(nnError);
   } catch (e) {
     logger.error('Could not upload image for NN. Error: ', e.message);
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.MODE === 'development') {
       logger.trace(e);
     }
     yield put(

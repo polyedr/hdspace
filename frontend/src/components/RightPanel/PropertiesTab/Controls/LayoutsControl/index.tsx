@@ -1,5 +1,8 @@
-import { makeStyles } from '@material-ui/core/styles';
-import { selectActiveElementParams } from '@Redux/project/selectors/element';
+import { makeStyles } from '@mui/styles';
+import React, { ChangeEvent, FC } from 'react';
+import { useSelector } from 'react-redux';
+
+import { Checkbox, FormControlLabel, Theme } from '@mui/material';
 import {
   Entity,
   Layout,
@@ -9,12 +12,9 @@ import {
   PropertiesChangeProps,
   additionalLayoutPhone,
 } from '@Src/types';
-import React, { ChangeEvent, FC } from 'react';
-import { useSelector } from 'react-redux';
+import { selectActiveElementParams } from '@Redux/project/selectors/element';
 
-import { Checkbox, FormControlLabel } from '@material-ui/core';
-
-const useFormControlLabelStyles = makeStyles(({ palette }) => ({
+const useFormControlLabelStyles = makeStyles<Theme>(({ palette }) => ({
   label: {
     '&.Mui-disabled': {
       color: palette.grey.A200,
@@ -22,7 +22,7 @@ const useFormControlLabelStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const useCheckboxStyles = makeStyles(({ palette }) => ({
+const useCheckboxStyles = makeStyles<Theme>(({ palette }) => ({
   root: {
     '&.Mui-disabled': {
       color: palette.grey.A200,
@@ -75,11 +75,9 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
     const offLayout = (layout) => {
       switch (layout) {
         case 'tablet':
-          return layouts.filter(
-            (e) => additionalLayoutTablet.indexOf(e) === -1,
-          );
+          return layouts.filter((e) => !additionalLayoutTablet.includes(e));
         case 'mobile':
-          return layouts.filter((e) => additionalLayoutPhone.indexOf(e) === -1);
+          return layouts.filter((e) => !additionalLayoutPhone.includes(e));
         default:
           return layouts.filter((l) => l !== layout);
       }

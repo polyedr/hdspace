@@ -14,7 +14,7 @@ const StyledLinearProgress = styled(LinearProgress)({
   },
 });
 
-const ProgressBar = ({ progress }: { progress: number }) => {
+function ProgressBar({ progress }: { progress: number }) {
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
@@ -29,6 +29,6 @@ const ProgressBar = ({ progress }: { progress: number }) => {
       </Box>
     </Box>
   );
-};
+}
 
 export default React.memo(ProgressBar);

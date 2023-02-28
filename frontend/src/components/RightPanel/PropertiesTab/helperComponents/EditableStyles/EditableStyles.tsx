@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { MenuItem } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { setEditableStyles } from '@Redux/project/actions';
 import { AppReduxState } from '@Redux/types';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { StyledTextField } from '@Components/styledComponents';
 import { splitWords } from '@Utils/stringHelper';
-import { MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   capitalized: {
@@ -23,11 +23,11 @@ const useStyles = makeStyles({
   },
 });
 
-type StateProps = {
+interface StateProps {
   editableStyles: string;
   classNames: string[];
   disabled?: boolean;
-};
+}
 
 const mapState = (state: AppReduxState) => {
   const activeElement = selectActiveElement(state);

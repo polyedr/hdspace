@@ -1,5 +1,5 @@
-import TYPES from '@Redux/actionTypes';
 import { takeEvery, takeLatest } from 'redux-saga/effects';
+import TYPES from '@Redux/actionTypes';
 import {
   createChecklistItemSaga,
   deleteChecklistItemSaga,
@@ -25,6 +25,7 @@ import {
 } from './labels';
 import {
   createTaskSaga,
+  deleteTaskSaga,
   fetchTaskSaga,
   updateTaskSags,
   updateTasksOrderSaga,
@@ -40,6 +41,7 @@ export default function* boardSaga() {
   yield takeLatest(TYPES.BOARD_FETCH_TASK, fetchTaskSaga);
   yield takeLatest(TYPES.BOARD_UPDATE_TASKS_ORDER, updateTasksOrderSaga);
   yield takeLatest(TYPES.BOARD_CREATE_TASK, createTaskSaga);
+  yield takeLatest(TYPES.BOARD_DELETE_TASK, deleteTaskSaga);
   yield takeEvery(TYPES.BOARD_UPDATE_TASK, updateTaskSags);
 
   yield takeEvery(TYPES.BOARD_TASK_CREATE_COMMENT, createCommentSaga);

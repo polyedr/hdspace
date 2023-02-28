@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-prop-types */
 import React, { useContext, useCallback, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   selectActiveElement,
   selectSelectedElementsIds,
@@ -34,8 +34,8 @@ import {
 import { Entity } from '@Src/types';
 import { selectUserProfileDataParameters } from '@Redux/user/selectors';
 import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';
-import InteractionsHandler from './InteractionsHandler';
 import { DOMHandler } from '../DOMHandler';
+import InteractionsHandler from './InteractionsHandler';
 
 const useStyles = makeStyles({
   container: ({ posRight }: Props) => ({
@@ -47,9 +47,9 @@ const useStyles = makeStyles({
   }),
 });
 
-type Props = {
+interface Props {
   posRight: number | null;
-};
+}
 
 const ElementsInteractions: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
@@ -197,6 +197,7 @@ const ElementsInteractions: React.FC<Props> = (props) => {
           return null;
         }
         const elementDom = DOMHandler.INSTANCE.getDomById(id);
+
         if (!elementDom) {
           return null;
         }

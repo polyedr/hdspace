@@ -2,21 +2,21 @@ import React, { useCallback, useRef, memo } from 'react';
 import cn from 'classnames';
 import { useDispatch } from 'react-redux';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
-import { Popover, IconButton } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import { createElementsGroup } from '@Redux/project/actions';
+import { Popover, IconButton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import logger from 'loglevel';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
+import { createElementsGroup } from '@Redux/project/actions';
 import { StateElement } from '@Src/types';
 import { useButtonStyles } from '../hooks/styles';
 
-type Props = {
+interface Props {
   element: StateElement;
   canCreateGroup: boolean;
   selectedElementsIds: string[];
   screenId: number;
-};
+}
 
 const useStyles = makeStyles({
   content: {
@@ -81,7 +81,9 @@ const CreateGroupAction: React.FC<Props> = ({
               vertical: 'top',
               horizontal: 'center',
             }}
-            onEntered={() => inputRef.current!.focus()}
+            TransitionProps={{
+              onEntered: () => inputRef.current.focus(),
+            }}
           >
             <div className={cn(classes.content)}>
               <input

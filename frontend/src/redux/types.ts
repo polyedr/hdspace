@@ -1,8 +1,8 @@
 import { RouterState } from 'connected-react-router';
 import React from 'react';
 import { OptionsObject, SnackbarKey } from 'notistack';
-import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import { XYCoord } from 'react-dnd';
+import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import {
   CreatedElement,
   DropTargetParams,
@@ -42,7 +42,6 @@ import {
   VIAFile,
   VIAData,
   FileToUpload,
-  ChatCredentials,
   UIFramework,
   ElementData,
   NNModelName,
@@ -54,40 +53,47 @@ import {
   TemplatesSearchParameter,
 } from '../types';
 import TYPES from './actionTypes';
+import {
+  createdScreenFolder,
+  deletedScreenFolder,
+  fetchedScreenFolders,
+  updatedScreenFolder,
+} from './project/actions';
 
-export type PermissionsState = {
+export interface PermissionsState {
   allUsersList: PaginatedData<UserData> & { search: string };
   projectUsersPermissionsList: {
     loading: boolean;
     projectId: number | null;
     data: Normalized<PermissionsUserData & { id: string }>; // use userId as key
   };
-  currentUserProjectPermissions: Array<UserProjectPermission>;
-};
+  currentUserProjectPermissions: UserProjectPermission[];
+}
 
-export type ProjectDataState = {
+export interface ProjectDataState {
   projectsData: PaginatedData<Project> & {
     parameter: [ProjectsSearchParameter, string | DateRange];
   };
   screens: Normalized<Screen>;
+  screenFolders: ScreenFolder[];
   elements: Normalized<StateElement>;
   customElementsData: PaginatedArray<LibraryElement<Entity>>;
-  elementInputs: { [id: string]: File };
+  elementInputs: Record<string, File>;
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
   assetImageList: boolean;
   imagePalette: ParsedImagePalette | null;
   backGroundAssetsList: boolean;
   createProjectError: string | null;
-};
+}
 
-export type MarketplaceDataState = {
+export interface MarketplaceDataState {
   marketplaceData: PaginatedData<Marketplace> & {
     parameter: [TemplatesSearchParameter, string | DateRange];
   };
-};
+}
 
-export type ProjectUiState = {
+export interface ProjectUiState {
   editableStyles: string;
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
@@ -110,9 +116,9 @@ export type ProjectUiState = {
     host: string;
   };
   isCanImportSite: boolean;
-};
+}
 
-export type ProjectEditState = {
+export interface ProjectEditState {
   currentProjectId: number;
   currentScreenId: number;
   activeElementId: string;
@@ -147,18 +153,19 @@ export type ProjectEditState = {
     };
   };
   freeCanvas: {
-    lastElements: {
-      [id: string]: {
+    lastElements: Record<
+      string,
+      {
         offset: number;
         elements: string[];
-      };
-    };
+      }
+    >;
   };
   preSelectedElementId: string | null;
   masterSourceElementId: string | null;
-};
+}
 
-export type ProjectCommunicationState = {
+export interface ProjectCommunicationState {
   screenCreateLoader: boolean;
   updateImageLoader: boolean;
   screenLoader: boolean; // TODO: make sure this loader is useless
@@ -169,25 +176,25 @@ export type ProjectCommunicationState = {
   assetsListsLoader: boolean;
   importLoader: boolean;
   importValue: importData;
-};
+}
 
-export type ProjectControlState = {
-  history: Array<HistoryRecord>;
+export interface ProjectControlState {
+  history: HistoryRecord[];
   currentHistoryRecord: number;
-};
+}
 
-export type ProjectState = {
+export interface ProjectState {
   data: ProjectDataState;
   ui: ProjectUiState;
   edit: ProjectEditState;
   communication: ProjectCommunicationState;
   control: ProjectControlState;
-};
-export type MarketplaceState = {
+}
+export interface MarketplaceState {
   data: MarketplaceDataState;
-};
+}
 
-export type UserState = {
+export interface UserState {
   isLPanelMinimized: boolean;
   isPrototypeMode: boolean;
   dropTargetBordersMode: boolean;
@@ -207,64 +214,81 @@ export type UserState = {
   userGuide: {
     active: boolean;
   };
-  chat: ChatCredentials;
   subscriptionData: UserSubscriptionsData;
-};
+}
 
-export type Notification = {
+export interface Notification {
   key: SnackbarKey;
   message: string;
   dismissed?: boolean;
   options?: OptionsObject;
-};
+}
 
-export type HistoryRecord = {
+export interface HistoryRecord {
   action: Action;
   undo: Action[];
   redo: Action[];
-};
+}
 
-export type NotificationState = {
+export interface NotificationState {
   notifications: Notification[];
-};
+}
 
-export type AppReduxState = {
+export interface Link {
+  isExternalLink: boolean;
+  elementId: string;
+  projectId?: string;
+  screenId: string;
+  destinationScreenId?: string;
+  link?: string;
+}
+
+export interface WireframeState {
+  activeScreen?: string;
+  activeElement?: string;
+}
+export interface AppReduxState {
   user: UserState;
+  wireframe: WireframeState;
   project: ProjectState;
   router: RouterState;
   notification: NotificationState;
   permissions: PermissionsState;
   marketplace: MarketplaceState;
-};
+}
 
-export type WrapIntoContainerData = {
+export interface WrapIntoContainerData {
   containerType: Entity;
   name: string | null;
   ids: string[];
-};
+}
 
-export type CreateScreenData = {
+export interface CreateScreenData {
   projectID: number;
   name: string;
   buoyancy: number;
   rootName?: string;
   freeCanvas?: boolean;
   styles?: any;
-};
+}
 
-export type UploadAssetData = {
+export interface UploadAssetData {
   assetFile: any | null;
   fileName: string;
   listId: string;
   imageURL?: string;
-};
+}
 
-export type RestoreChildrenData = {
+export interface RestoreChildrenData {
   id: string;
   children: string[];
-};
+}
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
+
+export type WireframePositionUpdate = IPlainAction<
+  typeof TYPES.WIREFRAME_UPDATE_SCREEN_POSITION
+>;
 
 export type GetSubscriptionDataType = IPlainAction<
   typeof TYPES.SUBSCRIPTION_DATA
@@ -351,9 +375,7 @@ export type UpdateCurrentUIFramework = IAction<
 >;
 export type UpdateCurrentUIFrameworkVariables = IAction<
   typeof TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
-  {
-    [name: string]: string;
-  }
+  Record<string, string>
 >;
 export type ResetCurrentUIFrameworkVariables = IPlainAction<
   typeof TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES
@@ -572,13 +594,13 @@ export type UpdateMultipleElementsStyles = IAction<
   typeof TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
   {
     ids: string[];
-    styles: { [id: string]: React.CSSProperties };
+    styles: Record<string, React.CSSProperties>;
   },
   ElementHistoryMeta
 >;
 export type ReplaceMultipleElementsStyles = IAction<
   typeof TYPES.REPLACE_MULTIPLE_ELEMENTS_STYLES,
-  { ids: string[]; styles: { [id: string]: React.CSSProperties } },
+  { ids: string[]; styles: Record<string, React.CSSProperties> },
   ElementHistoryMeta
 >;
 export type RemoveMultipleElementsStyles = IAction<
@@ -601,16 +623,16 @@ export type UploadElementAsset = IAction<
   ElementHistoryMeta
 >;
 
-export type AssetData = {
+export interface AssetData {
   file?: any | null;
   imageURL?: string;
   useInBackground?: boolean;
-};
+}
 
-export type ImageData = {
+export interface ImageData {
   url: string;
   useInBackground?: boolean;
-};
+}
 
 export type UpdateElementParameters = IAction<
   typeof TYPES.UPDATE_ELEMENT_PARAMETERS,
@@ -632,7 +654,7 @@ export type UpdateMultipleElementsParameters = IAction<
   typeof TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
   {
     ids: string[];
-    parameters: { [id: string]: LibraryElement<Entity>['parameters'] };
+    parameters: Record<string, LibraryElement<Entity>['parameters']>;
   },
   ElementHistoryMeta
 >;
@@ -640,7 +662,7 @@ export type ReplaceMultipleElementsParameters = IAction<
   typeof TYPES.REPLACE_MULTIPLE_ELEMENTS_PARAMETERS,
   {
     ids: string[];
-    parameters: { [id: string]: LibraryElement<Entity>['parameters'] };
+    parameters: Record<string, LibraryElement<Entity>['parameters']>;
   },
   ElementHistoryMeta
 >;
@@ -701,7 +723,7 @@ export type CreateElementsGroup = IAction<
 export type AddChildrenToElement = IAction<
   typeof TYPES.ADD_CHILDREN_TO_ELEMENT,
   {
-    children: { childType: ServerStructType; parameters: {} }[];
+    children: Array<{ childType: ServerStructType; parameters: {} }>;
     elementId: string;
   },
   ElementHistoryMeta
@@ -790,6 +812,10 @@ export type PasteCopiedElement = IPlainAction<
   typeof TYPES.PASTE_COPIED_ELEMENT,
   ElementHistoryMeta
 >;
+export type PasteCopiedElementAtIndex = IPlainAction<
+  typeof TYPES.PASTE_COPIED_ELEMENT_AT_INDEX,
+  ElementMetaIndex
+>;
 export type ResetProjectState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;
 // history actions
 export type StartHistoryRecord = IAction<
@@ -859,7 +885,7 @@ export type RedoWrapIntoContainer = IAction<
 export type Logout = IPlainAction<typeof TYPES.LOGOUT>;
 export type AddElements = IAction<
   typeof TYPES.ADD_ELEMENTS,
-  { elements: LibraryElement<any>[]; parentId?: string }
+  { elements: Array<LibraryElement<any>>; parentId?: string }
 >;
 export type SetCustomElements = IAction<
   typeof TYPES.ADD_CUSTOM_ELEMENTS_PAGE,
@@ -1008,7 +1034,7 @@ export type RestoreAsset = IAction<
 
 export type AddStateElements = IAction<
   typeof TYPES.ADD_STATE_ELEMENTS,
-  { elements: StateElementsToAdd<Entity>[] },
+  { elements: Array<StateElementsToAdd<Entity>> },
   ElementHistoryMeta
 >;
 
@@ -1202,6 +1228,21 @@ export type SetAnnotatedElement = IAction<
   typeof TYPES.SET_ANNOTATED_ELEMENT_ID,
   string
 >;
+
+export interface ScreenPosition {
+  x: number;
+  y: number;
+}
+
+export interface ScreenFolder {
+  [x: string]: any;
+  folder: any;
+  id: number;
+  buoyancy: number;
+  name: string;
+  projectId: number;
+  ctscreens: Screen[];
+}
 
 export type SetVIAResultId = IAction<typeof TYPES.SET_VIA_RESULT_ID, string>;
 
@@ -1478,12 +1519,19 @@ export type Action =
   | SetImagePalette
   | GetSubscriptionDataType
   | SetMarketplaceListLoader
-  | ProjectError;
+  | ProjectError
+  | WireframePositionUpdate
+  | HistoryAction<ReturnType<typeof createdScreenFolder>>
+  | HistoryAction<ReturnType<typeof fetchedScreenFolders>>
+  | HistoryAction<ReturnType<typeof updatedScreenFolder>>
+  | HistoryAction<ReturnType<typeof deletedScreenFolder>>;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,
   boolean
 >;
+
+export type HistoryAction<T> = T & { meta?: HistoryMeta };
 
 export type setImportValue = IAction<typeof TYPES.SET_IMPORT_VALUE, importData>;
 
@@ -1492,21 +1540,26 @@ export type SetValueCheckRobots = IAction<
   boolean
 >;
 
-export type HistoryMeta = {
+export interface HistoryMeta {
   useHistory?: boolean;
   historyRecordIndex?: number;
-};
+}
 
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
+  index?: number;
 };
-export interface IPlainAction<T, M = HistoryMeta, R = void> {
+
+export interface ElementMetaIndex {
+  index?: number;
+}
+
+export interface IPlainAction<T, M = HistoryMeta> {
   type: T;
   meta?: M;
 }
 
-export interface IAction<T, P, M = HistoryMeta, R = void>
-  extends IPlainAction<T, M, R> {
+export interface IAction<T, P, M = HistoryMeta> extends IPlainAction<T, M> {
   payload: P;
 }
 

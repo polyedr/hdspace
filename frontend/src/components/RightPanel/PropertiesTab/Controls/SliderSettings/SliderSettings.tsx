@@ -1,7 +1,7 @@
-import { PropertiesChangeProps, SliderElement } from '@Src/types';
 import React, { useCallback } from 'react';
-import { StyledTextField } from '@Components/styledComponents';
 import { useSelector } from 'react-redux';
+import { PropertiesChangeProps, SliderElement } from '@Src/types';
+import { StyledTextField } from '@Components/styledComponents';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 
 const SliderSettings: React.FC<PropertiesChangeProps<SliderElement>> = ({
@@ -14,37 +14,49 @@ const SliderSettings: React.FC<PropertiesChangeProps<SliderElement>> = ({
   const step = useSelector(selectActiveElementParamByName('step'));
   const value = useSelector(selectActiveElementParamByName('value'));
 
-  const handleChangeMin = useCallback((e) => {
-    const { value } = e.target;
-    if (Number.isNaN(value)) {
-      return;
-    }
-    updateParams({ min: value });
-  }, []);
+  const handleChangeMin = useCallback(
+    (e) => {
+      const { value } = e.target;
+      if (Number.isNaN(value)) {
+        return;
+      }
+      updateParams({ min: value });
+    },
+    [updateParams],
+  );
 
-  const handleChangeMax = useCallback((e) => {
-    const { value } = e.target;
-    if (Number.isNaN(value)) {
-      return;
-    }
-    updateParams({ max: value });
-  }, []);
+  const handleChangeMax = useCallback(
+    (e) => {
+      const { value } = e.target;
+      if (Number.isNaN(value)) {
+        return;
+      }
+      updateParams({ max: value });
+    },
+    [updateParams],
+  );
 
-  const handleChangeValue = useCallback((e) => {
-    const { value } = e.target;
-    if (Number.isNaN(value)) {
-      return;
-    }
-    updateParams({ value });
-  }, []);
+  const handleChangeValue = useCallback(
+    (e) => {
+      const { value } = e.target;
+      if (Number.isNaN(value)) {
+        return;
+      }
+      updateParams({ value });
+    },
+    [updateParams],
+  );
 
-  const handleChangeStep = useCallback((e) => {
-    const { value } = e.target;
-    if (Number.isNaN(value) || parseInt(value) < 1) {
-      return;
-    }
-    updateParams({ step: value });
-  }, []);
+  const handleChangeStep = useCallback(
+    (e) => {
+      const { value } = e.target;
+      if (Number.isNaN(value) || parseInt(value) < 1) {
+        return;
+      }
+      updateParams({ step: value });
+    },
+    [updateParams],
+  );
 
   return (
     <>
@@ -55,7 +67,6 @@ const SliderSettings: React.FC<PropertiesChangeProps<SliderElement>> = ({
         margin="dense"
         fullWidth
         disabled={!canEdit}
-        variant="outlined"
       />
       <StyledTextField
         value={max}
@@ -64,7 +75,6 @@ const SliderSettings: React.FC<PropertiesChangeProps<SliderElement>> = ({
         margin="dense"
         fullWidth
         disabled={!canEdit}
-        variant="outlined"
       />
       <StyledTextField
         value={value}
@@ -73,7 +83,6 @@ const SliderSettings: React.FC<PropertiesChangeProps<SliderElement>> = ({
         margin="dense"
         fullWidth
         disabled={!canEdit}
-        variant="outlined"
       />
       <StyledTextField
         value={step}
@@ -82,7 +91,6 @@ const SliderSettings: React.FC<PropertiesChangeProps<SliderElement>> = ({
         margin="dense"
         fullWidth
         disabled={!canEdit}
-        variant="outlined"
       />
     </>
   );

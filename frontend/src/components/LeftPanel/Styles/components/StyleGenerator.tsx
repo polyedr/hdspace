@@ -1,27 +1,22 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
-import { StyledTextField } from '@Components/styledComponents';
+import { makeStyles } from '@mui/styles';
+import { Button, FormControl, Box, SxProps, Theme } from '@mui/material';
 import { useDispatch } from 'react-redux';
+import { StyledTextField } from '@Components/styledComponents';
 import { generateImagePalette } from '@Redux/project/actions';
 
-const useStyles = makeStyles(({ palette, typography }) => ({
+const useStyles = makeStyles<Theme>(() => ({
   title: {
     marginBottom: '10px',
+    fontSize: 13,
   },
   orBlock: {
     margin: '15px 0',
-  },
-  chooseButton: {
-    backgroundColor: palette.secondary.main,
-    fontSize: typography.fontSize,
-    marginBottom: '5px',
   },
   chooseSection: {
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column',
-    alignItems: 'center',
   },
   chooseButtonText: {
     textDecoration: 'uppercase',
@@ -30,11 +25,20 @@ const useStyles = makeStyles(({ palette, typography }) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: '10px',
+    marginBottom: 5,
+  },
+  uploadContainer: {
+    padding: '10px 25px',
   },
 }));
 
-const StyleGenerator = () => {
+const containerStyles: SxProps = {
+  '& .style-title': {
+    mb: 1,
+  },
+};
+
+function StyleGenerator() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -43,27 +47,30 @@ const StyleGenerator = () => {
   const onGenerateClick = () => dispatch(generateImagePalette(url));
 
   return (
-    <div>
-      <div className={classes.title}>Upload Styles</div>
+    <Box sx={containerStyles}>
+      <div className="style-title">Upload Styles</div>
       <div className={classes.chooseSection}>
         <div className={classes.inputUrlContainer}>
-          <StyledTextField
-            placeholder="Upload image URL"
-            size="medium"
-            value={url}
-            onChange={(event) => setUrl(event.target.value)}
-          />
+          <FormControl fullWidth>
+            <StyledTextField
+              placeholder="Upload image URL"
+              size="medium"
+              value={url}
+              onChange={(event) => setUrl(event.target.value)}
+            />
+          </FormControl>
         </div>
         <Button
-          size="large"
-          className={classes.chooseButton}
+          variant="contained"
+          color="secondary"
+          component="span"
           onClick={onGenerateClick}
         >
-          <div className={classes.chooseButtonText}>Generate color scheme</div>
+          Generate color scheme
         </Button>
       </div>
-    </div>
+    </Box>
   );
-};
+}
 
 export default StyleGenerator;

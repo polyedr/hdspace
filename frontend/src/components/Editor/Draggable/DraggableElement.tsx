@@ -4,6 +4,7 @@ import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import logger from 'loglevel';
 import { useDebouncedCallback } from 'use-debounce';
+import Scrollbars from 'react-custom-scrollbars';
 import {
   processDropElement,
   processDropTargetParams,
@@ -24,12 +25,11 @@ import {
 import { ElementType } from '@Constants/dragAndDrop';
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import useLayout from '@Components/Editor/hooks/useLayout';
-import Scrollbars from 'react-custom-scrollbars';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import RENDERERS from '../../UI/RenderElements';
 
-type DraggableElementProps = {
+interface DraggableElementProps {
   screenId: number;
   elementId: string;
   allElements: Normalized<StateElement>;
@@ -38,9 +38,9 @@ type DraggableElementProps = {
   masterSourceElementId: string | null;
   canDragAndDrop: boolean;
   projectClasses: ProjectClass[];
-  parentIds?: Array<string>;
+  parentIds?: string[];
   scrollRef: React.RefObject<Scrollbars>;
-};
+}
 
 const DraggableElement: React.FC<DraggableElementProps> = ({
   screenId,
@@ -63,16 +63,18 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     [allElements, element?.parent],
   );
 
-  const parentElementClass = useMemo(() => {
-    return !parent
-      ? null
-      : projectClasses.find(
-          (projectClass: ProjectClass) =>
-            projectClass.className === parent.type,
-        );
-  }, [parent, projectClasses]);
+  const parentElementClass = useMemo(
+    () =>
+      !parent
+        ? null
+        : projectClasses.find(
+            (projectClass: ProjectClass) =>
+              projectClass.className === parent.type,
+          ),
+    [parent, projectClasses],
+  );
 
-  const ref = useRef<HTMLElement>(null) as React.MutableRefObject<HTMLElement>;
+  const ref = useRef<HTMLElement | null>(null);
 
   const isDisplayed = useLayout(element?.parameters.layouts);
 
@@ -81,24 +83,27 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     [elementId, parentIds],
   );
 
-  const [, drag, preview] = useDrag({
-    item: {
-      original: element,
-      parent,
+  const [, drag, preview] = useDrag(
+    () => ({
       type: ElementType.ELEMENT,
-    } as SyntheticElement<StateElement>,
-    canDrag: () =>
-      !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
-      !!parent &&
-      !element.parameters.sourceElementId &&
-      canDragAndDrop &&
-      !isProto,
-    end: (dragSource, monitor) => {
-      if (!monitor.didDrop()) {
-        dispatch(setCurrentDropTargetParams(null));
-      }
-    },
-  });
+      item: {
+        original: element,
+        parent,
+      } as SyntheticElement<StateElement>,
+      canDrag: () =>
+        !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
+        !!parent &&
+        !element.parameters.sourceElementId &&
+        canDragAndDrop &&
+        !isProto,
+      end: (_, monitor) => {
+        if (!monitor.didDrop()) {
+          dispatch(setCurrentDropTargetParams(null));
+        }
+      },
+    }),
+    [element, canDragAndDrop, isProto],
+  );
 
   const [, drop] = useDrop({
     accept: [ElementType.ELEMENT, ElementType.CONSTRUCTOR],
@@ -140,11 +145,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     preview(getEmptyImage(), { captureDraggingState: true });
   }, [preview]);
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       DOMHandler.INSTANCE.removeElementDom(elementId);
-    };
-  }, [elementId]);
+    },
+    [elementId],
+  );
 
   const clickHandler = useCallback(
     (event: React.MouseEvent) => {
@@ -181,7 +187,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 
   // handling div element with divBlock as server using div elements
   const ElementRenderer =
-    // @ts-ignore
+    // @ts-expect-error
     RENDERERS[element.type === 'div' ? 'divBlock' : element.type];
 
   if (!ElementRenderer) {
@@ -199,6 +205,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
           handleScrollIntoView.callback(dom); // need to call inside a timeout to wait for elements to be rendered correctly
         }
         ref.current = dom;
+
         DOMHandler.INSTANCE.addElementDom(elementId, dom);
         if (!NOT_DRAGGABLE_COMPONENTS.includes(element.type)) {
           drag(ref);
@@ -209,27 +216,21 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       onMouseLeave={mouseLeaveHandler}
       onClick={clickHandler}
     >
-      {element.children.map((childId: string, index: number) => {
-        return (
-          <DraggableElement
-            key={`element-${
-              element.children.indexOf(childId) === index
-                ? childId
-                : childId + Math.random()
-            }`}
-            elementId={childId}
-            parentIds={parentsIdsForChildren}
-            scrollRef={scrollRef}
-            isDisabled={isDisabled}
-            screenId={screenId}
-            allElements={allElements}
-            preSelectedElementId={preSelectedElementId}
-            masterSourceElementId={masterSourceElementId}
-            canDragAndDrop={canDragAndDrop}
-            projectClasses={projectClasses}
-          />
-        );
-      })}
+      {element.children.map((childId: string) => (
+        <DraggableElement
+          key={childId.toString()}
+          elementId={childId}
+          parentIds={parentsIdsForChildren}
+          scrollRef={scrollRef}
+          isDisabled={isDisabled}
+          screenId={screenId}
+          allElements={allElements}
+          preSelectedElementId={preSelectedElementId}
+          masterSourceElementId={masterSourceElementId}
+          canDragAndDrop={canDragAndDrop}
+          projectClasses={projectClasses}
+        />
+      ))}
     </ElementRenderer>
   );
 };

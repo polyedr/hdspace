@@ -1,8 +1,8 @@
+import { call, put, takeLatest } from 'redux-saga/effects';
 import { apiSendEmail } from '@Api/pmtools/inviteApi';
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
 import { reqWrapper } from '@Redux/project/sagas/shared';
-import { call, put, takeLatest } from 'redux-saga/effects';
 import { requestSendEmail, successSendEmail } from './actions';
 
 function* sendEmailSaga({

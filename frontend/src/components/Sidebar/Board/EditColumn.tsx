@@ -7,14 +7,14 @@ import {
   DialogTitle,
   InputAdornment,
   TextField,
+  IconButton,
+  styled,
 } from '@mui/material';
 import { Form, Field } from 'react-final-form';
-import { ColorPicker, createColor } from 'material-ui-color';
+import { ColorPicker, createColor } from 'mui-color';
 import { useDispatch } from 'react-redux';
-import { updateColumn } from '@Redux/pmtools/board/actions/columns';
-import { styled } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { updateColumn } from '@Redux/pmtools/board/actions/columns';
 
 const StyledDialog = styled(Dialog)({
   '& .MuiPaper-root': {
@@ -60,7 +60,7 @@ const StyledInputAdornment = styled(InputAdornment)({
   },
 });
 
-export const EditColumn = ({ open, onClose, column }) => {
+export function EditColumn({ open, onClose, column }) {
   const dispatch = useDispatch();
 
   const handleUpdateColumn = useCallback(
@@ -189,4 +189,4 @@ export const EditColumn = ({ open, onClose, column }) => {
       />
     </StyledDialog>
   );
-};
+}

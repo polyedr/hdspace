@@ -3,9 +3,9 @@ import JSZip from 'jszip';
 import pretty from 'pretty';
 import decamelize from 'decamelize';
 import cssbeautify from 'cssbeautify';
+import logger from 'loglevel';
 import { toClassName } from '@Utils/stringHelper';
 import { ProjectClass, ScreenMetaData, StateElement } from '@Src/types';
-import logger from 'loglevel';
 import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];
@@ -39,7 +39,7 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
     for (let j = 0; j < assetAttributes.length; j++) {
       const attr = assetAttributes[j];
       if (element.hasAttribute(attr)) {
-        const url = element.getAttribute(attr) as string;
+        const url = element.getAttribute(attr);
         switch (element.tagName.toLowerCase()) {
           case 'a': {
             if (url.startsWith('/')) {
@@ -64,7 +64,7 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
                 responseType: 'blob',
               })
               .then((response) => {
-                if (response.headers['content-type'].indexOf('image') !== -1) {
+                if (response.headers['content-type'].includes('image')) {
                   const blob = new Blob([response.data], {
                     type: response.headers['content-type'],
                   });
@@ -73,9 +73,9 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
                   });
                 }
               })
-              .catch((error: AxiosError) => {
+              .catch(async (error: AxiosError) => {
                 logger.error(error);
-                return Promise.resolve();
+                return await Promise.resolve();
               });
             break;
           }
@@ -93,7 +93,9 @@ export const processCSS = async (
   sharedClasses: ProjectClass[],
 ) => {
   const cssResourcesPromise = Promise.all([
-    ...cssCustomResources.map((resource) => axios.get(`/styles/${resource}`)),
+    ...cssCustomResources.map(
+      async (resource) => await axios.get(`/styles/${resource}`),
+    ),
   ])
     .then((responses: AxiosResponse[]) => {
       responses.forEach((response: AxiosResponse) => {
@@ -111,9 +113,7 @@ export const processCSS = async (
         );
       });
     })
-    .catch((error: AxiosError) => {
-      return Promise.reject(error);
-    });
+    .catch(async (error: AxiosError) => await Promise.reject(error));
 
   const entityStylesPromise = new Promise((resolve, reject) => {
     if (!cssFolder) {
@@ -131,16 +131,18 @@ export const processCSS = async (
     resolve(cssFolder?.file('shared.css', cssbeautify(groupStyles)));
   });
 
-  return Promise.all([
+  return await Promise.all([
     cssResourcesPromise,
     entityStylesPromise,
     sharedStylesPromise,
   ]);
 };
 
-export const processJS = async (html: string, jsFolder: JSZip | null) => {
-  return Promise.all(
-    jsResources.map((resource) => axios.get(`/js/export/${resource}`)),
+export const processJS = async (html: string, jsFolder: JSZip | null) =>
+  await Promise.all(
+    jsResources.map(
+      async (resource) => await axios.get(`/js/export/${resource}`),
+    ),
   ).then((responses: AxiosResponse[]) => {
     responses.forEach((response: AxiosResponse) => {
       if (!response.request) {
@@ -167,17 +169,16 @@ export const processJS = async (html: string, jsFolder: JSZip | null) => {
       );
     });
   });
-};
 
 export const processIco = async (
   urlIco: string | null,
   assetsFolder: JSZip | null,
 ) => {
   if (!urlIco) {
-    return Promise.resolve();
+    return await Promise.resolve();
   }
   const assetName = 'favicon.ico';
-  return axios
+  return await axios
     .get(urlIco, {
       responseType: 'blob',
     })
@@ -189,9 +190,9 @@ export const processIco = async (
         binary: true,
       });
     })
-    .catch((error: AxiosError) => {
+    .catch(async (error: AxiosError) => {
       logger.error(error);
-      return Promise.resolve();
+      return await Promise.resolve();
     });
 };
 
@@ -275,9 +276,10 @@ export const getHtmlFromTemplate = (
       `<style type="text/css">
           :root {
         ${Object.keys(currentUIFramework.themeVariables)
-          .map((varName) => {
-            return `--${varName}: ${currentUIFramework.themeVariables[varName]}`;
-          })
+          .map(
+            (varName) =>
+              `--${varName}: ${currentUIFramework.themeVariables[varName]}`,
+          )
           .join(';')}
     }
         </style>`

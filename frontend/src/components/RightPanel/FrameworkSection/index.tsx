@@ -1,31 +1,30 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import { MenuItem, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
+import styled from 'styled-components';
 import {
   FRAMEWORKS_LIST,
   NOT_SELECTED_FRAMEWORK,
 } from '@Constants/frameworks/index';
 import {
-  StyledAccordion,
-  StyledAccordionDetails,
-  StyledAccordionSummary,
+  PropertyAccordianSummary,
+  PropertyAccordion,
+  PropertyAccordionDetails,
   StyledTextField,
 } from '@Components/styledComponents';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { FrameworkName, UIFramework, UserProjectPermission } from '@Src/types';
 import { updateCurrentUIFramework } from '@Redux/project/actions';
 import { selectCurrentUIFramework } from '@Redux/project/selectors/base';
-import { Typography } from '@mui/material';
-import styled from 'styled-components';
 
 const useStyles = makeStyles({
   details: {
     flexDirection: 'column',
   },
   selectWrapper: {
-    padding: '0 1em',
+    // padding: '0 1em',
   },
   name: {
     textTransrorm: 'capitalize',
@@ -35,7 +34,7 @@ const useStyles = makeStyles({
 const CustomTypography = styled(Typography)`
   font-size: '14px';
 `;
-const FrameworkSection = () => {
+function FrameworkSection() {
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -44,12 +43,14 @@ const FrameworkSection = () => {
   );
   const currentUIFramework = useSelector(selectCurrentUIFramework);
 
-  const availableVersions = useMemo(() => {
-    return currentUIFramework
-      ? FRAMEWORKS_LIST.find((fr) => fr.name === currentUIFramework.name)
-          ?.versions || []
-      : [];
-  }, [currentUIFramework]);
+  const availableVersions = useMemo(
+    () =>
+      currentUIFramework
+        ? FRAMEWORKS_LIST.find((fr) => fr.name === currentUIFramework.name)
+            ?.versions || []
+        : [],
+    [currentUIFramework],
+  );
 
   const [frameworkName, setFrameworkName] = useState<FrameworkName | null>(
     currentUIFramework?.name || null,
@@ -121,14 +122,14 @@ const FrameworkSection = () => {
   );
 
   return (
-    <StyledAccordion>
-      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <PropertyAccordion>
+      <PropertyAccordianSummary expandIcon={<ExpandMoreIcon />}>
         {currentUIFramework?.name === NOT_SELECTED_FRAMEWORK?.name
           ? FRAMEWORKS_LIST[0].label
           : currentUIFramework?.name}
-      </StyledAccordionSummary>
+      </PropertyAccordianSummary>
 
-      <StyledAccordionDetails className={classes.details}>
+      <PropertyAccordionDetails className={classes.details}>
         <div className={classes.selectWrapper}>
           <StyledTextField
             fullWidth
@@ -174,9 +175,9 @@ const FrameworkSection = () => {
             </StyledTextField>
           )}
         </div>
-      </StyledAccordionDetails>
-    </StyledAccordion>
+      </PropertyAccordionDetails>
+    </PropertyAccordion>
   );
-};
+}
 
 export default FrameworkSection;

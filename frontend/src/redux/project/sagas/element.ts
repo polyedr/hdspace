@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { put, call, select, putResolve } from 'redux-saga/effects';
+import { compose } from 'redux';
+import logger from 'loglevel';
 import {
   selectCustomElementsPagination,
   selectElementStyles,
@@ -49,15 +51,18 @@ import {
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
 import { apiGetFile } from '@Api/import';
-import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
-import logger from 'loglevel';
-import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
-import { wrapIntoContainer } from './scenario';
 import withActionsHistory from '../wrappers/withActionsHistory';
+import {
+  selectAllAssetLists,
+  selectCurrentAssetListId,
+} from '../selectors/asset';
+import { selectCurrentScreenId } from '../selectors/screen';
+import { reqWrapper, projectUpdateHelperSaga } from './shared';
+import { wrapIntoContainer } from './scenario';
 import { uploadAssetHelper } from './asset';
 import {
   updateOrReplaceElementParameters,
@@ -65,11 +70,6 @@ import {
   updateOrReplaceMultipleElementsParameters,
   createElements,
 } from './common';
-import {
-  selectAllAssetLists,
-  selectCurrentAssetListId,
-} from '../selectors/asset';
-import { selectCurrentScreenId } from '../selectors/screen';
 
 // eslint-disable-next-line consistent-return
 export function* duplicateElements(
@@ -77,7 +77,7 @@ export function* duplicateElements(
   meta: ElementHistoryMeta,
 ) {
   try {
-    const elements: LibraryElement<any>[] = [];
+    const elements: Array<LibraryElement<any>> = [];
     // eslint-disable-next-line no-restricted-syntax
     for (const el of itemsToCopyInfo) {
       const element = yield select(selectElementAsTree(el.id));
@@ -85,15 +85,13 @@ export function* duplicateElements(
     }
 
     const convertedItemsToDuplicate = elements.map((item) =>
-      convertElementToRequest(item!, (originalEl, convertedEl) => {
-        return {
-          ...convertedEl,
-          parameters: {
-            ...convertedEl.parameters,
-            originalElementId: originalEl.id,
-          },
-        };
-      }),
+      convertElementToRequest(item, (originalEl, convertedEl) => ({
+        ...convertedEl,
+        parameters: {
+          ...convertedEl.parameters,
+          originalElementId: originalEl.id,
+        },
+      })),
     );
 
     return yield call(
@@ -351,7 +349,10 @@ function* removeElementStyles(
     const { error }: Result<LibraryElement<any>> = yield call(
       reqWrapper,
       apiUpdateElement,
-      { data: convertedElement, id },
+      {
+        data: convertedElement,
+        id,
+      },
     );
     if (error) throw new Error(error);
   } catch (e) {
@@ -500,12 +501,13 @@ export function* updateOrReplaceMultipleElementsStyles(
     const stateElements = yield select(selectElementsByIds(ids));
 
     if (!action.meta.useHistory) {
-      const stylesState = stateElements.reduce((acc, element) => {
-        return {
+      const stylesState = stateElements.reduce(
+        (acc, element) => ({
           ...acc,
           [element.id]: element.styles.ownStyles,
-        };
-      }, {});
+        }),
+        {},
+      );
       yield put(
         Actions.addUndoActions(
           Actions.replaceMultipleElementsStyles(ids, stylesState, {
@@ -555,12 +557,13 @@ export function* updateOrReplaceMultipleElementsStyles(
       return updatedElement;
     });
 
-    const elements = elementsToUpdate.reduce((acc, element) => {
-      return {
+    const elements = elementsToUpdate.reduce(
+      (acc, element) => ({
         ...acc,
         [element.id]: element,
-      };
-    }, {});
+      }),
+      {},
+    );
     yield put(Actions.updateMultipleStateElements(elements));
 
     const data = Object.values(elementsToUpdate).map((el) =>
@@ -570,7 +573,9 @@ export function* updateOrReplaceMultipleElementsStyles(
     const { error }: Result<LibraryElement<any>> = yield call(
       reqWrapper,
       apiUpdateElements,
-      { data },
+      {
+        data,
+      },
     );
 
     if (error) throw new Error(error);
@@ -640,12 +645,13 @@ export const removeMultipleElementsStylesSaga = compose(
     const stateElements = yield select(selectElementsByIds(ids));
 
     if (!action.meta.useHistory) {
-      const stylesState = stateElements.reduce((acc, element) => {
-        return {
+      const stylesState = stateElements.reduce(
+        (acc, element) => ({
           ...acc,
           [element.id]: element.styles.ownStyles,
-        };
-      }, {});
+        }),
+        {},
+      );
       yield put(
         Actions.addUndoActions(
           Actions.updateMultipleElementsStyles(ids, stylesState, {
@@ -655,25 +661,24 @@ export const removeMultipleElementsStylesSaga = compose(
       );
     }
 
-    const elementsToUpdate = stateElements.map((elToUpdate) => {
-      return {
-        ...elToUpdate,
-        styles: {
-          ...elToUpdate.styles,
-          ownStyles: Object.keys(elToUpdate.styles.ownStyles)
-            .filter((ruleName) => !cssPropertiesNames.includes(ruleName))
-            .map((ruleName) => ({
-              [ruleName]: elToUpdate.styles.ownStyles[ruleName],
-            })),
-        },
-      };
-    });
+    const elementsToUpdate = stateElements.map((elToUpdate) => ({
+      ...elToUpdate,
+      styles: {
+        ...elToUpdate.styles,
+        ownStyles: Object.keys(elToUpdate.styles.ownStyles)
+          .filter((ruleName) => !cssPropertiesNames.includes(ruleName))
+          .map((ruleName) => ({
+            [ruleName]: elToUpdate.styles.ownStyles[ruleName],
+          })),
+      },
+    }));
 
     yield put(
       Actions.updateMultipleStateElements(
-        elementsToUpdate.reduce((acc, element) => {
-          return { ...acc, [element.id]: element };
-        }, {}),
+        elementsToUpdate.reduce(
+          (acc, element) => ({ ...acc, [element.id]: element }),
+          {},
+        ),
       ),
     );
 
@@ -684,7 +689,9 @@ export const removeMultipleElementsStylesSaga = compose(
     const { error }: Result<LibraryElement<any>> = yield call(
       reqWrapper,
       apiUpdateElements,
-      { data },
+      {
+        data,
+      },
     );
     if (error) throw new Error(error);
   } catch (e) {
@@ -1046,7 +1053,7 @@ export const createElementsGroupSaga = compose(
     const allGroupIds = [groupId, ...childIds];
     const state = yield select(selectAllElements);
 
-    const idsToUpdate: Array<string> = [];
+    const idsToUpdate: string[] = [];
     const paramsToUpdate = allGroupIds.reduce((allParams, id) => {
       const groupElement = state[id];
       const instanceElement = state[groupElement.parameters.originalElementId];
@@ -1076,12 +1083,13 @@ export const createElementsGroupSaga = compose(
       const masterGroupChildrenIds = masterGroupsEl.children.map(
         (child) => child.id,
       );
-      const oldElementsParams = idsToUpdate.reduce((allParams, id) => {
-        return {
+      const oldElementsParams = idsToUpdate.reduce(
+        (allParams, id) => ({
           ...allParams,
           [id]: state[id].parameters,
-        };
-      }, {});
+        }),
+        {},
+      );
       yield put(
         Actions.addUndoActions([
           Actions.unwrapFromContainer(
@@ -1097,7 +1105,10 @@ export const createElementsGroupSaga = compose(
           Actions.replaceMultipleElementsParameters(
             idsToUpdate,
             oldElementsParams,
-            { ...action.meta, useHistory: true },
+            {
+              ...action.meta,
+              useHistory: true,
+            },
           ),
         ]),
       );
@@ -1115,7 +1126,10 @@ export const createElementsGroupSaga = compose(
           Actions.restoreElementChildren(
             masterGroupsEl.id,
             [...masterGroupChildrenIds, groupId],
-            { ...action.meta, useHistory: true },
+            {
+              ...action.meta,
+              useHistory: true,
+            },
           ),
           Actions.updateMultipleElementsParameters(
             allGroupIds,

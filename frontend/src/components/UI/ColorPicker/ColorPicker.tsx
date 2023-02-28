@@ -3,11 +3,11 @@ import React, { useEffect, useCallback, useState, memo } from 'react';
 import { SketchPicker, ColorResult } from 'react-color';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { Popover } from '@material-ui/core';
+import { createStyles, makeStyles } from '@mui/styles';
+import { Popover, Theme } from '@mui/material';
 import transparentBg from '../../../assets/sprites/transparent.png';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       position: 'relative',
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) =>
       height: '18px',
       backgroundColor: (props: any) => props.color,
       cursor: 'pointer',
-      border: '1px solid #E4E6EB',
+      // border: '1px solid #E4E6EB',
       borderRadius: 2,
     },
     transparent: {
@@ -26,12 +26,12 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-type ColorPickerProps = {
+interface ColorPickerProps {
   color: string;
   colors?: string[];
-  onChangeComplete(color: Pick<ColorResult, 'hex'>): void;
+  onChangeComplete: (color: Pick<ColorResult, 'hex'>) => void;
   disabled?: boolean;
-};
+}
 
 const ColorPicker: React.FC<ColorPickerProps> = ({
   color,

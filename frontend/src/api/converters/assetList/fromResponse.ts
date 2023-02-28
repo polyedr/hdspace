@@ -1,8 +1,8 @@
-import { AssetsList, PaginatedArray } from '@Src/types';
 import { AxiosResponse } from 'axios';
+import { AssetsList, PaginatedArray } from '@Src/types';
 import { ServerAsset } from '../asset/fromResponse';
 
-export type ServerAssetList = {
+export interface ServerAssetList {
   id: string;
   name: string;
   illustrationList?: string | null;
@@ -10,7 +10,7 @@ export type ServerAssetList = {
   created: string;
   modified: string;
   project: string;
-};
+}
 
 export const convertFromServerAssetList = (list: ServerAssetList) => {
   const { id, name, created, modified, project } = list;

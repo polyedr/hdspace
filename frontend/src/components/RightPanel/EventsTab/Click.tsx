@@ -1,24 +1,26 @@
 import React, { FC, MouseEvent, useEffect } from 'react';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import ToggleButtonGroup from '@mui/lab/ToggleButtonGroup';
+import {
+  InsertDriveFile as InsertDriveFileIcon,
+  Link as LinkIcon,
+} from '@mui/icons-material';
+import { useSelector } from 'react-redux';
+import { MenuItem } from '@mui/material';
 import {
   StyledTextField,
   StyledToggleButton,
 } from '@Components/styledComponents';
-import LinkIcon from '@material-ui/icons/Link';
-import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import { ElementClickEvent, LinkType } from '@Src/types';
-import { useSelector } from 'react-redux';
 import {
   selectCurrentScreenId,
   selectSortedScreens,
 } from '@Redux/project/selectors/screen';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { MenuItem } from '@material-ui/core';
 
-type Props = {
+interface Props {
   eventData: ElementClickEvent['data'];
   setEventData: React.Dispatch<any>;
-};
+}
 
 const Click: FC<Props> = ({ eventData, setEventData }) => {
   const screens = useSelector(selectSortedScreens);

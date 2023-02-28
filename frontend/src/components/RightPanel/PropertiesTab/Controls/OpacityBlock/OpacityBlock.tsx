@@ -1,8 +1,9 @@
 import React from 'react';
+import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material';
 import RemoveStyles from '@Components/RightPanel/PropertiesTab/helperComponents/RemoveStyles';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledSlider, StyledTextField } from '@Components/styledComponents';
-import { makeStyles } from '@material-ui/core/styles';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
@@ -11,7 +12,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 
 const useStyles = makeStyles({
   container: {
-    padding: '0 16px',
+    // padding: '0 16px',
   },
   inputsContainer: {
     display: 'flex',
@@ -20,10 +21,16 @@ const useStyles = makeStyles({
     alignItems: 'center',
   },
   input: {
-    width: 62,
+    width: 'calc(50% - 40px) !important',
   },
-  slider: {
-    width: 150,
+});
+
+const OpacityStyledSlider = styled(StyledSlider)({
+  width: '50%',
+  marginRight: 12,
+
+  '& .MuiSlider-thumb': {
+    border: '1px solid #E4E6EB',
   },
 });
 
@@ -79,8 +86,7 @@ const OpacityBlock: React.FC<Props> = ({
           margin="none"
           disabled={!canEdit}
         />
-        <StyledSlider
-          style={{ width: '150px' }}
+        <OpacityStyledSlider
           size="small"
           value={(opacityState as number) * 100}
           defaultValue={100}

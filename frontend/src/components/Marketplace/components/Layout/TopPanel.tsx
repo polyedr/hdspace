@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentProject } from '@Redux/project/selectors/base';
-import { updateNameAndTagsProject } from '@Redux/project/actions';
 import { AppBar, Toolbar, Box } from '@mui/material';
 import styled from 'styled-components';
+import { selectCurrentProject } from '@Redux/project/selectors/base';
+import { updateNameAndTagsProject } from '@Redux/project/actions';
 import Dialog from '../../../Dialogs/Dialog';
-import Avatar from './Avatar';
 import Logo from '../../../UI/Logo';
+import Avatar from './Avatar';
 import TopbarTabs from './TopbarTabs';
 
 const CustomeToolBar = styled(Toolbar)`
@@ -21,7 +21,7 @@ const CustomeToolBar = styled(Toolbar)`
     box-shadow: rgba(55, 56, 60, 0.1);
   }
 `;
-const TopPanel = () => {
+function TopPanel() {
   const dispatch = useDispatch();
   const [openEdit, setOpenEdit] = useState(false);
   const { name: projectName, id, tags } = useSelector(selectCurrentProject);
@@ -59,6 +59,6 @@ const TopPanel = () => {
       />
     </AppBar>
   );
-};
+}
 
 export default TopPanel;

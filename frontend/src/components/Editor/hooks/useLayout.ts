@@ -1,5 +1,5 @@
-import { Layout } from '@Src/types';
 import { useSelector } from 'react-redux';
+import { Layout } from '@Src/types';
 import { selectLayout } from '@Redux/project/selectors/base';
 
 const useLayout = (layouts: Layout[] | undefined) => {

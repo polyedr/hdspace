@@ -2,23 +2,8 @@ import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import { styled } from '@mui/material/styles';
-import { createStyles, darken, makeStyles } from '@material-ui/core/styles';
-import Alert from '@material-ui/lab/Alert';
-import {
-  selectProfileData,
-  selectSubscriptionData,
-  selectUserData,
-  selectUserGuideWatched,
-} from '@Redux/user/selectors';
-import {
-  changeProfileData,
-  setUserExperience,
-  sendResetPasswordMail,
-  changeUserData,
-  changeProfileAvatar,
-} from '@Redux/user/actions';
-import { ROLES } from '@Constants/defaultParams';
-import { Experience, ProfileData } from '@Src/types';
+import { createStyles, makeStyles } from '@mui/styles';
+import Alert from '@mui/lab/Alert';
 import {
   Typography,
   Box,
@@ -39,16 +24,33 @@ import {
   MenuItem,
   FormHelperText,
   Grid,
-} from '@material-ui/core';
-import ImageCropper from '@Components/CropImage';
+  darken,
+  Avatar,
+  Theme,
+} from '@mui/material';
 import { useHistory } from 'react-router';
-import { Avatar } from '@mui/material';
+import {
+  selectProfileData,
+  selectSubscriptionData,
+  selectUserData,
+  selectUserGuideWatched,
+} from '@Redux/user/selectors';
+import {
+  changeProfileData,
+  setUserExperience,
+  sendResetPasswordMail,
+  changeUserData,
+  changeProfileAvatar,
+} from '@Redux/user/actions';
+import { ROLES } from '@Constants/defaultParams';
+import { Experience, ProfileData } from '@Src/types';
+import ImageCropper from '@Components/CropImage';
 import { getSubscriptionData } from '@Redux/permissions/actions';
 import { isRequired } from '@Utils/validators';
 import SubmitError from '../SubmitError';
 import { SubscriptionCard } from './SubscriptionCard';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     headerContainer: {
       paddingTop: theme.spacing(2),
@@ -138,7 +140,7 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-const TabPanel = ({ children, value, index, ...rest }) => {
+function TabPanel({ children, value, index, ...rest }) {
   return (
     <div
       role="tabpanel"
@@ -150,7 +152,7 @@ const TabPanel = ({ children, value, index, ...rest }) => {
       {value === index && children}
     </div>
   );
-};
+}
 
 const TabStyle = styled(Tab)(({ theme }) => ({
   minWidth: 'unset',
@@ -162,12 +164,10 @@ const TabPanelStyle = styled(TabPanel)(({ theme }) => ({
   padding: `${theme.spacing(3)}px 0`,
 }));
 
-const a11yProps = (index) => {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-};
+const a11yProps = (index) => ({
+  id: `simple-tab-${index}`,
+  'aria-controls': `simple-tabpanel-${index}`,
+});
 
 const Profile: React.FC = () => {
   const classes = useStyles();
@@ -367,17 +367,15 @@ const Profile: React.FC = () => {
                       Upload
                       <Field
                         name="avatar"
-                        render={({ input }) => {
-                          return (
-                            <input
-                              {...input}
-                              type="file"
-                              accept=".png, .jpeg"
-                              onChange={handleImageUpload}
-                              className={classes.hidden}
-                            />
-                          );
-                        }}
+                        render={({ input }) => (
+                          <input
+                            {...input}
+                            type="file"
+                            accept=".png, .jpeg"
+                            onChange={handleImageUpload}
+                            className={classes.hidden}
+                          />
+                        )}
                       />
                     </label>
                     <button

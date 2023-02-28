@@ -8,7 +8,6 @@ import * as weekday from './modules/weekday/weekday';
 import * as day from './modules/day/day';
 
 import {
-  CalendarSize,
   LayoutModifier,
   CalendarOptions,
   Day,
@@ -53,6 +52,7 @@ export default class Calendar {
     'long-lower': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as Weekdays,
     'long-upper': ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'] as Weekdays,
   };
+
   weekdays: Weekdays;
   today: Date;
   currentDate: Date;
@@ -106,6 +106,7 @@ export default class Calendar {
     newYearValue: number,
     newYearIndex?: number,
   ) => void;
+
   updateYearPickerTodaySelection!: () => void;
   removeYearPickerSelection!: () => void;
   generatePickerYears!: () => void;
@@ -135,6 +136,7 @@ export default class Calendar {
     newMonth?: number,
     newYear?: number,
   ) => void;
+
   generateDays!: () => void;
   renderDays!: () => void;
   rerenderSelectedDay!: (
@@ -146,17 +148,15 @@ export default class Calendar {
   constructor(options: CalendarOptions = {}) {
     /* Initialize Options */
     this.id = options.id ?? '#color-calendar';
-    this.calendarSize = options?.calendarSize as CalendarSize; // ?? 'large'
+    this.calendarSize = options?.calendarSize; // ?? 'large'
     this.layoutModifiers = options.layoutModifiers ?? [];
     this.theme = options.theme ?? 'basic';
     this.primaryColor = options.primaryColor;
     this.headerColor = options.headerColor;
     this.headerBackgroundColor = options.headerBackgroundColor;
     this.weekdaysColor = options.weekdaysColor;
-    this.weekdayDisplayType = (options.weekdayDisplayType ??
-      'long-lower') as WeekdayDisplayType;
-    this.monthDisplayType = (options.monthDisplayType ??
-      'long') as MonthDisplayType;
+    this.weekdayDisplayType = options.weekdayDisplayType ?? 'long-lower';
+    this.monthDisplayType = options.monthDisplayType ?? 'long';
     this.startWeekday = options.startWeekday ?? 0; // 0 (Sun), 1 (Mon), 2 (Tues), 3 (Wed), 4 (Thu), 5 (Fri), 6 (Sat)
     this.fontFamilyHeader = options.fontFamilyHeader;
     this.fontFamilyWeekdays = options.fontFamilyWeekdays;
@@ -193,11 +193,13 @@ export default class Calendar {
     this.document = options.document || document;
 
     // Check if HTML element with given selector exists in DOM
-    this.calendar = this.document.querySelector(this.id) as HTMLElement;
+    this.calendar = this.document.querySelector(this.id);
     if (!this.calendar) {
-      throw new Error(
+      // eslint-disable-next-line no-console
+      console.error(
         `[COLOR-CALENDAR] Element with selector '${this.id}' not found`,
       );
+      return;
     }
 
     // Initialize initial HTML layout
@@ -257,34 +259,34 @@ export default class Calendar {
     // Store HTML element references
     this.calendarRoot = this.document.querySelector(
       `${this.id} .${this.CAL_NAME}`,
-    ) as HTMLElement;
+    );
     this.calendarHeader = this.document.querySelector(
       `${this.id} .calendar__header`,
-    ) as HTMLElement;
+    );
     this.calendarWeekdays = this.document.querySelector(
       `${this.id} .calendar__weekdays`,
-    ) as HTMLElement;
+    );
     this.calendarDays = this.document.querySelector(
       `${this.id} .calendar__days`,
-    ) as HTMLElement;
+    );
     this.pickerContainer = this.document.querySelector(
       `${this.id} .calendar__picker`,
-    ) as HTMLElement;
+    );
     this.pickerMonthContainer = this.document.querySelector(
       `${this.id} .calendar__picker-month`,
-    ) as HTMLElement;
+    );
     this.pickerYearContainer = this.document.querySelector(
       `${this.id} .calendar__picker-year`,
-    ) as HTMLElement;
+    );
     this.yearPickerChevronLeft = this.document.querySelector(
       `${this.id} .calendar__picker-year-arrow-left`,
-    ) as HTMLElement;
+    );
     this.yearPickerChevronRight = this.document.querySelector(
       `${this.id} .calendar__picker-year-arrow-right`,
-    ) as HTMLElement;
+    );
 
     // Mark today's month in month picker
-    this.pickerMonthContainer!.children[this.today.getMonth()].classList.add(
+    this.pickerMonthContainer.children[this.today.getMonth()].classList.add(
       'calendar__picker-month-today',
     );
 
@@ -307,19 +309,19 @@ export default class Calendar {
 
     this.monthyearDisplay = this.document.querySelector(
       `${this.id} .calendar__monthyear`,
-    ) as HTMLElement;
+    );
     this.monthDisplay = this.document.querySelector(
       `${this.id} .calendar__month`,
-    ) as HTMLElement;
+    );
     this.yearDisplay = this.document.querySelector(
       `${this.id} .calendar__year`,
-    ) as HTMLElement;
+    );
     this.prevButton = this.document.querySelector(
       `${this.id} .calendar__arrow-prev .calendar__arrow-inner`,
-    ) as HTMLElement;
+    );
     this.nextButton = this.document.querySelector(
       `${this.id} .calendar__arrow-next .calendar__arrow-inner`,
-    ) as HTMLElement;
+    );
 
     // Set initial picker styles
     this.togglePicker(false);

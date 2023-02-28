@@ -8,17 +8,14 @@ export const selectAllAssetLists = (state: AppReduxState) =>
 export const selectAllAssetListsLoading = (state: AppReduxState) =>
   selectProjectState(state).data.assetLists.loading;
 
-export const selectImageList = ({ project }: AppReduxState) => {
-  return project.data.assetImageList;
-};
+export const selectImageList = ({ project }: AppReduxState) =>
+  project.data.assetImageList;
 
-export const selectBackGroundAssetsList = ({ project }: AppReduxState) => {
-  return project.data.backGroundAssetsList;
-};
+export const selectBackGroundAssetsList = ({ project }: AppReduxState) =>
+  project.data.backGroundAssetsList;
 
-export const selectCurrentAssetListId = (state: AppReduxState) => {
-  return selectProjectState(state).edit.selectedAssetListId;
-};
+export const selectCurrentAssetListId = (state: AppReduxState) =>
+  selectProjectState(state).edit.selectedAssetListId;
 
 export const selectAssetsLoading = createSelector(
   selectCurrentAssetListId,

@@ -1,50 +1,52 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { MenuItem } from '@mui/material';
+import ClearIconMui from '@mui/icons-material/Clear';
+import { makeStyles } from '@mui/styles';
+import { useSelector } from 'react-redux';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import {
   StyledTextField,
   StyledToggleButton,
   StyledToggleButtonGroup,
 } from '@Components/styledComponents';
-import { MenuItem } from '@material-ui/core';
 import {
   positionsList,
   initialInsetStyles,
   particularPositionStyles,
 } from '@Components/RightPanel/PropertiesTab/Controls/Position/constants/constants';
-import ClearIconMui from '@mui/icons-material/Clear';
-import { makeStyles } from '@material-ui/core/styles';
 import FloatIcons from '@Components/RightPanel/PropertiesTab/Controls/Position/components/FloatIcons';
 import { IconType } from '@Components/RightPanel/PropertiesTab/Controls/Position/enums/IconTypes';
 import { POSITIONS } from '@Components/RightPanel/PropertiesTab/Controls/Position/enums/Positions';
 import ParticularPosition from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ParticularPosition';
 import Input from '@Components/RightPanel/PropertiesTab/Controls/Position/components/Input';
-import { useSelector } from 'react-redux';
 import { selectParentOfActiveElement } from '@Redux/project/selectors/element';
 import TargetIcon from '@Components/RightPanel/PropertiesTab/Controls/Position/components/TargetIcon';
 import ClearIcon from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ClearIcon';
 
-type ParsedInset = {
+interface ParsedInset {
   value: React.CSSProperties['top'] | null;
   name: string;
-};
+}
 
 const useStyles = makeStyles({
   align: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     marginTop: 14,
   },
   wrapper: {
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    // justifyContent: 'space-between',
+    // alignItems: 'flex-end',
+    // flex: 1,
   },
   styleText: {
-    fontSize: '16px',
+    fontSize: '14px',
     color: '#2A2A2D',
-    paddingBottom: '2px',
+    // paddingBottom: '2px',
+    // marginRight: 30,
     fontFamily: 'Roboto',
   },
   icon: { width: 24, height: 24 },
@@ -126,7 +128,7 @@ const Position: React.FC<Props> = ({
   };
 
   return (
-    <div style={{ padding: '0 16px' }}>
+    <div>
       <StyledTextField
         fullWidth
         margin="dense"
@@ -167,7 +169,7 @@ const Position: React.FC<Props> = ({
           name="Relative to"
           value={parentOfActiveElement?.name || 'root'}
           disabled
-          style={{ width: 142 }}
+          // style={{ width: 142 }}
         >
           <div className={classes.targetIcon}>
             <TargetIcon />

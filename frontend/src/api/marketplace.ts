@@ -1,5 +1,4 @@
 import { AxiosResponse } from 'axios';
-import { convertTemplatesFromResponse } from './converters/fromResponse';
 import { myAxios } from '../config/settings';
 import {
   MyAxiosProps,
@@ -8,15 +7,16 @@ import {
   Result,
   ServerMarketplace,
 } from '../types';
+import { convertTemplatesFromResponse } from './converters/fromResponse';
 import { handleError, parseCursor } from './helper';
 
-export const apiGetProjectWithScreensForTemplates = (
+export const apiGetProjectWithScreensForTemplates = async (
   props: MyAxiosProps,
 ): Promise<Result<PaginatedResponse<Marketplace>>> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'GET',
-    url: `projects/screens-for-project?tags__name=adevitemplate`,
+    url: 'projects/screens-for-project?tags__name=adevitemplate',
   })
     .then((result: AxiosResponse<PaginatedResponse<ServerMarketplace>>) => ({
       result: {

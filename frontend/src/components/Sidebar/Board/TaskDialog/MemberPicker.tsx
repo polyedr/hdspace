@@ -17,8 +17,8 @@ import {
 import { useSelector } from 'react-redux';
 import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import Avatar from '@Components/UI/Avatar';
-import { IconButton } from './StyledComponents';
 import User, { username } from '../User';
+import { IconButton } from './StyledComponents';
 
 const Popover = styled(MuiPopover)({
   boxShadow:
@@ -97,6 +97,7 @@ const MenuProps = {
   },
 };
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 interface User {
   id: number;
   name: string;
@@ -105,10 +106,10 @@ interface User {
 
 interface Props {
   selected?: string;
-  onChange(member: User | null): void;
+  onChange: (member: User | null) => void;
 }
 
-const MemberPicker = ({ selected, onChange }: Props) => {
+function MemberPicker({ selected, onChange }: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
   const [person, setPerson] = React.useState<string>(selected ?? '-1');
 
@@ -128,13 +129,15 @@ const MemberPicker = ({ selected, onChange }: Props) => {
     setAnchorEl(null);
   }, [setAnchorEl]);
 
-  const users = useMemo(() => {
-    return Object.values(members).map(({ userData }) => ({
-      id: userData.id,
-      name: username(userData),
-      avatar: userData.profile.avatar ?? undefined,
-    }));
-  }, [members]);
+  const users = useMemo(
+    () =>
+      Object.values(members).map(({ userData }) => ({
+        id: userData.id,
+        name: username(userData),
+        avatar: userData.profile.avatar ?? undefined,
+      })),
+    [members],
+  );
 
   const handleChange = useCallback(
     (event: SelectChangeEvent<typeof person>) => {
@@ -265,6 +268,6 @@ const MemberPicker = ({ selected, onChange }: Props) => {
       </Popover>
     </>
   );
-};
+}
 
 export default MemberPicker;

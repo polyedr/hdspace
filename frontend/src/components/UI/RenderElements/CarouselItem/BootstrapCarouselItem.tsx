@@ -1,7 +1,7 @@
 import React, { LegacyRef } from 'react';
+import cn from 'classnames';
 import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
-import cn from 'classnames';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 
@@ -22,20 +22,18 @@ const BootstrapCarouselItem = React.forwardRef<HTMLElement, RendererProps>(
       },
     });
     return (
-      <>
-        <div
-          ref={ref as LegacyRef<HTMLDivElement>}
-          id={element.id}
-          data-ls-id={element.id}
-          className={cn('carousel-item active', classes.ownStyles, groupClass)}
-          data-gramm_editor={false}
-          {...contentEditableSettings.props}
-          {...contentEditableSettings.events}
-          {...eventHandlers}
-        >
-          <img src={link} className="d-block w-100" alt={alt} />
-        </div>
-      </>
+      <div
+        ref={ref as LegacyRef<HTMLDivElement>}
+        id={element.id}
+        data-ls-id={element.id}
+        className={cn('carousel-item active', classes.ownStyles, groupClass)}
+        data-gramm_editor={false}
+        {...contentEditableSettings.props}
+        {...contentEditableSettings.events}
+        {...eventHandlers}
+      >
+        <img src={link} className="d-block w-100" alt={alt} />
+      </div>
     );
   },
 );

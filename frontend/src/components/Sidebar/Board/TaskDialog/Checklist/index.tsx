@@ -1,4 +1,3 @@
-import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import AddIcon from '@mui/icons-material/Add';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import CheckIcon from '@mui/icons-material/Check';
@@ -11,14 +10,15 @@ import {
   styled,
   TextField as MuiTextField,
 } from '@mui/material';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   requestCreateChecklistItem,
   requestDeleteChecklist,
 } from '@Redux/pmtools/board/actions/checklist';
 import { selectChecklist } from '@Redux/pmtools/board/selectors';
 import { BoardTask } from '@Redux/pmtools/types';
-import React, { useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { IconButton } from '../StyledComponents';
 import CheckItem from './CheckItem';
 import ProgressBar from './ProgressBar';
@@ -59,7 +59,7 @@ interface Props {
   task: BoardTask;
 }
 
-const Checklist = ({ task }: Props) => {
+function Checklist({ task }: Props) {
   const [addingItem, setAddingItem] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const dispatch = useDispatch();
@@ -68,9 +68,10 @@ const Checklist = ({ task }: Props) => {
 
   const [value, setValue] = useState('');
 
-  const handleSetAddingItem = useCallback((adding: boolean) => {
-    return () => setAddingItem(adding);
-  }, []);
+  const handleSetAddingItem = useCallback(
+    (adding: boolean) => () => setAddingItem(adding),
+    [],
+  );
 
   const handleDeleteChecklist = useCallback(() => {
     dispatch(requestDeleteChecklist(task));
@@ -93,7 +94,7 @@ const Checklist = ({ task }: Props) => {
   const handleEnterAddItem = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
-        handleAddItem();
+        if (value) handleAddItem();
       }
     },
     [value, task, setAddingItem, handleAddItem],
@@ -106,11 +107,11 @@ const Checklist = ({ task }: Props) => {
     [setValue],
   );
 
-  const progress = useMemo(() => {
-    return (
-      (checklist.filter((c) => c.status === 1).length * 100) / checklist.length
-    );
-  }, [checklist]);
+  const progress = useMemo(
+    () =>
+      (checklist.filter((c) => c.status === 1).length * 100) / checklist.length,
+    [checklist],
+  );
 
   const checklistMemonized = useMemo(() => {
     const updatedList = [...checklist];
@@ -192,6 +193,6 @@ const Checklist = ({ task }: Props) => {
       />
     </div>
   );
-};
+}
 
 export default React.memo(Checklist);

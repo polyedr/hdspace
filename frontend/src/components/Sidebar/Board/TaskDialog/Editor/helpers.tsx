@@ -2,11 +2,11 @@
 import { Editor, Transforms, Element as SlateElement, Text } from 'slate';
 import { LIST_TYPES, TEXT_ALIGN_TYPES } from './constants';
 
-export type MentionElement = {
+export interface MentionElement {
   type: 'mention';
   character: string;
   children: Text[];
-};
+}
 
 export const insertMention = (editor, character) => {
   const mention: MentionElement = {
@@ -87,13 +87,11 @@ export const toggleMark = (editor, format) => {
 export const withMentions = (editor) => {
   const { isInline, isVoid } = editor;
 
-  editor.isInline = (element) => {
-    return element.type === 'mention' ? true : isInline(element);
-  };
+  editor.isInline = (element) =>
+    element.type === 'mention' ? true : isInline(element);
 
-  editor.isVoid = (element) => {
-    return element.type === 'mention' ? true : isVoid(element);
-  };
+  editor.isVoid = (element) =>
+    element.type === 'mention' ? true : isVoid(element);
 
   return editor;
 };

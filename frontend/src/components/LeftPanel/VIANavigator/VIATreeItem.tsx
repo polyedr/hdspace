@@ -1,12 +1,13 @@
 import { RenderItemParams } from '@atlaskit/tree';
-import { makeStyles, lighten } from '@material-ui/core/styles';
-import { setActiveVIARegion } from '@Redux/project/actions';
-import { selectIsRegionActive } from '@Redux/project/selectors/via';
+import { makeStyles } from '@mui/styles';
+import { lighten, Theme } from '@mui/material';
 import cn from 'classnames';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectIsRegionActive } from '@Redux/project/selectors/via';
+import { setActiveVIARegion } from '@Redux/project/actions';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
   root: {
     cursor: 'pointer',
     '&:hover': {

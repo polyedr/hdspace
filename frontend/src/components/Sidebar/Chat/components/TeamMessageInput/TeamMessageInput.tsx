@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback, useContext, useState } from 'react';
 import { ImageDropzone } from 'react-file-utils';
 import {
@@ -26,7 +27,6 @@ import {
   SmileyFace,
   StrikeThroughIcon,
 } from '../../assets';
-
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -81,7 +81,8 @@ export const TeamMessageInput: React.FC<Props> = (props) => {
 
   const getPlaceholder = () => {
     if (channel.type === 'team') {
-      return `#${channel?.data?.name || channel?.data?.id || 'random'}`;
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
+      return `#${(channel?.data?.name ?? channel?.data?.id) || 'random'}`;
     }
 
     const members = Object.values(channel.state.members).filter(
@@ -166,12 +167,14 @@ export const TeamMessageInput: React.FC<Props> = (props) => {
     ],
   );
 
-  const GiphyIcon = () => (
-    <div className="giphy-icon__wrapper">
-      <LightningBoltSmall />
-      <p className="giphy-icon__text">GIPHY</p>
-    </div>
-  );
+  function GiphyIcon() {
+    return (
+      <div className="giphy-icon__wrapper">
+        <LightningBoltSmall />
+        <p className="giphy-icon__text">GIPHY</p>
+      </div>
+    );
+  }
 
   return (
     <div

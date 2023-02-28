@@ -1,5 +1,6 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, select, call } from 'redux-saga/effects';
+import { vi } from 'vitest';
 import { getProjectListSaga } from '@Redux/project/sagas/project';
 import * as Actions from '@Redux/project/actions';
 import {
@@ -14,7 +15,6 @@ import { beforeSagaTest } from '../../test-utils';
 
 describe('getProjectListSaga Test', () => {
   describe('WHEN method is called and API is in its working state', () => {
-    // @ts-ignore
     const it = sagaHelper(getProjectListSaga());
 
     it('should set projects list loader flag to true', (result) => {
@@ -67,9 +67,8 @@ describe('getProjectListSaga Test', () => {
 
     // reset all stubs
     afterAll(() => {
-      jest.restoreAllMocks();
+      vi.restoreAllMocks();
     });
-    // @ts-ignore
     const it = sagaHelper(getProjectListSaga());
 
     it('should set projects list loader flag to true', (result) => {

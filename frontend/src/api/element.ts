@@ -1,10 +1,4 @@
 import { AxiosResponse } from 'axios';
-import {
-  convertElementFromResponse,
-  convertNNElementFromResponse,
-  convertNNScreenFromResponse,
-  convertRecursiveElementFromResponse,
-} from './converters/fromResponse';
 import { myAxios } from '../config/settings';
 import {
   Entity,
@@ -17,15 +11,21 @@ import {
   Screen,
   ServerElement,
 } from '../types';
+import {
+  convertElementFromResponse,
+  convertNNElementFromResponse,
+  convertNNScreenFromResponse,
+  convertRecursiveElementFromResponse,
+} from './converters/fromResponse';
 import { handleError, onError, parseResult } from './helper';
 
-export const apiGetElements = ({
+export const apiGetElements = async ({
   scenariosIDs,
   ...props
 }: MyAxiosProps & { scenariosIDs: string[] }): Promise<
-  Result<ServerElement<any>[]>
+  Result<Array<ServerElement<any>>>
 > =>
-  myAxios({
+  await myAxios({
     ...props,
     params: {
       scenariosIds: scenariosIDs?.join(','),
@@ -45,10 +45,10 @@ export const apiGetElements = ({
     })
     .catch(handleError);
 
-export const apiGetCustomLibraryElements = (
+export const apiGetCustomLibraryElements = async (
   props: MyAxiosProps,
-): Promise<Result<PaginatedResponse<LibraryElement<Entity>>>> => {
-  return myAxios({
+): Promise<Result<PaginatedResponse<LibraryElement<Entity>>>> =>
+  await myAxios({
     ...props,
     method: 'GET',
     params: {
@@ -57,35 +57,34 @@ export const apiGetCustomLibraryElements = (
     },
     url: props.url || '/projects/scenario-elements/',
   })
-    .then((res: AxiosResponse<ServerElement<Entity>[]>) => {
+    .then((res: AxiosResponse<Array<ServerElement<Entity>>>) =>
       // pagination will be needed in the future
       // const { next, previous, results } = res.data;
-      return {
+      ({
         result: {
           next: /* parseCursor(next) */ null,
           previous: /* parseCursor(previous) */ null,
           results: res.data.map((result) => convertElementFromResponse(result)),
         },
-      };
-    })
+      }),
+    )
     .catch(handleError);
-};
 
-export const apiCreateElement = (
+export const apiCreateElement = async (
   props: Partial<MyAxiosProps & ServerElement<any>>,
 ): Promise<Result<LibraryElement<any>>> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'POST',
-    url: `/projects/scenario-elements/`,
+    url: '/projects/scenario-elements/',
   })
     .then((result) => ({ result: convertElementFromResponse(result.data) }))
     .catch(handleError);
 
-export const apiChangeRecursiveElement = (
+export const apiChangeRecursiveElement = async (
   props: MyAxiosProps & { id: number },
 ): Promise<Result<RecursiveElement>> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'PATCH',
     url: `/projects/scenario-elements-recursive/${props.id}/`,
@@ -95,11 +94,11 @@ export const apiChangeRecursiveElement = (
     }))
     .catch(handleError);
 
-export const apiChangeRecursiveMultipleElements = (
+export const apiChangeRecursiveMultipleElements = async (
   props: MyAxiosProps & { elements: RecursiveServerElement[] },
 ): Promise<Result<RecursiveElement[]>> => {
   const { elements, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     method: 'PATCH',
     url: '/projects/scenario-elements-multiple-recursive/',
@@ -113,7 +112,7 @@ export const apiChangeRecursiveMultipleElements = (
     .catch(handleError);
 };
 
-export const apiGetElement = <
+export const apiGetElement = async <
   T extends Entity,
   K extends Entity,
   P extends ServerElement<T>['parameters'],
@@ -121,9 +120,9 @@ export const apiGetElement = <
   id,
   ...props
 }: MyAxiosProps & { id: string }): Promise<
-  LibraryElement<T, LibraryElement<K>[], P>
+  LibraryElement<T, Array<LibraryElement<K>>, P>
 > =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'GET',
     url: `/projects/scenario-elements/${id}/`,
@@ -131,8 +130,10 @@ export const apiGetElement = <
     .then((result) => convertElementFromResponse(result.data))
     .catch(onError);
 
-export const apiDelElements = (props: MyAxiosProps & { list: string[] }) =>
-  myAxios({
+export const apiDelElements = async (
+  props: MyAxiosProps & { list: string[] },
+) =>
+  await myAxios({
     ...props,
     method: 'DELETE',
     url: `/projects/scenario-elements-multi/?ids=${props.list}`,
@@ -140,10 +141,10 @@ export const apiDelElements = (props: MyAxiosProps & { list: string[] }) =>
     .then(parseResult)
     .catch(onError);
 
-export const apiUpdateElements = (
+export const apiUpdateElements = async (
   props: MyAxiosProps,
-): Promise<Result<ServerElement<any>[]>> =>
-  myAxios({
+): Promise<Result<Array<ServerElement<any>>>> =>
+  await myAxios({
     ...props,
     method: 'PATCH',
     url: 'projects/scenario-elements-multi/',
@@ -153,8 +154,8 @@ export const apiUpdateElements = (
     }))
     .catch(handleError);
 
-export const apiDelElement = (props: MyAxiosProps & { id: string }) =>
-  myAxios({
+export const apiDelElement = async (props: MyAxiosProps & { id: string }) =>
+  await myAxios({
     ...props,
     method: 'DELETE',
     url: `/projects/scenario-elements/${props.id}`,
@@ -162,14 +163,10 @@ export const apiDelElement = (props: MyAxiosProps & { id: string }) =>
     .then(parseResult)
     .catch(onError);
 
-export const apiUpdateElement = <
-  T extends Entity,
-  K extends Entity,
-  P extends ServerElement<T>['parameters'],
->(
+export const apiUpdateElement = async (
   props: MyAxiosProps & { id: string },
 ): Promise<Result<LibraryElement<any>>> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'PATCH',
     url: `/projects/scenario-elements/${props.id}/`,
@@ -179,14 +176,14 @@ export const apiUpdateElement = <
     }))
     .catch(handleError);
 
-export const apiCreateElements = <
+export const apiCreateElements = async <
   T extends Entity,
   K extends Entity,
   P extends ServerElement<T>['parameters'],
 >(
   props: MyAxiosProps,
-): Promise<Result<LibraryElement<T, LibraryElement<K>[], P>[]>> =>
-  myAxios({
+): Promise<Result<Array<LibraryElement<T, Array<LibraryElement<K>>, P>>>> =>
+  await myAxios({
     ...props,
     method: 'POST',
     url: '/projects/scenario-elements-multiple/',
@@ -198,11 +195,11 @@ export const apiCreateElements = <
     }))
     .catch(handleError);
 
-export const uploadImageForNN = ({
+export const uploadImageForNN = async ({
   screenID,
   ...props
 }: MyAxiosProps & { screenID: string }) =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'PATCH',
     url: `/projects/project-screens/${screenID}/`,
@@ -210,22 +207,22 @@ export const uploadImageForNN = ({
     .then(parseResult)
     .catch(onError);
 
-export const parseImgUsingNN = ({
+export const parseImgUsingNN = async ({
   screenID,
   ...props
 }: MyAxiosProps & { screenID: string }) =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'POST',
-    url: `/virtualize_simple/virtualize-simple/`,
+    url: '/virtualize_simple/virtualize-simple/',
   })
     .then((res) => ({ result: convertNNElementFromResponse(res.data) }))
     .catch(handleError);
 
-export const recognizeImgUsingNN = (
+export const recognizeImgUsingNN = async (
   props: MyAxiosProps,
 ): Promise<Result<Screen>> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'POST',
     url: '/virtualize_simple/recognize/',
@@ -233,10 +230,10 @@ export const recognizeImgUsingNN = (
     .then((res) => ({ result: convertNNScreenFromResponse(res.data) }))
     .catch(handleError);
 
-export const assembleImgUsingNN = (
+export const assembleImgUsingNN = async (
   props: MyAxiosProps,
 ): Promise<Result<LibraryElement<any>>> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'POST',
     url: '/virtualize_simple/assemble/',

@@ -1,25 +1,51 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  selectLayout,
-  selectScreenRotated,
-} from '@Redux/project/selectors/base';
-import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import Scrollbars from 'react-custom-scrollbars';
+import { makeStyles } from '@mui/styles';
+import _GridLines from 'react-gridlines';
+import TreeCanvas from '@Components/Editor/TreeCanvas';
+import MasterScreen from '@Components/Editor/MasterScreen';
+import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import {
   selectMasterScreenEnabled,
   selectFreeCanvasMode,
 } from '@Redux/project/selectors/screen';
-import { FrameWrapper } from '@Components/Editor/FrameWrapper';
-import MasterScreen from '@Components/Editor/MasterScreen';
-import TreeCanvas from '@Components/Editor/TreeCanvas';
-import Scrollbars from 'react-custom-scrollbars';
-import { makeStyles } from '@material-ui/core/styles';
-import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import {
+  selectLayout,
+  selectScreenRotated,
+  selectShowingGrid,
+} from '@Redux/project/selectors/base';
+import ELEMENT_IDS from '@Constants/elementIds';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
+import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import { DOMHandler } from './DOMHandler';
+import HoverInterations from './ElementsInteractions/HoverInterations';
+
+const GridLines = _GridLines.default ? _GridLines.default : _GridLines;
+
+const WrapInGridLine: React.FC<{ wrap: boolean }> = ({ wrap, children }) => {
+  const props = wrap
+    ? { backgroundColor: 'white' }
+    : { style: { background: 'white' } };
+
+  return (
+    <div style={{ backgroundColor: 'white' }}>
+      <GridLines
+        className="grid-area"
+        {...props}
+        cellWidth={60}
+        strokeWidth={2}
+        cellWidth2={12}
+      >
+        {children}
+      </GridLines>
+    </div>
+  );
+};
 
 const useStyles = makeStyles({
   workspace: {
@@ -80,23 +106,52 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   elementId?: string;
-};
+}
 
 const Workspace: React.FC<Props> = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
 
+  const [scrollbarRef, setScrollbarRef] = useState<Scrollbars | null>(null);
+
   const format = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+  const showGrid = useSelector(selectShowingGrid);
 
   const classes = useStyles(rotated);
   const ref = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<Scrollbars | null>(null);
 
   const [scrollLeft, setScrollLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (scrollbarRef && params.has('moveToElement')) {
+      const canvas = document.getElementById(
+        ELEMENT_IDS.canvas,
+      ) as HTMLIFrameElement;
+
+      canvas.onload = () => {
+        const innerDoc =
+          canvas.contentDocument || canvas.contentWindow?.document;
+        const element = innerDoc?.getElementById(
+          params.get('moveToElement') || '',
+        );
+
+        if (element) {
+          element?.scrollIntoView({
+            block: 'center',
+            inline: 'nearest',
+            behavior: 'smooth',
+          });
+        }
+      };
+    }
+  }, [scrollbarRef]);
 
   return (
     <div className={classes.workspace} ref={ref}>
@@ -109,31 +164,34 @@ const Workspace: React.FC<Props> = () => {
                   if (!scrollbars) {
                     return;
                   }
+                  setScrollbarRef(scrollbars);
                   scrollRef.current = scrollbars;
                   DOMHandler.INSTANCE.watch(scrollbars.view);
                 }}
                 autoHeightMin="100%"
-                onScroll={({ srcElement }) => {
-                  setScrollLeft(srcElement.scrollLeft);
+                onScroll={(event) => {
+                  setScrollLeft(event.currentTarget.scrollLeft);
                 }}
               >
-                {freeCanvasMode ? (
-                  <FreeCanvas />
-                ) : (
-                  <>
-                    {masterScreenEnabled ? (
-                      <MasterScreen scrollRef={scrollRef} />
-                    ) : (
-                      <TreeCanvas scrollRef={scrollRef} />
-                    )}
-                  </>
-                )}
+                <WrapInGridLine wrap={showGrid}>
+                  {freeCanvasMode ? (
+                    <FreeCanvas />
+                  ) : (
+                    <>
+                      {masterScreenEnabled ? (
+                        <MasterScreen scrollRef={scrollRef} />
+                      ) : (
+                        <TreeCanvas scrollRef={scrollRef} />
+                      )}
+                    </>
+                  )}
+                </WrapInGridLine>
                 {!freeCanvasMode && !isPrototypeMode && (
                   <ElementsInteractions posRight={scrollLeft} />
                 )}
+                {isPrototypeMode && <HoverInterations />}
               </Scrollbar>
             </EditorViewport>
-
             <NNProcessingModal />
           </FrameWrapper>
         </div>

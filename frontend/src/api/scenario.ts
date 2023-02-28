@@ -2,11 +2,11 @@ import { myAxios } from '../config/settings';
 import { ScenarioItem, MyAxiosProps, Result } from '../types';
 import { handleError, onError, parseResult } from './helper';
 
-export const apiGetScenarios = ({
+export const apiGetScenarios = async ({
   screenID,
   ...props
 }: MyAxiosProps & { screenID: string }): Promise<ScenarioItem[]> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'GET',
     url: `/projects/screen-scenarios${
@@ -16,10 +16,10 @@ export const apiGetScenarios = ({
     .then(parseResult)
     .catch(onError);
 
-export const apiCreateScenarios = (
+export const apiCreateScenarios = async (
   props: MyAxiosProps,
 ): Promise<Result<ScenarioItem[]>> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'POST',
     url: '/projects/screen-scenarios-multiple/',
@@ -29,10 +29,10 @@ export const apiCreateScenarios = (
     }))
     .catch(handleError);
 
-export const apiUpdateScenarios = (
+export const apiUpdateScenarios = async (
   props: MyAxiosProps,
 ): Promise<Result<ScenarioItem[]>> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'PATCH',
     url: '/projects/screen-scenarios-multiple/',

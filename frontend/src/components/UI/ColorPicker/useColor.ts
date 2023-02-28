@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 
-type Color = {
+interface Color {
   value: string;
   isValid: boolean;
-};
+}
 
 const useColor = (
   defaultColor: string,

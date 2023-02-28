@@ -1,5 +1,6 @@
 import { takeLatest, call, put, takeEvery, select } from 'redux-saga/effects';
 import { FORM_ERROR } from 'final-form';
+import _ from 'lodash';
 import {
   convertProfileDataFromResponse,
   convertUserDataFromResponse,
@@ -31,16 +32,12 @@ import {
   UserSubscriptionsData,
 } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import {
-  sidebarLogout,
-  updateUISettingsParameters,
-} from '@Redux/project/actions';
-import _ from 'lodash';
+import { updateUISettingsParameters } from '@Redux/project/actions';
 import { USERNAME_VIEW, PASSWORD_VIEW } from '@Constants/defaultParams';
 import TYPES from '../actionTypes';
-import * as Actions from './actions';
 import { reqWrapper } from '../project/sagas/shared';
 import { openProjects, openSignScreen } from '../history';
+import * as Actions from './actions';
 import { loginComplete } from './actions';
 import { selectProfileData, selectUserData } from './selectors';
 
@@ -142,11 +139,6 @@ export function* loginSaga({
 
 export function* logoutSaga() {
   try {
-    yield put(sidebarLogout());
-
-    // logout chat Zulip
-    localStorage.removeItem('login');
-
     yield put(Actions.logout());
     openSignScreen('signin');
   } catch (e: any) {
@@ -354,7 +346,6 @@ function* sendResetPasswordMailSaga(
 
     openSignScreen('signin');
   } catch (e) {
-    // @ts-ignore
     yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));

@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import AddIcon from '@material-ui/icons/Add';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import { addChildToElement } from '@Redux/project/actions';
-import { selectActiveItemChildren } from '@Redux/project/selectors/element';
-import {
-  selectCurrentScreenId,
-  selectScreensWithoutMaster,
-} from '@Redux/project/selectors/screen';
+import AddIcon from '@mui/icons-material/Add';
+import { makeStyles } from '@mui/styles';
 import {
   IconButton,
   Checkbox,
   MenuItem,
   FormControlLabel,
   FormLabel,
-} from '@material-ui/core';
+  lighten,
+  Theme,
+} from '@mui/material';
 import { useDebouncedCallback } from 'use-debounce';
+import { addChildToElement } from '@Redux/project/actions';
+import { selectActiveItemChildren } from '@Redux/project/selectors/element';
+import {
+  selectCurrentScreenId,
+  selectScreensWithoutMaster,
+} from '@Redux/project/selectors/screen';
 import {
   StyledTextField,
   StyledAccordionDetails,
@@ -24,7 +26,7 @@ import {
 } from '@Components/styledComponents';
 import NavbarItem from './NavbarItem';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
   row: {
     display: 'flex',
     justifyContent: 'flex-start',
@@ -53,11 +55,11 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   updateParams: any;
   element: any;
   canEdit: boolean;
-};
+}
 
 const NavbarItems: React.FC<Props> = ({ updateParams, element, canEdit }) => {
   const {

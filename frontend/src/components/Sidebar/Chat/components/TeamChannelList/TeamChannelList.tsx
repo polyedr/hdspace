@@ -2,12 +2,12 @@ import React from 'react';
 
 import './TeamChannelList.css';
 
-import type { ChannelListMessengerProps } from 'stream-chat-react';
 import { useSelector } from 'react-redux';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { selectUserData } from '@Redux/user/selectors';
 import Scrollbar from '@Components/UI/Scrollbar';
 import { AddChannel } from '../../assets';
+import type { ChannelListMessengerProps } from 'stream-chat-react';
 
 export type TeamChannelListProps = ChannelListMessengerProps & {
   setCreateType: React.Dispatch<React.SetStateAction<string>>;

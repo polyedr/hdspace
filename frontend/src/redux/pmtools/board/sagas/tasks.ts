@@ -1,7 +1,7 @@
-import { BoardColumn } from '@Redux/pmtools/types';
-import * as tasksApi from '@Api/pmtools/board/tasksApi';
 import { call } from 'ramda';
 import { put, select } from 'redux-saga/effects';
+import { BoardColumn } from '@Redux/pmtools/types';
+import * as tasksApi from '@Api/pmtools/board/tasksApi';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import * as taskActions from '../actions/tasks';
@@ -132,6 +132,31 @@ export function* createTaskSaga({
     });
 
     yield put(taskActions.addTask(task));
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
+  }
+}
+
+export function* deleteTaskSaga({
+  task,
+}: ReturnType<typeof taskActions.deleteTask>) {
+  const { id } = task;
+  try {
+    yield call(reqWrapper, tasksApi.deleteTask, {
+      taskId: id,
+    });
+
+    yield put(taskActions.removeTask(task));
   } catch (e) {
     if (e instanceof Error) {
       yield put(

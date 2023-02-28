@@ -2,9 +2,9 @@ import produce from 'immer';
 import { PermissionsState } from '@Redux/types';
 import { arrayToMap } from '@Utils/normalizedStateHelpers';
 import { PermissionsUserData } from '@Src/types';
+import TYPES from '../actionTypes';
 import { PermissionsAction } from './types';
 import initialPermissionsState from './initial';
-import TYPES from '../actionTypes';
 
 export default produce(
   // eslint-disable-next-line consistent-return

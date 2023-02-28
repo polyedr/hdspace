@@ -1,5 +1,8 @@
 import React, { useCallback, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Scrollbars from 'react-custom-scrollbars';
+import { Divider } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import RENDERERS from '@Components/UI/RenderElements';
 import {
   selectElementByIdWrapper,
@@ -9,16 +12,13 @@ import {
 } from '@Redux/project/selectors/element';
 import prevent from '@Utils/preventEvent';
 import { setActiveElement, setHoveredElementId } from '@Redux/project/actions';
-import Scrollbars from 'react-custom-scrollbars';
-import { Divider } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { DropTargetParams, Normalized, StateElement } from '@Src/types';
 import { selectMasterScreenId } from '@Redux/project/selectors/screen';
 import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import DraggableElement from '../Draggable/DraggableElement';
 
-type Props = {
+interface Props {
   allElements: Normalized<StateElement>;
   isDisabled: boolean;
   dropTargetParams: DropTargetParams | null;
@@ -30,7 +30,7 @@ type Props = {
   elementId: string;
   parentId?: string;
   scrollRef: React.RefObject<Scrollbars>;
-};
+}
 
 const useStyles = makeStyles({
   divider: {
@@ -72,11 +72,12 @@ const MasterElement: React.FC<Props> = (props: Props) => {
     [dispatch, elementId],
   );
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       DOMHandler.INSTANCE.removeElementDom(element.id);
-    };
-  }, [element.id]);
+    },
+    [element.id],
+  );
 
   if (!element) {
     return null;

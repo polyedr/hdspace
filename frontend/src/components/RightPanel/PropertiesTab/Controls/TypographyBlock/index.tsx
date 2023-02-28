@@ -5,6 +5,13 @@ import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
 import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
 import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
 import * as CSS from 'csstype';
+import { MenuItem } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { useSelector } from 'react-redux';
+import cn from 'classnames';
+import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
+import VerticalAlignCenterIcon from '@mui/icons-material/VerticalAlignCenter';
+import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop';
 import { getPermissibleValue } from '@Utils/NumberHelper';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import FONTS from '@Constants/fonts';
@@ -14,15 +21,8 @@ import {
   StyledToggleButtonGroup,
 } from '@Components/styledComponents';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
-import { MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { useSelector } from 'react-redux';
 import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
 import FONT_WEIGHT from '@Constants/fontWeight';
-import cn from 'classnames';
-import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
-import VerticalAlignCenterIcon from '@mui/icons-material/VerticalAlignCenter';
-import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
@@ -34,7 +34,7 @@ const MAX_LINE_HEIGHT = 1000;
 
 const useStyles = makeStyles({
   rootContainer: {
-    padding: '0 16px',
+    // padding: '0 16px',
   },
   lineHeightAndLetterSpacing: {
     display: 'flex',
@@ -61,12 +61,13 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
   styleText: {
-    fontSize: '16px',
-    color: 'rgba(129, 129, 142, 1)',
-    paddingBottom: '2px',
+    fontSize: '14px',
+    // color: 'rgba(129, 129, 142, 1)',
+    // paddingBottom: '2px',
+    // marginRight: 30,
   },
 });
 
@@ -239,7 +240,7 @@ const TypographyBlock: React.FC<Props> = ({
         <div className={classes.wrapper}>
           <StyledTextField
             className={classes.fontWeightControl}
-            style={isDefaultStyles ? { width: '100px' } : {}}
+            style={isDefaultStyles ? { width: 'calc(50% - 10px)' } : {}}
             fullWidth
             margin="dense"
             value={
@@ -260,6 +261,7 @@ const TypographyBlock: React.FC<Props> = ({
 
           <StyledTextField
             className={classes.text}
+            style={isDefaultStyles ? { width: 'calc(50% - 10px)' } : {}}
             margin="dense"
             type="number"
             value={fontSizeState ? parseInt(fontSizeState.toString()) : 0}
@@ -271,7 +273,7 @@ const TypographyBlock: React.FC<Props> = ({
               );
             }}
             disabled={!canEdit}
-            style={isDefaultStyles ? { marginRight: '10%' } : {}}
+            // style={isDefaultStyles ? { marginRight: '10%' } : {}}
           />
         </div>
 
@@ -343,43 +345,7 @@ const TypographyBlock: React.FC<Props> = ({
             disabled={!canEdit}
           />
         </div>
-        <div className={classes.align}>
-          <div className={classes.styleText}>Align</div>
-          <div
-            className={classes.wrapper}
-            style={isDefaultStyles ? { justifyContent: 'flex-start' } : {}}
-          >
-            <div>
-              <StyledToggleButtonGroup
-                value={
-                  (isDefaultStyles && defaultStyles?.typography?.textAlign) ||
-                  textAlign
-                }
-                onChange={handleAlignmentChange}
-                exclusive
-                size="small"
-                style={isDefaultStyles ? { width: '20px', height: '20px' } : {}}
-              >
-                <StyledToggleButton value="left" disabled={!canEdit}>
-                  <FormatAlignLeftIcon fontSize="small" />
-                </StyledToggleButton>
-
-                <StyledToggleButton value="center" disabled={!canEdit}>
-                  <FormatAlignCenterIcon fontSize="small" />
-                </StyledToggleButton>
-
-                <StyledToggleButton value="justify" disabled={!canEdit}>
-                  <FormatAlignJustifyIcon fontSize="small" />
-                </StyledToggleButton>
-
-                <StyledToggleButton value="right" disabled={!canEdit}>
-                  <FormatAlignRightIcon fontSize="small" />
-                </StyledToggleButton>
-              </StyledToggleButtonGroup>
-            </div>
-          </div>
-        </div>
-        <div className={classes.align}>
+        <div className={classes.align} style={{ marginBottom: 12 }}>
           <div className={classes.styleText}>Style</div>
           <div
             className={classes.wrapper}
@@ -395,7 +361,7 @@ const TypographyBlock: React.FC<Props> = ({
                 onChange={handleVerticalAlignmentChange}
                 exclusive
                 size="small"
-                style={isDefaultStyles ? { width: '20px', height: '20px' } : {}}
+                style={isDefaultStyles ? { height: '30px' } : {}}
               >
                 <StyledToggleButton value="top" disabled={!canEdit}>
                   <VerticalAlignTopIcon fontSize="small" />
@@ -407,6 +373,42 @@ const TypographyBlock: React.FC<Props> = ({
 
                 <StyledToggleButton value="bottom" disabled={!canEdit}>
                   <VerticalAlignBottomIcon fontSize="small" />
+                </StyledToggleButton>
+              </StyledToggleButtonGroup>
+            </div>
+          </div>
+        </div>
+        <div className={classes.align}>
+          <div className={classes.styleText}>Align</div>
+          <div
+            className={classes.wrapper}
+            style={isDefaultStyles ? { justifyContent: 'flex-start' } : {}}
+          >
+            <div>
+              <StyledToggleButtonGroup
+                value={
+                  (isDefaultStyles && defaultStyles?.typography?.textAlign) ||
+                  textAlign
+                }
+                onChange={handleAlignmentChange}
+                exclusive
+                size="small"
+                style={isDefaultStyles ? { height: '30px' } : {}}
+              >
+                <StyledToggleButton value="left" disabled={!canEdit}>
+                  <FormatAlignLeftIcon fontSize="small" />
+                </StyledToggleButton>
+
+                <StyledToggleButton value="center" disabled={!canEdit}>
+                  <FormatAlignCenterIcon fontSize="small" />
+                </StyledToggleButton>
+
+                <StyledToggleButton value="justify" disabled={!canEdit}>
+                  <FormatAlignJustifyIcon fontSize="small" />
+                </StyledToggleButton>
+
+                <StyledToggleButton value="right" disabled={!canEdit}>
+                  <FormatAlignRightIcon fontSize="small" />
                 </StyledToggleButton>
               </StyledToggleButtonGroup>
             </div>

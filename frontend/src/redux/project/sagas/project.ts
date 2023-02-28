@@ -1,9 +1,9 @@
 import { put, call, select } from 'redux-saga/effects';
+import logger from 'loglevel';
 import {
   convertCreatedElementToRequest,
   convertCreatedProjectToRequest,
 } from '@Api/converters/toRequest';
-import generator from 'generate-password';
 import { setProjectError } from '@Redux/project/actions';
 import {
   apiCreateProject,
@@ -35,7 +35,6 @@ import { CORE_PREVIEW_LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryEl
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
 // import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
-import { apiCreateNewStreams } from '@Api/pmtools/chatApi';
 // import {
 //   apiGetBoard,
 //   createNewBoard,
@@ -44,16 +43,13 @@ import { apiCreateNewStreams } from '@Api/pmtools/chatApi';
 //   getAddUserToBoard,
 //   getUserByEmail,
 // } from '@Api/pmtools/board/boardApi';
-import logger from 'loglevel';
 import { setStateCurrentUserPermissions } from '@Redux/permissions/actions';
 import { apiGetUser } from '@Api/user';
 import { setUserData, setTokenPair } from '@Redux/user/actions';
 import { convertUserDataFromResponse } from '@Api/converters/fromResponse';
 import { enqueueSnackbar } from '../../notification/actions';
-import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
 import * as PermissionsActions from '../../permissions/actions';
-import { createScreenSaga, getScreensSaga } from './screen';
 import {
   selectCurrentProject,
   selectCurrentUIFramework,
@@ -68,6 +64,8 @@ import {
   selectScreenById,
 } from '../selectors/screen';
 import { selectElementAsTree, selectElementById } from '../selectors/element';
+import { createScreenSaga, getScreensSaga } from './screen';
+import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import { createElements } from './common';
 
 export function* setMasterScreenCoreElements(screen: Screen) {
@@ -231,10 +229,6 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       },
     );
 
-    // if (result?.projectTrelloJSON) {
-    //   yield put(successSavedBoard(result.projectTrelloJSON));
-    // }
-
     if (result) {
       yield put(Actions.changeLayout(result?.projectData?.layout?.value));
       yield put(
@@ -251,11 +245,13 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
         yield call(getScreensSaga, result.projectscreen);
       }
 
+      yield put(Actions.fetchScreenFolders(id));
+
       yield put(Actions.setCurrentProjectId(result.id));
       yield put(Actions.setAssetLists(null));
       yield put(Actions.setSelectedAssetListId(null));
       const masterScreenId: number =
-        result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ||
+        result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ??
         -1;
       yield put(Actions.setMasterScreenId(masterScreenId));
 
@@ -296,7 +292,6 @@ export function* createProjectSaga(
       payload: { name },
     } = action;
 
-    const generateName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
 
     // const organization: IOrganization = yield call(
@@ -304,8 +299,6 @@ export function* createProjectSaga(
     //   `${generateName}-adevi-org`,
     // );
     // const board: IBoardForUI = yield call(createNewBoard, generateName);
-    yield call(apiCreateNewStreams, generateName);
-
     // const boardForUI: IBoardForUI = {
     //   organization,
     //   ...board,
@@ -322,9 +315,9 @@ export function* createProjectSaga(
       apiCreateProject,
       {
         data: convertCreatedProjectToRequest(name, {}),
-        // data: [],
       },
     );
+
     yield put(setProjectError(error));
     // yield put(successSavedBoard(boardForUI));
 
@@ -448,7 +441,7 @@ export function* deleteProjectSaga({
       yield put(Actions.setProjectList(newProjectList));
       yield put(
         enqueueSnackbar({
-          message: `Project deleted`,
+          message: 'Project deleted',
           options: {
             variant: 'success',
           },

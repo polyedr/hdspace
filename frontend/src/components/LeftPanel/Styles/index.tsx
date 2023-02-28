@@ -1,17 +1,9 @@
-import {
-  StyledAccordion,
-  StyledAccordionDetails,
-  StyledAccordionSummary,
-} from '@Components/styledComponents';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, { useCallback } from 'react';
-import ELEMENT_IDS from '@Constants/elementIds';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { useDispatch, useSelector } from 'react-redux';
 import ControlSection from '@Components/RightPanel/PropertiesTab/helperComponents/ControlSection';
 import sectionTitleEnum from '@Components/LeftPanel/Styles/Enums/sectionTitle';
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElement,
   selectCurrentEditableStyles,
@@ -31,37 +23,10 @@ import StyleGenerator from '@Components/LeftPanel/Styles/components/StyleGenerat
 import ColorScheme from '@Components/LeftPanel/Styles/components/ColorScheme';
 import CONTROLS_CLASSES from '@Components/LeftPanel/Styles/controlClasses';
 
-const useStyles = makeStyles(({ palette, typography }) => ({
-  name: {
-    fontSize: typography.fontSize,
-  },
-  button: {
-    color: palette.common.white,
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
-    },
-  },
-  list: {
-    width: '100%',
-    padding: 0,
-    overflowX: 'hidden',
-  },
-  details: {
-    display: 'flex',
-    bottom: 0,
-    flexDirection: 'column',
-  },
-  blockTitle: {
-    backgroundColor: palette.panel.main,
-    paddingLeft: 3,
-  },
-}));
-
 const SECTION_CONTROLS = ['indents', 'typography', 'headingType', 'border'];
 
-const Styles = () => {
+function Styles() {
   const dispatch = useDispatch();
-  const classes = useStyles();
 
   const activeElement = useSelector(selectActiveElement);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
@@ -103,41 +68,34 @@ const Styles = () => {
 
   return (
     <>
-      <StyledAccordion id={ELEMENT_IDS.styles}>
-        <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <span>Styles</span>
-        </StyledAccordionSummary>
-        <StyledAccordionDetails className={classes.details}>
-          <ControlSection title={sectionTitleEnum.STYLE_GENERATOR} expanded>
-            <StyleGenerator />
-          </ControlSection>
-          {SECTION_CONTROLS.map((controlName) => {
-            const controlInfo = CONTROLS[controlName];
-            const { Control } = controlInfo;
+      <ControlSection title={sectionTitleEnum.STYLE_GENERATOR} expanded>
+        <StyleGenerator />
+      </ControlSection>
+      {SECTION_CONTROLS.map((controlName) => {
+        const controlInfo = CONTROLS[controlName];
+        const { Control } = controlInfo;
 
-            return (
-              <ControlSection title={controlName} key={controlName} expanded>
-                <Control
-                  {...getControlStyles(controlName, currentEditableStyles)}
-                  canEdit={canEdit}
-                  activeElementId={activeElement.id}
-                  element={activeElement}
-                  updateStyles={(styles) => updateStyles(styles, controlName)}
-                  masterScreenEnabled={masterScreenEnabled}
-                  editableStyles={editableStyles}
-                  updateParams={updateParams}
-                  isDefaultStyles
-                />
-              </ControlSection>
-            );
-          })}
-          <ControlSection title={sectionTitleEnum.COLOR_SCHEME} expanded>
-            <ColorScheme />
+        return (
+          <ControlSection title={controlName} key={controlName} expanded>
+            <Control
+              {...getControlStyles(controlName, currentEditableStyles)}
+              canEdit={canEdit}
+              activeElementId={activeElement.id}
+              element={activeElement}
+              updateStyles={(styles) => updateStyles(styles, controlName)}
+              masterScreenEnabled={masterScreenEnabled}
+              editableStyles={editableStyles}
+              updateParams={updateParams}
+              isDefaultStyles
+            />
           </ControlSection>
-        </StyledAccordionDetails>
-      </StyledAccordion>
+        );
+      })}
+      <ControlSection title={sectionTitleEnum.COLOR_SCHEME} expanded>
+        <ColorScheme />
+      </ControlSection>
     </>
   );
-};
+}
 
 export default Styles;

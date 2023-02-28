@@ -18,8 +18,8 @@ import { withHistory } from 'slate-history';
 import { Grid, Divider } from '@mui/material';
 import { EditableProps } from 'slate-react/dist/components/editable';
 import { useSelector } from 'react-redux';
-import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import fuzzysort from 'fuzzysort';
+import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import {
   Toolbar,
   IconButton,
@@ -32,15 +32,15 @@ import {
 } from './Components';
 import { insertMention, withMentions } from './helpers';
 
-export const RenderEditorHtml = ({ nodes }: { nodes: Descendant[] }) => {
+export function RenderEditorHtml({ nodes }: { nodes: Descendant[] }) {
   return <>{nodes.map(serialize)}</>;
-};
+}
 
-export const Portal = ({ children }) => {
+export function Portal({ children }) {
   return typeof document === 'object'
     ? ReactDOM.createPortal(children, document.body)
     : null;
-};
+}
 
 const RichTextEditor = React.forwardRef(
   ({ onSubmit, onChange, value, ...props }: EditableProps, forwardRef) => {
@@ -92,17 +92,20 @@ const RichTextEditor = React.forwardRef(
       [onChange, editor],
     );
 
-    const users = useMemo(() => {
-      return Object.values(userPermissions).map((u) => u.userData);
-    }, [userPermissions]);
+    const users = useMemo(
+      () => Object.values(userPermissions).map((u) => u.userData),
+      [userPermissions],
+    );
 
-    const chars = useMemo(() => {
-      return fuzzysort
-        .go(search, users, {
-          keys: ['username', 'email', 'first_name', 'last_name'],
-        })
-        .map((r) => r.obj.username);
-    }, [search]);
+    const chars = useMemo(
+      () =>
+        fuzzysort
+          .go(search, users, {
+            keys: ['username', 'email', 'first_name', 'last_name'],
+          })
+          .map((r) => r.obj.username),
+      [search],
+    );
 
     const onKeyDown = useCallback(
       (event) => {

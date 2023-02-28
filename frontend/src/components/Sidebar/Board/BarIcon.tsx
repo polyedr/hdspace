@@ -1,6 +1,6 @@
 import { styled } from '@mui/material';
-import { PriorityOptions } from '@Redux/pmtools/types';
 import React, { useMemo } from 'react';
+import { PriorityOptions } from '@Redux/pmtools/types';
 
 const Container = styled('div')<{ size: number }>(({ size }) => ({
   display: 'flex',
@@ -33,10 +33,8 @@ interface Props {
   priority: PriorityOptions;
 }
 
-const BarIcon = ({ priority, size = 20 }: Props) => {
-  const bars = useMemo(() => {
-    return new Array(5).fill(1);
-  }, []);
+function BarIcon({ priority, size = 20 }: Props) {
+  const bars = useMemo(() => new Array(5).fill(1), []);
 
   const barCount = Object.values(PriorityOptions).indexOf(priority) + 1;
   const color = colors[priority];
@@ -44,10 +42,14 @@ const BarIcon = ({ priority, size = 20 }: Props) => {
   return (
     <Container size={size}>
       {bars.map((_, i) => (
-        <Bar color={6 - barCount > i ? color : '#dfdfdf'} size={i + 1} />
+        <Bar
+          key={i}
+          color={6 - barCount > i ? color : '#dfdfdf'}
+          size={i + 1}
+        />
       ))}
     </Container>
   );
-};
+}
 
 export default BarIcon;

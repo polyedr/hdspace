@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
-import { ElementClickEvent } from '@Src/types';
 import { useSelector } from 'react-redux';
+import { ElementClickEvent } from '@Src/types';
 import { selectScreenByIdWrapper } from '@Redux/project/selectors/screen';
 
-type Props = {
+interface Props {
   eventData: ElementClickEvent['data'];
-};
+}
 
 const ClickEventTitle: FC<Props> = ({
   eventData: { screenId, url, linkType },
@@ -16,7 +16,7 @@ const ClickEventTitle: FC<Props> = ({
 
   return (
     <div>
-      {`Click: to `}
+      {'Click: to '}
 
       {linkType === 'external' ? url : screen.name}
     </div>

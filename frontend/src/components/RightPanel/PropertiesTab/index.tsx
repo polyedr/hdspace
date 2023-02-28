@@ -1,6 +1,10 @@
 // @ts-nocheck
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import logger from 'loglevel';
+import ToggleButton from '@mui/material/ToggleButton';
+import { ToggleButtonGroup } from '@mui/material';
 import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';
 import {
   selectActiveElement,
@@ -43,14 +47,10 @@ import {
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { makeStyles } from '@material-ui/core/styles';
 
-import logger from 'loglevel';
-import ToggleButton from '@mui/material/ToggleButton';
-import { ToggleButtonGroup } from '@mui/material';
+import Scrollbar from '../../UI/Scrollbar';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
-import Scrollbar from '../../UI/Scrollbar';
 import ControlSection from './helperComponents/ControlSection';
 import PseudoSelectorsSection from './PseudoSelectorsSection';
 import ElementType from './Controls/ElementType/ElementType';
@@ -70,15 +70,14 @@ const useStyles = makeStyles({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
+    borderLeft: '1px solid #E4E6EB',
   },
-
   header: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '10px 16px',
   },
-
   toggleButtonsContainer: {
     width: '100%',
     display: 'flex',
@@ -89,6 +88,15 @@ const useStyles = makeStyles({
     fontWeight: 'bold',
     fontSize: '12px',
     letterSpacing: '145%',
+  },
+  rightEmptyPanel: {
+    color: '#fff',
+    height: '100%',
+    display: 'flex',
+    overflow: 'hidden',
+    transition: 'width 250ms ease',
+    flexDirection: 'column',
+    backgroundColor: '#fff',
   },
   toggleButton: {
     color: '#81818E',
@@ -149,8 +157,6 @@ const PropertiesTab: React.FC = () => {
     setEditedStyles(null);
   }, []);
 
-  useEffect(() => {});
-
   const handleConfirmSourceUnbinding = () => {
     if (!editedStyles) {
       logger.error('Edited styles is null!');
@@ -170,9 +176,13 @@ const PropertiesTab: React.FC = () => {
   const isGroupSource = !!activeElement.parameters.groupElements;
 
   const elementsControlsCollection = useMemo(() => {
-    return Object.keys(selectedElements).map((elementId) => {
-      return AVAILABLE_CONTROLS[selectedElements[elementId].type];
-    });
+    return Object.keys(selectedElements)
+      .map((elementId) =>
+        selectedElements[elementId]?.type
+          ? AVAILABLE_CONTROLS[selectedElements[elementId].type]
+          : null,
+      )
+      .filter((item) => item);
   }, [selectedElements, AVAILABLE_CONTROLS]);
 
   const SELECTION_CONTROLS = useMemo(() => {
@@ -180,13 +190,12 @@ const PropertiesTab: React.FC = () => {
       return [];
     }
     const elementsControls = elementsControlsCollection.reduce(
-      (controls, controlsList) => {
-        return controls.filter((control) => {
-          return (
-            controlsList.includes(control) && !UNIQUE_CONTROLS.includes(control)
-          );
-        });
-      },
+      (controls, controlsList) =>
+        controls.filter(
+          (control) =>
+            controlsList.includes(control) &&
+            !UNIQUE_CONTROLS.includes(control),
+        ),
     );
     return elementsControls;
   }, [elementsControlsCollection]);
@@ -442,16 +451,16 @@ const PropertiesTab: React.FC = () => {
     !activeElement ||
     [masterCoreElementId, masterGroupsElementId].includes(activeElement.id)
   ) {
-    return null;
+    return <div className={classes.rightEmptyPanel}></div>;
   }
 
   const collapseAll = () => {
     setIsAccordianExpanded(!isAccordianExpanded);
-    setTitle((state) => {
-      return state === CollapseTypes.EXPAND
+    setTitle((state) =>
+      state === CollapseTypes.EXPAND
         ? CollapseTypes.COLLAPSE
-        : CollapseTypes.EXPAND;
-    });
+        : CollapseTypes.EXPAND,
+    );
   };
 
   return (

@@ -1,14 +1,14 @@
 import React from 'react';
+import { MenuItem } from '@mui/material';
 import PositionSelector from '@Components/RightPanel/PropertiesTab/Controls/BackgroundBlock/PositionSelector';
 import { StyledTextField } from '@Components/styledComponents';
 import { particularPosition } from '@Components/RightPanel/PropertiesTab/Controls/Position/constants/constants';
-import { MenuItem } from '@mui/material';
 
-type Props = {
+interface Props {
   particularPositionState: string | number;
   disabled: boolean;
   handleParticularPositionChange: (value) => void;
-};
+}
 
 const ParticularPosition: React.FC<Props> = ({
   particularPositionState,

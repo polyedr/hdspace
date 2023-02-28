@@ -1,39 +1,39 @@
 import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline } from '@material-ui/core';
-import ChatProvider from '@Components/Sidebar/Chat/ChatProvider';
-
+import { CssBaseline } from '@mui/material';
+import { DndProvider } from 'react-dnd';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { SnackbarProvider } from 'notistack';
-import history from '../redux/history';
+import { BrowserRouter } from 'react-router-dom';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import ChatProvider from '@Components/Sidebar/Chat/ChatProvider';
+import history from '@/redux/history';
+import { AppThemeProvider } from '@/styles/Theme';
+import Notifier from '@/components/Notifier';
 import Routes from './Routes';
-import { theme, themeOld } from '../styles/Theme';
-import Notifier from '../components/Notifier';
 
-const App: React.FC = () => {
-  return (
+const App: React.FC = () => (
+  <DndProvider backend={HTML5Backend}>
     <SnackbarProvider
       maxSnack={10}
       anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
     >
-      <ConnectedRouter history={history}>
-        <MuiThemeProvider theme={themeOld}>
+      <BrowserRouter>
+        <ConnectedRouter history={history}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <ThemeProvider theme={theme}>
+            <AppThemeProvider>
               <CssBaseline />
               <ChatProvider>
                 <Routes />
               </ChatProvider>
               <Notifier />
-            </ThemeProvider>
+            </AppThemeProvider>
           </LocalizationProvider>
-        </MuiThemeProvider>
-      </ConnectedRouter>
+        </ConnectedRouter>
+      </BrowserRouter>
     </SnackbarProvider>
-  );
-};
+  </DndProvider>
+);
 
 export default App;

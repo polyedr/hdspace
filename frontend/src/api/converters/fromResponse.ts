@@ -49,9 +49,9 @@ export const convertElementFromResponse = <
   image,
   parameters,
   styles,
-}: ServerElement<T, ServerElement<K>[], P>): LibraryElement<
+}: ServerElement<T, Array<ServerElement<K>>, P>): LibraryElement<
   T,
-  LibraryElement<K>[],
+  Array<LibraryElement<K>>,
   P
 > => ({
   id: String(id),
@@ -61,6 +61,7 @@ export const convertElementFromResponse = <
     .sort(
       (firstChild, secondChild) => firstChild.buoyancy - secondChild.buoyancy,
     ),
+  // @ts-expect-error
   type: struct_type || 'container',
   buoyancy,
   image,
@@ -97,9 +98,9 @@ export const convertNNElementFromResponse = <
   image,
   parameters,
   styles,
-}: ServerElement<T, ServerElement<K>[], P>): LibraryElement<
+}: ServerElement<T, Array<ServerElement<K>>, P>): LibraryElement<
   T,
-  LibraryElement<K>[],
+  Array<LibraryElement<K>>,
   P
 > => ({
   id: String(id),
@@ -109,9 +110,11 @@ export const convertNNElementFromResponse = <
     .sort(
       (firstChild, secondChild) => firstChild.buoyancy - secondChild.buoyancy,
     ),
+  // @ts-expect-error
   type: struct_type || 'container',
   buoyancy,
   image,
+  // @ts-expect-error
   parameters: {
     ...defaultParameters,
     ...(parameters || {}),
@@ -202,12 +205,14 @@ export function convertProjectFromResponse({
     projectData: {
       ...projectDataJSON,
       classes:
-        projectDataJSON.classes?.map((cls: ProjectClass) => {
-          return {
-            ...cls,
-            rules: cssCamelize(cls.rules) as React.CSSProperties,
-          } as ProjectClass;
-        }) || [],
+        projectDataJSON.classes?.map(
+          (cls: ProjectClass) =>
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            ({
+              ...cls,
+              rules: cssCamelize(cls.rules),
+            } as ProjectClass),
+        ) || [],
       uiFramework: projectDataJSON.uiFramework || NOT_SELECTED_FRAMEWORK,
     },
   };
@@ -240,12 +245,14 @@ export function convertTemplatesFromResponse({
     marketplaceData: {
       ...projectDataJSON,
       classes:
-        projectDataJSON.classes?.map((cls: ProjectClass) => {
-          return {
-            ...cls,
-            rules: cssCamelize(cls.rules) as React.CSSProperties,
-          } as ProjectClass;
-        }) || [],
+        projectDataJSON.classes?.map(
+          (cls: ProjectClass) =>
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            ({
+              ...cls,
+              rules: cssCamelize(cls.rules),
+            } as ProjectClass),
+        ) || [],
       uiFramework: projectDataJSON.uiFramework || NOT_SELECTED_FRAMEWORK,
     },
   };
@@ -276,6 +283,7 @@ export function convertScreenFromResponse({
       uiFramework: screenDataJSON.uiFramework || NOT_SELECTED_FRAMEWORK,
       freeCanvas: screenDataJSON.freeCanvas,
       editableScreenUser: screenDataJSON.editableScreenUser || [],
+      wireframePosition: screenDataJSON?.wireframePosition || undefined,
     },
   };
 }
@@ -337,12 +345,14 @@ export function convertProjectWithScreensFromResponse({
     projectData: {
       ...projectDataJSON,
       classes:
-        projectDataJSON.classes?.map((cls: ProjectClass) => {
-          return {
-            ...cls,
-            rules: cssCamelize(cls.rules) as React.CSSProperties,
-          } as ProjectClass;
-        }) || [],
+        projectDataJSON.classes?.map(
+          (cls: ProjectClass) =>
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            ({
+              ...cls,
+              rules: cssCamelize(cls.rules),
+            } as ProjectClass),
+        ) || [],
     },
   };
 }

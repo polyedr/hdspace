@@ -1,11 +1,11 @@
 import React from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
+import cn from 'classnames';
+import { useSelector } from 'react-redux';
 import { makeComponentStyles } from '@Components/UI/RenderElements/styles';
 import { RendererProps } from '@Components/UI/RenderElements/types';
-import cn from 'classnames';
 import { selectElementsStyles } from '@Redux/project/selectors/element';
-import { useSelector } from 'react-redux';
 
 const useStyles = makeComponentStyles('imagesList', {
   imagesList: {
@@ -24,9 +24,9 @@ const ImagesList = React.forwardRef<HTMLDivElement, RendererProps>(
 
     const childrenStyles = useSelector(
       selectElementsStyles(
-        (childrenImages as React.ReactElement[])?.map((item) => {
-          return item.props.elementId;
-        }),
+        (childrenImages as React.ReactElement[])?.map(
+          (item) => item.props.elementId,
+        ),
       ),
     );
 
