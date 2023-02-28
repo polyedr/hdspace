@@ -19,6 +19,7 @@ interface Props {
   zoom: number;
   onDrag?: DraggableEventHandler;
   onStop?: DraggableEventHandler;
+  setRef: (key: string) => void | React.RefObject<unknown>;
 }
 
 const styles: SxProps = {
@@ -26,7 +27,13 @@ const styles: SxProps = {
   zIndex: 1,
 };
 
-const DraggableScreen: React.FC<Props> = ({ data, zoom, onDrag, onStop }) => {
+const DraggableScreen: React.FC<Props> = ({
+  data,
+  zoom,
+  onDrag,
+  onStop,
+  setRef,
+}) => {
   const { y, x } = data.position;
 
   const currentScreen = useSelector(selectCurrentWireframeScreen);
@@ -71,10 +78,18 @@ const DraggableScreen: React.FC<Props> = ({ data, zoom, onDrag, onStop }) => {
     >
       <Box
         sx={styles}
+        style={{
+          zIndex: currentScreen === data.id.toString() ? 3 : 1,
+        }}
         className="wireframe-screen-frame"
         id={`wireframe-screen-${data.id}`}
+        ref={setRef(`screen-${data.id}`) as React.RefObject<unknown>}
       >
-        <Screen data={data} active={currentScreen === data.id.toString()} />
+        <Screen
+          setRef={setRef}
+          data={data}
+          active={currentScreen === data.id.toString()}
+        />
       </Box>
     </Draggable>
   );

@@ -1812,7 +1812,7 @@ export interface IFrameMessage {
 export interface FrameworkLink {
   key: string;
   link: string;
-  crossOrigin?: string;
+  crossOrigin?: 'anonymous' | 'use-credentials';
   integrity?: string;
 }
 

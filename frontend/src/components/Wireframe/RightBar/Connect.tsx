@@ -42,7 +42,7 @@ const MuiAccordion = styled(Accordion)({
     transform: 'none',
   },
 
-  '&	.MuiAccordionDetails-root': {
+  '& .MuiAccordionDetails-root': {
     paddingTop: 0,
   },
 });

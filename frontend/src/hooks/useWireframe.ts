@@ -10,23 +10,34 @@ export const useWireframe = () => {
 
   const moveToScreen = useCallback((screenId: number) => {
     if (window.wireframeCanvas) {
-      const canvas = window.wireframeCanvas as ReactZoomPanPinchRef;
+      const frame = document.getElementById(
+        'wireframe-frame',
+      ) as HTMLIFrameElement;
 
-      const element = document.getElementById(`wireframe-screen-${screenId}`);
+      if (frame) {
+        const element = frame.contentDocument.getElementById(
+          `wireframe-screen-${screenId}`,
+        );
 
-      const matrix = new WebKitCSSMatrix(
-        window.getComputedStyle(element).transform,
-      );
+        const canvas = window.wireframeCanvas as ReactZoomPanPinchRef;
 
-      const viewport = document.querySelector('.react-transform-wrapper');
+        const matrix = new WebKitCSSMatrix(
+          window.getComputedStyle(element).transform,
+        );
 
-      canvas.setTransform(
-        ((matrix.m41 - viewport.clientWidth + element.clientWidth / 2) * -1) /
-          2,
-        ((matrix.m42 - viewport.clientHeight + element.clientHeight / 2) * -1) /
-          2,
-        0.5,
-      );
+        const viewport = frame.contentDocument.querySelector(
+          '.react-transform-wrapper',
+        );
+
+        canvas.setTransform(
+          ((matrix.m41 - viewport.clientWidth + element.clientWidth / 2) * -1) /
+            2,
+          ((matrix.m42 - viewport.clientHeight + element.clientHeight / 2) *
+            -1) /
+            2,
+          0.5,
+        );
+      }
     }
   }, []);
 
