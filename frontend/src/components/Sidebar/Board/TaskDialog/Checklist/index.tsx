@@ -113,11 +113,6 @@ function Checklist({ task }: Props) {
     [checklist],
   );
 
-  const checklistMemonized = useMemo(() => {
-    const updatedList = [...checklist];
-    return updatedList.reverse();
-  }, [checklist]);
-
   return (
     <div>
       <Stack
@@ -180,7 +175,7 @@ function Checklist({ task }: Props) {
         </Stack>
       )}
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-        {checklistMemonized.map((item) => (
+        {checklist.map((item) => (
           <CheckItem task={task} item={item} key={item.id.toString()} />
         ))}
       </List>
