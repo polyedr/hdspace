@@ -2,23 +2,31 @@ import { useSelector } from 'react-redux';
 import Xarrow from 'react-xarrows';
 import { selectScreenLinks } from '@Redux/wireframe/selectors';
 
-const Arrows: React.FC = ({ children }) => {
+interface Props {
+  getRef: (key: string) => void | React.RefObject<unknown>;
+}
+
+const Arrows: React.FunctionComponent<Props> = ({ getRef }) => {
   const links = useSelector(selectScreenLinks);
 
   return (
     <>
-      {children}
       {links.map((c) => (
         <Xarrow
           key={c.elementId.toString()}
           color="#000"
           strokeWidth={1.5}
-          start={'element-link-' + c.elementId.toString()}
+          start={getRef(`element-${c.elementId}`) as React.RefObject<unknown>}
           path="grid"
           tailShape="circle"
-          tailSize={20}
+          showTail
+          tailSize={3}
           zIndex={0}
-          end={`wireframe-screen-${c.destinationScreenId}`}
+          end={
+            getRef(
+              `screen-${c.destinationScreenId}`,
+            ) as React.RefObject<unknown>
+          }
         />
       ))}
     </>

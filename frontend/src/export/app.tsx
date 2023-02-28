@@ -5,6 +5,8 @@ import ReactDOMServer from 'react-dom/server';
 import { ServerStyleSheets } from '@mui/styles';
 import { StyledEngineProvider } from '@mui/material/styles';
 import JSZip from 'jszip';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { AppThemeProvider } from '@Src/styles/Theme';
 import { store } from '@Redux/store';
 import { AppReduxState } from '@Redux/types';
@@ -98,15 +100,17 @@ const exportHTML = (allScreensData, projectName) => {
     const sheets = new ServerStyleSheets();
     const html = ReactDOMServer.renderToStaticMarkup(
       sheets.collect(
-        <Provider store={store}>
-          <StyledEngineProvider injectFirst>
-            <AppThemeProvider>
-              <BrowserRouter>
-                <ExportedElement elementId={data.element} state={state} />
-              </BrowserRouter>
-            </AppThemeProvider>
-          </StyledEngineProvider>
-        </Provider>,
+        <DndProvider backend={HTML5Backend}>
+          <Provider store={store}>
+            <StyledEngineProvider injectFirst>
+              <AppThemeProvider>
+                <BrowserRouter>
+                  <ExportedElement elementId={data.element} state={state} />
+                </BrowserRouter>
+              </AppThemeProvider>
+            </StyledEngineProvider>
+          </Provider>
+        </DndProvider>,
       ),
     );
     allScreensHtmlData[allScreensData[index].name] = html;
