@@ -27,6 +27,7 @@ class ScenarioElementList(generics.CreateAPIView):
         serializer.save()
 '''
 
+
 class ScenarioElementAssemblingList(generics.CreateAPIView):
     """
     Create a new DOM of the neural network based on pre-defined annotation
@@ -90,7 +91,7 @@ class MaskRCNNView(APIView):
 
             # Results of the Mask R CNN recognition
             r = results[0]
-            del r["masks"] # Remove masks
+            del r["masks"]  # Remove masks
             print(r)
 
             # print(r_dumped)

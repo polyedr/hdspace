@@ -1,73 +1,14 @@
-import os, sys
-
-import copy
-import io
-import shutil
+import os
 from urllib.parse import urlparse, parse_qs
-
-import lorem
-import math
-import uuid
-from statistics import median, median_low
-
 from anytree import RenderTree
 from rest_framework_recursive.fields import RecursiveField
 from project.settings import BASE_DIR, MEDIA_ROOT
-'''
-from project.settings import (
-    MEDIA_ROOT,
-    MEDIA_URL,
-    model_forms,
-    model_headers,
-    model_footers,
-    BASE_DIR,
-)
-'''
 from rest_framework import serializers
 from apps.projects.models import ScenarioElement, ProjectScreen
-# from sklearn.preprocessing import StandardScaler
-# from sklearn.datasets import make_blobs
-# from sklearn import cluster as clustermethod
-import xml.etree.ElementTree as ET
-import cv2
-import pytesseract
 
-from keras.preprocessing.image import load_img
-from keras_preprocessing.image import img_to_array
-
-from apps.utils.object_detection import (
-    run_text_detection,
-    get_rect_contours,
-    show_rects,
-    show_rois,
-)
-from apps.utils.fset1 import (
-    get_dominant_colour,
-    isRectangleOverlap,
-    Rectangle,
-    ClusterClass,
-    Partition,
-    blocks_split,
-    closest_node,
-    find_or_create_dir,
-    calculateDistance,
-    SQUARES_OVERLAP_THRESHOLD_CONTOUR,
-    contains_rectangle,
-)
-
-from apps.virtualize_simple.merge import pipeline_merge, write_elem_value
-
-from apps.virtualize_simple.assemble import (
-    pipeline_assemble,
-    print_maskrcnn_output,
-    supplement_fdict_calc_printing,
-    calculate_fclusters,
-    calculate_dbclusters,
-    ternary_assembling_run,
-    clusters_printing,
-    htmltree_initialize,
-    elements_rootblock,
-)
+from apps.utils.fset1 import ClusterClass
+from apps.virtualize_simple.merge import pipeline_merge
+from apps.virtualize_simple.assemble import pipeline_assemble
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(
     BASE_DIR + "/gkeys/creativesmarthub-e941d155283d.json"
@@ -108,7 +49,7 @@ def elements_rootblock_create(
                         parent=node.parent.scenarioelement, **node.scenarioelement_kwargs
                     )
 
-        if palette==True:
+        if palette:
             # First, display all the non-text regions
             for pre, fill, node in RenderTree(root_block):
                 if node.element_assigned in {"input", "select", "button", "image"}:
@@ -409,6 +350,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
         node.screen_data_json = sdj
 
         return node
+
 
 '''
 class ScenarioElementSerializer(serializers.ModelSerializer):
@@ -1356,6 +1298,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         return serializer_node
 '''
 
+
 class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
@@ -1404,7 +1347,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         element_root_pre = ScenarioElement.objects.get(id=validated_data["parent_id"])
 
         # dbclusters calculation is optional
-        dbclusters_on = 1 # Calculate dbclusters
+        dbclusters_on = 1  # Calculate dbclusters
         try:
             dbclusters_on = validated_data["dbclusters_on"]
         except Exception:
@@ -1413,7 +1356,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         # Define styles variable switching on,
         # this variable is plased at parameters with other serializers as a flag
         # styles calculation is optional
-        styles_on = 1 # Calculate styles
+        styles_on = 1  # Calculate styles
         try:
             styles_on = validated_data["styles_on"]
         except Exception:

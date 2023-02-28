@@ -35,7 +35,7 @@ import xml.etree.ElementTree as ET
 import cv2
 import pytesseract
 from pytesseract import Output
-
+from google.cloud import vision
 from apps.utils.fset1 import (
     get_dominant_colour,
     isRectangleOverlap,
@@ -49,8 +49,6 @@ from apps.utils.fset1 import (
     SQUARES_OVERLAP_THRESHOLD_CONTOUR,
     contains_rectangle,
 )
-
-from google.cloud import vision
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(
     BASE_DIR + "/gkeys/adevigcv-0300068cae79.json"
@@ -1202,7 +1200,7 @@ def htmltree_initialize(fname, bcolour_container_value, img_width, img_height, i
     input_image_name = imgpath
 
     # Add this to view a processed image containing clusters with elements
-    clustersel_image_name =  SAVE_DIR + "/allclusters_with_elements_" + fname
+    clustersel_image_name = SAVE_DIR + "/allclusters_with_elements_" + fname
 
     # if o.netloc == "127.0.0.1:8000":
     if styles_on:
@@ -1370,7 +1368,7 @@ def calculate_margins(node):
         if x_siblings:
             # array_siblings_x1 = min(x_siblings, key=lambda i: abs(node.x1 - i.x2))
             # array_siblings_x1_min = min((node.x1 - array_siblings_x1.x2), (node.x1 - node.parent.x1))
-            delta = (node.x1 - node.parent.x1) # Should be always >0, otherwise the annotation error
+            delta = (node.x1 - node.parent.x1)  # Should be always > 0, otherwise the annotation error
             for i in x_siblings:
                 diff = node.x1 - i.x2
                 if(diff > 0):
@@ -1540,7 +1538,7 @@ def ocr_recognition(elem_image, node, node_height, ocr_engine="tesseract"):
         if font_size_value < 14:
             text_elem_tesseract = ""
         else:
-            font_size_value = 14 # Set a fixed value for the font size
+            font_size_value = 14  # Set a fixed value for the font size
 
         text_elem_ocr = text_elem_tesseract
     # Detect the font-size with tesseract for some element end
@@ -1732,7 +1730,8 @@ def ocr_recognition(elem_image, node, node_height, ocr_engine="tesseract"):
         '''
         padding_top = int(((top_min/4.0) - node.y1) / 2.0)
         padding_bottom = int((node.y2 - (max_bottom/4.0)) / 2.0)
-        print(text_elem_ocr, "node.y1, node.y2, int(top_min/4.0), int(max_bottom/4.0)", node.y1, node.y2, int(top_min/4.0), int(max_bottom/4.0))
+        print(text_elem_ocr, "node.y1, node.y2, int(top_min/4.0), int(max_bottom/4.0)", 
+        node.y1, node.y2, int(top_min/4.0), int(max_bottom/4.0))
         input()
         '''
     else:
@@ -1749,7 +1748,8 @@ def ocr_recognition(elem_image, node, node_height, ocr_engine="tesseract"):
         padding_right = 3
     # Paddings calculations block end
 
-    return font_size_value, text_elem_ocr, alltext_width, leftmin, maxright, alltext_height, padding_top, padding_right, padding_bottom, padding_left
+    return font_size_value, text_elem_ocr, alltext_width, leftmin, maxright, alltext_height, \
+           padding_top, padding_right, padding_bottom, padding_left
 
 
 # Create the elements for the elements_rootblock function
@@ -1895,9 +1895,9 @@ def elements_rootblock(
 
                 if not node.is_leaf:
                     # Sort children of the node
-                    sorted_children =  sorted(node.children, key=lambda item: item.x1)[::-1]
+                    sorted_children = sorted(node.children, key=lambda item: item.x1)[::-1]
                     # Calculate widths of items
-                    columns_list = (list(map(lambda x: str(int(x.x2 - x.x1))+'px', sorted_children)))
+                    columns_list = (list(map(lambda x: str(int(x.x2 - x.x1)) + 'px', sorted_children)))
                     node.styles["grid-template-columns"] = ' '.join(columns_list[::-1])
 
                 # if not styles_on:
@@ -1936,7 +1936,8 @@ def elements_rootblock(
             # Define the direction of the container end
 
         if node == root_block:
-            # print("img_width, img_height, node_width, node.x1, node.y1, node.x2, node.y2", img_width, img_height, node_width, node.x1, node.y1, node.x2, node.y2)
+            # print("img_width, img_height, node_width, node.x1, node.y1, node.x2, node.y2",
+            # img_width, img_height, node_width, node.x1, node.y1, node.x2, node.y2)
             # input()
             # margin_lr = int((img_width - node_width) / 2)
             # margin_tp = int((img_height - node_height) / 2)
@@ -2016,10 +2017,22 @@ def elements_rootblock(
             y1 = node.y1
             # Define the element dimensions end
 
+            # Delete all the children regions
+
             # Cropping to the border box start
             elem_image = image_original[y1: y1 + elem_height, x1: x1 + elem_width]
             elem_image_name = uuid.uuid4().hex + fname
             # Cropping to the border box end
+
+            '''
+            # Attempt to remove children rectangles start
+            mask = np.zeros(elem_image.shape[0:2], np.uint8)
+            if not node.is_leaf:
+                for child in node.children:
+                    cv2.rectangle(mask, (child.x1, child.y1), (child.x2, child.y2), 255, -1)
+                elem_image = cv2.inpaint(elem_image, mask, 3, cv2.INPAINT_NS)
+            # Attempt to remove children rectangles end
+            '''
 
             # Background and font colours detection start
             if styles_on:
@@ -2027,6 +2040,9 @@ def elements_rootblock(
                 # Set the background colour for styles
                 # Check the node parent background colour value
                 # Maybe do this filtering at the separate loop later
+                # if node.is_leaf:
+                #     node.styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
+                # else:
                 try:
                     if (node.parent.styles["background-color"] != "rgba(" + bcolour_elem_value + ")"):
                         node.styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
@@ -2310,7 +2326,8 @@ def sortchildrenby(parent, attr):
 
 
 # Serializing: assemble, freecanvas
-def pipeline_assemble(region_dataset, fdict, o, dbclusters_on, styles_on, localparams, freecanvasimg_hw=(0, 0), serializing="assemble"):
+def pipeline_assemble(region_dataset, fdict, o, dbclusters_on, styles_on, localparams,
+                      freecanvasimg_hw=(0, 0), serializing="assemble"):
     # Create the recognized_elements array start
     """
     if imgpath:
@@ -2477,6 +2494,26 @@ def pipeline_assemble(region_dataset, fdict, o, dbclusters_on, styles_on, localp
         root_block = ternary_assembling_run(
             min_x1, min_y1, max_x2, max_y2, root_firstcluster, image_opencv_input
         )
+
+        '''
+        # Filtered out the equal containers start
+        for pre, fill, node1 in RenderTree(root_block):
+            if (node1.types) in {"ccluster"}:
+                # print(node1.types)
+                r1 = (node1.x1, node1.y1, node1.x2, node1.y2)
+                for pre, fill, node2 in RenderTree(root_block):
+                    if ((node2.types) in {"ccluster"}) and node2 != node1:
+                        r2 = (node2.x1, node2.y1, node2.x2, node2.y2)
+                        if (r1 == r2):
+                            # Move children
+                            if not node2.is_leaf:
+                                for child in node2.children:
+                                    child.parent = node1
+                            # Detach the node2
+                            node2.parent = None
+        # Filtered out the equal containers end
+        '''
+
         # Print all the clusters after the cclusters step
         # Localhost only
         if localparams["page"] == 1:
@@ -2536,7 +2573,7 @@ def pipeline_assemble(region_dataset, fdict, o, dbclusters_on, styles_on, localp
             for elem in root1.iter():
                 if len(list(elem)) > 1:
 
-                    print('my no of child: %d'%len(list(elem)))
+                    print('my no of child: %d' % len(list(elem)))
                     print(elem.attrib.items())
                     for child in elem:
                         print(child, child.attrib.items(), child.get("buoyancy"))
