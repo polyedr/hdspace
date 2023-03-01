@@ -1,12 +1,17 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { useParams, useRouteMatch } from 'react-router';
 import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
+import { selectLayout } from '@Redux/project/selectors/base';
+import { screenSize } from '@Components/Wireframe/constants';
 
 export const useWireframe = () => {
   const { projectId, screenId } = useParams<{
     projectId: string;
     screenId?: string;
   }>();
+
+  const device = useSelector(selectLayout);
 
   const moveToScreen = useCallback((screenId: number) => {
     if (window.wireframeCanvas) {
@@ -50,5 +55,7 @@ export const useWireframe = () => {
     exact: true,
   });
 
-  return { isWireframeMode, moveToScreen };
+  const layout = screenSize[device];
+
+  return { isWireframeMode, moveToScreen, layout };
 };

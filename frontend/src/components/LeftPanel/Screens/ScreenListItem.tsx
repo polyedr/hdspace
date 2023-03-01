@@ -70,10 +70,6 @@ interface Props {
   active: boolean;
   onSelected: (screen: Screen) => void;
 }
-interface State {
-  mouseX: number | null;
-  mouseY: number | null;
-}
 
 const ScreenListItem: React.FC<Props> = ({
   screen,
@@ -83,11 +79,12 @@ const ScreenListItem: React.FC<Props> = ({
 }) => {
   const dispatch = useDispatch();
   const { name, project, id, image, screenData } = screen;
-  const initialState: State = {
-    mouseX: null,
-    mouseY: null,
-  };
-  const [state, setState] = useState<State>(initialState);
+
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+
   const classes = useStyles();
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -115,12 +112,16 @@ const ScreenListItem: React.FC<Props> = ({
     closeEdit();
   };
 
-  const handleMenuOpen = (ev: MouseEvent<HTMLDivElement>) => {
-    ev.preventDefault();
-    setState({
-      mouseX: ev.clientX - 2,
-      mouseY: ev.clientY - 4,
-    });
+  const handleMenuOpen = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setContextMenu(
+      contextMenu === null
+        ? {
+            mouseX: e.clientX + 2,
+            mouseY: e.clientY - 6,
+          }
+        : null,
+    );
   };
   const handleDeleteClose = () => {
     dispatch(deleteScreen(project, id));
@@ -130,7 +131,7 @@ const ScreenListItem: React.FC<Props> = ({
     setDeleteModal(true);
   };
 
-  const handleClose = () => setState(initialState);
+  const handleClose = () => setContextMenu(null);
 
   return (
     <>
@@ -167,11 +168,11 @@ const ScreenListItem: React.FC<Props> = ({
                 )}
               </div>
               <ContextMenu
-                open={state?.mouseY !== null}
+                open={contextMenu !== null}
                 screen={screen}
                 anchorPosition={
-                  state.mouseY !== null && state.mouseX !== null
-                    ? { top: state.mouseY, left: state.mouseX }
+                  contextMenu !== null
+                    ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
                     : undefined
                 }
                 onClose={handleClose}

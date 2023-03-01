@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { styled } from '@mui/material';
 import { setCurrentScreenId } from '@/redux/project/actions';
 import { GRID_CELL_SPACE, GRID_STROKE_WIDTH } from '@/constants/grid';
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from './constants';
+import { useWireframe } from '@Src/hooks/useWireframe';
 import DraggableScreen from './DraggableScreen';
 import { buildScreenData, calculateCanvasSize } from './helpers';
 import Arrows from './Arrows';
@@ -26,6 +26,9 @@ const Canvas: React.FC<{
   screens: Normalized<ProjectScren>;
 }> = ({ screens: _screens }) => {
   const [getRef, setRef] = useDynamicRefs();
+  const {
+    layout: [width, height],
+  } = useWireframe();
 
   const [zoom, setZoom] = useState(0.4);
 
@@ -34,7 +37,7 @@ const Canvas: React.FC<{
   const dispatch = useDispatch();
 
   const screens = useMemo(() => {
-    return Object.values(buildScreenData(_screens));
+    return Object.values(buildScreenData(_screens, width, height));
   }, [_screens]);
 
   useEffect(() => {
@@ -76,8 +79,8 @@ const Canvas: React.FC<{
             >
               <CanvasBox
                 style={{
-                  minWidth: calculateCanvasSize(screensCount, SCREEN_WIDTH),
-                  minHeight: calculateCanvasSize(screensCount, SCREEN_HEIGHT),
+                  minWidth: calculateCanvasSize(screensCount, width),
+                  minHeight: calculateCanvasSize(screensCount, height),
                 }}
               >
                 {screens.map((screen) => (

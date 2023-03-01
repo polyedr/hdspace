@@ -110,10 +110,10 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   };
 
   const handleResizeStop: RndResizeCallback = (
-    e,
-    dir,
+    _e,
+    _dir,
     ref,
-    delta,
+    _delta,
     position,
   ) => {
     if (
