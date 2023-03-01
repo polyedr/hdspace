@@ -1,6 +1,22 @@
 import os
 import sys
-from .base import BASE_DIR
+from .base import BASE_DIR, white_list
+
+DOMAIN = ('staging.adevi.info')
+# Djoser settings
+DJOSER = {
+    'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "username/reset/confirm/{uid}/{token}",
+    "DOMAIN": "staging.adevi.info",
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
+    "SERIALIZERS": {'activation': 'apps.accounts.serializers.MyActivationSerializer',
+                    'token': 'apps.schat.serializers.StreamTokenSerializer',
+                    },
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": white_list,  # Redirected URL we listen on google console
+}
 
 # Mask R-CNN model initial load
 ROOT_DIR = os.path.abspath(BASE_DIR + "/apps/virtualize_simple/mask_rcnn")
