@@ -1,6 +1,5 @@
 import { Normalized, Screen as ProjectScren } from '@Src/types';
 import { GRID_CELL_SPACE, GRID_STROKE_WIDTH } from '@Constants/grid';
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from './constants';
 
 export type WireframeScreen = ProjectScren & {
   position: { x: number; y: number };
@@ -12,7 +11,11 @@ export function calculateCanvasSize(count: number, size: number) {
   return size * count * 10;
 }
 
-export function buildScreenData(_screens: Normalized<ProjectScren>): Screens {
+export function buildScreenData(
+  _screens: Normalized<ProjectScren>,
+  width: number,
+  height: number,
+): Screens {
   const screens = {};
 
   const validScreens = Object.values(_screens).filter(
@@ -21,11 +24,11 @@ export function buildScreenData(_screens: Normalized<ProjectScren>): Screens {
 
   const canvasWidth = calculateCanvasSize(
     Object.values(validScreens).length,
-    SCREEN_WIDTH,
+    width,
   );
   const canvasHeight = calculateCanvasSize(
     Object.keys(validScreens).length,
-    SCREEN_HEIGHT,
+    height,
   );
 
   let index = 0;
@@ -41,14 +44,14 @@ export function buildScreenData(_screens: Normalized<ProjectScren>): Screens {
         x:
           Math.round(
             (screen.screenData?.wireframePosition?.x ??
-              canvasWidth / 2 - (SCREEN_WIDTH + 100) * index) / GRID_CELL_SPACE,
+              canvasWidth / 2 - (width + 100) * index) / GRID_CELL_SPACE,
           ) *
             GRID_CELL_SPACE +
           GRID_STROKE_WIDTH / 2,
         y:
           Math.round(
             (screen.screenData?.wireframePosition?.y ??
-              canvasHeight / 2 - SCREEN_HEIGHT / 2) * GRID_CELL_SPACE,
+              canvasHeight / 2 - height / 2) * GRID_CELL_SPACE,
           ) /
             GRID_CELL_SPACE +
           GRID_STROKE_WIDTH / 2,
