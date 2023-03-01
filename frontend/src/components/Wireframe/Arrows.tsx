@@ -11,24 +11,33 @@ const Arrows: React.FunctionComponent<Props> = ({ getRef }) => {
 
   return (
     <>
-      {links.map((c) => (
-        <Xarrow
-          key={c.elementId.toString()}
-          color="#000"
-          strokeWidth={1.5}
-          start={getRef(`element-${c.elementId}`) as React.RefObject<unknown>}
-          path="grid"
-          tailShape="circle"
-          showTail
-          tailSize={3}
-          zIndex={0}
-          end={
-            getRef(
-              `screen-${c.destinationScreenId}`,
-            ) as React.RefObject<unknown>
-          }
-        />
-      ))}
+      {links.map((c) => {
+        const start = getRef(
+          `element-${c.elementId}`,
+        ) as React.RefObject<unknown>;
+        const end = getRef(
+          `screen-${c.destinationScreenId}`,
+        ) as React.RefObject<unknown>;
+
+        if (!start || !end) {
+          return null;
+        }
+
+        return (
+          <Xarrow
+            key={c.elementId.toString()}
+            color="#000"
+            strokeWidth={1.5}
+            start={start}
+            path="grid"
+            tailShape="circle"
+            showTail
+            tailSize={3}
+            zIndex={0}
+            end={end}
+          />
+        );
+      })}
     </>
   );
 };

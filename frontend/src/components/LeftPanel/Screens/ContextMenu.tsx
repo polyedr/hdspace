@@ -29,21 +29,16 @@ const ContextMenu: React.FC<Props> = ({
   const screensNumber = useSelector(selectScreensLength);
   const canDelete = screensNumber > 2;
 
-  const handleDelete = (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
+  const handleDelete = () => {
+    onClose();
     openDelete();
-    onClose();
   };
-  const handleCopy = (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
+  const handleCopy = () => {
+    onClose();
     dispatch(duplicateScreen(name, id));
-    onClose();
   };
-  const handleRenameClick = (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
+  const handleRenameClick = () => {
+    onClose();
     openEdit();
   };
 
