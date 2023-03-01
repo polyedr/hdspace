@@ -2,6 +2,7 @@ import os
 import sys
 from .base import BASE_DIR, white_list
 
+SITE_NAME = "www.staging.adevi.info"
 DOMAIN = ('staging.adevi.info')
 # Djoser settings
 DJOSER = {
