@@ -28,6 +28,7 @@ import {
   selectCurrentRootId,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import Icon from '../../../../UI/Icon';
 
 interface Props {
@@ -203,8 +204,21 @@ const BorderCrumb: React.FC<Props> = (props) => {
   };
 
   const handleCopyLink = useCallback(() => {
-    // const { origin, pathname, search } = window.location;
-    // console.log(origin, 'search: ' + pathname, 'search: ' + search, element.id);
+    const { origin, pathname, search } = window.location;
+
+    const params = new URLSearchParams(search);
+    params.set('moveToElement', element.id);
+
+    navigator.clipboard.writeText(`${origin}${pathname}?${params.toString()}`);
+
+    dispatch(
+      enqueueSnackbar({
+        message: 'Link copied to clipboard.',
+        options: {
+          variant: 'success',
+        },
+      }),
+    );
   }, [element]);
 
   return element && show ? (

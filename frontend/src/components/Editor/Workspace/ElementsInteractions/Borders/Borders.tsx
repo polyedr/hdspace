@@ -7,12 +7,14 @@ import { Rnd } from 'react-rnd';
 import ELEMENT_IDS from '@Constants/elementIds';
 import {
   copyActiveElement,
+  deleteElement,
   pasteCopiedElement,
   pasteElementAtIndex,
 } from '@Redux/project/actions';
 import { selectShowingGrid } from '@Redux/project/selectors/base';
 import {
   getIndexOfSelectedElementInParentChildren,
+  selectActiveElementId,
   selectIsElementActive,
   selectItemToCopyInfo,
 } from '@Redux/project/selectors/element';
@@ -101,6 +103,7 @@ const Borders: React.FC<Props> = ({
   const currentScreenId = useSelector(selectCurrentScreenId);
   const canHaveChildren = canElementHaveChildren(type as Entity);
   const emptyClipboard = !useSelector(selectItemToCopyInfo);
+  const id = useSelector(selectActiveElementId);
   const dispatch = useDispatch();
 
   const frame = useMemo(() => {
@@ -193,6 +196,10 @@ const Borders: React.FC<Props> = ({
     handleClose();
   };
 
+  const handleDeleteElement = () => {
+    dispatch(deleteElement(id, { screenId: currentScreenId }));
+  };
+
   const pasteAfterElement = () => {
     dispatch(pasteElementAtIndex({ index: index + 1 }));
   };
@@ -237,6 +244,7 @@ const Borders: React.FC<Props> = ({
           >
             Paste Before
           </MenuItem>
+          <MenuItem onClick={handleDeleteElement}>Delete</MenuItem>
         </Menu>
       )}
       {canHaveChildren && (
@@ -257,6 +265,7 @@ const Borders: React.FC<Props> = ({
           >
             Paste
           </MenuItem>
+          <MenuItem onClick={handleDeleteElement}>Delete</MenuItem>
         </Menu>
       )}
       {isActiveBorder &&
