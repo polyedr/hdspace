@@ -53,9 +53,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     lineHeight: 1,
     color: theme.palette.common.white,
     background: '#128A72',
-    display: 'flex',
+    // display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    display: 'none',
   }),
   label: {
     display: 'block',

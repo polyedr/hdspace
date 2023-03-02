@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   },
   general: {
     backgroundColor: (props: any) => (props.isActive ? '#128A72' : '#1CC09F'),
-    display: 'flex',
+    display: 'none',
     flexWrap: 'nowrap',
     height: 16,
     borderBottom: '1px solid #bbb',
@@ -43,7 +43,7 @@ const useStyles = makeStyles({
     fontSize: 16,
     color: '#fff',
     borderRadius: 0,
-    display: 'none',
+    // display: 'none',
   },
   divider: {
     backgroundColor: '#bbb',

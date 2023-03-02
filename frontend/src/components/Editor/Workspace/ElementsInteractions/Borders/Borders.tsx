@@ -48,41 +48,53 @@ const useStyles = makeStyles<Theme, { isActive: boolean }>({
     transform: 'translateX(-50%)',
     left: '50% !important',
     top: '-4px !important',
-    cursor: 'ns-resize !important',
+    cursor:
+      'url(../../../src/assets/images/cursor_top.svg) 10 15, auto !important',
   },
   topRightHandle: {
     right: '-4px !important',
     top: '-4px !important',
+    cursor:
+      'url(../../../src/assets/images/cursor_diagonal.svg) 15 10, auto !important',
   },
   rightHandle: {
     transform: 'translateY(-50%)',
     right: '-4px !important',
     top: '50% !important',
-    cursor: 'ew-resize!important',
+    cursor:
+      'url(../../../src/assets/images/cursor_left_right.svg) 15 8, auto !important',
   },
   bottomRightHandle: {
     right: '-4px !important',
     bottom: '-4px !important',
+    cursor:
+      'url(../../../src/assets/images/cursor_diagonal_left.svg) 10 15, auto !important',
   },
   bottomHandle: {
     bottom: '-4px !important',
     left: '50% !important',
     transform: 'translateX(-50%)',
-    cursor: 'ns-resize !important',
+    cursor:
+      'url(../../../src/assets/images/cursor_top.svg) 10 15, auto !important',
   },
   bottomLeftHandle: {
     bottom: '-4px !important',
     left: '-4px !important',
+    cursor:
+      'url(../../../src/assets/images/cursor_diagonal.svg) 15 10, auto !important',
   },
   leftHandle: {
     top: '50% !important',
     left: '-4px !important',
     transform: 'translateY(-50%)',
-    cursor: 'ew-resize!important',
+    cursor:
+      'url(../../../src/assets/images/cursor_left_right.svg) 10 10, auto !important',
   },
   topLeftHandle: {
     left: '-4px !important',
     top: '-4px !important',
+    cursor:
+      'url(../../../src/assets/images/cursor_diagonal_left.svg) 10 10, auto !important',
   },
 });
 
@@ -353,12 +365,12 @@ const Borders: React.FC<Props> = ({
           lockAspectRatio={lockedAspectRatioElements.includes(type)}
           enableResizing={{
             bottom: true,
-            bottomLeft: false,
+            bottomLeft: true,
             bottomRight: true,
-            left: false,
+            left: true,
             right: true,
-            top: false,
-            topLeft: false,
+            top: true,
+            topLeft: true,
             topRight: true,
           }}
         >
