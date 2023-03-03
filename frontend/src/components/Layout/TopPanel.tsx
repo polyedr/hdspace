@@ -37,6 +37,7 @@ import {
 import { StyledIconButton } from '@Components/styledComponents';
 import { HELP_LINK } from '@Src/config/settings';
 import { useWireframe } from '@Src/hooks/useWireframe';
+import { selectCurrentScreen } from '@Redux/project/selectors/screen';
 import Dialog from '../Dialogs/Dialog';
 import Logo from '../UI/Logo';
 import Layouts from './TopBar/Layouts';
@@ -83,6 +84,11 @@ const useStyles = makeStyles<Theme>(({ typography, palette }) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  selectedScreen: {
+    color: 'black',
+    border: '1px solid red',
+    padding: '5px',
   },
   title: {
     color: '#81818E',
@@ -147,7 +153,7 @@ function TopPanel() {
   const handleEditClick = () => setOpenEdit(true);
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const showBorders = useSelector(selectShowingBorders);
-
+  const currentScreen = useSelector(selectCurrentScreen);
   const showGrid = useSelector(selectShowingGrid);
 
   const handleClose = () => setOpenEdit(false);
@@ -180,12 +186,11 @@ function TopPanel() {
             />
           )}
         </Box>
-
+        <Box className={classes.selectedScreen}>{currentScreen?.name}</Box>
         <Box className={classes.topbarsections}>
           {projectName && <ToggleMode />}
           {projectName && !isWireframeMode && <Layouts />}
         </Box>
-
         <Box className={classes.toolbar}>
           {viaMode ? <History /> : <TopBar />}
 
