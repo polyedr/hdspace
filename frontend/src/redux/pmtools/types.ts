@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
-import { ServerUserData } from '@Src/types';
 import { DefaultRootState } from 'react-redux';
+import { ServerUserData } from '@Src/types';
 import { ActionTypePM } from '@Src/types/pmtools/types';
 import * as actionsActivity from './activity/actions';
 import * as actionsColumns from './board/actions/columns';

@@ -1,14 +1,14 @@
 import React, { useCallback, memo, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { StyledTextField } from '@Components/styledComponents';
-import { selectActiveElement } from '@Redux/project/selectors/element';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateElement } from '@Redux/project/actions';
-import { selectEditorDocument } from '@Redux/project/selectors/base';
 import { Button, ButtonGroup, MenuItem } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { capitalize } from '@mui/material/utils';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import { StyledTextField } from '@Components/styledComponents';
+import { selectActiveElement } from '@Redux/project/selectors/element';
+import { updateElement } from '@Redux/project/actions';
+import { selectEditorDocument } from '@Redux/project/selectors/base';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles({

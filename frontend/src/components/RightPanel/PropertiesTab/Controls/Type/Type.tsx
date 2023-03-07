@@ -1,8 +1,7 @@
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
-import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import { MenuItem } from '@mui/material';
-import TYPE from './constants';
+import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import {
   InputType,
   PropertiesChangeProps,
@@ -10,6 +9,7 @@ import {
 } from '../../../../../types';
 
 import { StyledTextField } from '../../../../styledComponents';
+import TYPE from './constants';
 
 const Type: React.FC<PropertiesChangeProps<TextinputElement>> = ({
   updateParams,

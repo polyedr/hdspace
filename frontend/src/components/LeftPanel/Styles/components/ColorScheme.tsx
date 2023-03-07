@@ -1,11 +1,11 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
 import ColorSettingsTypes, {
   ColorStylePropertiesTypes,
   ColorStyleTypes,
 } from '@Components/LeftPanel/Styles/Enums/colorSettings';
 import { updateDefaultStyles } from '@Redux/project/actions';
-import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import CONTROLS_CLASSES from '@Components/LeftPanel/Styles/controlClasses';
 import { ColorsScheme } from '@Components/LeftPanel/Styles/types/colorsScheme';

@@ -4,6 +4,7 @@ import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import logger from 'loglevel';
 import { useDebouncedCallback } from 'use-debounce';
+import Scrollbars from 'react-custom-scrollbars';
 import {
   processDropElement,
   processDropTargetParams,
@@ -24,7 +25,6 @@ import {
 import { ElementType } from '@Constants/dragAndDrop';
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import useLayout from '@Components/Editor/hooks/useLayout';
-import Scrollbars from 'react-custom-scrollbars';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import RENDERERS from '../../UI/RenderElements';
@@ -83,24 +83,27 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     [elementId, parentIds],
   );
 
-  const [, drag, preview] = useDrag({
-    item: {
-      original: element,
-      parent,
+  const [, drag, preview] = useDrag(
+    () => ({
       type: ElementType.ELEMENT,
-    } as SyntheticElement<StateElement>,
-    canDrag: () =>
-      !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
-      !!parent &&
-      !element.parameters.sourceElementId &&
-      canDragAndDrop &&
-      !isProto,
-    end: (dragSource, monitor) => {
-      if (!monitor.didDrop()) {
-        dispatch(setCurrentDropTargetParams(null));
-      }
-    },
-  });
+      item: {
+        original: element,
+        parent,
+      } as SyntheticElement<StateElement>,
+      canDrag: () =>
+        !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
+        !!parent &&
+        !element.parameters.sourceElementId &&
+        canDragAndDrop &&
+        !isProto,
+      end: (_, monitor) => {
+        if (!monitor.didDrop()) {
+          dispatch(setCurrentDropTargetParams(null));
+        }
+      },
+    }),
+    [element, canDragAndDrop, isProto],
+  );
 
   const [, drop] = useDrop({
     accept: [ElementType.ELEMENT, ElementType.CONSTRUCTOR],
@@ -213,7 +216,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       onMouseLeave={mouseLeaveHandler}
       onClick={clickHandler}
     >
-      {element.children.map((childId: string, index: number) => (
+      {element.children.map((childId: string) => (
         <DraggableElement
           key={childId.toString()}
           elementId={childId}

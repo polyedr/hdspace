@@ -1,5 +1,7 @@
-import { initialUserState } from '@Redux/user/initial';
 import MockDate from 'mockdate';
+import logger from 'loglevel';
+import { vi } from 'vitest';
+import { initialUserState } from '@Redux/user/initial';
 import {
   initialCommunication,
   initialControl,
@@ -14,7 +16,6 @@ import { defaultFreeCanvasParams } from '@Domain/core';
 import { DEFAULT_LAYOUT_LIST, DEFAULT_USER } from '@Constants/defaultParams';
 import { generateRandomInteger } from '@Utils/NumberHelper';
 import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
-import logger from 'loglevel';
 import {
   Project,
   StateElement,
@@ -31,7 +32,6 @@ import {
   Layout,
   Marketplace,
 } from '@Src/types';
-import { vi } from 'vitest';
 
 export const mockProject: Project = {
   id: 1,
@@ -218,6 +218,10 @@ export const mockMarketplace: Marketplace = {
 };
 export const mockInitialState: AppReduxState = {
   user: initialUserState,
+  wireframe: {
+    activeScreen: undefined,
+    activeElement: undefined,
+  },
   project: {
     data: initialData,
     edit: initialEdit,
@@ -351,6 +355,7 @@ export const createMasterScreenMock = (projectId: number): Screen => ({
 export const createScreenMock = (
   projectId: number,
   buoyancy: number = 1,
+  category: number = null,
 ): Screen => ({
   buoyancy,
   element: '99999',
@@ -358,6 +363,7 @@ export const createScreenMock = (
   image: null,
   name: 'Screen 1',
   project: projectId,
+  category,
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
     freeCanvas: false,

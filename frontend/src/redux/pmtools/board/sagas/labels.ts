@@ -1,5 +1,5 @@
-import { reqWrapper } from '@Redux/project/sagas/shared';
 import { call, put, select } from 'redux-saga/effects';
+import { reqWrapper } from '@Redux/project/sagas/shared';
 import * as labelsApi from '@Api/pmtools/board/labelsApi';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { enqueueSnackbar } from '@Redux/notification/actions';

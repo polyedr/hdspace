@@ -7,9 +7,9 @@ import {
   ListItemText as MuiListItemText,
   styled,
 } from '@mui/material';
-import { BoardLabel } from '@Redux/pmtools/types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import React, { useCallback, useState } from 'react';
+import { BoardLabel } from '@Redux/pmtools/types';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 
 const ListItemIcon = styled(MuiListItemIcon)({

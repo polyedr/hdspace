@@ -1,10 +1,4 @@
 import { AxiosResponse } from 'axios';
-import {
-  convertElementFromResponse,
-  convertNNElementFromResponse,
-  convertNNScreenFromResponse,
-  convertRecursiveElementFromResponse,
-} from './converters/fromResponse';
 import { myAxios } from '../config/settings';
 import {
   Entity,
@@ -17,6 +11,12 @@ import {
   Screen,
   ServerElement,
 } from '../types';
+import {
+  convertElementFromResponse,
+  convertNNElementFromResponse,
+  convertNNScreenFromResponse,
+  convertRecursiveElementFromResponse,
+} from './converters/fromResponse';
 import { handleError, onError, parseResult } from './helper';
 
 export const apiGetElements = async ({

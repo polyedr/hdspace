@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@mui/styles';
 
+import { Theme } from '@mui/material';
 import { selectCurrentDropTargetParams } from '@Redux/project/selectors/base';
 import { DropPosition } from '@Constants/dragAndDrop';
-import { Theme } from '@mui/material';
 
 interface Props {
   styles: React.CSSProperties;

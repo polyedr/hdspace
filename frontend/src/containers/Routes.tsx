@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PATH_NAMES from '@Constants/pathNames';
 import MarketplaceLayout from '@Components/Marketplace/components/Layout/index';
+import Spinner from '@Components/UI/Spinner';
 import Layout from '../components/Layout';
 import { selectIsLoggedIn } from '../redux/user/selectors';
 
@@ -24,6 +25,8 @@ const Projects = lazy(
   async () => await import('../components/Projects/Projects'),
 );
 const Project = lazy(async () => await import('./Project'));
+const Wireframe = lazy(async () => await import('../components/Wireframe'));
+
 const SharedProject = lazy(async () => await import('./SharedProject'));
 const SharedWithLink = lazy(
   async () => await import('@Components/User/SharedWithLink'),
@@ -52,7 +55,7 @@ const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
 };
 
 const Routes: React.FC = () => (
-  <Suspense fallback={<div>Loading...</div>}>
+  <Suspense fallback={<Spinner active />}>
     <Switch>
       <Route path={PATH_NAMES.user.signin} component={Signin} />
 
@@ -96,6 +99,17 @@ const Routes: React.FC = () => (
         {({ match: { params } }: any) => (
           <Layout>
             <Project
+              projectId={parseInt(params.projectId)}
+              screenId={parseInt(params.screenId)}
+            />
+          </Layout>
+        )}
+      </PrivateRoute>
+
+      <PrivateRoute path="/wireframe/:projectId/:screenId?">
+        {({ match: { params } }: any) => (
+          <Layout>
+            <Wireframe
               projectId={parseInt(params.projectId)}
               screenId={parseInt(params.screenId)}
             />

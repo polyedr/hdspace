@@ -2,9 +2,9 @@ import React from 'react';
 import ToggleButtonGroup from '@mui/lab/ToggleButtonGroup';
 import { FormControlLabel } from '@mui/material';
 import HeightIcon from '@mui/icons-material/Height';
+import { makeStyles } from '@mui/styles';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledToggleButton } from '@Components/styledComponents';
-import { makeStyles } from '@mui/styles';
 import PlaceItemsProperties from './PlaceItemsProperties';
 
 const useStyles = makeStyles({

@@ -1,14 +1,14 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector, batch } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import { changePrototypeMode } from '@Redux/user/actions';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import ToggleButton from '@mui/material/ToggleButton';
-import { setBordersEnabled, exportScreenFlag } from '@Redux/project/actions';
-import { IconButton, Theme } from '@mui/material';
+import { IconButton, Theme, Tooltip } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { setBordersEnabled, exportScreenFlag } from '@Redux/project/actions';
+import { changePrototypeMode } from '@Redux/user/actions';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { PANEL_TRANSITION_DURATION } from '@Src/styles/Theme';
 import {
   selectUpdateScreenImageLoader,
@@ -115,24 +115,23 @@ const Actions: React.FC = () => {
   return (
     <div className={classes.root}>
       <History />
-      <ToggleButton
-        className={classes.togglebutton}
-        value="Proto mode"
-        onClick={handleToggleProtoMode}
-        title="Proto mode"
-        disabled={imageLoader}
-        selected={isPrototypeMode}
-      >
-        <VisibilityOutlinedIcon className={classes.icon} />
-      </ToggleButton>
+      <Tooltip title="Proto mode">
+        <ToggleButton
+          className={classes.togglebutton}
+          value="Proto mode"
+          onClick={handleToggleProtoMode}
+          disabled={imageLoader}
+          selected={isPrototypeMode}
+        >
+          <VisibilityOutlinedIcon className={classes.icon} />
+        </ToggleButton>
+      </Tooltip>
 
-      <IconButton
-        onClick={handleExportScreen}
-        title="Export screen"
-        className={classes.iconButton}
-      >
-        <FileDownloadOutlinedIcon className={classes.icon} />
-      </IconButton>
+      <Tooltip title="Export screen">
+        <IconButton onClick={handleExportScreen} className={classes.iconButton}>
+          <FileDownloadOutlinedIcon className={classes.icon} />
+        </IconButton>
+      </Tooltip>
 
       <Share />
     </div>

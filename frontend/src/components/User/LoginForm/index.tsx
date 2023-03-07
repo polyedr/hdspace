@@ -3,9 +3,6 @@ import React from 'react';
 import { Form } from 'react-final-form';
 import { Link } from 'react-router-dom';
 import MakeAsyncFunction from 'react-redux-promise-listener';
-import PATH_NAMES from '@Constants/pathNames';
-import { promiseListener } from '@Redux/store';
-import TYPES from '@Redux/actionTypes';
 import {
   Typography,
   Button,
@@ -13,6 +10,9 @@ import {
   InputAdornment,
   Box,
 } from '@mui/material';
+import PATH_NAMES from '@Constants/pathNames';
+import { promiseListener } from '@Redux/store';
+import TYPES from '@Redux/actionTypes';
 import {
   composeValidators,
   isLongLength,

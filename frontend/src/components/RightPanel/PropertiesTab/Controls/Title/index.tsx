@@ -1,7 +1,7 @@
-import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
-import { ImageElement, PropertiesChangeProps } from '@Src/types';
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
+import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
+import { ImageElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
 

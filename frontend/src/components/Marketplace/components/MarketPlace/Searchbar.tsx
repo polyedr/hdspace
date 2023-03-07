@@ -1,18 +1,18 @@
 import React, { FC, useEffect } from 'react';
 import { TextField, MenuItem } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { DateRange, TemplatesSearchParameter } from '@Src/types';
-import {
-  searchTemplates,
-  setTemplatesSearchParameter,
-} from '@Redux/marketplace/actions';
-import { TEMPLATE_STATUS_LIST } from '@Constants/defaultParams';
 import { DatePicker, LocalizationProvider } from '@mui/lab';
 import DateFnsUtils from '@date-io/date-fns';
 import { startOfDay, endOfDay } from 'date-fns';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import styled from 'styled-components';
+import { TEMPLATE_STATUS_LIST } from '@Constants/defaultParams';
+import {
+  searchTemplates,
+  setTemplatesSearchParameter,
+} from '@Redux/marketplace/actions';
+import { DateRange, TemplatesSearchParameter } from '@Src/types';
 import { selectTemplatesSearchParameter } from '@Redux/marketplace/selectors/base';
 
 const CustomForm = styled.form`

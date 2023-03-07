@@ -1,7 +1,9 @@
 // @ts-nocheck
 import { call, put, select } from 'redux-saga/effects';
-import { apiChangeRecursiveElement, apiCreateElement } from '@Api/element';
 import DOMPurify from 'dompurify';
+import CSSOM from 'cssom';
+import JSZip from 'jszip';
+import { apiChangeRecursiveElement, apiCreateElement } from '@Api/element';
 import {
   LibraryElement,
   PostURLCheckRobots,
@@ -14,7 +16,6 @@ import {
   importData,
 } from '@Src/types';
 import convertHtml from '@Utils/convertHtml';
-import CSSOM from 'cssom';
 import { extractStyles } from '@Utils/stringHelper';
 import IMAGES from '@Constants/images';
 import { apiGetWebPage, apiPostURL, apiPostURLCheckRobots } from '@Api/import';
@@ -27,7 +28,6 @@ import {
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { selectElementsForScreen } from '@Redux/project/selectors/element';
-import JSZip from 'jszip';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import {
   selectCurrentScreenId,

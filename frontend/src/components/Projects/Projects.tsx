@@ -3,14 +3,6 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStyles, makeStyles } from '@mui/styles';
 import {
-  selectAreProjectsLoading,
-  selectProjectCreateLoader,
-  selectProjects,
-  selectProjectsDataNext,
-} from '@Redux/project/selectors/base';
-import Searchbar from '@Components/Projects/Searchbar';
-import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
-import {
   Typography,
   Table,
   TableHead,
@@ -23,14 +15,22 @@ import {
   CircularProgress,
   Theme,
 } from '@mui/material';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import {
+  selectAreProjectsLoading,
+  selectProjectCreateLoader,
+  selectProjects,
+  selectProjectsDataNext,
+} from '@Redux/project/selectors/base';
+import Searchbar from '@Components/Projects/Searchbar';
+import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
 import {
   createProject,
   getProjectList,
   setProjectError,
 } from '@Redux/project/actions';
 import { getSubscriptionData } from '@Redux/permissions/actions';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
 import { selectSubscriptionData } from '@Redux/user/selectors';
 import { selectProjectError } from '@Redux/project/selectors/via';
 import ProjectListItem from './ProjectListItem';

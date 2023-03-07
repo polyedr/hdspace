@@ -1,5 +1,8 @@
 import { makeStyles } from '@mui/styles';
-import { selectActiveElementParams } from '@Redux/project/selectors/element';
+import React, { ChangeEvent, FC } from 'react';
+import { useSelector } from 'react-redux';
+
+import { Checkbox, FormControlLabel, Theme } from '@mui/material';
 import {
   Entity,
   Layout,
@@ -9,10 +12,7 @@ import {
   PropertiesChangeProps,
   additionalLayoutPhone,
 } from '@Src/types';
-import React, { ChangeEvent, FC } from 'react';
-import { useSelector } from 'react-redux';
-
-import { Checkbox, FormControlLabel, Theme } from '@mui/material';
+import { selectActiveElementParams } from '@Redux/project/selectors/element';
 
 const useFormControlLabelStyles = makeStyles<Theme>(({ palette }) => ({
   label: {

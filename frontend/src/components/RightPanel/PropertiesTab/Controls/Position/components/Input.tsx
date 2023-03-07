@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyledTextField } from '@Components/styledComponents';
 import { makeStyles } from '@mui/styles';
+import { StyledTextField } from '@Components/styledComponents';
 
 interface Props {
   name: string;

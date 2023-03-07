@@ -1,13 +1,13 @@
 /* eslint-disable react/no-unused-prop-types */
 import React, { ChangeEvent, FC } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { MenuItem } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { useDispatch, useSelector } from 'react-redux';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { addChildrenToElement, deleteElement } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { MenuItem } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   root: {

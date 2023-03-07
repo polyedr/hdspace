@@ -4,9 +4,6 @@ import React from 'react';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import { Form } from 'react-final-form';
 import { Link } from 'react-router-dom';
-import PATH_NAMES from '@Constants/pathNames';
-import { promiseListener } from '@Redux/store';
-import TYPES from '@Redux/actionTypes';
 import {
   Typography,
   Button,
@@ -16,6 +13,9 @@ import {
   Box,
   InputAdornment,
 } from '@mui/material';
+import PATH_NAMES from '@Constants/pathNames';
+import { promiseListener } from '@Redux/store';
+import TYPES from '@Redux/actionTypes';
 
 import {
   composeValidators,

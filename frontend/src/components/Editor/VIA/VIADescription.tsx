@@ -1,22 +1,22 @@
+import React, { ChangeEvent, FC } from 'react';
+import { Delete, FileCopy } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
+import { capitalize } from '@mui/material/utils';
+import { MenuItem, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import {
   StyledIconButton,
   StyledTextField,
 } from '@Components/styledComponents';
 import { Entity, VIARegion } from '@Src/types';
-import React, { ChangeEvent, FC } from 'react';
-import { Delete, FileCopy } from '@mui/icons-material';
-import { useDispatch } from 'react-redux';
 import {
   copyVIARegion,
   deleteVIARegion,
   updateVIARegion,
 } from '@Redux/project/actions';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
-import { capitalize } from '@mui/material/utils';
 import { splitWords } from '@Utils/stringHelper';
 import isValidAnnotationElement from '@Utils/validators/isValidAnnotationElement';
-import { MenuItem, Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles<Theme>(({ spacing }) => ({
   container: {

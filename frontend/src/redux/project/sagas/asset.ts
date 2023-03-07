@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { put, select, call } from 'redux-saga/effects';
+import { compose } from 'redux';
+import logger from 'loglevel';
 import {
   apiCreateAsset,
   apiDeleteAsset,
@@ -22,9 +24,7 @@ import {
 } from '@Src/types';
 import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
 import { HistoryMeta, UploadAssetData } from '@Redux/types';
-import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
-import logger from 'loglevel';
 import {
   selectAllAssetLists,
   selectCurrentAssetListId,
@@ -34,10 +34,10 @@ import {
 } from '../selectors/asset';
 import { selectScreenByIdWrapper } from '../selectors/screen';
 import { selectCurrentProjectId } from '../selectors/base';
-import { reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectElementById } from '../selectors/element';
 import withActionsHistory from '../wrappers/withActionsHistory';
+import { reqWrapper } from './shared';
 
 // eslint-disable-next-line consistent-return
 export function* uploadAssetHelper(
@@ -371,7 +371,7 @@ export const uploadElementAssetSaga = withRequiredPermissions(
   const { screenId } = action.meta;
 
   const element = yield select(selectElementById, elementId);
-  console.log(element);
+
   try {
     const { imageURL, file, useInBackground } = asset;
     let finalImageUrl = imageURL;
@@ -415,8 +415,8 @@ export const uploadElementAssetSaga = withRequiredPermissions(
             ...element.parameters,
             imageURL: finalImageUrl,
             imageSize: {
-              width: 0,
-              height: 0,
+              width: '100px',
+              height: '100px',
             },
             width: 'auto',
             height: 'auto',

@@ -18,8 +18,8 @@ import { withHistory } from 'slate-history';
 import { Grid, Divider } from '@mui/material';
 import { EditableProps } from 'slate-react/dist/components/editable';
 import { useSelector } from 'react-redux';
-import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import fuzzysort from 'fuzzysort';
+import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import {
   Toolbar,
   IconButton,

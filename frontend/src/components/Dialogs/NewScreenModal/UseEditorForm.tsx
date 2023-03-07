@@ -1,12 +1,10 @@
-import { renderElementButtons } from '@Components/RightPanel/ElementsTab/ElementsBlock';
-import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { Button, TextField } from '@mui/material';
-import { convertElementToData } from '@Utils/elementsHierarchy';
-import React, { FC, useState } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { FC, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import { uniq } from 'ramda';
+import { convertElementToData } from '@Utils/elementsHierarchy';
+import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
+import { renderElementButtons } from '@Components/RightPanel/ElementsTab/ElementsBlock';
 
 const useStyles = makeStyles({
   root: {
@@ -61,22 +59,17 @@ const UseEditorForm: FC<Props> = ({ onClose }) => {
       />
 
       <div className={classes.container}>
-        <DndProvider backend={HTML5Backend}>
-          {query &&
-            renderElementButtons(
-              Object.fromEntries(
-                uniq(Object.values(LIBRARY_ELEMENTS))
-                  .map((value) => value())
-                  .filter((value) =>
-                    value.func_type.toLowerCase().includes(query.toLowerCase()),
-                  )
-                  .map((value) => [
-                    value.func_type,
-                    convertElementToData(value),
-                  ]),
-              ),
-            )}
-        </DndProvider>
+        {query &&
+          renderElementButtons(
+            Object.fromEntries(
+              uniq(Object.values(LIBRARY_ELEMENTS))
+                .map((value) => value())
+                .filter((value) =>
+                  value.func_type.toLowerCase().includes(query.toLowerCase()),
+                )
+                .map((value) => [value.func_type, convertElementToData(value)]),
+            ),
+          )}
       </div>
 
       <div className={classes.actions}>

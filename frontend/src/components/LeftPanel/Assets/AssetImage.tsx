@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ElementType } from '@Constants/dragAndDrop';
 import { makeStyles } from '@mui/styles';
-import { Asset } from '@Src/types';
 import { useDrag } from 'react-dnd';
+import { ElementType } from '@Constants/dragAndDrop';
+import { Asset } from '@Src/types';
 
 enum FullSizeDirection {
   VERTICAL,
@@ -44,8 +44,8 @@ const AssetImage = React.forwardRef<HTMLImageElement, Props>(
     const classes = useStyles({ sizeDirection } as StyleProps);
 
     const [, dragRef] = useDrag({
+      type: ElementType.CONSTRUCTOR,
       item: {
-        type: ElementType.CONSTRUCTOR,
         original: {
           type: 'image',
           name: 'Image asset',

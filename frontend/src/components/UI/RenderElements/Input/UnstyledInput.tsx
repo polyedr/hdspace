@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -26,6 +26,7 @@ const UnstyledInput = React.forwardRef<HTMLInputElement, RendererProps>(
           classes.ownStyles,
           isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
+        value={textContent}
         type={type}
         readOnly={isDisabled}
         defaultValue={textContent}

@@ -3,7 +3,6 @@ import { Avatar, useChatContext } from 'stream-chat-react';
 
 import './UserList.css';
 
-import type { ChannelFilters, UserResponse } from 'stream-chat';
 import Checkbox from '@mui/material/Checkbox';
 import Table from '@mui/material/Table';
 import TableCell from '@mui/material/TableCell';
@@ -13,12 +12,13 @@ import TableRow from '@mui/material/TableRow';
 import { styled } from '@mui/material/styles';
 
 import { useSelector } from 'react-redux';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { formatDistanceToNowStrict } from 'date-fns';
 import {
   selectAllUsersPermissions,
   selectUserPermissions,
 } from '@Redux/permissions/selectors';
-import { formatDistanceToNowStrict } from 'date-fns';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import type { ChannelFilters, UserResponse } from 'stream-chat';
 import type {
   TeamAttachmentType,
   TeamChannelType,

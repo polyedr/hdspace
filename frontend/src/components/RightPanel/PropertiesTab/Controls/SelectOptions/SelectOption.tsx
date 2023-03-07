@@ -3,9 +3,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { makeStyles } from '@mui/styles';
+import { IconButton, lighten, Theme } from '@mui/material';
 import { deleteElement } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { IconButton, lighten, Theme } from '@mui/material';
 import {
   StyledAccordion,
   StyledAccordionDetails,

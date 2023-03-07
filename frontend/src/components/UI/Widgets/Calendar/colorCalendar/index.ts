@@ -195,9 +195,11 @@ export default class Calendar {
     // Check if HTML element with given selector exists in DOM
     this.calendar = this.document.querySelector(this.id);
     if (!this.calendar) {
-      throw new Error(
+      // eslint-disable-next-line no-console
+      console.error(
         `[COLOR-CALENDAR] Element with selector '${this.id}' not found`,
       );
+      return;
     }
 
     // Initialize initial HTML layout

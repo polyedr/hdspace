@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { MenuItem } from '@mui/material';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import FlexProperties from '../../helperComponents/Display/FlexProperties';
-import { DISPLAY } from './constants';
 import PlaceItemsProperties from '../../helperComponents/Display/PlaceItemsProperties';
 import { StyledTextField } from '../../../../styledComponents';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
+import { DISPLAY } from './constants';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   display?: React.CSSProperties['display'];

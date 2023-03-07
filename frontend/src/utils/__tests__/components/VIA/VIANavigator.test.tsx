@@ -1,8 +1,8 @@
 import React from 'react';
-import VIANavigator from '@Components/LeftPanel/VIANavigator';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { render, RenderResult } from '@testing-library/react';
+import VIANavigator from '@Components/LeftPanel/VIANavigator';
 import { mockState, mockVIAState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import { AppThemeProvider } from '@Src/styles/Theme';

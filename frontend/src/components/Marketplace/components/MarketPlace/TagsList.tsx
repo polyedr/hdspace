@@ -1,11 +1,11 @@
+import React from 'react';
+import { createUseStyles } from 'react-jss';
+import { useDispatch } from 'react-redux';
+import { TemplatesSearchParameter } from '@Src/types';
 import {
   searchTemplates,
   setTemplatesSearchParameter,
 } from '@Redux/marketplace/actions';
-import { TemplatesSearchParameter } from '@Src/types';
-import React from 'react';
-import { createUseStyles } from 'react-jss';
-import { useDispatch } from 'react-redux';
 
 const useStyles = createUseStyles({
   tagsWrapper: {

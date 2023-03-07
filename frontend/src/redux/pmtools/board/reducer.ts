@@ -1,11 +1,11 @@
 import { createReducer, Handlers } from 'reduxsauce';
 import TYPES from '@Redux/actionTypes';
+import { BoardAction, BoardState, BoardTask } from '../types';
 import * as columnActions from './actions/columns';
 import * as taskActions from './actions/tasks';
 import * as commentActions from './actions/comments';
 import * as labelsActions from './actions/labels';
 import * as checklistActions from './actions/checklist';
-import { BoardAction, BoardState, BoardTask } from '../types';
 
 const INITIAL_STATE: BoardState = {
   fetching: true,
@@ -100,6 +100,18 @@ const setTasks: ActionHandler<ReturnType<typeof taskActions.setTasks>> = (
     return column;
   }),
 });
+
+const removeTask: ActionHandler<ReturnType<typeof taskActions.addTask>> = (
+  state = INITIAL_STATE,
+  { task },
+) => {
+  const newState = { ...state };
+  const columnIndex = findColumnIndex(state, task.column);
+  const taskIndex = findTaskIndex(state, task);
+
+  newState.columns[columnIndex].tasks.splice(taskIndex, 1);
+  return newState;
+};
 
 const addTask: ActionHandler<ReturnType<typeof taskActions.addTask>> = (
   state = INITIAL_STATE,
@@ -290,6 +302,7 @@ const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_SET_COLUMNS]: setColumns,
   [TYPES.BOARD_FETCH_COLUMNS_PENDING]: setColumnsFetching,
   [TYPES.BOARD_SET_TASKS]: setTasks,
+  [TYPES.BOARD_REMOVE_TASK]: removeTask,
   [TYPES.BOARD_ADD_TASK]: addTask,
   [TYPES.BOARD_SET_TASK]: setTask,
   [TYPES.BOARD_ADD_COLUMN]: addColumn,

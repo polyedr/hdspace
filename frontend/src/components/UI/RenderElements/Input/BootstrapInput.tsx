@@ -30,6 +30,7 @@ const BootstrapInput = React.forwardRef<HTMLInputElement, RendererProps>(
           )}
           type={type}
           readOnly={isDisabled}
+          value={textContent}
           defaultValue={textContent}
           placeholder={placeholder}
           {...eventHandlers}

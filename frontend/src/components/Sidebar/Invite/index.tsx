@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
-import * as Actions from '@Redux/permissions/actions';
-import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-// import { requestSendEmail } from '@Redux/pmtools/invite/actions';
 import {
   Button,
   Container,
@@ -23,6 +18,11 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import fuzzysort from 'fuzzysort';
+import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
+import * as Actions from '@Redux/permissions/actions';
+import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+// import { requestSendEmail } from '@Redux/pmtools/invite/actions';
 import Member from './Member';
 
 const StyledTable = styled(Table)(() => ({

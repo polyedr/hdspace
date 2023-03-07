@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
+import cn from 'classnames';
+import { makeStyles } from '@mui/styles';
 import {
   setActiveElement,
   updateElementParameters,
@@ -14,8 +16,6 @@ import {
   selectIncludesActiveElement,
   selectIsElementActive,
 } from '@Redux/project/selectors/element';
-import cn from 'classnames';
-import { makeStyles } from '@mui/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import Borders from './Borders';
 
@@ -161,10 +161,10 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   };
 
   const handleResizeStop: RndResizeCallback = (
-    e,
-    dir,
+    _e,
+    _dir,
     ref,
-    delta,
+    _delta,
     position,
   ) => {
     if (

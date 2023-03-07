@@ -16,22 +16,20 @@ import Frame, {
 } from 'react-frame-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { DndContext } from 'react-dnd';
+
+import { CacheProvider } from '@emotion/react';
 import { setEditorDocument } from '@Redux/project/actions';
 import { theme } from '@Src/styles/Theme';
 import {
   selectCurrentProjectClasses,
   selectCurrentUIFramework,
   selectImportLoader,
-  selectShowingGrid,
 } from '@Redux/project/selectors/base';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
 
-import { selectFreeCanvasMode } from '@Redux/project/selectors/screen';
-import GridLines from 'react-gridlines';
-import { WindowProvider } from './FrameContext';
 import useProjectHeaderStyles from '../hooks/useProjectHeaderStyles';
-import { CacheProvider } from '@emotion/react';
+import { WindowProvider } from './FrameContext';
 
 const useStyles = makeStyles({
   loaderWrapper: {
@@ -51,7 +49,7 @@ const useStyles = makeStyles({
   },
 });
 
-const CustomHead: FC = () => {
+export const CustomHead: FC = () => {
   const uiFramework = useSelector(selectCurrentUIFramework);
   const frameworkVersion = uiFramework?.version;
 
@@ -63,32 +61,32 @@ const CustomHead: FC = () => {
       <base target="_parent" />
       <style key="body_style">
         {`
-                        body {
-                          padding: 0;
-                          margin: 0;
-                          height: 100vh;
-                        }
-                        * {
-                          box-sizing: border-box;
-                        }
-                        .frame-root, .frame-content {
-                          height: 100%;
-                        }
-                        .frame-content {
-                          display: flex;
-                          flex-direction: column;
-                        }
-                        .removeNativeScrollbars::-webkit-scrollbar {
-                          display: none;
-                          
-                        }
-                        .removeNativeScrollbars {
-                          -ms-overflow-style: none;  /* IE and Edge */
-                          scrollbar-width: none;  /* Firefox */
-                        }
-                        .root{
-                          height:100vh;
-                        }`}
+          body {
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+          }
+          * {
+            box-sizing: border-box;
+          }
+          .frame-root, .frame-content {
+            height: 100%;
+          }
+          .frame-content {
+            display: flex;
+            flex-direction: column;
+          }
+          .removeNativeScrollbars::-webkit-scrollbar {
+            display: none;
+            
+          }
+          .removeNativeScrollbars {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+          }
+          //.root{
+            //height:100vh;
+          // }`}
       </style>
 
       {frameworkVersion && (
@@ -192,8 +190,6 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
 
   const entityStylesEl = useProjectHeaderStyles(entityClasses);
   const sharedStylesEl = useProjectHeaderStyles(sharedClasses);
-  const showGrid = useSelector(selectShowingGrid);
-  const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const isImportLoader = useSelector(selectImportLoader);
   const styles = useStyles();
 
@@ -231,75 +227,22 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
 
           return (
             <>
-              {showGrid ? (
-                freeCanvasMode ? (
-                  <GridLines className="grid-area" cellWidth={100}>
-                    <DndFrame>
-                      <WindowProvider value={frameWindow}>
-                        <StylesProvider jss={jss}>
-                          <StyleSheetManager
-                            target={frameDocument.head}
-                            stylisPlugins={
-                              theme.direction === 'rtl' ? [rtlPluginSc] : []
-                            }
-                          >
-                            <ThemeProvider theme={theme}>
-                              <CacheProvider value={cache}>
-                                {children}
-                              </CacheProvider>
-                            </ThemeProvider>
-                          </StyleSheetManager>
-                        </StylesProvider>
-                      </WindowProvider>
-                    </DndFrame>
-                  </GridLines>
-                ) : (
-                  <GridLines
-                    className="grid-area"
-                    cellWidth={60}
-                    strokeWidth={2}
-                    cellWidth2={12}
-                  >
-                    <DndFrame>
-                      <WindowProvider value={frameWindow}>
-                        <StylesProvider jss={jss}>
-                          <StyleSheetManager
-                            target={frameDocument.head}
-                            stylisPlugins={
-                              theme.direction === 'rtl' ? [rtlPluginSc] : []
-                            }
-                          >
-                            <ThemeProvider theme={theme}>
-                              <CacheProvider value={cache}>
-                                {children}
-                              </CacheProvider>
-                            </ThemeProvider>
-                          </StyleSheetManager>
-                        </StylesProvider>
-                      </WindowProvider>
-                    </DndFrame>
-                  </GridLines>
-                )
-              ) : (
-                <DndFrame>
-                  <WindowProvider value={frameWindow}>
-                    <StylesProvider jss={jss}>
-                      <StyleSheetManager
-                        target={frameDocument.head}
-                        stylisPlugins={
-                          theme.direction === 'rtl' ? [rtlPluginSc] : []
-                        }
-                      >
-                        <ThemeProvider theme={theme}>
-                          <CacheProvider value={cache}>
-                            {children}
-                          </CacheProvider>
-                        </ThemeProvider>
-                      </StyleSheetManager>
-                    </StylesProvider>
-                  </WindowProvider>
-                </DndFrame>
-              )}
+              <DndFrame>
+                <WindowProvider value={frameWindow}>
+                  <StylesProvider jss={jss}>
+                    <StyleSheetManager
+                      target={frameDocument.head}
+                      stylisPlugins={
+                        theme.direction === 'rtl' ? [rtlPluginSc] : []
+                      }
+                    >
+                      <ThemeProvider theme={theme}>
+                        <CacheProvider value={cache}>{children}</CacheProvider>
+                      </ThemeProvider>
+                    </StyleSheetManager>
+                  </StylesProvider>
+                </WindowProvider>
+              </DndFrame>
             </>
           );
         }}
