@@ -9,6 +9,9 @@ import {
   copyActiveElement,
   pasteCopiedElement,
   pasteElementAtIndex,
+  setActiveElement,
+  setHoveredElementId,
+  toggleSelectedElement,
 } from '@Redux/project/actions';
 import { selectShowingGrid } from '@Redux/project/selectors/base';
 import {
@@ -148,6 +151,22 @@ const Borders: React.FC<Props> = ({
   const handleClose = () => {
     setContextMenu(null);
   };
+
+  const clickHandler = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      if (event.ctrlKey || event.metaKey) {
+        dispatch(toggleSelectedElement(elementId));
+      } else {
+        dispatch(setActiveElement(elementId));
+      }
+    },
+    [dispatch, elementId],
+  );
+
+  const mouseLeaveHandler = useCallback(() => {
+    dispatch(setHoveredElementId(null));
+  }, [dispatch]);
 
   if (!elementId || !styles) {
     return null;
@@ -375,6 +394,8 @@ const Borders: React.FC<Props> = ({
           }}
         >
           <div
+            onClick={clickHandler}
+            onMouseLeave={mouseLeaveHandler}
             onContextMenu={handleContextMenu}
             style={{
               position: 'absolute',

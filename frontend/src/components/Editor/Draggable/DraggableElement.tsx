@@ -167,9 +167,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const mouseEnterHandler = useCallback(() => {
     dispatch(setHoveredElementId(elementId));
   }, [dispatch, elementId]);
-  const mouseLeaveHandler = useCallback(() => {
-    dispatch(setHoveredElementId(element?.parent || null));
-  }, [dispatch, element?.parent]);
+  
 
   const handleScrollIntoView = useDebouncedCallback((dom: HTMLElement) => {
     if ([preSelectedElementId, masterSourceElementId].includes(elementId)) {
@@ -213,7 +211,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         }
       }}
       onMouseEnter={mouseEnterHandler}
-      onMouseLeave={mouseLeaveHandler}
+      // onMouseLeave={mouseLeaveHandler}
       onClick={clickHandler}
     >
       {element.children.map((childId: string) => (
