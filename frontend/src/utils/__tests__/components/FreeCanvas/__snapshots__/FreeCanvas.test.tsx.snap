@@ -8,11 +8,11 @@ exports[`Free Canvas > should render a "free canvas" container 1`] = `
     style="position: relative; user-select: none; width: 300px; height: 100px; display: block; top: 0px; left: 0px; cursor: auto; border: 1px solid transparent; transform: translate(0px,0px); max-width: 9007199254740991px; max-height: 9007199254740991px; min-width: 100%; min-height: 100%; box-sizing: border-box; flex-shrink: 0;"
   >
     <div
-      class="makeStyles-rnd-2 makeStyles-rnd-6 react-draggable"
+      class="makeStyles-rnd-2 makeStyles-rnd-16 react-draggable"
       style="position: absolute; user-select: auto; width: 300px; height: 100px; display: inline-block; top: 0px; left: 0px; cursor: move; transform: translate(0px,0px); max-width: 9007199254740991px; max-height: 9007199254740991px; box-sizing: border-box; flex-shrink: 0;"
     >
       <div
-        class="paragraph paragraph-ownStyles-8 paragraph-ownStyles-12"
+        class="paragraph paragraph-ownStyles-19 paragraph-ownStyles-23"
         contenteditable="false"
         data-gramm_editor="false"
         data-ls-id="2"
@@ -25,21 +25,21 @@ exports[`Free Canvas > should render a "free canvas" container 1`] = `
         hidden=""
       >
         <div
-          class="makeStyles-crumb-14"
+          class="makeStyles-crumb-25"
         >
           <div
-            class="makeStyles-general-15 makeStyles-general-24"
+            class="makeStyles-general-26 makeStyles-general-35"
           >
             <span
-              class="makeStyles-name-16"
+              class="makeStyles-name-27"
             >
               paragraph
             </span>
             <hr
-              class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical makeStyles-divider-18 css-ftc7wc-MuiDivider-root"
+              class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical makeStyles-divider-29 css-ftc7wc-MuiDivider-root"
             />
             <button
-              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-iconButton-17 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-iconButton-28 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
               tabindex="0"
               title="Settings"
               type="button"
@@ -65,10 +65,10 @@ exports[`Free Canvas > should render a "free canvas" container 1`] = `
             role="menu"
           >
             <div
-              class="makeStyles-general-15 makeStyles-general-24"
+              class="makeStyles-general-26 makeStyles-general-35"
             >
               <span
-                class="makeStyles-name-16"
+                class="makeStyles-name-27"
               >
                 Z-index:
                 <b>
@@ -76,10 +76,10 @@ exports[`Free Canvas > should render a "free canvas" container 1`] = `
                 </b>
               </span>
               <hr
-                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical makeStyles-divider-18 css-ftc7wc-MuiDivider-root"
+                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-vertical makeStyles-divider-29 css-ftc7wc-MuiDivider-root"
               />
               <button
-                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-iconButton-17 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-iconButton-28 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
                 tabindex="0"
                 title="Move element up"
                 type="button"
@@ -100,7 +100,7 @@ exports[`Free Canvas > should render a "free canvas" container 1`] = `
                 />
               </button>
               <button
-                class="MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-sizeMedium makeStyles-iconButton-17 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
+                class="MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-sizeMedium makeStyles-iconButton-28 css-78trlr-MuiButtonBase-root-MuiIconButton-root"
                 disabled=""
                 tabindex="-1"
                 title="Move element down"
@@ -122,49 +122,49 @@ exports[`Free Canvas > should render a "free canvas" container 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-border-19 makeStyles-border-25 makeStyles-topBorder-20"
+          class="makeStyles-border-30 makeStyles-border-36 makeStyles-topBorder-31 makeStyles-topBorder-37"
         />
         <div
-          class="makeStyles-border-19 makeStyles-border-25 makeStyles-rightBorder-21"
+          class="makeStyles-border-30 makeStyles-border-36 makeStyles-rightBorder-32 makeStyles-rightBorder-38"
         />
         <div
-          class="makeStyles-border-19 makeStyles-border-25 makeStyles-bottomBorder-22"
+          class="makeStyles-border-30 makeStyles-border-36 makeStyles-bottomBorder-33 makeStyles-bottomBorder-39"
         />
         <div
-          class="makeStyles-border-19 makeStyles-border-25 makeStyles-leftBorder-23"
+          class="makeStyles-border-30 makeStyles-border-36 makeStyles-leftBorder-34 makeStyles-leftBorder-40"
         />
       </div>
       <div>
         <div
-          class="makeStyles-resizeHande-4"
+          class="makeStyles-resizeHande-4 makeStyles-ResizeTopBottomCursor-12"
           style="position: absolute; user-select: none; width: 100%; height: 10px; bottom: -5px; left: 0px; cursor: row-resize;"
         />
         <div
-          class="makeStyles-resizeHande-4"
+          class="makeStyles-resizeHande-4 makeStyles-resizeHandeSquare-6 makeStyles-resizeHandeSquare-18 makeStyles-resizeBottomHande-7 makeStyles-resizeLeftHande-8 makeStyles-resizeBottomLeftHande-11"
           style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; bottom: -10px; cursor: sw-resize;"
         />
         <div
-          class="makeStyles-resizeHande-4"
+          class="makeStyles-resizeHande-4 makeStyles-resizeHandeSquare-6 makeStyles-resizeHandeSquare-18 makeStyles-resizeBottomHande-7 makeStyles-resizeRightHande-10 makeStyles-resizeBottomRightHande-14"
           style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; bottom: -10px; cursor: se-resize;"
         />
         <div
-          class="makeStyles-resizeHande-4"
+          class="makeStyles-resizeHande-4 makeStyles-resizeLeftRightHande-13"
           style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; left: -5px; cursor: col-resize;"
         />
         <div
-          class="makeStyles-resizeHande-4"
+          class="makeStyles-resizeHande-4 makeStyles-ResizeTopBottomCursor-12"
           style="position: absolute; user-select: none; width: 100%; height: 10px; top: -5px; left: 0px; cursor: row-resize;"
         />
         <div
-          class="makeStyles-resizeHande-4"
+          class="makeStyles-resizeHande-4 makeStyles-resizeLeftRightHande-13"
           style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; right: -5px; cursor: col-resize;"
         />
         <div
-          class="makeStyles-resizeHande-4"
+          class="makeStyles-resizeHande-4 makeStyles-resizeHandeSquare-6 makeStyles-resizeHandeSquare-18 makeStyles-resizeTopHande-9 makeStyles-resizeLeftHande-8 makeStyles-resizeTopLeftHande-15"
           style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; top: -10px; cursor: nw-resize;"
         />
         <div
-          class="makeStyles-resizeHande-4"
+          class="makeStyles-resizeHande-4 makeStyles-resizeHandeSquare-6 makeStyles-resizeHandeSquare-18 makeStyles-resizeTopHande-9 makeStyles-resizeRightHande-10 makeStyles-resizeBottomLeftHande-11"
           style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; top: -10px; cursor: ne-resize;"
         />
       </div>
