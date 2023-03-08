@@ -40,6 +40,7 @@ const useButtonStyles = makeStyles(() => ({
       flexDirection: 'column',
       justifyContent: 'flex-start',
       textTransform: 'capitalize',
+      cursor: 'crosshair',
 
       '&:hover': {
         color: 'black',

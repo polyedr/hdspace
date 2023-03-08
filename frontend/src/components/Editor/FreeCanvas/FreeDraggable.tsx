@@ -32,6 +32,7 @@ const notDraggableElements: Entity[] = [
 const useStyles = makeStyles({
   rnd: {
     position: 'absolute',
+    cursor: 'default !important',
     zIndex: ({
       isActive,
       zIndex,
@@ -43,6 +44,7 @@ const useStyles = makeStyles({
     position: 'absolute',
     width: 'auto',
     height: 'auto',
+    cursor: 'default !important',
     zIndex: ({
       isActive,
       zIndex,
@@ -51,14 +53,63 @@ const useStyles = makeStyles({
       isActive || includesActiveElement ? 1000 : zIndex,
   },
   resizeHande: {
-    borderRadius: '4px',
+    // borderRadius: '4px',
     zIndex: 1000,
-    '&:hover': {
-      backgroundColor: 'rgba(136, 136, 136, 0.5)',
-    },
+    // '&:hover': {
+    //   backgroundColor: 'rgba(136, 136, 136, 0.5)',
+    // },
   },
   activeResizeHandle: {
-    backgroundColor: 'rgba(136, 136, 136, 0.5)',
+    // backgroundColor: 'rgba(136, 136, 136, 0.5)',
+  },
+  resizeHandeSquare: {
+    // border: '1px solid #1CC09F',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    // borderColor: '#128A72',
+    borderColor: (props: any) => (props.isActive ? '#128A72' : 'transparent'),
+    height: '8px !important',
+    width: '8px !important',
+    backgroundColor: (props: any) => (props.isActive ? '#fff' : 'transparent'),
+  },
+  resizeBottomHande: {
+    bottom: '-4px !important',
+  },
+  resizeLeftHande: {
+    left: '-4px !important',
+    // cursor: 'url(../../../assets/images/cursor_diagonal.svg)',
+  },
+  resizeTopHande: {
+    top: '-4px !important',
+  },
+  resizeRightHande: {
+    right: '-4px !important',
+  },
+  // eResizeCursor: {
+  //   cursor: 'e-resize !important',
+  // },
+  // nResizeCursor: {
+  //   cursor: 'n-resize !important',
+  // },
+  resizeBottomLeftHande: {
+    cursor:
+      'url(../../../../src/assets/images/cursor_diagonal.svg) 15 15, auto !important',
+  },
+  ResizeTopBottomCursor: {
+    cursor:
+      'url(../../../../src/assets/images/cursor_top.svg) 4 12, auto !important',
+  },
+  resizeLeftRightHande: {
+    cursor:
+      'url(../../../../src/assets/images/cursor_left_right.svg) 15 10, auto !important',
+  },
+  resizeBottomRightHande: {
+    cursor:
+      'url(../../../../src/assets/images/cursor_rotate.svg) 5 5, auto !important',
+  },
+  resizeTopLeftHande: {
+    cursor:
+      'url(../../../../src/assets/images/cursor_diagonal_left.svg) 15 15, auto !important',
   },
 });
 
@@ -221,14 +272,62 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       resizeHandleClasses={{
-        bottom: cn(classes.resizeHande, activeHandle('bottom')),
-        bottomLeft: cn(classes.resizeHande, activeHandle('bottomLeft')),
-        bottomRight: cn(classes.resizeHande, activeHandle('bottomRight')),
-        left: cn(classes.resizeHande, activeHandle('left')),
-        top: cn(classes.resizeHande, activeHandle('top')),
-        right: cn(classes.resizeHande, activeHandle('right')),
-        topLeft: cn(classes.resizeHande, activeHandle('topLeft')),
-        topRight: cn(classes.resizeHande, activeHandle('topRight')),
+        bottom: cn(
+          classes.resizeHande,
+          // classes.nResizeCursor,
+          classes.ResizeTopBottomCursor,
+          activeHandle('bottom'),
+        ),
+        bottomLeft: cn(
+          classes.resizeHande,
+          classes.resizeHandeSquare,
+          classes.resizeBottomHande,
+          classes.resizeLeftHande,
+          classes.resizeBottomLeftHande,
+          activeHandle('bottomLeft'),
+        ),
+        bottomRight: cn(
+          classes.resizeHande,
+          classes.resizeHandeSquare,
+          classes.resizeBottomHande,
+          classes.resizeRightHande,
+          classes.resizeBottomRightHande,
+          activeHandle('bottomRight'),
+        ),
+        left: cn(
+          classes.resizeHande,
+          classes.resizeLeftRightHande,
+          // classes.eResizeCursor,
+          activeHandle('left'),
+        ),
+        top: cn(
+          classes.resizeHande,
+          // classes.nResizeCursor,
+          classes.ResizeTopBottomCursor,
+          activeHandle('top'),
+        ),
+        right: cn(
+          classes.resizeHande,
+          classes.resizeLeftRightHande,
+          // classes.eResizeCursor,
+          activeHandle('right'),
+        ),
+        topLeft: cn(
+          classes.resizeHande,
+          classes.resizeHandeSquare,
+          classes.resizeTopHande,
+          classes.resizeLeftHande,
+          classes.resizeTopLeftHande,
+          activeHandle('topLeft'),
+        ),
+        topRight: cn(
+          classes.resizeHande,
+          classes.resizeHandeSquare,
+          classes.resizeTopHande,
+          classes.resizeRightHande,
+          classes.resizeBottomLeftHande,
+          activeHandle('topRight'),
+        ),
       }}
       disableDragging={disableInteractions}
       enableResizing={{
@@ -245,6 +344,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
       {renderElement()}
 
       {!disableInteractions ? (
+        // <Borders element={element} hidden={!hover && !isActive} />
         <Borders element={element} hover={hover} isActive={isActive} />
       ) : null}
     </Rnd>

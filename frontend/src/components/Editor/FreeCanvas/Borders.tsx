@@ -26,8 +26,8 @@ const useStyles = makeStyles({
     textTransform: 'capitalize',
   },
   general: {
-    backgroundColor: (props: any) => (props.isActive ? '#5A899D' : '#7a7a7a'),
-    display: 'flex',
+    backgroundColor: (props: any) => (props.isActive ? '#128A72' : '#1CC09F'),
+    display: 'none',
     flexWrap: 'nowrap',
     height: 16,
     borderBottom: '1px solid #bbb',
@@ -42,38 +42,39 @@ const useStyles = makeStyles({
     fontSize: 16,
     color: '#fff',
     borderRadius: 0,
+    // display: 'none',
   },
   divider: {
     backgroundColor: '#bbb',
   },
   border: {
     position: 'absolute',
-    backgroundColor: (props: any) => (props.isActive ? '#5A899D' : '#7a7a7a'),
+    backgroundColor: (props: any) => (props.isActive ? '#128A72' : '#1CC09F'),
     zIndex: 998,
   },
   topBorder: {
     top: 0,
     left: 0,
     right: 0,
-    height: 1,
+    height: (props: any) => (props.isActive ? '1px' : '2px'),
   },
   rightBorder: {
     top: 0,
     right: 0,
     bottom: 0,
-    width: 1,
+    width: (props: any) => (props.isActive ? '1px' : '2px'),
   },
   bottomBorder: {
     bottom: 0,
     left: 0,
     right: 0,
-    height: 1,
+    height: (props: any) => (props.isActive ? '1px' : '2px'),
   },
   leftBorder: {
     top: 0,
     left: 0,
     bottom: 0,
-    width: 1,
+    width: (props: any) => (props.isActive ? '1px' : '2px'),
   },
 });
 
