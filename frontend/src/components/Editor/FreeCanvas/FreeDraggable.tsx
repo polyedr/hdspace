@@ -117,10 +117,10 @@ interface Props {
   elementId: StateElement['id'];
   includesActiveElement?: boolean;
   lockAspectRatio?: boolean;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
-const FreeDraggable: React.FC<Props> = ({ elementId, disabled }) => {
+const FreeDraggable: React.FC<Props> = ({ elementId, disabled = false }) => {
   const dispatch = useDispatch();
   const disableInteractions = useSelector(selectIsPrototypeMode);
 
