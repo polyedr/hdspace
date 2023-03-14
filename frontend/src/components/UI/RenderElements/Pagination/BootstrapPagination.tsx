@@ -29,13 +29,13 @@ const BootstrapPagination = React.forwardRef<HTMLElement, RendererProps>(
         <ul className="pagination">
           <li className="page-item">
             <a className="page-link" href="!#">
-              Previous
+              <span>Previous</span>
             </a>
           </li>
           {children}
           <li className="page-item">
             <a className="page-link" href="!#">
-              Next
+              <span>Next</span>
             </a>
           </li>
         </ul>

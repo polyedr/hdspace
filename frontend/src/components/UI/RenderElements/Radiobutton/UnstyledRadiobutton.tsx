@@ -37,14 +37,14 @@ const UnstyledRadiobutton = React.forwardRef<HTMLInputElement, RendererProps>(
 
     return (
       <label
+        id={element.id}
+        data-ls-id={element.id}
         htmlFor={element.id}
         style={{ display: 'flex', alignItems: 'center' }}
       >
         <input
           type="radio"
           ref={ref}
-          id={element.id}
-          data-ls-id={element.id}
           className={cn(
             className,
             groupClass,

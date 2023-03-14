@@ -17,6 +17,7 @@ import {
   selectShowingGrid,
 } from '@Redux/project/selectors/base';
 import ELEMENT_IDS from '@Constants/elementIds';
+import { selectActiveEditingElementId } from '@Redux/project/selectors/element';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
@@ -115,6 +116,7 @@ const Workspace: React.FC<Props> = () => {
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
 
   const [scrollbarRef, setScrollbarRef] = useState<Scrollbars | null>(null);
+  const activeEditingElementId = useSelector(selectActiveEditingElementId);
 
   const format = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
@@ -186,9 +188,11 @@ const Workspace: React.FC<Props> = () => {
                     </>
                   )}
                 </WrapInGridLine>
-                {!freeCanvasMode && !isPrototypeMode && (
-                  <ElementsInteractions posRight={scrollLeft} />
-                )}
+                {!freeCanvasMode &&
+                  !isPrototypeMode &&
+                  activeEditingElementId === null && (
+                    <ElementsInteractions posRight={scrollLeft} />
+                  )}
                 {isPrototypeMode && <HoverInterations />}
               </Scrollbar>
             </EditorViewport>

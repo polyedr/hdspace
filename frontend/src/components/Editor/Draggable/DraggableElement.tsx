@@ -167,7 +167,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const mouseEnterHandler = useCallback(() => {
     dispatch(setHoveredElementId(elementId));
   }, [dispatch, elementId]);
-  
 
   const handleScrollIntoView = useDebouncedCallback((dom: HTMLElement) => {
     if ([preSelectedElementId, masterSourceElementId].includes(elementId)) {

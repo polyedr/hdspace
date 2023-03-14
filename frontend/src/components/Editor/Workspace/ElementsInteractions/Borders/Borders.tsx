@@ -404,6 +404,7 @@ const Borders: React.FC<Props> = ({
         >
           <div
             onClick={clickHandler}
+            id={`element-border-${elementId}`}
             onMouseLeave={mouseLeaveHandler}
             onContextMenu={handleContextMenu}
             style={{

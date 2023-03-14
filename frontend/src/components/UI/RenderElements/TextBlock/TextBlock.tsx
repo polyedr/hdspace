@@ -6,6 +6,8 @@ import { useHistory } from 'react-router';
 import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
+import InlineEditable from '@Components/UI/InlineEditable';
+import { useElement } from '@Src/hooks';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
@@ -34,6 +36,8 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
     const isProtoMode = useSelector(selectIsPrototypeMode);
     const exportScreenFlag = useSelector(selectExportScreenFlag);
 
+    const { updateTextContent } = useElement(element.id);
+
     const changeScreen = () => {
       history.push(`/project/${screenLink}`);
     };
@@ -50,42 +54,60 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
             {...contentEditableSettings.props}
             {...contentEditableSettings.events}
           >
-            <div
-              ref={ref}
-              id={element.id}
-              data-ls-id={element.id}
-              className={cn(
-                className,
-                classes.textBlock,
-                groupClass,
-                classes.ownStyles,
-                isDisabled ? classes.disabled : classes.ownPseudoStyles,
+            <InlineEditable
+              richTextEditor
+              text={formatText(textContent)}
+              onUpdated={updateTextContent}
+              elementId={element.id}
+              renderElement={(text, props) => (
+                <div
+                  ref={ref}
+                  id={element.id}
+                  data-ls-id={element.id}
+                  className={cn(
+                    className,
+                    classes.textBlock,
+                    groupClass,
+                    classes.ownStyles,
+                    isDisabled ? classes.disabled : classes.ownPseudoStyles,
+                  )}
+                  dangerouslySetInnerHTML={{ __html: text }}
+                  data-gramm_editor={false}
+                  {...contentEditableSettings.props}
+                  {...eventHandlers}
+                  {...props}
+                />
               )}
-              dangerouslySetInnerHTML={{ __html: formatText(textContent) }}
-              data-gramm_editor={false}
-              {...contentEditableSettings.props}
-              {...eventHandlers}
             />
           </a>
         ) : screenLink && screenName && isProtoMode && !exportScreenFlag ? (
-          <div
-            ref={ref}
-            id={element.id}
-            onClick={() =>
-              isProtoMode && !exportScreenFlag ? changeScreen() : ''
-            }
-            data-ls-id={element.id}
-            className={cn(
-              className,
-              classes.textBlock,
-              groupClass,
-              classes.ownStyles,
-              isDisabled ? classes.disabled : classes.ownPseudoStyles,
+          <InlineEditable
+            richTextEditor
+            text={formatText(textContent)}
+            onUpdated={updateTextContent}
+            elementId={element.id}
+            renderElement={(textContent, props) => (
+              <div
+                ref={ref}
+                id={element.id}
+                onClick={() =>
+                  isProtoMode && !exportScreenFlag ? changeScreen() : ''
+                }
+                data-ls-id={element.id}
+                className={cn(
+                  className,
+                  classes.textBlock,
+                  groupClass,
+                  classes.ownStyles,
+                  isDisabled ? classes.disabled : classes.ownPseudoStyles,
+                )}
+                dangerouslySetInnerHTML={{ __html: formatText(textContent) }}
+                data-gramm_editor={false}
+                {...contentEditableSettings.props}
+                {...eventHandlers}
+                {...props}
+              />
             )}
-            dangerouslySetInnerHTML={{ __html: formatText(textContent) }}
-            data-gramm_editor={false}
-            {...contentEditableSettings.props}
-            {...eventHandlers}
           />
         ) : screenLink && screenName && (isProtoMode || exportScreenFlag) ? (
           <a
@@ -105,39 +127,57 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
             {...contentEditableSettings.props}
             {...contentEditableSettings.events}
           >
-            <div
-              ref={ref}
-              id={element.id}
-              data-ls-id={element.id}
-              className={cn(
-                className,
-                classes.textBlock,
-                groupClass,
-                classes.ownStyles,
-                isDisabled ? classes.disabled : classes.ownPseudoStyles,
+            <InlineEditable
+              richTextEditor
+              text={formatText(textContent)}
+              onUpdated={updateTextContent}
+              elementId={element.id}
+              renderElement={(textContent, props) => (
+                <div
+                  ref={ref}
+                  id={element.id}
+                  data-ls-id={element.id}
+                  className={cn(
+                    className,
+                    classes.textBlock,
+                    groupClass,
+                    classes.ownStyles,
+                    isDisabled ? classes.disabled : classes.ownPseudoStyles,
+                  )}
+                  dangerouslySetInnerHTML={{ __html: formatText(textContent) }}
+                  data-gramm_editor={false}
+                  {...contentEditableSettings.props}
+                  {...eventHandlers}
+                  {...props}
+                />
               )}
-              dangerouslySetInnerHTML={{ __html: formatText(textContent) }}
-              data-gramm_editor={false}
-              {...contentEditableSettings.props}
-              {...eventHandlers}
             />
           </a>
         ) : (
-          <div
-            ref={ref}
-            id={element.id}
-            data-ls-id={element.id}
-            className={cn(
-              className,
-              classes.textBlock,
-              groupClass,
-              classes.ownStyles,
-              isDisabled ? classes.disabled : classes.ownPseudoStyles,
+          <InlineEditable
+            richTextEditor
+            text={formatText(textContent)}
+            onUpdated={updateTextContent}
+            elementId={element.id}
+            renderElement={(textContent, props) => (
+              <div
+                ref={ref}
+                id={element.id}
+                data-ls-id={element.id}
+                className={cn(
+                  className,
+                  classes.textBlock,
+                  groupClass,
+                  classes.ownStyles,
+                  isDisabled ? classes.disabled : classes.ownPseudoStyles,
+                )}
+                dangerouslySetInnerHTML={{ __html: formatText(textContent) }}
+                data-gramm_editor={false}
+                {...contentEditableSettings.props}
+                {...eventHandlers}
+                {...props}
+              />
             )}
-            dangerouslySetInnerHTML={{ __html: formatText(textContent) }}
-            data-gramm_editor={false}
-            {...contentEditableSettings.props}
-            {...eventHandlers}
           />
         )}
       </>

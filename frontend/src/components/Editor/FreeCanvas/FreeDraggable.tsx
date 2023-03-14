@@ -117,9 +117,10 @@ interface Props {
   elementId: StateElement['id'];
   includesActiveElement?: boolean;
   lockAspectRatio?: boolean;
+  disabled: boolean;
 }
 
-const FreeDraggable: React.FC<Props> = ({ elementId }) => {
+const FreeDraggable: React.FC<Props> = ({ elementId, disabled }) => {
   const dispatch = useDispatch();
   const disableInteractions = useSelector(selectIsPrototypeMode);
 
@@ -239,7 +240,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   const renderElement = () => (
     <Renderer element={element} isDisabled={!disableInteractions}>
       {element.children.map((childId) => (
-        <FreeDraggable key={childId} elementId={childId} />
+        <FreeDraggable disabled={disabled} key={childId} elementId={childId} />
       ))}
     </Renderer>
   );
