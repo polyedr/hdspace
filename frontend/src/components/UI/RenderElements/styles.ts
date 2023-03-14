@@ -27,6 +27,7 @@ export const makeComponentStyles: any = (
         const { element } = props;
         const { styles } = element;
         return {
+          zIndex: 1,
           ...getComputedStyle(
             styles.pseudoClassViewStyles || styles.ownStyles,
             stylesToOmit,
@@ -55,7 +56,7 @@ export const makeComponentStyles: any = (
         cursor: 'default',
         transition: 'none',
         '& > *': {
-          pointerEvents: 'none !important',
+          pointerEvents: 'none',
         },
       },
       ...(style instanceof Function ? style(theme) : style),

@@ -73,6 +73,7 @@ export const initialEdit: ProjectEditState = {
   preSelectedElementId: null,
   masterSourceElementId: null,
   hoveredElementId: '-1',
+  activeEditingElementId: null,
   masterScreenId: null,
   masterCoreElementId: '-1',
   masterGroupsElementId: '-1',

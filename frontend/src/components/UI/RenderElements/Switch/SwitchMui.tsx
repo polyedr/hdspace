@@ -6,6 +6,8 @@ import Switch from '@mui/material/Switch';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
+import InlineEditable from '@Components/UI/InlineEditable';
+import { useElement } from '@Src/hooks';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -52,6 +54,12 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
         ? `../${screenName}/index.html`
         : '';
 
+    const { updateParams } = useElement(element.id);
+
+    const handleUpdateValue = (value) => {
+      updateParams({ value });
+    };
+
     return (
       <div
         ref={ref}
@@ -81,8 +89,19 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
               href={link}
               style={{ textDecoration: 'none', cursor: 'pointer' }}
               rel="noreferrer"
-              dangerouslySetInnerHTML={{ __html: element.parameters.value }}
-            />
+            >
+              <InlineEditable
+                text={element.parameters.value}
+                elementId={element.id}
+                onUpdated={handleUpdateValue}
+                renderElement={(value, props) => (
+                  <span
+                    dangerouslySetInnerHTML={{ __html: value }}
+                    {...props}
+                  />
+                )}
+              />
+            </a>
           ) : isScreenLinkInProtoMode ? (
             <label
               ref={
@@ -95,8 +114,19 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
               }
               style={{ cursor: 'pointer' }}
               data-ls-id={id}
-              dangerouslySetInnerHTML={{ __html: element.parameters.value }}
-            />
+            >
+              <InlineEditable
+                text={element.parameters.value}
+                elementId={element.id}
+                onUpdated={handleUpdateValue}
+                renderElement={(value, props) => (
+                  <span
+                    dangerouslySetInnerHTML={{ __html: value }}
+                    {...props}
+                  />
+                )}
+              />
+            </label>
           ) : isScreenLinkInProtoModeOrExportedFlag ? (
             <a
               aria-label={`Link-${element.id}`}
@@ -104,8 +134,19 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
               href={getHref(screenName)}
               style={{ textDecoration: 'none', cursor: 'pointer' }}
               rel="noreferrer"
-              dangerouslySetInnerHTML={{ __html: element.parameters.value }}
-            />
+            >
+              <InlineEditable
+                text={element.parameters.value}
+                elementId={element.id}
+                onUpdated={handleUpdateValue}
+                renderElement={(value, props) => (
+                  <span
+                    dangerouslySetInnerHTML={{ __html: value }}
+                    {...props}
+                  />
+                )}
+              />
+            </a>
           ) : (
             <label
               ref={
@@ -113,8 +154,19 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
               }
               id={id}
               data-ls-id={id}
-              dangerouslySetInnerHTML={{ __html: element.parameters.value }}
-            />
+            >
+              <InlineEditable
+                text={element.parameters.value}
+                elementId={element.id}
+                onUpdated={handleUpdateValue}
+                renderElement={(value, props) => (
+                  <span
+                    dangerouslySetInnerHTML={{ __html: value }}
+                    {...props}
+                  />
+                )}
+              />
+            </label>
           )}
         </div>
       </div>

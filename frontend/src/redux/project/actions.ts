@@ -210,6 +210,7 @@ import {
   PasteCopiedElementAtIndex,
   ElementMetaIndex,
   ScreenFolder,
+  SetActiveEditingElementId,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -1065,6 +1066,13 @@ export const setHoveredElementId = (
   id: string | null,
 ): SetHoveredElementId => ({
   type: TYPES.SET_HOVERED_ELEMENT,
+  payload: id,
+});
+
+export const setActiveEditingElementId = (
+  id: string | null,
+): SetActiveEditingElementId => ({
+  type: TYPES.SET_ACTIVE_EDITING_ELEMENT,
   payload: id,
 });
 

@@ -123,6 +123,7 @@ export interface ProjectEditState {
   currentScreenId: number;
   activeElementId: string;
   hoveredElementId: string;
+  activeEditingElementId: string | null;
   masterCoreElementId: string;
   masterGroupsElementId: string;
   selectedAssetListId: string | null;
@@ -766,6 +767,12 @@ export type SetHoveredElementId = IAction<
   typeof TYPES.SET_HOVERED_ELEMENT,
   string | null
 >;
+
+export type SetActiveEditingElementId = IAction<
+  typeof TYPES.SET_ACTIVE_EDITING_ELEMENT,
+  string | null
+>;
+
 export type SetMasterCoreElementId = IAction<
   typeof TYPES.SET_MASTER_CORE_ELEMENT_ID,
   { id: string }
@@ -1371,6 +1378,7 @@ export type Action =
   | uploadImageForNNSuccess
   | WrapIntoContainer
   | SetHoveredElementId
+  | SetActiveEditingElementId
   | SetMasterCoreElementId
   | SetMasterGroupsElementId
   | SetMasterElementsIds

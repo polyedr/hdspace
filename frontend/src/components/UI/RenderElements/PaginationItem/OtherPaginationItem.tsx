@@ -5,6 +5,8 @@ import { useHistory } from 'react-router';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
+import InlineEditable from '@Components/UI/InlineEditable';
+import { useElement } from '@Src/hooks';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -32,6 +34,8 @@ const OtherPaginationItem = React.forwardRef<HTMLElement, RendererProps>(
     const isProtoMode = useSelector(selectIsPrototypeMode);
     const exportScreenFlag = useSelector(selectExportScreenFlag);
 
+    const { updateTextContent } = useElement(element.id);
+
     const changeScreen = () => {
       history.push(`/project/${screenLink}`);
     };
@@ -44,37 +48,59 @@ const OtherPaginationItem = React.forwardRef<HTMLElement, RendererProps>(
             target={exportScreenFlag ? '_self' : '_blank'}
             rel="noreferrer"
             ref={ref as LegacyRef<HTMLAnchorElement>}
-            id={element.id}
+            data-ls-id={element.id}
+            {...eventHandlers}
             className={cn(
               classes.ownStyles,
               groupClass,
               isDisabled ? classes.disabled : classes.ownPseudoStyles,
               isActiveLink && classes.active,
             )}
-            data-ls-id={element.id}
-            {...eventHandlers}
             data-gramm_editor={false}
-            dangerouslySetInnerHTML={{ __html: textContent }}
-          />
+          >
+            <InlineEditable
+              elementId={element.id}
+              onUpdated={updateTextContent}
+              text={textContent}
+              renderElement={(textContent, props) => (
+                <span
+                  id={element.id}
+                  dangerouslySetInnerHTML={{ __html: textContent }}
+                  {...props}
+                />
+              )}
+            />
+          </a>
         ) : screenLink && screenName && isProtoMode && !exportScreenFlag ? (
           <a
             rel="noreferrer"
             ref={ref as LegacyRef<HTMLAnchorElement>}
-            id={element.id}
             onClick={() =>
               isProtoMode && !exportScreenFlag ? changeScreen() : ''
             }
+            data-ls-id={element.id}
+            {...eventHandlers}
+            data-gramm_editor={false}
             className={cn(
               classes.ownStyles,
               groupClass,
               isDisabled ? classes.disabled : classes.ownPseudoStyles,
               isActiveLink && classes.active,
             )}
-            data-ls-id={element.id}
-            {...eventHandlers}
-            data-gramm_editor={false}
-            dangerouslySetInnerHTML={{ __html: textContent }}
-          />
+          >
+            <InlineEditable
+              elementId={element.id}
+              onUpdated={updateTextContent}
+              text={textContent}
+              renderElement={(textContent, props) => (
+                <span
+                  id={element.id}
+                  dangerouslySetInnerHTML={{ __html: textContent }}
+                  {...props}
+                />
+              )}
+            />
+          </a>
         ) : screenLink && screenName && (isProtoMode || exportScreenFlag) ? (
           <a
             href={
@@ -89,34 +115,56 @@ const OtherPaginationItem = React.forwardRef<HTMLElement, RendererProps>(
             target="_self"
             rel="noreferrer"
             ref={ref as LegacyRef<HTMLAnchorElement>}
-            id={element.id}
+            data-ls-id={element.id}
+            {...eventHandlers}
+            data-gramm_editor={false}
             className={cn(
               classes.ownStyles,
               groupClass,
               isDisabled ? classes.disabled : classes.ownPseudoStyles,
               isActiveLink && classes.active,
             )}
-            data-ls-id={element.id}
-            {...eventHandlers}
-            data-gramm_editor={false}
-            dangerouslySetInnerHTML={{ __html: textContent }}
-          />
+          >
+            <InlineEditable
+              elementId={element.id}
+              onUpdated={updateTextContent}
+              text={textContent}
+              renderElement={(textContent, props) => (
+                <span
+                  id={element.id}
+                  dangerouslySetInnerHTML={{ __html: textContent }}
+                  {...props}
+                />
+              )}
+            />
+          </a>
         ) : (
           <a
             rel="noreferrer"
             ref={ref as LegacyRef<HTMLAnchorElement>}
-            id={element.id}
+            data-ls-id={element.id}
+            {...eventHandlers}
             className={cn(
               classes.ownStyles,
               groupClass,
               isDisabled ? classes.disabled : classes.ownPseudoStyles,
               isActiveLink && classes.active,
             )}
-            data-ls-id={element.id}
-            {...eventHandlers}
             data-gramm_editor={false}
-            dangerouslySetInnerHTML={{ __html: textContent }}
-          />
+          >
+            <InlineEditable
+              elementId={element.id}
+              onUpdated={updateTextContent}
+              text={textContent}
+              renderElement={(textContent, props) => (
+                <span
+                  id={element.id}
+                  dangerouslySetInnerHTML={{ __html: textContent }}
+                  {...props}
+                />
+              )}
+            />
+          </a>
         )}
       </>
     );

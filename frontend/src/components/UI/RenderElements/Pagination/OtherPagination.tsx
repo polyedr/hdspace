@@ -10,6 +10,9 @@ const useStyles = makeComponentStyles('pagination', {
   pagination: {
     display: 'inline-block',
     '& a': {
+      display: 'inline-block',
+    },
+    '& a span': {
       color: 'black',
       float: 'left',
       padding: '8px 16px',
@@ -51,7 +54,7 @@ const OtherPagination = React.forwardRef<HTMLElement, RendererProps>(
             }
           }}
         >
-          &laquo;
+          <span>&laquo;</span>
         </a>
         {children}
         <a
@@ -62,7 +65,7 @@ const OtherPagination = React.forwardRef<HTMLElement, RendererProps>(
             }
           }}
         >
-          &raquo;
+          <span>&raquo;</span>
         </a>
       </div>
     );

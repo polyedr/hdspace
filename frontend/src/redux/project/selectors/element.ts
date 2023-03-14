@@ -101,6 +101,9 @@ export const selectActiveNNModel = ({ project }: AppReduxState) =>
 export const selectHoveredElementId = ({ project }: AppReduxState) =>
   project.edit.hoveredElementId;
 
+export const selectActiveEditingElementId = ({ project }: AppReduxState) =>
+  project.edit.activeEditingElementId;
+
 export const selectEnabledPseudoClass = ({ project }: AppReduxState) =>
   project.ui.pseudoClass;
 
