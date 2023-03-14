@@ -330,7 +330,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId, disabled = false }) => {
           activeHandle('topRight'),
         ),
       }}
-      disableDragging={disableInteractions}
+      disableDragging={disableInteractions || disabled}
       enableResizing={{
         bottom: !disableInteractions,
         bottomLeft: !disableInteractions,
