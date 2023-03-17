@@ -38,7 +38,7 @@ pipelines:
               APPLICATION_NAME: $APPLICATION_NAME
               DEPLOYMENT_GROUP: $DEPLOYMENT_GROUP
               WAIT: 'true'
-              WAIT_INTERVAL: 300
+              WAIT_INTERVAL: 500
               S3_BUCKET: $S3_BUCKET
               VERSION_LABEL: 'my-app-4.0.0'
               IGNORE_APPLICATION_STOP_FAILURES: 'true'
