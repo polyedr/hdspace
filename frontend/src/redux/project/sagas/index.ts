@@ -571,10 +571,7 @@ export default function* projectSaga() {
 
   yield takeLatest(TYPES.COPY_ACTIVE_ELEMENT, copyActiveElementSaga);
   yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
-  // yield takeEvery(
-  //   TYPES.PASTE_COPIED_ELEMENT_AT_INDEX,
-  //   pasteCopiedElementAtIndexSaga,
-  // );
+
   yield takeEvery(
     TYPES.PASTE_COPIED_ELEMENT_AT_INDEX,
     pasteCopiedElementAtIndexSaga,

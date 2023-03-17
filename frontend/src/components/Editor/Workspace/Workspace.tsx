@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, styled } from '@mui/styles';
 import _GridLines from 'react-gridlines';
 import TreeCanvas from '@Components/Editor/TreeCanvas';
 import MasterScreen from '@Components/Editor/MasterScreen';
@@ -28,14 +28,18 @@ import HoverInterations from './ElementsInteractions/HoverInterations';
 
 const GridLines = _GridLines.default ? _GridLines.default : _GridLines;
 
+const StyledGridLines = styled(GridLines)({
+  height: '100%',
+});
+
 const WrapInGridLine: React.FC<{ wrap: boolean }> = ({ wrap, children }) => {
   const props = wrap
     ? { backgroundColor: 'white' }
     : { style: { background: 'white' } };
 
   return (
-    <div style={{ backgroundColor: 'white' }}>
-      <GridLines
+    <div style={{ backgroundColor: 'white', height: '100%' }}>
+      <StyledGridLines
         className="grid-area"
         {...props}
         cellWidth={60}
@@ -43,7 +47,7 @@ const WrapInGridLine: React.FC<{ wrap: boolean }> = ({ wrap, children }) => {
         cellWidth2={12}
       >
         {children}
-      </GridLines>
+      </StyledGridLines>
     </div>
   );
 };

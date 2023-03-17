@@ -1,5 +1,5 @@
 import { makeStyles } from '@mui/styles';
-import { Menu, MenuItem, Theme } from '@mui/material';
+import { MenuItem, Theme } from '@mui/material';
 import cn from 'classnames';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,6 +24,7 @@ import {
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { BoundingStyles, DropTargetParams, Entity } from '@Src/types';
 import { canElementHaveChildren } from '@Utils/AvailableChildrenHelper';
+import { ContextMenu } from '@Components/styledComponents';
 import DropPositionMarker from './DropPositionMarker';
 
 interface Props {
@@ -139,6 +140,7 @@ const Borders: React.FC<Props> = ({
   const handleContextMenu = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       event.preventDefault();
+      event.stopPropagation();
       setContextMenu(
         contextMenu === null
           ? {
@@ -148,7 +150,7 @@ const Borders: React.FC<Props> = ({
           : null,
       );
     },
-    [elementId, frame],
+    [],
   );
 
   const handleClose = () => {
@@ -233,14 +235,17 @@ const Borders: React.FC<Props> = ({
 
   const handleDeleteElement = () => {
     dispatch(deleteElement(id, { screenId: currentScreenId }));
+    handleClose();
   };
 
   const pasteAfterElement = () => {
     dispatch(pasteElementAtIndex({ index: index + 1 }));
+    handleClose();
   };
 
   const pasteBeforeElement = () => {
     dispatch(pasteElementAtIndex({ index }));
+    handleClose();
   };
 
   const copyToClipBoard = () => {
@@ -254,55 +259,36 @@ const Borders: React.FC<Props> = ({
 
   return (
     <>
-      {!canHaveChildren && (
-        <Menu
-          container={frame.contentDocument.body}
-          open={contextMenu !== null}
-          onClose={handleClose}
-          anchorReference="anchorPosition"
-          anchorPosition={
-            contextMenu !== null
-              ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-              : undefined
-          }
-        >
-          <MenuItem onClick={copyToClipBoard}>Copy</MenuItem>
-          <MenuItem
-            disabled={canHaveChildren || emptyClipboard}
-            onClick={pasteAfterElement}
-          >
-            Paste After
-          </MenuItem>
-          <MenuItem
-            disabled={canHaveChildren || emptyClipboard}
-            onClick={pasteBeforeElement}
-          >
-            Paste Before
-          </MenuItem>
-          <MenuItem onClick={handleDeleteElement}>Delete</MenuItem>
-        </Menu>
-      )}
-      {canHaveChildren && (
-        <Menu
-          open={contextMenu !== null}
-          onClose={handleClose}
-          anchorReference="anchorPosition"
-          anchorPosition={
-            contextMenu !== null
-              ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-              : undefined
-          }
-        >
-          <MenuItem onClick={copyToClipBoard}>Copy</MenuItem>
-          <MenuItem
-            disabled={!canHaveChildren || emptyClipboard}
-            onClick={pasteToBoard}
-          >
+      <ContextMenu
+        container={frame.contentDocument.body}
+        open={contextMenu !== null}
+        onClose={handleClose}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+      >
+        <MenuItem onClick={copyToClipBoard}>Copy</MenuItem>
+        {canHaveChildren ? (
+          <MenuItem disabled={emptyClipboard} onClick={pasteToBoard}>
             Paste
           </MenuItem>
-          <MenuItem onClick={handleDeleteElement}>Delete</MenuItem>
-        </Menu>
-      )}
+        ) : (
+          <>
+            <MenuItem disabled={emptyClipboard} onClick={pasteAfterElement}>
+              Paste After
+            </MenuItem>
+            <MenuItem disabled={emptyClipboard} onClick={pasteBeforeElement}>
+              Paste Before
+            </MenuItem>
+          </>
+        )}
+
+        <MenuItem onClick={handleDeleteElement}>Delete</MenuItem>
+      </ContextMenu>
+
       {isActiveBorder &&
         !showGrid &&
         !['root', 'calendar', 'clock'].includes(type) && (
