@@ -140,6 +140,7 @@ const Borders: React.FC<Props> = ({
   const handleContextMenu = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       event.preventDefault();
+      event.stopPropagation();
       setContextMenu(
         contextMenu === null
           ? {
@@ -149,7 +150,7 @@ const Borders: React.FC<Props> = ({
           : null,
       );
     },
-    [elementId, frame],
+    [],
   );
 
   const handleClose = () => {
@@ -234,14 +235,17 @@ const Borders: React.FC<Props> = ({
 
   const handleDeleteElement = () => {
     dispatch(deleteElement(id, { screenId: currentScreenId }));
+    handleClose();
   };
 
   const pasteAfterElement = () => {
     dispatch(pasteElementAtIndex({ index: index + 1 }));
+    handleClose();
   };
 
   const pasteBeforeElement = () => {
     dispatch(pasteElementAtIndex({ index }));
+    handleClose();
   };
 
   const copyToClipBoard = () => {
