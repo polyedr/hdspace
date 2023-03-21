@@ -1,11 +1,20 @@
-import React, { useMemo, useRef, useEffect, useCallback, memo } from 'react';
+import React, {
+  useMemo,
+  useRef,
+  useEffect,
+  useCallback,
+  memo,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import logger from 'loglevel';
 import { useDebouncedCallback } from 'use-debounce';
 import Scrollbars from 'react-custom-scrollbars';
+import { MenuItem } from '@mui/material';
 import {
+  pasteCopiedElement,
   processDropElement,
   processDropTargetParams,
   setActiveElement,
@@ -26,8 +35,12 @@ import { ElementType } from '@Constants/dragAndDrop';
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import useLayout from '@Components/Editor/hooks/useLayout';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import { DOMHandler } from '../Workspace/DOMHandler';
+import { ContextMenu } from '@Components/styledComponents';
+import ELEMENT_IDS from '@Constants/elementIds';
+import { selectItemToCopyInfo } from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import RENDERERS from '../../UI/RenderElements';
+import { DOMHandler } from '../Workspace/DOMHandler';
 
 interface DraggableElementProps {
   screenId: number;
@@ -56,6 +69,20 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 }) => {
   const dispatch = useDispatch();
   const isProto = useSelector(selectIsPrototypeMode);
+  const currentScreenId = useSelector(selectCurrentScreenId);
+
+  const frame = useMemo(() => {
+    return window.parent.document.getElementById(
+      ELEMENT_IDS.canvas,
+    ) as HTMLIFrameElement;
+  }, []);
+
+  const copiedItemInfo = useSelector(selectItemToCopyInfo);
+
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
 
   const element = allElements[elementId];
   const parent = useMemo(
@@ -83,24 +110,27 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     [elementId, parentIds],
   );
 
-  const [, drag, preview] = useDrag({
-    item: {
-      original: element,
-      parent,
+  const [, drag, preview] = useDrag(
+    () => ({
       type: ElementType.ELEMENT,
-    } as SyntheticElement<StateElement>,
-    canDrag: () =>
-      !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
-      !!parent &&
-      !element.parameters.sourceElementId &&
-      canDragAndDrop &&
-      !isProto,
-    end: (dragSource, monitor) => {
-      if (!monitor.didDrop()) {
-        dispatch(setCurrentDropTargetParams(null));
-      }
-    },
-  });
+      item: {
+        original: element,
+        parent,
+      } as SyntheticElement<StateElement>,
+      canDrag: () =>
+        !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
+        !!parent &&
+        !element.parameters.sourceElementId &&
+        canDragAndDrop &&
+        !isProto,
+      end: (_, monitor) => {
+        if (!monitor.didDrop()) {
+          dispatch(setCurrentDropTargetParams(null));
+        }
+      },
+    }),
+    [element, canDragAndDrop, isProto],
+  );
 
   const [, drop] = useDrop({
     accept: [ElementType.ELEMENT, ElementType.CONSTRUCTOR],
@@ -161,12 +191,36 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     [dispatch, element],
   );
 
+  const handleContextMenu = (event: React.MouseEvent<HTMLElement>) => {
+    if (element.type !== 'root') {
+      return;
+    }
+
+    event.preventDefault();
+
+    setContextMenu(
+      contextMenu === null
+        ? {
+            mouseX: event.clientX,
+            mouseY: event.clientY,
+          }
+        : null,
+    );
+  };
+
+  const handleCloseContextMenu = () => {
+    setContextMenu(null);
+  };
+
+  const handlePasteElement = () => {
+    handleCloseContextMenu();
+    dispatch(setActiveElement(element.id));
+    dispatch(pasteCopiedElement({ screenId: currentScreenId }));
+  };
+
   const mouseEnterHandler = useCallback(() => {
     dispatch(setHoveredElementId(elementId));
   }, [dispatch, elementId]);
-  const mouseLeaveHandler = useCallback(() => {
-    dispatch(setHoveredElementId(element?.parent || null));
-  }, [dispatch, element?.parent]);
 
   const handleScrollIntoView = useDebouncedCallback((dom: HTMLElement) => {
     if ([preSelectedElementId, masterSourceElementId].includes(elementId)) {
@@ -196,6 +250,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   return (
     <ElementRenderer
       element={element}
+      onContextMenu={handleContextMenu}
       isDisabled={isDisabled}
       ref={(dom: HTMLElement) => {
         if (dom && !ref.current) {
@@ -210,10 +265,27 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         }
       }}
       onMouseEnter={mouseEnterHandler}
-      onMouseLeave={mouseLeaveHandler}
+      // onMouseLeave={mouseLeaveHandler}
       onClick={clickHandler}
     >
-      {element.children.map((childId: string, index: number) => (
+      {element.type === 'root' && (
+        <ContextMenu
+          container={frame.contentDocument.body}
+          open={contextMenu !== null}
+          onClose={handleCloseContextMenu}
+          anchorReference="anchorPosition"
+          anchorPosition={
+            contextMenu !== null
+              ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+              : undefined
+          }
+        >
+          <MenuItem disabled={!copiedItemInfo} onClick={handlePasteElement}>
+            Paste
+          </MenuItem>
+        </ContextMenu>
+      )}
+      {element.children.map((childId: string) => (
         <DraggableElement
           key={childId.toString()}
           elementId={childId}

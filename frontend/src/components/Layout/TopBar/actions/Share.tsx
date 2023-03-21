@@ -1,6 +1,6 @@
 import React, { FC, useState, useCallback } from 'react';
 import ShareIcon from '@mui/icons-material/Share';
-import { Button, Popover, Container } from '@mui/material';
+import { Button, Popover, Container, Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import ToggleButton from '@mui/material/ToggleButton';
 import { makeStyles } from '@mui/styles';
@@ -130,17 +130,19 @@ const Share: FC<Props> = () => {
     },
     [dispatch, projectId, screenId, user.id],
   );
+
   return (
     <>
-      <ToggleButton
-        value="Share"
-        title="Share"
-        selected={open}
-        className={classes.togglebutton}
-        onClick={handleClick}
-      >
-        <ShareIcon className={classes.icon} />
-      </ToggleButton>
+      <Tooltip title="Share">
+        <ToggleButton
+          value="Share"
+          selected={open}
+          className={classes.togglebutton}
+          onClick={handleClick}
+        >
+          <ShareIcon className={classes.icon} />
+        </ToggleButton>
+      </Tooltip>
 
       <Popover
         open={open}

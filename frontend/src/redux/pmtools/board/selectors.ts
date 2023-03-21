@@ -25,5 +25,7 @@ export const selectChecklist = (task: BoardTask) =>
       (t) => t.id === task.id,
     );
 
-    return board.columns[columnIndex].tasks[taskIndex].checklist ?? [];
+    return (
+      board.columns[columnIndex].tasks[taskIndex].checklist.reverse() ?? []
+    );
   });

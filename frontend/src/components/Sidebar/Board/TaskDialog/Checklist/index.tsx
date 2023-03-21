@@ -1,27 +1,27 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import {
-  Stack,
-  TextField as MuiTextField,
-  styled,
-  InputAdornment,
-  List,
-  Button as MuiButton,
-} from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import {
+  Button as MuiButton,
+  InputAdornment,
+  List,
+  Stack,
+  styled,
+  TextField as MuiTextField,
+} from '@mui/material';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   requestCreateChecklistItem,
   requestDeleteChecklist,
 } from '@Redux/pmtools/board/actions/checklist';
-import { BoardTask } from '@Redux/pmtools/types';
 import { selectChecklist } from '@Redux/pmtools/board/selectors';
+import { BoardTask } from '@Redux/pmtools/types';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { IconButton } from '../StyledComponents';
-import ProgressBar from './ProgressBar';
 import CheckItem from './CheckItem';
+import ProgressBar from './ProgressBar';
 
 const TextField = styled(MuiTextField)({
   '& input': {

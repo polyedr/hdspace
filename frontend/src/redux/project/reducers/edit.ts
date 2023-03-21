@@ -77,6 +77,13 @@ const editReducer = produce(
         return { ...draft, hoveredElementId: action.payload };
       }
 
+      case TYPES.SET_ACTIVE_EDITING_ELEMENT: {
+        if (draft.activeEditingElementId === action.payload) {
+          return draft;
+        }
+        return { ...draft, activeEditingElementId: action.payload };
+      }
+
       case TYPES.UPDATE_LAST_ELEMENTS: {
         const { parentId, ids, offset } = action.payload;
         draft.freeCanvas.lastElements[parentId] = { elements: ids, offset };

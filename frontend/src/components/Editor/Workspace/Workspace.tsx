@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Scrollbars from 'react-custom-scrollbars';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, styled } from '@mui/styles';
 import _GridLines from 'react-gridlines';
 import TreeCanvas from '@Components/Editor/TreeCanvas';
 import MasterScreen from '@Components/Editor/MasterScreen';
@@ -16,14 +16,21 @@ import {
   selectScreenRotated,
   selectShowingGrid,
 } from '@Redux/project/selectors/base';
+import ELEMENT_IDS from '@Constants/elementIds';
+import { selectActiveEditingElementId } from '@Redux/project/selectors/element';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import { DOMHandler } from './DOMHandler';
+import HoverInterations from './ElementsInteractions/HoverInterations';
 
 const GridLines = _GridLines.default ? _GridLines.default : _GridLines;
+
+const StyledGridLines = styled(GridLines)({
+  height: '100%',
+});
 
 const WrapInGridLine: React.FC<{ wrap: boolean }> = ({ wrap, children }) => {
   const props = wrap
@@ -31,8 +38,8 @@ const WrapInGridLine: React.FC<{ wrap: boolean }> = ({ wrap, children }) => {
     : { style: { background: 'white' } };
 
   return (
-    <div style={{ backgroundColor: 'white' }}>
-      <GridLines
+    <div style={{ backgroundColor: 'white', height: '100%' }}>
+      <StyledGridLines
         className="grid-area"
         {...props}
         cellWidth={60}
@@ -40,7 +47,7 @@ const WrapInGridLine: React.FC<{ wrap: boolean }> = ({ wrap, children }) => {
         cellWidth2={12}
       >
         {children}
-      </GridLines>
+      </StyledGridLines>
     </div>
   );
 };
@@ -112,6 +119,9 @@ const Workspace: React.FC<Props> = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
 
+  const [scrollbarRef, setScrollbarRef] = useState<Scrollbars | null>(null);
+  const activeEditingElementId = useSelector(selectActiveEditingElementId);
+
   const format = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
@@ -122,6 +132,32 @@ const Workspace: React.FC<Props> = () => {
   const scrollRef = useRef<Scrollbars | null>(null);
 
   const [scrollLeft, setScrollLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (scrollbarRef && params.has('moveToElement')) {
+      const canvas = document.getElementById(
+        ELEMENT_IDS.canvas,
+      ) as HTMLIFrameElement;
+
+      canvas.onload = () => {
+        const innerDoc =
+          canvas.contentDocument || canvas.contentWindow?.document;
+        const element = innerDoc?.getElementById(
+          params.get('moveToElement') || '',
+        );
+
+        if (element) {
+          element?.scrollIntoView({
+            block: 'center',
+            inline: 'nearest',
+            behavior: 'smooth',
+          });
+        }
+      };
+    }
+  }, [scrollbarRef]);
 
   return (
     <div className={classes.workspace} ref={ref}>
@@ -134,6 +170,7 @@ const Workspace: React.FC<Props> = () => {
                   if (!scrollbars) {
                     return;
                   }
+                  setScrollbarRef(scrollbars);
                   scrollRef.current = scrollbars;
                   DOMHandler.INSTANCE.watch(scrollbars.view);
                 }}
@@ -155,9 +192,12 @@ const Workspace: React.FC<Props> = () => {
                     </>
                   )}
                 </WrapInGridLine>
-                {!freeCanvasMode && !isPrototypeMode && (
-                  <ElementsInteractions posRight={scrollLeft} />
-                )}
+                {!freeCanvasMode &&
+                  !isPrototypeMode &&
+                  activeEditingElementId === null && (
+                    <ElementsInteractions posRight={scrollLeft} />
+                  )}
+                {isPrototypeMode && <HoverInterations />}
               </Scrollbar>
             </EditorViewport>
             <NNProcessingModal />

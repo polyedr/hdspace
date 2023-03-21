@@ -30,6 +30,41 @@ export const selectSortedScreens = createSelector(
     Object.values(unsortedScreens).sort((a, b) => a.buoyancy - b.buoyancy),
 );
 
+export const selectFolders = (state: AppReduxState) =>
+  state.project.data.screenFolders;
+
+export const selectSortedFolders = createSelector(selectFolders, (folders) => {
+  return Object.values(folders)
+    .map((folder) => {
+      return {
+        ...folder,
+        ctscreens: Object.values(folder.ctscreens).sort(
+          (a, b) => a.buoyancy - b.buoyancy,
+        ),
+      };
+    })
+    .sort((a, b) => a.buoyancy - b.buoyancy);
+});
+
+export const selectUncategoriesScreens = createSelector(
+  selectSortedFolders,
+  selectScreensWithoutMaster,
+  (folders, screens) => {
+    let categoriesScreensIds = [];
+
+    folders.forEach((folder) => {
+      categoriesScreensIds = [
+        ...categoriesScreensIds,
+        ...folder.ctscreens.map((screen) => screen.id),
+      ];
+    });
+
+    return screens.filter(
+      (screen) => !categoriesScreensIds.includes(screen.id),
+    );
+  },
+);
+
 export const selectScreensLength = createSelector(
   selectScreens,
   (screens: Normalized<Screen>) => Object.keys(screens).length,

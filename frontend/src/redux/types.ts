@@ -53,6 +53,12 @@ import {
   TemplatesSearchParameter,
 } from '../types';
 import TYPES from './actionTypes';
+import {
+  createdScreenFolder,
+  deletedScreenFolder,
+  fetchedScreenFolders,
+  updatedScreenFolder,
+} from './project/actions';
 
 export interface PermissionsState {
   allUsersList: PaginatedData<UserData> & { search: string };
@@ -69,6 +75,7 @@ export interface ProjectDataState {
     parameter: [ProjectsSearchParameter, string | DateRange];
   };
   screens: Normalized<Screen>;
+  screenFolders: ScreenFolder[];
   elements: Normalized<StateElement>;
   customElementsData: PaginatedArray<LibraryElement<Entity>>;
   elementInputs: Record<string, File>;
@@ -116,6 +123,7 @@ export interface ProjectEditState {
   currentScreenId: number;
   activeElementId: string;
   hoveredElementId: string;
+  activeEditingElementId: string | null;
   masterCoreElementId: string;
   masterGroupsElementId: string;
   selectedAssetListId: string | null;
@@ -227,8 +235,22 @@ export interface NotificationState {
   notifications: Notification[];
 }
 
+export interface Link {
+  isExternalLink: boolean;
+  elementId: string;
+  projectId?: string;
+  screenId: string;
+  destinationScreenId?: string;
+  link?: string;
+}
+
+export interface WireframeState {
+  activeScreen?: string;
+  activeElement?: string;
+}
 export interface AppReduxState {
   user: UserState;
+  wireframe: WireframeState;
   project: ProjectState;
   router: RouterState;
   notification: NotificationState;
@@ -264,6 +286,10 @@ export interface RestoreChildrenData {
 }
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
+
+export type WireframePositionUpdate = IPlainAction<
+  typeof TYPES.WIREFRAME_UPDATE_SCREEN_POSITION
+>;
 
 export type GetSubscriptionDataType = IPlainAction<
   typeof TYPES.SUBSCRIPTION_DATA
@@ -741,6 +767,12 @@ export type SetHoveredElementId = IAction<
   typeof TYPES.SET_HOVERED_ELEMENT,
   string | null
 >;
+
+export type SetActiveEditingElementId = IAction<
+  typeof TYPES.SET_ACTIVE_EDITING_ELEMENT,
+  string | null
+>;
+
 export type SetMasterCoreElementId = IAction<
   typeof TYPES.SET_MASTER_CORE_ELEMENT_ID,
   { id: string }
@@ -1204,6 +1236,21 @@ export type SetAnnotatedElement = IAction<
   string
 >;
 
+export interface ScreenPosition {
+  x: number;
+  y: number;
+}
+
+export interface ScreenFolder {
+  [x: string]: any;
+  folder: any;
+  id: number;
+  buoyancy: number;
+  name: string;
+  projectId: number;
+  ctscreens: Screen[];
+}
+
 export type SetVIAResultId = IAction<typeof TYPES.SET_VIA_RESULT_ID, string>;
 
 export type UpdateVIARegionLayer = IAction<
@@ -1331,6 +1378,7 @@ export type Action =
   | uploadImageForNNSuccess
   | WrapIntoContainer
   | SetHoveredElementId
+  | SetActiveEditingElementId
   | SetMasterCoreElementId
   | SetMasterGroupsElementId
   | SetMasterElementsIds
@@ -1479,12 +1527,19 @@ export type Action =
   | SetImagePalette
   | GetSubscriptionDataType
   | SetMarketplaceListLoader
-  | ProjectError;
+  | ProjectError
+  | WireframePositionUpdate
+  | HistoryAction<ReturnType<typeof createdScreenFolder>>
+  | HistoryAction<ReturnType<typeof fetchedScreenFolders>>
+  | HistoryAction<ReturnType<typeof updatedScreenFolder>>
+  | HistoryAction<ReturnType<typeof deletedScreenFolder>>;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,
   boolean
 >;
+
+export type HistoryAction<T> = T & { meta?: HistoryMeta };
 
 export type setImportValue = IAction<typeof TYPES.SET_IMPORT_VALUE, importData>;
 

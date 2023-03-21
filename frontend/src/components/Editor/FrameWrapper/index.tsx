@@ -49,7 +49,7 @@ const useStyles = makeStyles({
   },
 });
 
-const CustomHead: FC = () => {
+export const CustomHead: FC = () => {
   const uiFramework = useSelector(selectCurrentUIFramework);
   const frameworkVersion = uiFramework?.version;
 
@@ -61,32 +61,32 @@ const CustomHead: FC = () => {
       <base target="_parent" />
       <style key="body_style">
         {`
-                        body {
-                          padding: 0;
-                          margin: 0;
-                          height: 100vh;
-                        }
-                        * {
-                          box-sizing: border-box;
-                        }
-                        .frame-root, .frame-content {
-                          height: 100%;
-                        }
-                        .frame-content {
-                          display: flex;
-                          flex-direction: column;
-                        }
-                        .removeNativeScrollbars::-webkit-scrollbar {
-                          display: none;
-                          
-                        }
-                        .removeNativeScrollbars {
-                          -ms-overflow-style: none;  /* IE and Edge */
-                          scrollbar-width: none;  /* Firefox */
-                        }
-                        .root{
-                          height:100vh;
-                        }`}
+          body {
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+          }
+          * {
+            box-sizing: border-box;
+          }
+          .frame-root, .frame-content {
+            height: 100%;
+          }
+          .frame-content {
+            display: flex;
+            flex-direction: column;
+          }
+          .removeNativeScrollbars::-webkit-scrollbar {
+            display: none;
+            
+          }
+          .removeNativeScrollbars {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+          }
+          //.root{
+            //height:100vh;
+          // }`}
       </style>
 
       {frameworkVersion && (

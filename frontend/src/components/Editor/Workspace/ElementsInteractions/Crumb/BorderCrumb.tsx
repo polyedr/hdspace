@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material';
+import ShareIcon from '@mui/icons-material/Share';
 import { BoundingStyles, StateElement } from '@Src/types';
 import {
   makeButtons,
@@ -27,7 +28,7 @@ import {
   selectCurrentRootId,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import Icon from '../../../../UI/Icon';
 
 interface Props {
@@ -52,10 +53,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '12px',
     lineHeight: 1,
     color: theme.palette.common.white,
-    background: '#5A899D',
-    display: 'flex',
+    background: '#128A72',
+    // display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    display: 'none',
   }),
   label: {
     display: 'block',
@@ -202,6 +204,24 @@ const BorderCrumb: React.FC<Props> = (props) => {
     dispatch(pasteCopiedElement({ screenId: currentScreenId }));
   };
 
+  const handleCopyLink = useCallback(() => {
+    const { origin, pathname, search } = window.location;
+
+    const params = new URLSearchParams(search);
+    params.set('moveToElement', element.id);
+
+    navigator.clipboard.writeText(`${origin}${pathname}?${params.toString()}`);
+
+    dispatch(
+      enqueueSnackbar({
+        message: 'Link copied to clipboard.',
+        options: {
+          variant: 'success',
+        },
+      }),
+    );
+  }, [element]);
+
   return element && show ? (
     <div className={cn(classes.crumb)}>
       <span
@@ -213,6 +233,16 @@ const BorderCrumb: React.FC<Props> = (props) => {
       </span>
       {element.type !== 'root' && !element.name.includes('Master') && (
         <>
+          <span className={classes.icon} onClick={handleCopyLink}>
+            <ShareIcon
+              sx={{ color: 'white' }}
+              style={{
+                fontSize: 16,
+                width: 16,
+                marginRight: 3,
+              }}
+            />
+          </span>
           <span className={classes.icon} onClick={handleDuplicate}>
             <Icon icon="copy" size={16} color="white" />
           </span>

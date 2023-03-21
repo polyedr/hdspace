@@ -4,10 +4,11 @@ import { makeStyles } from '@mui/styles';
 import { omit } from 'ramda';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
+import InlineEditable from '@Components/UI/InlineEditable';
+import { useElement } from '@Src/hooks';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 
@@ -57,7 +58,8 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
   const listItemClasses = useItemStyles(props);
   const listItemWithLinkClasses = useEditableItemStyles(props);
   const linkClasses = useLinkStyles(props);
-  const contentEditableSettings = useContentEditable(element.id, textContent);
+
+  const { updateTextContent } = useElement(element.id);
 
   const history = useHistory();
   const isProtoMode = useSelector(selectIsPrototypeMode);
@@ -84,21 +86,27 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
           )}
           {...eventHandlers}
         >
-          <a
-            className={cn(
-              linkClasses.link,
-              linkClasses.linkClick,
-              groupClass,
-              linkClasses.ownStyles,
+          <InlineEditable
+            elementId={element.id}
+            text={textContent}
+            onUpdated={updateTextContent}
+            renderElement={(textContent, props) => (
+              <a
+                className={cn(
+                  linkClasses.link,
+                  linkClasses.linkClick,
+                  groupClass,
+                  linkClasses.ownStyles,
+                )}
+                aria-label={`Link-${element.id}`}
+                style={{ textDecoration: 'none' }}
+                href={link}
+                target={exportScreenFlag ? '_self' : '_blank'}
+                rel="noreferrer"
+                dangerouslySetInnerHTML={{ __html: textContent }}
+                {...props}
+              />
             )}
-            aria-label={`Link-${element.id}`}
-            style={{ textDecoration: 'none' }}
-            href={link}
-            target={exportScreenFlag ? '_self' : '_blank'}
-            rel="noreferrer"
-            dangerouslySetInnerHTML={{ __html: textContent }}
-            {...contentEditableSettings.props}
-            {...contentEditableSettings.events}
           />
         </li>
       ) : screenLink && screenName && isProtoMode && !exportScreenFlag ? (
@@ -116,25 +124,32 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
           )}
           data-gramm_editor={false}
         >
-          <a
-            aria-label={`Link-${element.id}`}
-            rel="noreferrer"
-            onClick={() =>
-              isProtoMode && !exportScreenFlag ? changeScreen() : ''
-            }
-            ref={ref as LegacyRef<HTMLAnchorElement>}
-            id={element.id}
-            {...eventHandlers}
-            className={cn(
-              linkClasses.link,
-              linkClasses.linkClick,
-              groupClass,
-              linkClasses.ownStyles,
+          <InlineEditable
+            elementId={element.id}
+            text={textContent}
+            onUpdated={updateTextContent}
+            renderElement={(textContent, props) => (
+              <a
+                aria-label={`Link-${element.id}`}
+                rel="noreferrer"
+                onClick={() =>
+                  isProtoMode && !exportScreenFlag ? changeScreen() : ''
+                }
+                ref={ref as LegacyRef<HTMLAnchorElement>}
+                id={element.id}
+                {...eventHandlers}
+                className={cn(
+                  linkClasses.link,
+                  linkClasses.linkClick,
+                  groupClass,
+                  linkClasses.ownStyles,
+                )}
+                data-ls-id={element.id}
+                data-gramm_editor={false}
+                dangerouslySetInnerHTML={{ __html: textContent }}
+                {...props}
+              />
             )}
-            data-ls-id={element.id}
-            data-gramm_editor={false}
-            dangerouslySetInnerHTML={{ __html: textContent }}
-            {...contentEditableSettings.props}
           />
         </li>
       ) : screenLink && screenName && (isProtoMode || exportScreenFlag) ? (
@@ -153,29 +168,35 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
           {...eventHandlers}
           data-gramm_editor={false}
         >
-          <a
-            className={cn(
-              linkClasses.link,
-              linkClasses.linkClick,
-              groupClass,
-              linkClasses.ownStyles,
+          <InlineEditable
+            elementId={element.id}
+            text={textContent}
+            onUpdated={updateTextContent}
+            renderElement={(textContent, props) => (
+              <a
+                className={cn(
+                  linkClasses.link,
+                  linkClasses.linkClick,
+                  groupClass,
+                  linkClasses.ownStyles,
+                )}
+                aria-label={`Link-${element.id}`}
+                style={{ textDecoration: 'none' }}
+                href={
+                  isProtoMode
+                    ? exportScreenFlag
+                      ? `../${screenName}/index.html`
+                      : '#'
+                    : exportScreenFlag
+                    ? `../${screenName}/index.html`
+                    : ''
+                }
+                target="_self"
+                rel="noreferrer"
+                dangerouslySetInnerHTML={{ __html: textContent }}
+                {...props}
+              />
             )}
-            aria-label={`Link-${element.id}`}
-            style={{ textDecoration: 'none' }}
-            href={
-              isProtoMode
-                ? exportScreenFlag
-                  ? `../${screenName}/index.html`
-                  : '#'
-                : exportScreenFlag
-                ? `../${screenName}/index.html`
-                : ''
-            }
-            target="_self"
-            rel="noreferrer"
-            dangerouslySetInnerHTML={{ __html: textContent }}
-            {...contentEditableSettings.props}
-            {...contentEditableSettings.events}
           />
         </li>
       ) : (
@@ -194,12 +215,22 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
           {...eventHandlers}
           data-gramm_editor={false}
         >
-          <a
-            aria-label={`Link-${element.id}`}
-            className={cn(linkClasses.link, groupClass, linkClasses.ownStyles)}
-            {...contentEditableSettings.props}
-            {...contentEditableSettings.events}
-            dangerouslySetInnerHTML={{ __html: textContent }}
+          <InlineEditable
+            elementId={element.id}
+            text={textContent}
+            onUpdated={updateTextContent}
+            renderElement={(textContent, props) => (
+              <a
+                aria-label={`Link-${element.id}`}
+                className={cn(
+                  linkClasses.link,
+                  groupClass,
+                  linkClasses.ownStyles,
+                )}
+                dangerouslySetInnerHTML={{ __html: textContent }}
+                {...props}
+              />
+            )}
           />
         </li>
       )}

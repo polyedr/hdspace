@@ -9,6 +9,7 @@ import {
   setActiveElement,
 } from '@Redux/project/actions';
 import {
+  selectActiveEditingElementId,
   selectActiveElementId,
   selectCurrentRoot,
   selectDirectRootChildren,
@@ -37,6 +38,8 @@ function FreeCanvas() {
   );
   const activeElementId = useSelector(selectActiveElementId);
   const currentScreenId = useSelector(selectCurrentScreenId);
+
+  const activeEditingElementId = useSelector(selectActiveEditingElementId);
 
   const { ownStyles } = useElementClassNames(root);
 
@@ -172,7 +175,11 @@ function FreeCanvas() {
       id="free-canvas-root"
     >
       {Object.values(directChildren).map((element) => (
-        <FreeDraggable key={element.id} elementId={element.id} />
+        <FreeDraggable
+          disabled={activeEditingElementId === element.id}
+          key={element.id}
+          elementId={element.id}
+        />
       ))}
     </Rnd>
   );

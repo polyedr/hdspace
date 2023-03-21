@@ -1,7 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Stack, Box, styled, Typography, ButtonBase } from '@mui/material';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSidebarOpen } from '@Redux/project/actions';
 import { selectSidebarOpen } from '@Redux/project/selectors/base';
@@ -84,63 +82,61 @@ function LeftSideBar() {
   );
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <Stack direction="row">
-        <Boxstacked>
+    <Stack direction="row">
+      <Boxstacked>
+        <Stack spacing={1}>
+          {mainMenu.map(({ id, icon: Icon, label }) => (
+            <IconButton
+              active={activeMenu === id}
+              key={id}
+              onClick={handleChangeMenu(id)}
+            >
+              <Icon />
+              <Typography variant="h5" fontSize={12}>
+                {label}
+              </Typography>
+            </IconButton>
+          ))}
+        </Stack>
+        <hr />
+        <Stack flex={1} justifyContent="space-between">
           <Stack spacing={1}>
-            {mainMenu.map(({ id, icon: Icon, label }) => (
-              <IconButton
-                active={activeMenu === id}
-                key={id}
-                onClick={handleChangeMenu(id)}
-              >
-                <Icon />
-                <Typography variant="h5" fontSize={12}>
-                  {label}
-                </Typography>
-              </IconButton>
-            ))}
-          </Stack>
-          <hr />
-          <Stack flex={1} justifyContent="space-between">
-            <Stack spacing={1}>
-              <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
-                <BoardIcon />
-                <label>Board</label>
-              </IconButton>
-              <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
-                <ChatIcon />
-                <label>Chat</label>
-              </IconButton>
-              <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
-                <MemberIcon />
-                <label>Team</label>
-              </IconButton>
-              <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
-                <ActivityIcon />
-                <label>Activities</label>
-              </IconButton>
-            </Stack>
-
-            <IconButton active={false}>
-              <SettingIcon />
-              <label>Setting</label>
+            <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
+              <BoardIcon />
+              <label>Board</label>
+            </IconButton>
+            <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
+              <ChatIcon />
+              <label>Chat</label>
+            </IconButton>
+            <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
+              <MemberIcon />
+              <label>Team</label>
+            </IconButton>
+            <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
+              <ActivityIcon />
+              <label>Activities</label>
             </IconButton>
           </Stack>
-        </Boxstacked>
-        {ActiveComponent && (
-          <Box
-            width={248}
-            sx={{
-              borderRight: '1px solid #E4E6EB',
-              backgroundColor: '#ffffff',
-            }}
-          >
-            <ActiveComponent />
-          </Box>
-        )}
-      </Stack>
-    </DndProvider>
+
+          <IconButton active={false}>
+            <SettingIcon />
+            <label>Setting</label>
+          </IconButton>
+        </Stack>
+      </Boxstacked>
+      {ActiveComponent && (
+        <Box
+          width={248}
+          sx={{
+            borderRight: '1px solid #E4E6EB',
+            backgroundColor: '#ffffff',
+          }}
+        >
+          <ActiveComponent />
+        </Box>
+      )}
+    </Stack>
   );
 }
 

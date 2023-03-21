@@ -46,7 +46,7 @@ export const theme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
-        root: {
+        contained: {
           textTransform: 'capitalize',
           color: 'white',
         },

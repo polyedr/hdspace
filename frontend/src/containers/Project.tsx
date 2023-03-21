@@ -10,13 +10,12 @@ import {
   selectProjectByIdWrapper,
   selectProjectLoader,
 } from '@Redux/project/selectors/base';
-import { getProject, resetProjectState } from '@Redux/project/actions';
+import { getProject } from '@Redux/project/actions';
 import LeftPanel from '@Components/LeftPanel';
 import NewScreenModal from '@Components/Dialogs/NewScreenModal';
 import Sidebar from '@Components/Sidebar';
 import { selectSortedScreens } from '@Redux/project/selectors/screen';
 import { Screen } from '@Src/types';
-import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
 import ScreenComponent from './Screen';
 
 const useStyles = makeStyles({
@@ -63,13 +62,13 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
     }
   }, [dispatch, projectId, currentProjectId]);
 
-  useEffect(
-    () => () => {
-      dispatch(resetProjectState());
-      DOMHandler.INSTANCE.reset();
-    },
-    [dispatch],
-  );
+  // useEffect(
+  //   () => () => {
+  //     dispatch(resetProjectState());
+  //     DOMHandler.INSTANCE.reset();
+  //   },
+  //   [dispatch],
+  // );
 
   useEffect(() => {
     if (!screenId && currentProjectId !== -1 && screens.length) {

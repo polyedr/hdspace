@@ -40,6 +40,7 @@ const useButtonStyles = makeStyles(() => ({
       flexDirection: 'column',
       justifyContent: 'flex-start',
       textTransform: 'capitalize',
+      cursor: 'crosshair',
 
       '&:hover': {
         color: 'black',
@@ -107,14 +108,17 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     ) as MutableRefObject<HTMLButtonElement>;
     const imgRef = useRef<SVGSVGElement | null>(null);
     const [over, setOver] = useState(false);
-    const [, drag, preview] = useDrag({
-      item: {
+    const [, drag, preview] = useDrag(
+      () => ({
         type: ElementType.CONSTRUCTOR,
-        original: elementData,
-      },
-      canDrag: () => true,
-      end: () => ref.current && ref.current.blur(),
-    });
+        item: {
+          original: elementData,
+        },
+        canDrag: () => true,
+        end: () => ref.current && ref.current.blur(),
+      }),
+      [elementData],
+    );
 
     useEffect(() => {
       preview(imgRef.current ? imgRef : getEmptyImage(), {

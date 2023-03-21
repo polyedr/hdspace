@@ -1,7 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { DndProvider } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import Tour, { ReactourStep } from 'reactour';
@@ -179,10 +177,10 @@ const Screen: React.FC<Props> = ({ screenId }) => {
           <VIARightPanel />
         </>
       ) : (
-        <DndProvider backend={HTML5Backend}>
+        <>
           <Workspace />
           <RightPanel />
-        </DndProvider>
+        </>
       )}
     </div>
   );

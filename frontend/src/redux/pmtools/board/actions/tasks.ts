@@ -37,3 +37,13 @@ export const createTask = (task: BoardNewTask) => ({
   type: TYPES.BOARD_CREATE_TASK,
   task,
 });
+
+export const deleteTask = (task: BoardTask) => ({
+  type: TYPES.BOARD_DELETE_TASK,
+  task,
+});
+
+export const removeTask = (task: BoardTask) => ({
+  type: TYPES.BOARD_REMOVE_TASK,
+  task,
+});
