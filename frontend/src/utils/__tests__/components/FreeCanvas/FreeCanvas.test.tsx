@@ -30,7 +30,7 @@ describe('Free Canvas', () => {
   });
 
   it('should set root as active element on click', () => {
-    const root: HTMLElement = ui.container.firstChild as HTMLElement;
+    const root: HTMLElement = ui.container.firstChild.firstChild as HTMLElement;
     fireEvent.click(root);
 
     const actions = store.getActions();

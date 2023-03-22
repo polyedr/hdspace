@@ -339,6 +339,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId, disabled = false }) => {
   ) : (
     <HotKeys handlers={handlers} onKeyUp={handleCancelTimer}>
       <Rnd
+        data-testid={elementId}
         ref={rndRef}
         onClick={handleInteractionStart}
         className={element.type === 'image' ? classes.imageView : classes.rnd}
