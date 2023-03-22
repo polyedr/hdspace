@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndResizeCallback } from 'react-rnd';
 import { DropTargetMonitor, useDrop } from 'react-dnd';
 import cn from 'classnames';
+import { HotKeys } from 'react-hotkeys';
 import {
   updateElementParameters,
   createElements,
@@ -25,6 +26,13 @@ import { ElementType } from '@Constants/dragAndDrop';
 import { selectShowingGrid } from '@Redux/project/selectors/base';
 import { useElementClassNames } from './helpers';
 import FreeDraggable from './FreeDraggable';
+
+const KEY_MAP = {
+  MOVE_UP: 'up',
+  MOVE_LEFT: 'left',
+  MOVE_RIGHT: 'right',
+  MOVE_DOWN: 'down',
+};
 
 function FreeCanvas() {
   const dispatch = useDispatch();
@@ -150,38 +158,40 @@ function FreeCanvas() {
   const showGrid = useSelector(selectShowingGrid);
 
   return (
-    <Rnd
-      ref={(c) => {
-        ref.current = c;
-      }}
-      className={cn(className, groupClass, ownStyles)}
-      style={{
-        position: 'relative',
-        userSelect: 'none',
-        display: 'block',
-        border: `1px solid ${
-          activeElementId === root.id ? '#5A899D' : 'transparent'
-        }`,
-        background: showGrid ? 'transparent' : '',
-      }}
-      onClick={() => dispatch(setActiveElement(root.id))}
-      enableResizing={false}
-      disableDragging
-      minWidth="100%"
-      minHeight="100%"
-      onResize={handleResize}
-      onResizeStop={handleResizeStop}
-      size={rootSize}
-      id="free-canvas-root"
-    >
-      {Object.values(directChildren).map((element) => (
-        <FreeDraggable
-          disabled={activeEditingElementId === element.id}
-          key={element.id}
-          elementId={element.id}
-        />
-      ))}
-    </Rnd>
+    <HotKeys keyMap={KEY_MAP}>
+      <Rnd
+        ref={(c) => {
+          ref.current = c;
+        }}
+        className={cn(className, groupClass, ownStyles)}
+        style={{
+          position: 'relative',
+          userSelect: 'none',
+          display: 'block',
+          border: `1px solid ${
+            activeElementId === root.id ? '#5A899D' : 'transparent'
+          }`,
+          background: showGrid ? 'transparent' : '',
+        }}
+        onClick={() => dispatch(setActiveElement(root.id))}
+        enableResizing={false}
+        disableDragging
+        minWidth="100%"
+        minHeight="100%"
+        onResize={handleResize}
+        onResizeStop={handleResizeStop}
+        size={rootSize}
+        id="free-canvas-root"
+      >
+        {Object.values(directChildren).map((element) => (
+          <FreeDraggable
+            disabled={activeEditingElementId === element.id}
+            key={element.id}
+            elementId={element.id}
+          />
+        ))}
+      </Rnd>
+    </HotKeys>
   );
 }
 
