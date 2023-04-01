@@ -9,16 +9,33 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('uploadapps', '0011_wpgsaved'),
+        ("uploadapps", "0011_wpgsaved"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ObjectsMove',
+            name="ObjectsMove",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('wpname', models.CharField(blank=True, max_length=250, null=True)),
-                ('owner', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='owned_objects_moved', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("wpname", models.CharField(blank=True, max_length=250, null=True)),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="owned_objects_moved",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-        ),
+        )
     ]

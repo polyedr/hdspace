@@ -7,7 +7,8 @@ from rest_framework import status, permissions, generics
 from apps.uploadapps.serializers import (
     FileSerializer,
     WpgSavedSerializer,
-    RobotsSerializer, ObjectMoveSerializer,
+    RobotsSerializer,
+    ObjectMoveSerializer,
 )
 from project.settings import MEDIA_URL
 from apps.uploadapps.models import WpgSaved, ObjectMove

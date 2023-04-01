@@ -1305,29 +1305,24 @@ class TasksReorder(APIView):
 
 
 class CategoriesReorder(APIView):
-
     def patch(self, request, pk=None):
         """
         Update the order of the categories by the parent project id
         request.data is in the expected structure:
         category pk is in data.children.{n}.id
         """
-        # because the data is expected to be nested dictionary
         decoded = request.body.decode('utf8')
         data = json.loads(decoded)
-        # print(data)
 
         sorted_dict = {}
         for key, value in enumerate(data['children']):
             sorted_dict[value['id']] = key
 
-        # sorted dict uses column pk as key and new order as value
-        # print(pk)
         categories = PCategory.objects.filter(project=pk)
-        print(categories)
         for category in categories:
             print(category.id)
             category.buoyancy = sorted_dict[category.id]
+
         affected_rows = bulk_update(categories, update_fields=['buoyancy'])
         if affected_rows:
             return Response({'affected_rows': affected_rows})

@@ -5,14 +5,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('uploadapps', '0013_auto_20230121_0705'),
-    ]
+    dependencies = [("uploadapps", "0013_auto_20230121_0705")]
 
     operations = [
         migrations.RenameField(
-            model_name='objectmove',
-            old_name='wpname',
-            new_name='link',
-        ),
+            model_name="objectmove", old_name="wpname", new_name="link"
+        )
     ]

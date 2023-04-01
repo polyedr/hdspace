@@ -21,7 +21,6 @@ from apps.utils.fset1 import (
     update_or_create_dir,
     extract_zip,
     item_generator,
-    recursive_lookup,
     update_nested,
 )
 from apps.projects.models import (
@@ -34,7 +33,6 @@ from apps.projects.models import (
 from apps.projects.serializers import (
     ImageSerializer,
     IllustrationSetSerializer,
-    ScreenScenarioSerializer,
     ScreenScenarioExportSerializer,
     ScreenScenarioImportSerializer,
     ProjectImportExportSerializer,
@@ -55,8 +53,6 @@ class FileSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         url = validated_data.pop("fileurl", None)
-        # Remove url from the submitted data
-        # validated_data['fileurl'] = ''
         # Download data from url (requires `requests` module.  Can also be done with urllib)
         response = requests.get(url)
         # Set FileField to binary file
@@ -96,7 +92,7 @@ class RobotsSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         url = validated_data.pop("fileurl", None)
-        # print(url)
+
         if not (self.does_url_exist(url)):
             self.asterisk_fetch = True
             self.wget_fetch = True
@@ -113,10 +109,7 @@ class RobotsSerializer(serializers.ModelSerializer):
         self.asterisk_fetch = rp.can_fetch("*", "/")
         self.wget_fetch = rp.can_fetch(AGENT_NAME, "/")
         self.robots_exist = True
-        # print("wget_fetch", self.wget_fetch)
 
-        # Remove url from the submitted data
-        # validated_data['fileurl'] = ''
         # Download data from url (requires `requests` module.  Can also be done with urllib)
         response = requests.get(url)
         # Set FileField to binary file
@@ -125,7 +118,7 @@ class RobotsSerializer(serializers.ModelSerializer):
             BytesIO(response.content), name=filename
         )
 
-        # Printing result data set start
+        # Find a result data set start
         result = upfile.read().decode()
 
         result_data_set = {"Disallowed": [], "Allowed": []}
@@ -142,8 +135,7 @@ class RobotsSerializer(serializers.ModelSerializer):
                     )
                 except Exception:
                     pass
-        print(result_data_set)
-        # Printing result data set end
+        # Find a result data set end
 
         fileupload = Fileupload(id=None, **validated_data)
         fileupload.save()
@@ -160,15 +152,13 @@ class WebpageSavedSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         url = validated_data.pop("wpurl", None)
-        # Remove url from the submitted data
-        # validated_data['fileurl'] = ''
         # Download data from url (requires `requests` module.  Can also be done with urllib)
         response = requests.get(url)
         # Set FileField to binary file
         wpname = urlparse(url).path.split("/")[-1]
         if not wpname:
             wpname = urlparse(url).netloc
-        print("wpname=", wpname)
+
         validated_data["wpname"] = UploadedFile(BytesIO(response.content), name=wpname)
         wpsaved = WebpageSaved(id=None, **validated_data)
         wpsaved.save()
@@ -209,23 +199,12 @@ class WpgSavedSerializer(serializers.ModelSerializer, scrapy.Spider):
         }
 
     def create(self, validated_data):
-        # url = validated_data.pop("wpname", None)
         url = validated_data["wpname"]
         self.parse_with_splash = validated_data.pop("parse_with_splash")
         self.no_robots = validated_data.pop("no_robots")
         self.start_urls.append(url)
-        # Remove url from the submitted data
-        # validated_data['fileurl'] = ''
         # Download data from url (requires `requests` module.  Can also be done with urllib)
-        # response = requests.get(url)
         # Set FileField to binary file
-        """
-        wpname = urlparse(url).path.split("/")[-1]
-        if not wpname:
-            wpname = urlparse(url).netloc
-        """
-        # print("wpname=", wpname)
-        # validated_data["wpname"] = UploadedFile(BytesIO(response.content), name=wpname)
         wpsaved = WpgSaved(id=None, **validated_data)
 
         wpath = MEDIA_ROOT + "/uploads/"
@@ -273,7 +252,6 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
     class Meta:
         model = ObjectMove
         fields = ("link", "archive", "action", "object_type", "object_id")
-        # extra_kwargs = {"action": {"read_only": True}, "object_type": {"read_only": True}, "object_id": {"read_only": True}, "archive": {"read_only": True}}
         extra_kwargs = {
             "action": {"write_only": True},
             "object_type": {"write_only": True},
@@ -283,7 +261,7 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         self.action = validated_data["action"]
         self.object_type = validated_data["object_type"]
-        print(self.object_type)
+
         # Object id has the meaning for export at the validated data
         try:
             object_id = self.object_id = validated_data.pop("object_id")
@@ -302,10 +280,6 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
                 # The image full path
                 image = BASE_DIR + serializer.data["image"]
                 images.append(image)
-                print("base dir path", BASE_DIR)
-                print(json_response)
-                print("image: ", image)
-                print("images: ", images)
 
             if self.object_type == "projectimageset":
                 queryset = ProjectIllustrationSet.objects.get(pk=self.object_id)
@@ -317,20 +291,11 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
                     if imgdata["image"]:
                         image = BASE_DIR + imgdata["image"]
                         images.append(image)
-                print("base dir path", BASE_DIR)
-                print(json_response)
-                # print(image)
-                print("images", serializer.data["images"])
 
             if self.object_type == "scenario":
                 queryset = ScreenScenario.objects.get(pk=self.object_id)
                 serializer = ScreenScenarioExportSerializer(queryset)
                 json_response = serializer.data
-                # The image full path
-                # image = BASE_DIR + serializer.data["image"]
-                # images.append(image)
-                # print("base dir path:", BASE_DIR)
-                # print("json_response:", json_response)
 
                 # Take non-empty images
                 for element in json_response["elements"]:
@@ -347,20 +312,14 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
 
                 # Read the json
                 content_json = json.loads(JSONRenderer().render(json_response))
-                # The image full path
-                # image = BASE_DIR + serializer.data["image"]
-                # images.append(image)
-                print("base dir path", BASE_DIR)
-                # print(json_response)
-                print(content_json)
+
                 # Find image urls recursively. They are at elements parameters usually. Take non-empty images
                 imageurls = item_generator(content_json, "imageURL")
-                print(imageurls)
+
                 for imageurl in imageurls:
-                    # print(imageurl)
                     o = urlparse(imageurl)
                     image = BASE_DIR + o.path
-                    print(image)
+
                     images.append(image)
 
             if self.object_type == "project":
@@ -370,20 +329,14 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
 
                 # Read the json
                 content_json = json.loads(JSONRenderer().render(json_response))
-                # The image full path
-                # image = BASE_DIR + serializer.data["image"]
-                # images.append(image)
-                # print("base dir path", BASE_DIR)
-                # print(json_response)
-                # print(content_json)
+
                 # Find image urls recursively. They are at elements parameters usually. Take non-empty images
                 imageurls = item_generator(content_json, "imageURL")
-                # print(imageurls)
+
                 for imageurl in imageurls:
-                    # print(imageurl)
+
                     o = urlparse(imageurl)
                     image = BASE_DIR + o.path
-                    print(image)
                     images.append(image)
 
             wpath = MEDIA_ROOT + "/uploads/"
@@ -396,14 +349,11 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
             # Clear content at the SAVE_DIR
             os.chdir(SAVE_DIR)
             subprocess.run(["rm -rf *"], shell=True)
-            # print("SD", SAVE_DIR)
 
             for image in images:
                 # Copying images to the object pre-archived folder
-                # for ProjectImage, ProjectImageSet
                 try:
                     shutil.copy2(image, SAVE_DIR)
-                    print("SD", SAVE_DIR)
                 except Exception:
                     pass
 
@@ -455,8 +405,6 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
                 # Clear the illustration set (parent object) value
                 o_data["illustration_set"] = None
 
-                print("io", o_data["image"], os.path.basename(o_data["image"]))
-
                 imgname = os.path.basename(o_data["image"])
                 o_data["image"] = UploadedFile(BytesIO(files[imgname]), name=imgname)
 
@@ -470,12 +418,11 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
             if self.object_type == "projectimageset":
                 # Clear the project (parent object) value
                 del o_data["project"]
-                # print("io", o_data["images"], BASE_DIR)
+
                 imagedatas = o_data.pop("images")
                 projectimages = []
                 for imagedata in imagedatas:
                     if imagedata["image"]:
-                        print(imagedata)
                         del imagedata["illustration_set"]
                         del imagedata["fileurl"]
                         del imagedata["id"]
@@ -484,8 +431,7 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
                         projectimages.append(projectimage)
 
                 del o_data["id"]
-                # print(o_data)
-                print(os.path.abspath(os.getcwd()))
+
                 projectimageset = ProjectIllustrationSet(**o_data)
                 projectimageset.save()
                 # Adding images
@@ -498,9 +444,11 @@ class ObjectMoveSerializer(serializers.ModelSerializer):
             if self.object_type == "scenario":
                 # Clear the screen (parent object) value
                 o_data["screen"] = None
-                """
+
                 # Re-write non-empty images for elements parameters. Elements are recursive.
-                # It is a simplification for one level. More complex solution means a multi-level nested dictionary update
+                # It is a simplification for one level.
+                # More complex solution means a multi-level nested dictionary update
+                """
                 for element in o_data["elements"]:
                     for key in element["parameters"]:
                         if key == "imageURL":

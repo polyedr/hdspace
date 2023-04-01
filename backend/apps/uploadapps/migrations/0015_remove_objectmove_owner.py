@@ -5,13 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('uploadapps', '0014_auto_20230121_0710'),
-    ]
+    dependencies = [("uploadapps", "0014_auto_20230121_0710")]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='objectmove',
-            name='owner',
-        ),
-    ]
+    operations = [migrations.RemoveField(model_name="objectmove", name="owner")]
