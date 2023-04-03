@@ -70,6 +70,7 @@ export const getRightPanelCategoryTabs = (
     case 'switch':
     case 'radiobuttonGroup':
     case 'label':
+    case 'buttonGenerator':
     case 'select':
       return {
         elements: {
@@ -123,13 +124,6 @@ export const getRightPanelCategoryTabs = (
       return {
         templates: {
           ...(obj.templates || {}),
-          [structType]: convertElementToData(libraryElements[structType]()),
-        },
-      };
-    case 'buttonGenerator':
-      return {
-        generators: {
-          ...(obj.generators || {}),
           [structType]: convertElementToData(libraryElements[structType]()),
         },
       };

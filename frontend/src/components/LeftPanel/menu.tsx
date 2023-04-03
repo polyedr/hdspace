@@ -1,6 +1,4 @@
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
 import { useHistory } from 'react-router-dom';
 import ElementsBlock from '@Components/RightPanel/ElementsTab/ElementsBlock';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
@@ -25,7 +23,7 @@ import LibraryMenu from './LibraryMenu';
 import Styles from './Styles';
 import VIANavigator from './VIANavigator';
 
-const { elements, templates, generators, library } =
+const { elements, templates, library } =
   createElementsHierarchy(LIBRARY_ELEMENTS);
 
 function RenderElementGrid({ elements }: { elements: object }) {
@@ -59,6 +57,18 @@ const EditorScreens = () => {
 
 export const mainMenu = [
   {
+    id: 'screens',
+    label: 'Screens',
+    icon: ScreensIcon,
+    component: EditorScreens,
+  },
+  {
+    id: 'layers-tab',
+    label: 'Layers',
+    icon: LayersIcon,
+    component: Layers,
+  },
+  {
     id: 'elements-tab',
     label: 'Elements',
     icon: ElementsIcon,
@@ -67,12 +77,6 @@ export const mainMenu = [
         <RenderElementGrid elements={elements} />
       </Scrollbar>
     ),
-  },
-  {
-    id: 'screens',
-    label: 'Screens',
-    icon: ScreensIcon,
-    component: EditorScreens,
   },
   {
     id: 'styles',
@@ -86,31 +90,9 @@ export const mainMenu = [
     ),
   },
   {
-    id: 'layers-tab',
-    label: 'Layers',
-    icon: LayersIcon,
-    component: Layers,
-  },
-  {
-    id: 'generators',
-    label: 'Generators',
-    icon: StyleOutlinedIcon,
-    component: () => (
-      <Scrollbar>
-        <ElementsBlock title="Generators" elements={generators} expandable />
-      </Scrollbar>
-    ),
-  },
-  {
     id: 'libraries',
     label: 'Library',
     icon: LibraryIcon,
     component: () => <LibraryMenu library={library} templates={templates} />,
   },
-  // {
-  //   id: 'libraries',
-  //   label: 'Libraries',
-  //   icon: LibraryIcon,
-  //   component: () => <RenderElementGrid elements={library} />,
-  // },
 ];
