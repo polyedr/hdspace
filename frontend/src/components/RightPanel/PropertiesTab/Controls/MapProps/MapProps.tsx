@@ -1,7 +1,9 @@
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
+import { InputAdornment } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import {
   MAX_LATITUDE,
   MAX_LONGITUDE,
@@ -15,8 +17,6 @@ import { getPermissibleValue } from '@Utils/NumberHelper';
 import { MapElement, PropertiesChangeProps } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { InputAdornment } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   text: {

@@ -1,5 +1,6 @@
 import { takeLatest, call, put, takeEvery, select } from 'redux-saga/effects';
 import { FORM_ERROR } from 'final-form';
+import _ from 'lodash';
 import {
   convertProfileDataFromResponse,
   convertUserDataFromResponse,
@@ -15,6 +16,8 @@ import {
   registerUser,
   apiGetUser,
   apiGetUsers,
+  apiGetSubscriptionData,
+  apiChangeProfileAAvatar,
 } from '@Api/user';
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
 import {
@@ -24,20 +27,17 @@ import {
   ViewTokenPair,
   PaginatedResponse,
   Result,
+  Data,
   UserData,
+  UserSubscriptionsData,
 } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import {
-  sidebarLogout,
-  updateUISettingsParameters,
-} from '@Redux/project/actions';
-import _ from 'lodash';
-
+import { updateUISettingsParameters } from '@Redux/project/actions';
 import { USERNAME_VIEW, PASSWORD_VIEW } from '@Constants/defaultParams';
 import TYPES from '../actionTypes';
-import * as Actions from './actions';
 import { reqWrapper } from '../project/sagas/shared';
 import { openProjects, openSignScreen } from '../history';
+import * as Actions from './actions';
 import { loginComplete } from './actions';
 import { selectProfileData, selectUserData } from './selectors';
 
@@ -78,13 +78,42 @@ export function* getTokenPairSagaProjectView() {
     );
   }
 }
+
+export function* getSubscriptionSaga() {
+  try {
+    const { data, error }: Data<Partial<UserSubscriptionsData>> = yield call(
+      reqWrapper,
+      apiGetSubscriptionData,
+    );
+    if (data) {
+      yield put(Actions.setSubscriptionData(data));
+    }
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
+          },
+          e,
+        ),
+      );
+    }
+  }
+}
+
 export function* loginSaga({
   payload: { username, password },
 }: ReturnType<typeof Actions.login>) {
   try {
     const tokenPair = yield call(getTokenPairSaga, username, password);
     if (!tokenPair) return;
-
     const { id } = yield call(reqWrapper, apiIdentifyUser);
 
     const userData: ServerUserData = yield call(reqWrapper, apiGetUser, {
@@ -110,11 +139,6 @@ export function* loginSaga({
 
 export function* logoutSaga() {
   try {
-    yield put(sidebarLogout());
-
-    // logout chat Zulip
-    localStorage.removeItem('login');
-
     yield put(Actions.logout());
     openSignScreen('signin');
   } catch (e: any) {
@@ -182,6 +206,34 @@ export function* changeProfileDataSaga({
       yield put(Actions.changeProfileDataComplete(e.response.data));
     } else {
       yield put(Actions.changeProfileDataComplete({ [FORM_ERROR]: e.message }));
+    }
+  }
+}
+
+export function* uploadProfileAvatarSaga({
+  payload,
+}: ReturnType<typeof Actions.changeProfileAvatar>) {
+  try {
+    const { id } = yield select(selectProfileData);
+
+    const data = new FormData();
+    data.append('avatar', payload, payload?.name);
+
+    const newProfileData: ServerProfileData = yield call(
+      reqWrapper,
+      apiChangeProfileAAvatar,
+      {
+        id,
+        data,
+      },
+    );
+
+    yield put(
+      Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
+    );
+  } catch (e: any) {
+    if (typeof e.response?.data === 'object') {
+      yield put(Actions.changeProfileDataComplete(e.response.data));
     }
   }
 }
@@ -294,7 +346,6 @@ function* sendResetPasswordMailSaga(
 
     openSignScreen('signin');
   } catch (e) {
-    // @ts-ignore
     yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
@@ -393,6 +444,8 @@ export default function* userSaga() {
   yield takeLatest(TYPES.REGISTER_WITH_GOOGLE, registerWithGoogleSaga);
   yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);
   yield takeEvery(TYPES.CHANGE_PROFILE_DATA, changeProfileDataSaga);
+  yield takeEvery(TYPES.CHANGE_PROFILE_AVATAR, uploadProfileAvatarSaga);
   yield takeEvery(TYPES.LOAD_USER_DATA, loadUserDataSaga);
   yield takeEvery(TYPES.PROJECT_VIEW_START, getTokenPairSagaProjectView);
+  yield takeEvery(TYPES.SUBSCRIPTION_DATA, getSubscriptionSaga);
 }

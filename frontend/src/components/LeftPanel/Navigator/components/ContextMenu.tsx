@@ -1,7 +1,9 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { MenuProps } from '@material-ui/core/Menu';
+import { withStyles } from '@mui/styles';
+import { MenuProps } from '@mui/material/Menu';
 import { useDispatch, useSelector } from 'react-redux';
+import { TreeItem } from '@atlaskit/tree';
+import { Menu, MenuItem } from '@mui/material';
 import {
   copyActiveElement,
   deleteElement,
@@ -11,23 +13,23 @@ import {
 import { canElementHaveChildren } from '@Utils/AvailableChildrenHelper';
 import { selectItemToCopyInfo } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { TreeItem } from '@atlaskit/tree';
-import { Menu, MenuItem } from '@material-ui/core';
 import Icon from '../../../UI/Icon';
 
 const StyledMenu = withStyles({
   paper: {
-    borderRadius: 0,
-    backgroundColor: '#2f4050',
-    color: 'white',
+    padding: 1,
+    borderRadius: 4,
+    backgroundColor: '#ffffff',
+    color: '#81818E',
   },
   list: {
     padding: 0,
     '& li': {
-      padding: '2px 5px',
+      padding: '8px 16px 8px 16px',
       fontSize: '.9em',
       '&:hover': {
-        backgroundColor: '#52616e',
+        backgroundColor: '#B0B0BD',
+        color: '#2A2A2D',
       },
       '& svg': {
         marginRight: 5,
@@ -36,12 +38,12 @@ const StyledMenu = withStyles({
   },
 })((props: MenuProps) => <Menu {...props} />);
 
-type Props = {
+interface Props {
   open: boolean;
   onClose: () => void;
   anchorPosition: any;
   item: TreeItem;
-};
+}
 
 const ContextMenu: React.FC<Props> = ({
   open,
@@ -83,7 +85,7 @@ const ContextMenu: React.FC<Props> = ({
       anchorPosition={anchorPosition}
     >
       <MenuItem disabled={type === 'root'} onClick={handleCopy}>
-        <Icon icon="copy" size={16} color="white" />
+        <Icon icon="copy" size={16} color="black" />
         Copy
       </MenuItem>
 
@@ -91,12 +93,12 @@ const ContextMenu: React.FC<Props> = ({
         disabled={!canHaveChildren || emptyClipboard}
         onClick={handlePaste}
       >
-        <Icon icon="folder-open" size={16} color="white" />
+        <Icon icon="folder-open" size={16} color="black" />
         Paste
       </MenuItem>
 
       <MenuItem disabled={type === 'root'} onClick={handleDelete}>
-        <Icon icon="delete" size={16} color="white" />
+        <Icon icon="delete" size={16} color="black" />
         Delete
       </MenuItem>
     </StyledMenu>

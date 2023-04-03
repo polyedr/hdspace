@@ -1,10 +1,11 @@
-import React, { MouseEvent, useCallback } from 'react';
+import React, { memo, MouseEvent, useCallback } from 'react';
 import { RenderItemParams, TreeItem as TreeItemType } from '@atlaskit/tree';
 import cn from 'classnames';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
+import { useDispatch } from 'react-redux';
 import { splitWords } from '@Utils/stringHelper';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
-import { useDispatch } from 'react-redux';
 import { toggleSelectedElement } from '@Redux/project/actions';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
@@ -21,7 +22,7 @@ const useIndicatorStyles = makeStyles({
       width: '1em',
     },
     '& svg': {
-      color: 'white',
+      color: 'black',
       width: '1em',
       height: '1em',
       display: 'inline-block',
@@ -31,19 +32,19 @@ const useIndicatorStyles = makeStyles({
   },
 });
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   treeItem: {
     width: '100%',
     display: 'flex',
     alignItems: 'center',
     position: 'relative',
     height: ({ height }: Props) => height,
-    padding: '0.25em',
     outline: 'none',
     whiteSpace: 'nowrap',
     textTransform: 'capitalize',
     '& button': {
       padding: 0,
+      color: '#000000',
       border: 'none',
       appearance: 'none',
       boxShadow: 'none',
@@ -52,11 +53,11 @@ const useStyles = makeStyles(({ palette }) => ({
     },
 
     '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.3),
+      backgroundColor: '#F3F4F6',
     },
 
     '&[aria-selected="true"]': {
-      backgroundColor: lighten(palette.panel.main, 0.2),
+      backgroundColor: '#F3F4F6',
     },
 
     '&:before': {
@@ -69,7 +70,7 @@ const useStyles = makeStyles(({ palette }) => ({
       width: 0.5,
       height: ({ rulerHeight }: Props) => rulerHeight,
       display: 'block',
-      backgroundColor: palette.grey.A200,
+      backgroundColor: theme.palette.grey.A200,
     },
   },
   isDragging: {
@@ -78,17 +79,22 @@ const useStyles = makeStyles(({ palette }) => ({
     outline: '1px solid #5b5f67',
   },
   icon: {
-    fontSize: '1.2em',
-    marginRight: '0.3em',
+    '&.MuiSvgIcon-root': {
+      fontSize: '1.2em',
+    },
+  },
+  text: {
+    padding: '5px',
+    fontSize: 11,
   },
 }));
 
-type ExpandIndicatorProps = {
+interface ExpandIndicatorProps {
   hasChildren: boolean;
   isExpanded: boolean;
   onExpand: () => void;
   onCollapse: () => void;
-};
+}
 
 const ExpandIndicator: React.FC<ExpandIndicatorProps> = ({
   hasChildren,
@@ -187,9 +193,9 @@ const TreeItem: React.FC<Props> = (props) => {
 
       {ElementIcon && <ElementIcon className={classes.icon} />}
 
-      <span>{splitWords(item.data?.title)}</span>
+      <span className={classes.text}>{splitWords(item.data?.title)}</span>
     </div>
   );
 };
 
-export default TreeItem;
+export default memo(TreeItem);

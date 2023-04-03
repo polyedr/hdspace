@@ -1,24 +1,23 @@
-import { MyAxiosProps } from '@Src/types';
 import axios from 'axios';
 
-export const env = process.env.NODE_ENV;
+export const env = import.meta.env.MODE;
 
 const settings = {
   development: {
     api: {
-      host: 'https://www.api-staging.adevi.info',
+      host: 'https://api-staging.adevi.io',
       version: 1,
     },
   },
   staging: {
     api: {
-      host: 'https://www.api-staging.adevi.info',
+      host: 'https://api-staging.adevi.io',
       version: 1,
     },
   },
   production: {
     api: {
-      host: 'https://www.api.adevi.info',
+      host: 'https://api.adevi.io',
       version: 1,
     },
   },
@@ -26,15 +25,15 @@ const settings = {
 
 const { api } = settings[env] || settings.development;
 
-export const myAxios = (props: MyAxiosProps) => {
+export const myAxios = async (props) => {
   const authorization = props.access
     ? { Authorization: `Bearer ${props.access}` }
     : {};
 
-  return axios({
+  return await axios({
     ...props,
     method: props.method,
-    baseURL: props.baseURL || `${api.host}/api/v${api.version}`,
+    baseURL: props.baseURL ?? `${api.host}/api/v${api.version}`,
     url: props.url,
     headers: {
       'Content-Type': props.contentType
@@ -51,5 +50,9 @@ export const myAxios = (props: MyAxiosProps) => {
 
 export const MAX_TOKEN_TRIALS = 4;
 
+export const STREAM_CHAT_CLIENT_ID = 'qa83st6cgefj';
+
 export const HELP_LINK =
   'https://docs.google.com/document/d/e/2PACX-1vTwu72-tooZHmF5D5ExkAyFNRja1dnQVugPLBKmKYViYVj0xpvPJk6nZv9WFCWPNki1pQ4vq96H-sSB/pub#h.rvwljq5j4kb7';
+
+export { api };

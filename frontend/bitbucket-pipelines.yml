@@ -1,4 +1,4 @@
-image: node:10.15.3
+image: node:16.19.0
 
 pipelines:
   pull-requests:
@@ -6,7 +6,8 @@ pipelines:
     - step:
         # size: 2x
         script:
-            - npm install
+            - export NODE_OPTIONS=--max-old-space-size=3072
+            - npm install --legacy-peer-deps
             - npm run lint:fix
             - npm run build:staging
   branches:
@@ -37,7 +38,7 @@ pipelines:
               APPLICATION_NAME: $APPLICATION_NAME
               DEPLOYMENT_GROUP: $DEPLOYMENT_GROUP
               WAIT: 'true'
-              WAIT_INTERVAL: 120
+              WAIT_INTERVAL: 1000
               S3_BUCKET: $S3_BUCKET
               VERSION_LABEL: 'my-app-4.0.0'
               IGNORE_APPLICATION_STOP_FAILURES: 'true'

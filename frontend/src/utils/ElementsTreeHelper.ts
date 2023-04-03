@@ -2,10 +2,10 @@ import { flatten } from 'ramda';
 import { Entity, LibraryElement } from '../types';
 
 export const findParentByChildID = (
-  element: LibraryElement<Entity, LibraryElement<Entity>[]>,
+  element: LibraryElement<Entity, Array<LibraryElement<Entity>>>,
   targetID: string,
   // eslint-disable-next-line consistent-return
-): LibraryElement<Entity, LibraryElement<Entity>[]> | undefined => {
+): LibraryElement<Entity, Array<LibraryElement<Entity>>> | undefined => {
   if (element.children.some((child) => child.id === targetID)) {
     return element;
   }
@@ -21,43 +21,42 @@ export const findParentByChildID = (
 };
 
 export const getElementsArray = (
-  root: LibraryElement<Entity, LibraryElement<Entity>[]>,
-): LibraryElement<Entity, LibraryElement<Entity>[]>[] => {
+  root: LibraryElement<Entity, Array<LibraryElement<Entity>>>,
+): Array<LibraryElement<Entity, Array<LibraryElement<Entity>>>> => {
   const array = root.children.map((child) => getElementsArray(child));
-  return flatten([root, array]) as LibraryElement<
-    Entity,
-    LibraryElement<Entity>[]
-  >[];
+  return flatten([root, array]) as Array<
+    LibraryElement<Entity, Array<LibraryElement<Entity>>>
+  >;
 };
 
 export const updateElementParameters = <
   T extends Entity,
   K extends Entity,
   P extends Entity,
-  R extends Entity
+  R extends Entity,
 >(
   elementID: string,
-  parameters: Partial<LibraryElement<T, LibraryElement<K>[]>['parameters']>,
-  root: LibraryElement<P, LibraryElement<R>[]>,
-): LibraryElement<P, LibraryElement<R>[]> => {
-  return {
-    ...root,
-    parameters:
-      root.id === elementID
-        ? { ...root.parameters, ...parameters }
-        : root.parameters,
-    children: root.children.map((child) =>
-      updateElementParameters(elementID, parameters, child),
-    ),
-  };
-};
+  parameters: Partial<
+    LibraryElement<T, Array<LibraryElement<K>>>['parameters']
+  >,
+  root: LibraryElement<P, Array<LibraryElement<R>>>,
+): LibraryElement<P, Array<LibraryElement<R>>> => ({
+  ...root,
+  parameters:
+    root.id === elementID
+      ? { ...root.parameters, ...parameters }
+      : root.parameters,
+  children: root.children.map((child) =>
+    updateElementParameters(elementID, parameters, child),
+  ),
+});
 
 export const replaceChild = (
   elementID: string,
   newChild: LibraryElement<Entity>,
   root: LibraryElement<Entity>,
-): LibraryElement<Entity> => {
-  return elementID === root.id
+): LibraryElement<Entity> =>
+  elementID === root.id
     ? newChild
     : {
         ...root,
@@ -65,4 +64,3 @@ export const replaceChild = (
           replaceChild(elementID, newChild, child),
         ),
       };
-};

@@ -1,18 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { DndProvider } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import Tour, { ReactourStep } from 'reactour';
+import { useTheme, makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
+import {
+  selectAssetsListsLoader,
+  selectCurrentProjectId,
+} from '@Redux/project/selectors/base';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import { selectScreenByIdWrapper } from '@Redux/project/selectors/screen';
 import VIA from '@Components/Editor/VIA';
 import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
-import { activateScreen } from '@Redux/project/actions';
+import { activateScreen, loadAssetLists } from '@Redux/project/actions';
 import ELEMENT_IDS from '@Constants/elementIds';
-import Tour, { ReactourStep } from 'reactour';
-import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { selectUserGuideActive } from '@Redux/user/selectors';
 import {
   setUserGuideActive,
@@ -21,8 +23,9 @@ import {
 } from '@Redux/user/actions';
 import { Experience } from '@Src/types';
 import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
-import Workspace from '../components/Editor/Workspace/Workspace';
-import RightPanel from '../components/RightPanel';
+import { selectAllAssetLists } from '@Redux/project/selectors/asset';
+import Workspace from '@Components/Editor/Workspace/Workspace';
+import RightPanel from '@Components/RightPanel';
 
 const tourSteps: ReactourStep[] = [
   {
@@ -99,7 +102,7 @@ const tourSteps: ReactourStep[] = [
     content: 'Here you can enable the master screen of the current project.',
   },
   {
-    selector: ``,
+    selector: '',
     content: 'Congratulation. Well done. Thanks for following me.',
   },
 ];
@@ -114,9 +117,9 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   screenId: number;
-};
+}
 
 const Screen: React.FC<Props> = ({ screenId }) => {
   const classes = useStyles();
@@ -127,6 +130,9 @@ const Screen: React.FC<Props> = ({ screenId }) => {
   const currentProjectId = useSelector(selectCurrentProjectId);
   const viaModeEnabled = useSelector(selectVIAModeEnabled);
 
+  const assetLists = useSelector(selectAllAssetLists);
+  const assetListsLoading = useSelector(selectAssetsListsLoader);
+
   useEffect(() => {
     if (screen) {
       DOMHandler.INSTANCE.removeEmptyEntries();
@@ -136,8 +142,14 @@ const Screen: React.FC<Props> = ({ screenId }) => {
     }
   }, [history, dispatch, screen, currentProjectId]);
 
+  useEffect(() => {
+    if (!assetLists && !assetListsLoading) {
+      dispatch(loadAssetLists(String(currentProjectId)));
+    }
+  }, [assetLists, dispatch, currentProjectId, assetListsLoading]);
+
   const userGuideActive = useSelector(selectUserGuideActive);
-  const { shape } = useTheme();
+  const { shape } = useTheme<Theme>();
 
   return (
     <div className={classes.screen}>
@@ -165,11 +177,10 @@ const Screen: React.FC<Props> = ({ screenId }) => {
           <VIARightPanel />
         </>
       ) : (
-        <DndProvider backend={HTML5Backend}>
+        <>
           <Workspace />
-
           <RightPanel />
-        </DndProvider>
+        </>
       )}
     </div>
   );

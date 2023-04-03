@@ -1,12 +1,11 @@
 import React from 'react';
-import VIANavigator from '@Components/LeftPanel/VIANavigator';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { render, RenderResult } from '@testing-library/react';
+import VIANavigator from '@Components/LeftPanel/VIANavigator';
 import { mockState, mockVIAState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import theme from '@Src/styles/Theme';
+import { AppThemeProvider } from '@Src/styles/Theme';
 
 describe('VIANavigator', () => {
   let store: MockStoreEnhanced<AppReduxState>;
@@ -27,9 +26,9 @@ describe('VIANavigator', () => {
 
     ui = render(
       <Provider store={store}>
-        <MuiThemeProvider theme={theme}>
+        <AppThemeProvider>
           <VIANavigator />
-        </MuiThemeProvider>
+        </AppThemeProvider>
       </Provider>,
     );
   });

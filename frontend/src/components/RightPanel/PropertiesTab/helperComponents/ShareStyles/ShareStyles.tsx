@@ -1,7 +1,8 @@
 import React from 'react';
-import { Chip, Button } from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel';
+import { Chip, Button, Theme } from '@mui/material';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { connect, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
 import {
   addElementClassName,
   copyElementStyles,
@@ -14,23 +15,31 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { AppReduxState } from '@Redux/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { UserProjectPermission } from '@Src/types';
-import { makeStyles } from '@material-ui/core/styles';
 import EditableStyles from '../EditableStyles/EditableStyles';
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles<Theme>(({ spacing }) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',
+    // padding: '0 16px',
   },
   chip: {
     marginRight: '5px',
     marginBottom: '5px',
-    color: '#1cc09f',
-    border: '1px solid #1cc09f',
+    color: 'black',
+    border: '1px solid rgba(80, 100, 255, 1)',
     '& .MuiChip-label': {
       textTransform: 'capitalize',
     },
+  },
+
+  text: {
+    color: 'rgba(129, 129, 142, 1)',
+    fontWeight: 400,
+    fontSize: '14px',
+    lineHeight: '135%',
+    fontFamily: 'Roboto',
   },
 
   icon: {
@@ -42,18 +51,22 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 
   elementsStylesChip: {
-    marginRight: '5px',
-    marginBottom: '5px',
-    backgroundColor: '#1cc09f',
-    '&:hover, &:focus': {
-      backgroundColor: '#18a689',
-    },
-    '& .MuiChip-label': {
-      textTransform: 'capitalize',
+    '&.MuiChip-root': {
+      marginRight: '5px',
+      marginBottom: '5px',
+      color: 'rgba(42, 42, 45, 1)',
+      backgroundColor: 'rgba(243, 244, 246, 0.8)',
+      '&:hover, &:focus': {
+        backgroundColor: 'rgba(243, 244, 246, 1)',
+      },
+      '& .MuiChip-label': {
+        textTransform: 'capitalize',
+      },
     },
   },
   chipContainer: {
     padding: spacing(1, 0.5),
+    marginBottom: 14,
   },
 }));
 
@@ -104,7 +117,9 @@ const ShareStyles: React.FC<Props> = ({
       activeElement.type,
       activeElement.id,
       activeElement.styles.ownStyles,
-      { screenId: currentScreenId },
+      {
+        screenId: currentScreenId,
+      },
     );
 
   const handlePasteButtonClick = (className: string) =>
@@ -152,18 +167,18 @@ const ShareStyles: React.FC<Props> = ({
               className={classes.chip}
               label={sharedClass.className}
               clickable={canEditProject}
-              color="primary"
+              color="secondary"
               onClick={() => handlePasteButtonClick(sharedClass.className)}
             />
           ))
         ) : (
-          <p>No shared classes</p>
+          <p className={classes.text}>No shared classes</p>
         )}
       </div>
 
       <div>
         {elementClassNames.length ? (
-          (elementClassNames as string[]).map((className) => (
+          elementClassNames.map((className) => (
             <Chip
               key={className}
               size="small"

@@ -1,11 +1,12 @@
 import React, { memo } from 'react';
-import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
-import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
-import { useHistory } from 'react-router';
+import InlineEditable from '@Components/UI/InlineEditable';
+import { useElement } from '@Src/hooks';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 
@@ -25,11 +26,7 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
     } = element;
 
     const [className, groupClass] = styles.classNames;
-    const contentEditableSettings = useContentEditable(id, textContent);
-    const eventHandlers = useEventHandlers(
-      props,
-      contentEditableSettings.events,
-    );
+    const eventHandlers = useEventHandlers(props);
 
     const mainClasses = cn(
       props.style,
@@ -37,6 +34,8 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
       groupClass,
       isDisabled ? classes.disabled : classes.ownPseudoStyles,
     );
+
+    const { updateTextContent } = useElement(element.id);
 
     const changeScreen = () => {
       history.push(`/project/${screenLink}`);
@@ -50,19 +49,30 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
             target={exportScreenFlag ? '_self' : '_blank'}
             href={link}
             rel="noreferrer"
-            {...contentEditableSettings.props}
-            {...contentEditableSettings.events}
           >
             <button
               type="button"
               id={id}
-              ref={ref as React.MutableRefObject<HTMLButtonElement | null>}
+              ref={
+                ref as unknown as React.MutableRefObject<HTMLButtonElement | null>
+              }
               data-ls-id={id}
               style={{ width: '100%' }}
               className={cn(mainClasses, classes.ownStyles)}
-              dangerouslySetInnerHTML={{ __html: textContent }}
               {...eventHandlers}
-            />
+            >
+              <InlineEditable
+                elementId={element.id}
+                onUpdated={updateTextContent}
+                text={textContent}
+                renderElement={(textContent, props) => (
+                  <span
+                    dangerouslySetInnerHTML={{ __html: textContent }}
+                    {...props}
+                  />
+                )}
+              />
+            </button>
           </a>
         ) : screenLink && screenName && isProtoMode && !exportScreenFlag ? (
           <button
@@ -71,12 +81,25 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
             onClick={() =>
               isProtoMode && !exportScreenFlag ? changeScreen() : ''
             }
-            ref={ref as React.MutableRefObject<HTMLButtonElement | null>}
+            ref={
+              ref as unknown as React.MutableRefObject<HTMLButtonElement | null>
+            }
             data-ls-id={id}
             className={cn(mainClasses, classes.ownStyles)}
-            dangerouslySetInnerHTML={{ __html: textContent }}
             {...eventHandlers}
-          />
+          >
+            <InlineEditable
+              elementId={element.id}
+              onUpdated={updateTextContent}
+              text={textContent}
+              renderElement={(textContent, props) => (
+                <span
+                  dangerouslySetInnerHTML={{ __html: textContent }}
+                  {...props}
+                />
+              )}
+            />
+          </button>
         ) : screenLink && screenName && (isProtoMode || exportScreenFlag) ? (
           <a
             aria-label={`Link-${element.id}`}
@@ -91,30 +114,53 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
                 : ''
             }
             rel="noreferrer"
-            {...contentEditableSettings.props}
-            {...contentEditableSettings.events}
           >
             <button
               type="button"
               id={id}
-              ref={ref as React.MutableRefObject<HTMLButtonElement | null>}
+              ref={
+                ref as unknown as React.MutableRefObject<HTMLButtonElement | null>
+              }
               data-ls-id={id}
               className={cn(mainClasses, classes.ownStyles)}
-              dangerouslySetInnerHTML={{ __html: textContent }}
               {...eventHandlers}
-            />
+            >
+              <InlineEditable
+                elementId={element.id}
+                onUpdated={updateTextContent}
+                text={textContent}
+                renderElement={(textContent, props) => (
+                  <span
+                    dangerouslySetInnerHTML={{ __html: textContent }}
+                    {...props}
+                  />
+                )}
+              />
+            </button>
           </a>
         ) : (
           <button
             type="button"
             id={id}
-            ref={ref as React.MutableRefObject<HTMLButtonElement | null>}
+            ref={
+              ref as unknown as React.MutableRefObject<HTMLButtonElement | null>
+            }
             data-ls-id={id}
-            style={isLink ? { width: '100%' } : {}}
             className={cn(mainClasses, classes.ownStyles)}
-            dangerouslySetInnerHTML={{ __html: textContent }}
             {...eventHandlers}
-          />
+          >
+            <InlineEditable
+              elementId={element.id}
+              onUpdated={updateTextContent}
+              text={textContent}
+              renderElement={(textContent, props) => (
+                <span
+                  dangerouslySetInnerHTML={{ __html: textContent }}
+                  {...props}
+                />
+              )}
+            />
+          </button>
         )}
       </>
     );

@@ -1,5 +1,8 @@
 // @ts-nocheck
 import { put, call, select, takeEvery } from 'redux-saga/effects';
+import { compose } from 'redux';
+import { omit } from 'ramda';
+import logger from 'loglevel';
 import {
   selectAnnotatedElementId,
   selectBlockType,
@@ -33,10 +36,7 @@ import { reqWrapper } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import * as Actions from '@Redux/project/actions';
 import withActionsHistory from '@Redux/project/wrappers/withActionsHistory';
-import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
-import { omit } from 'ramda';
-import logger from 'loglevel';
 import { selectCurrentScreenId } from '../selectors/screen';
 
 const recognizeImageSaga = compose(
@@ -59,13 +59,11 @@ const recognizeImageSaga = compose(
       JSON.stringify({ block_type: blockType }),
     );
 
-    const {
-      result: recognizeResult,
-      error: recognizeError,
-    }: Result<Screen> = yield call(reqWrapper, recognizeImgUsingNN, {
-      data: recognizeFormData,
-      contentType: 'multipart/form-data',
-    });
+    const { result: recognizeResult, error: recognizeError }: Result<Screen> =
+      yield call(reqWrapper, recognizeImgUsingNN, {
+        data: recognizeFormData,
+        contentType: 'multipart/form-data',
+      });
 
     if (recognizeResult) {
       if (!recognizeResult.screenData.nnResult) {
@@ -105,7 +103,7 @@ const recognizeImageSaga = compose(
     if (recognizeError) throw new Error(recognizeError);
   } catch (e) {
     logger.error('Could not upload image for NN. Error: ', e.message);
-    if (process.env.NODE_ENV === 'development') {
+    if (process.import.meta.env.MODE === 'development') {
       logger.trace(e);
     }
     yield put(
@@ -172,14 +170,11 @@ const assembleImageSaga = compose(
       },
     );
     if (assembleResult) {
-      const convertedElements = getElementsArray(
-        assembleResult,
-      ).map((element) => convertElementToPatchRequest(element));
+      const convertedElements = getElementsArray(assembleResult).map(
+        (element) => convertElementToPatchRequest(element),
+      );
 
-      const {
-        result,
-        error,
-      }: Result<ServerElement<any>> = yield call(
+      const { result, error }: Result<ServerElement<any>> = yield call(
         reqWrapper,
         apiUpdateElements,
         { data: convertedElements },
@@ -270,22 +265,17 @@ const autoAnalyzeImageSaga = compose(
     );
     formData.append('styles', '{}');
 
-    const {
-      result: nnContainer,
-      error: nnError,
-    }: Result<LibraryElement<any>> = yield call(reqWrapper, parseImgUsingNN, {
-      data: formData,
-      contentType: 'multipart/form-data',
-    });
+    const { result: nnContainer, error: nnError }: Result<LibraryElement<any>> =
+      yield call(reqWrapper, parseImgUsingNN, {
+        data: formData,
+        contentType: 'multipart/form-data',
+      });
     if (nnContainer) {
       const convertedElements = getElementsArray(nnContainer).map((element) =>
         convertElementToPatchRequest(element),
       );
 
-      const {
-        result,
-        error,
-      }: Result<ServerElement<any>> = yield call(
+      const { result, error }: Result<ServerElement<any>> = yield call(
         reqWrapper,
         apiUpdateElements,
         { data: convertedElements },
@@ -327,7 +317,7 @@ const autoAnalyzeImageSaga = compose(
     if (nnError) throw new Error(nnError);
   } catch (e) {
     logger.error('Could not upload image for NN. Error: ', e.message);
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.MODE === 'development') {
       logger.trace(e);
     }
     yield put(

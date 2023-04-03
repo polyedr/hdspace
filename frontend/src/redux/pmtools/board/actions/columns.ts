@@ -1,85 +1,65 @@
+import { DropResult } from 'react-beautiful-dnd';
 import TYPES from '@Redux/actionTypes';
-import { IBoardForUI, IColumnData } from '@Src/types/pmtools/board';
-import {
-  ActionTypePM,
-  CreatorColumnType,
-  UpdateCardIndexType,
-  UpdateColumnIndexTypeSuccess,
-} from '@Src/types/pmtools/types';
+// eslint-disable-next-line import/no-cycle
+import { BoardColumn, BoardNewColumn } from '@Redux/pmtools/types';
 
-export const successSavedBoard = (name: IBoardForUI) => ({
-  type: TYPES.BOARD_SAVED_SUCCESS,
-  payload: name,
+export const setColumnsFetching = (fetching = true) => ({
+  type: TYPES.BOARD_FETCH_COLUMNS_PENDING,
+  fetching,
 });
 
-// requestFetchBoard
-export const requestFetchBoard = (payload: CreatorColumnType['project']) => ({
-  type: TYPES.REQUEST_FETCH_BOARD,
-  payload,
+export const fetchBoard = (projectId: number) => ({
+  type: TYPES.BOARD_FETCH,
+  projectId,
 });
 
-export const successFetchColumn = (payload: Array<IColumnData>) => ({
-  type: TYPES.FETCH_COLUMNS_SUCCESS,
-  payload,
-});
-
-// requestAddColumn
-export const requestAddColumn = (
-  payload: CreatorColumnType & { action: ActionTypePM },
+export const updateColumnsOrder = (
+  dropResult: DropResult,
+  projectId: number,
 ) => ({
-  type: TYPES.ADD_COLUMN,
-  payload,
+  type: TYPES.BOARD_UPDATE_COLUMNS_ORDER,
+  payload: {
+    dropResult,
+    projectId,
+  },
 });
 
-export const successAddColumn = (payload: IColumnData) => ({
-  type: TYPES.ADD_COLUMN_SUCCESS,
-  payload,
+export const setColumns = (columns) => ({
+  type: TYPES.BOARD_SET_COLUMNS,
+  columns,
 });
 
-export const requestUpdateColumnIndex = ({
-  destination,
-  source,
-}: UpdateCardIndexType) => ({
-  type: TYPES.UPDATE_COLUMN_INDEX,
-  payload: { destination, source },
+export const createColumn = (column: BoardNewColumn) => ({
+  type: TYPES.BOARD_CREATE_COLUMN,
+  column,
 });
 
-export const successUpdateColumnIndex = (
-  payload: UpdateColumnIndexTypeSuccess,
+export const updateColumn = (column: BoardNewColumn, columnId: number) => ({
+  type: TYPES.BOARD_UPDATE_COLUMN,
+  column,
+  columnId,
+});
+
+export const updateColumnOnState = (
+  column: BoardNewColumn,
+  columnId: number,
 ) => ({
-  type: TYPES.UPDATE_COLUMN_INDEX_SUCCESS,
-  payload,
+  type: TYPES.BOARD_UPDATE_COLUMN_ON_STATE,
+  column,
+  columnId,
 });
 
-export const successUpdateCardIndex = (
-  payload: UpdateColumnIndexTypeSuccess,
-) => ({
-  type: TYPES.UPDATE_COLUMN_INDEX_SUCCESS,
-  payload,
+export const addColumn = (column: BoardColumn) => ({
+  type: TYPES.BOARD_ADD_COLUMN,
+  column,
 });
 
-// requestEditColumn
-export const requestEditColumn = (
-  payload: CreatorColumnType & { action: ActionTypePM },
-) => ({
-  type: TYPES.EDIT_COLUMN,
-  payload,
+export const deleteColumn = (columnId: number) => ({
+  type: TYPES.BOARD_DELETE_COLUMN,
+  columnId,
 });
 
-export const successEditColumn = (payload: IColumnData) => ({
-  type: TYPES.EDIT_COLUMN_SUCCESS,
-  payload,
-});
-
-// requestDeleteColumn
-export const requestDeleteColumn = (
-  payload: { columnId: IColumnData['id'] } & { action: ActionTypePM },
-) => ({
-  type: TYPES.DELETE_COLUMN,
-  payload,
-});
-
-export const successDeleteColumn = (payload: IColumnData['id']) => ({
-  type: TYPES.DELETE_COLUMN_SUCCESS,
-  payload,
+export const deleteColumnFromState = (columnId: number) => ({
+  type: TYPES.BOARD_DELETE_COLUMN_FROM_STATE,
+  columnId,
 });

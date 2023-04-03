@@ -1,48 +1,75 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  styled,
+  AppBar as MUIAppbar,
+  Toolbar,
+  IconButton,
+  Box,
+  Theme,
+  Tooltip,
+} from '@mui/material';
+import ToggleButton from '@mui/material/ToggleButton';
+import { makeStyles } from '@mui/styles';
+import {
+  HelpOutline as HelpOutlineIcon,
+  SettingsBackupRestore as SettingsBackupRestoreIcon,
+  Apps as AppsIcon,
+  ViewWeek as ViewWeekIcon,
+} from '@mui/icons-material';
 import { selectIsPrototypeMode, selectUserData } from '@Redux/user/selectors';
 import {
   selectCurrentProject,
-  selectSidebarOpen,
   selectBordersEnabled,
   selectShowingBorders,
+  selectShowingGrid,
 } from '@Redux/project/selectors/base';
 import {
   updateNameAndTagsProject,
-  setSidebarOpen,
   toggleContainersBorders,
+  toggleGrid,
 } from '@Redux/project/actions';
 import {
   selectVIAModeEnabled,
   selectVIAResultId,
 } from '@Redux/project/selectors/via';
 
-import {
-  FormControlLabel,
-  Typography,
-  Checkbox,
-  ToggleButton,
-  Menu,
-  MenuItem,
-} from '@mui/material';
-import { AppBar, Toolbar, IconButton, Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import MenuIcon from '@mui/icons-material/Menu';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
 import { StyledIconButton } from '@Components/styledComponents';
 import { HELP_LINK } from '@Src/config/settings';
+import { useWireframe } from '@Src/hooks/useWireframe';
+import { selectCurrentScreen } from '@Redux/project/selectors/screen';
 import Dialog from '../Dialogs/Dialog';
+import Logo from '../UI/Logo';
 import Layouts from './TopBar/Layouts';
-import ShowGrid from './TopBar/ShowGrid';
 import RenameProjectBar from './TopBar/RenameProjectBar';
 import TopBar from './TopBar';
 import History from './History';
-import Logo from '../UI/Logo';
 import Avatar from './Avatar';
+// import { ShowGridIcon, ShowBlockIcon } from './icons';
+import ToggleMode from './TopBar/ToggleMode';
 
-const useStyles = makeStyles(({ typography, palette }) => ({
+const Appbar = styled(MUIAppbar)({
+  '&.MuiAppBar-root': {
+    boxShadow: 'none',
+    borderBottom: '1px solid #E4E6EB',
+    zIndex: 1200,
+
+    '& .MuiToolbar-root': {
+      padding: 0,
+    },
+
+    '& .MuiLink-root': {
+      width: '73px',
+      height: 55,
+      borderRight: '1px solid #E4E6EB',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  },
+});
+
+const useStyles = makeStyles<Theme>(({ typography, palette }) => ({
   toolbar: {
     backgroundColor: 'white',
     color: palette.common.white,
@@ -51,16 +78,22 @@ const useStyles = makeStyles(({ typography, palette }) => ({
     alignItems: 'center',
     minHeight: 44,
     gap: '8px',
+    paddingRight: 5,
   },
   topbarsections: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
+  selectedScreen: {
+    color: 'black',
+    border: '1px solid red',
+    padding: '5px',
+  },
   title: {
     color: '#81818E',
     fontSize: 14,
-    '&:hover $editButton': {
+    '&:hover .editButton': {
       opacity: 1,
     },
     display: 'flex',
@@ -73,13 +106,24 @@ const useStyles = makeStyles(({ typography, palette }) => ({
     fontWeight: 'bold',
   },
   togglebutton: {
-    width: '32px',
-    height: '32px',
-    border: 'none !important',
-    borderRadius: '50% !important',
-    color: '#81818E !important',
+    '&.MuiToggleButton-root': {
+      width: '32px',
+      height: '32px',
+      border: 'none',
+      borderRadius: '50%',
+      color: '#81818E',
+
+      '& svg': {
+        height: '20px',
+      },
+
+      '&.Mui-disabled': {
+        color: 'rgba(0, 0, 0, 0.26)',
+        border: 'none',
+      },
+    },
     '&.Mui-selected': {
-      color: '#000  !important',
+      color: '#000',
     },
   },
   iconbutton: {
@@ -88,11 +132,11 @@ const useStyles = makeStyles(({ typography, palette }) => ({
     color: '#81818E',
   },
   icon: {
-    width: '16px !important',
+    width: '20px !important',
   },
 }));
 
-const TopPanel = () => {
+function TopPanel() {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [openEdit, setOpenEdit] = useState(false);
@@ -104,21 +148,14 @@ const TopPanel = () => {
   } = useSelector(selectCurrentProject);
   const { id: userId } = useSelector(selectUserData);
   const viaMode = useSelector(selectVIAModeEnabled);
-  const sidebarOpen = useSelector(selectSidebarOpen);
   const viaResultId = useSelector(selectVIAResultId);
   const bordersEnabled = useSelector(selectBordersEnabled);
   const handleEditClick = () => setOpenEdit(true);
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const showBorders = useSelector(selectShowingBorders);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: {
-    currentTarget: React.SetStateAction<HTMLElement | null>;
-  }) => {
-    setIsDropdownOpen(true);
-    setAnchorEl(event.currentTarget);
-  };
+  const currentScreen = useSelector(selectCurrentScreen);
+  const showGrid = useSelector(selectShowingGrid);
+
   const handleClose = () => setOpenEdit(false);
   const handleSubmitNameAndTags = async (values: {
     name: string;
@@ -128,21 +165,15 @@ const TopPanel = () => {
     handleClose();
   };
 
+  const { isWireframeMode } = useWireframe();
+
   const tagsWithoutSpace = tags?.map((item, index) => {
     if (index === 0) return item;
     return ` ${item}`;
   });
 
-  const handleSidebarToggle = () => {
-    dispatch(setSidebarOpen(!sidebarOpen));
-  };
-
-  const handleCloseDropDown = () => {
-    setIsDropdownOpen(false);
-    setAnchorEl(null);
-  };
   return (
-    <AppBar position="fixed">
+    <Appbar position="fixed">
       <Toolbar variant="dense" className={classes.toolbar}>
         <Box className={classes.topbarsections}>
           <Logo className={classes.icon} />
@@ -155,10 +186,11 @@ const TopPanel = () => {
             />
           )}
         </Box>
+        <Box className={classes.selectedScreen}>{currentScreen?.name}</Box>
         <Box className={classes.topbarsections}>
-          <Layouts />
+          {projectName && <ToggleMode />}
+          {projectName && !isWireframeMode && <Layouts />}
         </Box>
-
         <Box className={classes.toolbar}>
           {viaMode ? <History /> : <TopBar />}
 
@@ -169,66 +201,46 @@ const TopPanel = () => {
           )}
 
           <Box className={classes.toolbar}>
-            {projectName && (
-              <ToggleButton
-                value="DropDown"
-                selected={isDropdownOpen}
-                className={classes.togglebutton}
-                onClick={handleClick}
-              >
-                <SettingsOutlinedIcon className={classes.icon} />
-              </ToggleButton>
-            )}
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleCloseDropDown}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
-              }}
-            >
-              <MenuItem onClick={handleClose}>
-                <ShowGrid />
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="Show borders"
-                      checked={showBorders}
+            {!isWireframeMode && projectName !== '' && (
+              <>
+                <Box>
+                  <Tooltip title="Borders">
+                    <ToggleButton
+                      selected={showBorders}
+                      value="borders"
+                      className={classes.togglebutton}
                       disabled={!bordersEnabled && !isProtoMode}
-                      onChange={() =>
+                      onClick={() =>
                         dispatch(toggleContainersBorders(!showBorders))
                       }
-                    />
-                  }
-                  label={
-                    <Typography className={classes.title}>
-                      Show blocks
-                    </Typography>
-                  }
-                />
-              </MenuItem>
-            </Menu>
-            <a target="_blank" href={HELP_LINK} rel="noreferrer noopener">
-              <IconButton className={classes.iconbutton} title="Help">
-                <HelpOutlineIcon className={classes.icon} />
-              </IconButton>
-            </a>
-            {projectName ? (
-              <ToggleButton
-                value="sidebarOpen"
-                selected={sidebarOpen}
-                onClick={handleSidebarToggle}
-                title="Toggle Sidebar"
-                className={classes.togglebutton}
-              >
-                <MenuIcon className={classes.icon} />
-              </ToggleButton>
-            ) : (
-              <Avatar />
+                    >
+                      <ViewWeekIcon />
+                    </ToggleButton>
+                  </Tooltip>
+                </Box>
+                <Box>
+                  <Tooltip title="Grid">
+                    <ToggleButton
+                      selected={showGrid}
+                      value="grid"
+                      className={classes.togglebutton}
+                      onClick={() => dispatch(toggleGrid(!showGrid))}
+                    >
+                      <AppsIcon />
+                    </ToggleButton>
+                  </Tooltip>
+                </Box>
+              </>
             )}
+
+            <a target="_blank" href={HELP_LINK} rel="noreferrer noopener">
+              <Tooltip title="Help">
+                <IconButton className={classes.iconbutton}>
+                  <HelpOutlineIcon className={classes.icon} />
+                </IconButton>
+              </Tooltip>
+            </a>
+            {!projectName && <Avatar />}
           </Box>
         </Box>
       </Toolbar>
@@ -243,8 +255,8 @@ const TopPanel = () => {
         initialValueTags={tagsWithoutSpace}
         description={`Enter new name for project ${projectName}`}
       />
-    </AppBar>
+    </Appbar>
   );
-};
+}
 
 export default TopPanel;

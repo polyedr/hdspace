@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Grid } from '@material-ui/core';
+import { Typography, Grid } from '@mui/material';
 import bigimg from '../../../assets/images/bigimg.png';
 import logo from '../../../assets/images/logo.png';
 import Info from '../Info';
@@ -19,7 +19,14 @@ const Success: React.FC = () => {
         ]}
         img={bigimg}
       />
-      <Grid item xs={12} sm={5} className={classes.containerCenter}>
+      <Grid
+        item
+        xs={12}
+        sm={5}
+        container
+        alignItems="center"
+        justifyContent="center"
+      >
         <img src={logo} alt="Logo" />
         <div className={classes.main}>
           <Typography className={classes.underLogoText}>

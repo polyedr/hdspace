@@ -17,6 +17,7 @@ export const initialData: ProjectDataState = {
     loading: false,
   },
   screens: {},
+  screenFolders: [],
   elements: {},
   customElementsData: {
     previous: null,
@@ -34,7 +35,10 @@ export const initialData: ProjectDataState = {
     pageSize: 40,
   },
   assetResults: {},
+  assetImageList: false,
+  backGroundAssetsList: false,
   imagePalette: null,
+  createProjectError: null,
 };
 
 export const initialUi: ProjectUiState = {
@@ -69,6 +73,7 @@ export const initialEdit: ProjectEditState = {
   preSelectedElementId: null,
   masterSourceElementId: null,
   hoveredElementId: '-1',
+  activeEditingElementId: null,
   masterScreenId: null,
   masterCoreElementId: '-1',
   masterGroupsElementId: '-1',

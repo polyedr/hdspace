@@ -8,26 +8,28 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import { DropTargetMonitor, useDrag } from 'react-dnd';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import SyncIcon from '@material-ui/icons/Sync';
-import AspectRatioRoundedIcon from '@material-ui/icons/AspectRatioRounded';
+import {
+  SyncProblem as SyncProblemIcon,
+  AspectRatioRounded as AspectRatioRoundedIcon,
+  Sync as SyncIcon,
+  CloudUpload as CloudUploadIcon,
+} from '@mui/icons-material';
+import { IconButton } from '@mui/material';
 import useUrlImageToFile from '@Utils/useUrlImageToFile';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
 import { NNBlockType } from '@Src/types';
 import { updateElementParameters } from '@Redux/project/actions';
-import SyncProblemIcon from '@material-ui/icons/SyncProblem';
 import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { IconButton } from '@material-ui/core';
 import useAnalyzePucture from '@Utils/nn/hooks/useAnalyzePucture';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 
-type SizeProps = {
+interface SizeProps {
   width: number;
   height: number;
-};
+}
 
 const useStyles = makeComponentStyles('smart', {
   innerContentWrapper: {
@@ -146,8 +148,8 @@ const SmartContainerRenderer = React.forwardRef<
   });
 
   const [, drag] = useDrag({
+    type: element.type,
     item: {
-      type: element.type,
       drop: () => {
         if (!imgRef.current) {
           return;

@@ -1,10 +1,10 @@
 import React, { LegacyRef } from 'react';
 import cn from 'classnames';
-import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
-import { useHistory } from 'react-router';
 import { RendererProps } from '../types';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
@@ -21,14 +21,8 @@ const Label = React.forwardRef<HTMLLabelElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
-    const {
-      labelFor,
-      textContent,
-      isLink,
-      link,
-      screenLink,
-      screenName,
-    } = element.parameters;
+    const { labelFor, textContent, isLink, link, screenLink, screenName } =
+      element.parameters;
     const styles = useStyles(props);
     const contentEditableSettings = useContentEditable(element.id, textContent);
     const eventHandlers = useEventHandlers(
@@ -50,7 +44,7 @@ const Label = React.forwardRef<HTMLLabelElement, RendererProps>(
             aria-label={`Link-${element.id}`}
             target={exportScreenFlag ? '_self' : '_blank'}
             href={link}
-            ref={ref as LegacyRef<HTMLAnchorElement>}
+            ref={ref as unknown as LegacyRef<HTMLAnchorElement>}
             rel="noreferrer"
             style={{ textDecoration: 'none' }}
             {...contentEditableSettings.props}

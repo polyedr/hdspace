@@ -1,37 +1,31 @@
-import { IColumnData, IServerTaskData } from '@Src/types/pmtools/board';
+// eslint-disable-next-line import/no-cycle
 import { createSelector } from 'reselect';
-import { BoardRootState } from '../types';
+import { BoardRootState, BoardState, BoardTask } from '../types';
 
-export const selectColumnList = ({ board }: BoardRootState) => board.columns;
-export const selectTaskList = ({ board }: BoardRootState) => board.tasks;
-export const selectBoardData = ({ board }: BoardRootState) => board.board;
-export const selectMembersData = ({ board }: BoardRootState) => board.members;
+export const selectBoard = (state: BoardRootState) => state.board;
 
-export const selectTaskWithMembers = createSelector(
-  selectTaskList,
-  selectMembersData,
-  (tasks, members) => {
-    return tasks.map((task) => ({
-      ...task,
-      members: task.idMembers.map((id) =>
-        members.find((m: any) => m?.id === id),
-      ),
-    }));
-  },
-);
+export const selectComments = (task: BoardTask) =>
+  createSelector(selectBoard, (board: BoardState) => {
+    const columnIndex = board.columns.findIndex((c) => c.id === task.column);
+    const taskIndex = board.columns[columnIndex].tasks.findIndex(
+      (t) => t.id === task.id,
+    );
 
-export const selectColumnListWithTasks = createSelector(
-  selectColumnList,
-  selectTaskWithMembers,
-  (columns, tasks) => {
-    return columns.map((column) => ({
-      ...column,
-      tasks: tasks.filter((task: IServerTaskData) => task.idList === column.id),
-    }));
-  },
-);
+    return board.columns[columnIndex].tasks[taskIndex].comments ?? [];
+  });
 
-export const selectColumn = (value: string) =>
-  createSelector(selectColumnListWithTasks, (columns) => {
-    return columns.find((column: IColumnData) => column.id === value);
+export const selectColumns = (state: BoardRootState) => state.board.columns;
+
+export const selectLabels = (state: BoardRootState) => state.board.labels;
+
+export const selectChecklist = (task: BoardTask) =>
+  createSelector(selectBoard, (board: BoardState) => {
+    const columnIndex = board.columns.findIndex((c) => c.id === task.column);
+    const taskIndex = board.columns[columnIndex].tasks.findIndex(
+      (t) => t.id === task.id,
+    );
+
+    return (
+      board.columns[columnIndex].tasks[taskIndex].checklist.reverse() ?? []
+    );
   });

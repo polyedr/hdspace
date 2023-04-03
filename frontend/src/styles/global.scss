@@ -5,21 +5,23 @@
 
 @include font-face(
   'Oswald',
-  '../assets/fonts/Oswald-Bold',
+  '@/assets/fonts/Oswald-Bold',
   bold,
   null,
   ttf woff svg
 );
 @include font-face(
   'Oswald',
-  '../assets/fonts/Oswald-Regular',
+  '@/assets/fonts/Oswald-Regular',
   null,
   null,
   ttf woff svg
 );
 
 @include font('Raleway');
-@include font('Roboto');
+@include font-face('Roboto', '@/assets/fonts/Roboto-Bold', 800, null, ttf woff svg);
+@include font-face('Roboto', '@/assets/fonts/Roboto-Regular', 400, null, ttf woff svg);
+@include font-face('Roboto', '@/assets/fonts/Roboto-Medium', 500, null, ttf woff svg);
 @include font('Roboto Condensed', 'RobotoCondensed');
 @include font('Roboto Mono', 'RobotoMono');
 @include font('Source Sans Pro', 'SourceSansPro');
@@ -27,14 +29,14 @@
 
 @include font-face(
   'Open Sans',
-  '../assets/fonts/OpenSans-Light',
+  '@/assets/fonts/OpenSans-Light',
   300,
   null,
   ttf woff svg
 );
 @include font-face(
   'Open Sans',
-  '../assets/fonts/OpenSans-SemiBold',
+  '@/assets/fonts/OpenSans-SemiBold',
   600,
   null,
   ttf woff svg

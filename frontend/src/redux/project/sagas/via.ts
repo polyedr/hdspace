@@ -1,8 +1,8 @@
 // @ts-nocheck
-import { takeEvery, put, select } from 'redux-saga/effects/';
+import { takeEvery, put, select } from 'redux-saga/effects';
+import { v4 } from 'uuid';
 import TYPES from '@Redux/actionTypes';
 import { Normalized, VIARegion } from '@Src/types';
-import { v4 } from 'uuid';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   addRedoActions,

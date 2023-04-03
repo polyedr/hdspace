@@ -1,11 +1,11 @@
+import React from 'react';
+import { createUseStyles } from 'react-jss';
+import { useDispatch } from 'react-redux';
+import { ProjectsSearchParameter } from '@Src/types';
 import {
   searchProjects,
   setProjectsSearchParameter,
 } from '@Redux/project/actions';
-import { ProjectsSearchParameter } from '@Src/types';
-import React from 'react';
-import { createUseStyles } from 'react-jss';
-import { useDispatch } from 'react-redux';
 
 const useStyles = createUseStyles({
   tagsWrapper: {
@@ -23,7 +23,7 @@ const useStyles = createUseStyles({
     },
   },
 });
-const TagsList = ({ tags }) => {
+function TagsList({ tags }) {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -47,6 +47,6 @@ const TagsList = ({ tags }) => {
       })}
     </div>
   );
-};
+}
 
 export default TagsList;

@@ -1,16 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { createProject, getProjectList } from '@Redux/project/actions';
-import {
-  selectAreProjectsLoading,
-  selectProjectCreateLoader,
-  selectProjects,
-  selectProjectsDataNext,
-} from '@Redux/project/selectors/base';
-import Searchbar from '@Components/Projects/Searchbar';
-import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
+import { createStyles, makeStyles } from '@mui/styles';
 import {
   Typography,
   Table,
@@ -22,10 +13,29 @@ import {
   TableContainer,
   Container,
   CircularProgress,
-} from '@material-ui/core';
+  Theme,
+} from '@mui/material';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import {
+  selectAreProjectsLoading,
+  selectProjectCreateLoader,
+  selectProjects,
+  selectProjectsDataNext,
+} from '@Redux/project/selectors/base';
+import Searchbar from '@Components/Projects/Searchbar';
+import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
+import {
+  createProject,
+  getProjectList,
+  setProjectError,
+} from '@Redux/project/actions';
+import { getSubscriptionData } from '@Redux/permissions/actions';
+import { selectSubscriptionData } from '@Redux/user/selectors';
+import { selectProjectError } from '@Redux/project/selectors/via';
 import ProjectListItem from './ProjectListItem';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       // textAlign: 'center',
@@ -44,7 +54,9 @@ const useStyles = makeStyles((theme) =>
       alignItems: 'center',
     },
     headerText: {
-      fontWeight: 'bold',
+      '&.MuiTypography-root': {
+        fontWeight: 'bold',
+      },
     },
     table: {
       padding: theme.spacing(1),
@@ -53,11 +65,15 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: '#dedede',
     },
     loader: {
-      padding: '1em',
-      textAlign: 'center',
+      '&.MuiTableCell-root': {
+        padding: '1em',
+        textAlign: 'center',
+      },
     },
     createButton: {
-      minWidth: 160,
+      '&.MuiButton-root': {
+        minWidth: 160,
+      },
     },
     cellStatus: {
       width: 200,
@@ -67,6 +83,19 @@ const useStyles = makeStyles((theme) =>
     },
     cellTags: {
       minWidth: 200,
+    },
+    buttonFont: {
+      fontSize: '18px',
+      fontFamily: 'Roboto',
+      color: '#2A2A2D',
+      paddingLeft: '10px',
+    },
+    typographySize: {
+      marginTop: '12px',
+      fontSize: '14px',
+      fontFamily: 'Roboto',
+      color: '#2A2A2D',
+      paddingLeft: '10px',
     },
   }),
 );
@@ -78,15 +107,16 @@ const Projects: React.FC = () => {
   const ref = useRef<HTMLTableRowElement>(null);
   const el = ref && ref.current;
 
-  const [
-    permissionsManagementProjectId,
-    setPermissionsManagementProjectId,
-  ] = useState<number | null>(null);
+  const [permissionsManagementProjectId, setPermissionsManagementProjectId] =
+    useState<number | null>(null);
 
   const projects = useSelector(selectProjects);
   const projectListLoader = useSelector(selectAreProjectsLoading);
   const projectCreateLoader = useSelector(selectProjectCreateLoader);
   const hasNext = useSelector(selectProjectsDataNext);
+  const userSubscriptionData = useSelector(selectSubscriptionData);
+  const projectErrorData = useSelector(selectProjectError);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     dispatch(getProjectList());
@@ -97,6 +127,15 @@ const Projects: React.FC = () => {
       dispatch(getProjectList());
     }
   };
+
+  useEffect(() => {
+    if (projectErrorData === 'Maximum count of projects reached.') {
+      setShowModal(true);
+    }
+  }, [projectErrorData]);
+  useEffect(() => {
+    dispatch(getSubscriptionData());
+  }, []);
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -127,8 +166,13 @@ const Projects: React.FC = () => {
     (a, b) => b.created.getTime() - a.created.getTime(),
   );
 
-  const handleProjectAdd = () => {
-    dispatch(createProject('AProject'));
+  const handleProjectAdd = () =>
+    userSubscriptionData === null
+      ? setShowModal(true)
+      : dispatch(createProject('AProject'));
+  const handleModalClose = () => {
+    dispatch(setProjectError(null));
+    setShowModal(false);
   };
 
   return (
@@ -213,6 +257,70 @@ const Projects: React.FC = () => {
           onClose={() => setPermissionsManagementProjectId(null)}
         />
       )}
+      <Modal open={showModal}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 420,
+            bgcolor: 'background.paper',
+            borderRadius: '6px',
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography className={classes.buttonFont}>
+            subscription violation
+          </Typography>
+          <Typography className={classes.typographySize}>
+            {userSubscriptionData === null ? (
+              <span>
+                You need to have active subscription to create projects. Go to
+                subscription plans ?
+              </span>
+            ) : null}
+
+            {projectErrorData === 'Maximum count of projects reached.' ? (
+              <span>
+                You have reached maximum number of projects. Do you want to
+                upgrade your subscription ?
+              </span>
+            ) : null}
+          </Typography>
+          <Box
+            sx={{
+              marginTop: '30px',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+            gap={2}
+          >
+            <a
+              href="https://adevi.clickfunnels.com/orderju32fma6"
+              style={{ textDecoration: 'none' }}
+              rel="noreferrer"
+            >
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.createButton}
+                onClick={handleModalClose}
+              >
+                Yes
+              </Button>
+            </a>
+            <Button
+              variant="contained"
+              className={classes.createButton}
+              onClick={handleModalClose}
+            >
+              No
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </Container>
   );
 };

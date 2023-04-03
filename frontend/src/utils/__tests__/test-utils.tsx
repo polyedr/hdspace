@@ -1,5 +1,7 @@
-import { initialUserState } from '@Redux/user/initial';
 import MockDate from 'mockdate';
+import logger from 'loglevel';
+import { vi } from 'vitest';
+import { initialUserState } from '@Redux/user/initial';
 import {
   initialCommunication,
   initialControl,
@@ -7,13 +9,13 @@ import {
   initialEdit,
   initialUi,
 } from '@Redux/project/initial';
+import { initialmarketplaceData } from '@Redux/marketplace/initial';
 import initialPermissions from '@Redux/permissions/initial';
 import { AppReduxState, ProjectEditState } from '@Redux/types';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import { DEFAULT_LAYOUT_LIST, DEFAULT_USER } from '@Constants/defaultParams';
 import { generateRandomInteger } from '@Utils/NumberHelper';
 import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
-import logger from 'loglevel';
 import {
   Project,
   StateElement,
@@ -24,9 +26,11 @@ import {
   AssetsList,
   ProjectWithScreens,
   ProjectsSearchParameter,
+  TemplatesSearchParameter,
   DateRange,
   NNBlockType,
   Layout,
+  Marketplace,
 } from '@Src/types';
 
 export const mockProject: Project = {
@@ -142,7 +146,6 @@ export const mockUserData: UserData = {
     id: 888,
     experienced: Experience.EXPERIENCED,
     parameters: {
-      passwordZulip: '',
       avatarCrop: '',
       profileDataParameters: {
         autoSwitchTabs: false,
@@ -152,7 +155,7 @@ export const mockUserData: UserData = {
   },
 };
 
-export const mockVIAState = ({
+export const mockVIAState = {
   blockType: NNBlockType.WEBPAGE,
   resultId: '-1',
   viaData: {},
@@ -179,10 +182,46 @@ export const mockVIAState = ({
   activeRegionId: '',
   annotatedImageFile: null,
   copiedRegion: null,
-} as unknown) as ProjectEditState['VIAMode'];
+} as unknown as ProjectEditState['VIAMode'];
 
+export const mockMarketplace: Marketplace = {
+  id: 1,
+  name: 'Mock Project',
+  status: 'in progress',
+  created: new Date(0),
+  updated: new Date(0),
+  projectscreen: [],
+  projectTrelloJSON: null,
+  TemplateLoader: false,
+  tags: [],
+  marketplaceData: {
+    classes: [],
+    uiFramework: NOT_SELECTED_FRAMEWORK,
+    defaultStyles: {
+      accentColor: {},
+      border: {},
+      borderColor: {},
+      colors: {},
+      elementsBackgroundColor: {},
+      fontColorOverlay: {},
+      headingType: {},
+      indents: {},
+      screenBackgroundColor: {},
+      typography: {},
+    },
+    layout: {
+      value: Layout.Desktop,
+      rotated: false,
+    },
+  },
+  user: DEFAULT_USER,
+};
 export const mockInitialState: AppReduxState = {
   user: initialUserState,
+  wireframe: {
+    activeScreen: undefined,
+    activeElement: undefined,
+  },
   project: {
     data: initialData,
     edit: initialEdit,
@@ -194,6 +233,7 @@ export const mockInitialState: AppReduxState = {
     action: 'POP',
     location: {
       hash: '',
+      query: {},
       key: '',
       pathname: '',
       search: '',
@@ -204,6 +244,9 @@ export const mockInitialState: AppReduxState = {
     notifications: [],
   },
   permissions: initialPermissions,
+  marketplace: {
+    data: initialmarketplaceData,
+  },
 };
 
 export const mockState: AppReduxState = {
@@ -234,6 +277,18 @@ export const mockState: AppReduxState = {
       ...mockInitialState.project.edit,
       currentProjectId: mockProject.id,
       currentScreenId: mockScreen.id,
+    },
+  },
+  marketplace: {
+    ...mockInitialState.marketplace,
+    data: {
+      ...mockInitialState.marketplace.data,
+      marketplaceData: {
+        ...mockInitialState.marketplace.data.marketplaceData,
+        results: {
+          [mockMarketplace.id]: mockMarketplace,
+        },
+      },
     },
   },
 };
@@ -300,6 +355,7 @@ export const createMasterScreenMock = (projectId: number): Screen => ({
 export const createScreenMock = (
   projectId: number,
   buoyancy: number = 1,
+  category: number = null,
 ): Screen => ({
   buoyancy,
   element: '99999',
@@ -307,6 +363,7 @@ export const createScreenMock = (
   image: null,
   name: 'Screen 1',
   project: projectId,
+  category,
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
     freeCanvas: false,
@@ -359,14 +416,19 @@ export const projectSearchParameterMock: [
   string | DateRange,
 ] = [ProjectsSearchParameter.name, 'text search'];
 
+export const templateSearchParameterMock: [
+  TemplatesSearchParameter,
+  string | DateRange,
+] = [TemplatesSearchParameter.name, 'text search'];
+
 export const projectScreensMock = [
   createMasterScreenMock(getTestId()),
   createScreenMock(getTestId()),
 ];
 
 export const beforeSagaTest = () => {
-  logger.error = jest.fn();
+  logger.error = vi.fn();
   // stub current date and random value generator to pass enqueueSnackbar equality
   MockDate.set('2000-11-22');
-  jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
+  vi.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
 };

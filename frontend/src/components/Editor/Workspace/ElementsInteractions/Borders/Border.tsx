@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import { BoundingStyles, StyleProps } from '@Src/types';
-import { makeStyles } from '@material-ui/core/styles';
 import BorderPosition from '../constants';
 
-type Props = {
+interface Props {
   elementId: string;
   position: BorderPosition;
   styles: BoundingStyles;
   isActive: boolean;
   visiblePreSelect: boolean;
-};
+}
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   '@global': {
     '@keyframes sharedHighlight': {
       '0%': {

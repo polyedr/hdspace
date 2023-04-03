@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useMemo, useEffect, useRef, MutableRefObject } from 'react';
+import React, { useMemo, useEffect, useRef, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   selectCustomLibraryElements,
@@ -11,11 +11,11 @@ import { createArrayCustomElements } from '@Utils/createCategoryCustomElement';
 import { CustomElementsCategory } from '@Src/types';
 import CustomElementsBlock from './CustomElementsBlock';
 
-const GeneratedElementsBlocks = () => {
+function GeneratedElementsBlocks() {
   const libraryElements = useSelector(selectCustomLibraryElements);
   const dispatch = useDispatch();
   const hasNext = useSelector(selectCustomElementsHasNext);
-  const lastElementRef = useRef() as MutableRefObject<HTMLButtonElement>;
+  const lastElementRef = useRef();
   const lastDom = lastElementRef && lastElementRef.current;
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -66,6 +66,6 @@ const GeneratedElementsBlocks = () => {
       )}
     </div>
   );
-};
+}
 
-export default GeneratedElementsBlocks;
+export default memo(GeneratedElementsBlocks);

@@ -1,115 +1,145 @@
-import React, { useState } from 'react';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+import { styled } from '@mui/material/styles';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { useDispatch } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
-import { requestDeleteTask } from '@Redux/pmtools/board/actions/tasks';
-import { StyledIconButton } from '@Components/styledComponents';
-import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
-import { ModalAction } from '@Src/types';
-import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
-import { IColumnData } from '@Src/types/pmtools/board';
+import { Box, Chip, Stack } from '@mui/material';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import { differenceInDays, format } from 'date-fns';
+import { useSelector } from 'react-redux';
+import { BoardTask } from '@Redux/pmtools/types';
+import { selectLabels } from '@Redux/pmtools/board/selectors';
+import TaskDialog from './TaskDialog';
+import User from './User';
+import BarIcon from './BarIcon';
 
-type Props = {
-  column: IColumnData;
-  task: any;
-  index: number;
-};
+const Container = styled('div')<{ dragging: boolean }>(({ dragging }) => ({
+  padding: '10px 12px',
+  margin: '0 8px 8px',
+  backgroundColor: '#FFFFFF',
+  boxShadow:
+    '0px 0px 1px rgba(42, 42, 45, 0.16), 0px 2px 6px rgba(42, 42, 45, 0.08)',
+  flexGrow: 1,
+  borderRadius: 4,
+  border: `1px solid ${dragging ? '#5064FF' : '#ffffff'}`,
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
-  task: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-
-    padding: spacing(1),
-    margin: spacing(0.2),
-    borderRadius: 3,
-    backgroundColor: palette.primary.light,
+  '&:hover': {
+    border: '1px solid #5064FF',
   },
-  title: {
-    margin: 0,
-    maxWidth: '160px',
-    wordWrap: 'break-word',
-  },
-  icon: {
-    color: palette.grey[100],
+
+  '&:focus': {
+    border: '1px solid #5064FF',
   },
 }));
 
-const Task: React.FC<Props> = ({ column, task, index }) => {
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [showTaskModal, setShowTaskModal] = useState(false);
+const StyledChip = styled(Chip)({
+  backgroundColor: '#F3F4F6',
+  fontSize: 12,
+  marginBottom: '5px !important',
+});
 
-  const handleDeleteTask = () => {
-    const action = `Column "${task.name}" has been deleted`;
-    dispatch(
-      requestDeleteTask({
-        action: {
-          action,
-          platform: 'PM-TOOLS',
-          priority: 'medium',
-        },
-        taskId: task.id,
-      }),
-    );
-  };
+const TimeStack = styled(Stack)<{ priority: boolean }>(({ priority }) => ({
+  '& svg': {
+    fontSize: 13,
+    color: priority ? 'red' : '#81818E',
+  },
+  '& p': {
+    fontSize: 12,
+    color: priority ? 'red' : '#81818E',
+    lineHeight: 'initial',
+  },
+}));
+
+interface Props {
+  task: BoardTask;
+  index: number;
+}
+
+const Task: React.FC<Props> = ({ task, index }) => {
+  const [showDialog, setShowDialog] = useState(false);
+
+  const labels = useSelector(selectLabels);
+
+  const handleShowDialog = useCallback(
+    (show) => () => setShowDialog(show),
+    [setShowDialog],
+  );
+
+  const selectedLabels = useMemo(() => {
+    const mergedLabels = task.label_ids
+      .map((id) => labels.find((l) => l.id === id) ?? null)
+      .filter((l) => l !== null);
+
+    return mergedLabels.sort((a, b) => (a.text > b.text ? 1 : -1));
+  }, [task.label_ids, labels]);
 
   return (
-    <Draggable key={task.id} draggableId={task.id} index={index}>
-      {(provided) => {
-        return (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
+    <>
+      <TaskDialog
+        task={task}
+        onClose={handleShowDialog(false)}
+        open={showDialog}
+      />
+      <Draggable draggableId={task.id.toString()} index={index}>
+        {(provided, snapshot) => (
+          <Container
             {...provided.dragHandleProps}
-            key={task.id}
-            className={classes.task}
+            {...provided.draggableProps}
+            ref={provided.innerRef}
+            dragging={snapshot.isDragging}
+            onClick={handleShowDialog(true)}
           >
-            <div>
-              <h4 className={classes.title}>{task.name}</h4>
-            </div>
-            <div>
-              <StyledIconButton
-                size="small"
-                title="Edit task"
-                onClick={() => setShowTaskModal(true)}
-              >
-                <EditIcon fontSize="small" className={classes.icon} />
-              </StyledIconButton>
-              <StyledIconButton
-                size="small"
-                title="Delete task"
-                onClick={() => setShowConfirmModal(true)}
-              >
-                <DeleteIcon fontSize="small" className={classes.icon} />
-              </StyledIconButton>
-            </div>
-            {showTaskModal && (
-              <TaskModal
-                show={showTaskModal}
-                hide={() => setShowTaskModal(false)}
-                task={task}
-                column={column}
-                selectedTaskId={task.id}
-                action={ModalAction.Edit}
-              />
-            )}
-            <ConfirmModal
-              show={showConfirmModal}
-              elementText="task"
-              actionText="delete"
-              action={handleDeleteTask}
-              hide={() => setShowConfirmModal(false)}
-            />
-          </div>
-        );
-      }}
-    </Draggable>
+            <Stack
+              direction="row"
+              spacing={1}
+              mb={2}
+              justifyContent="space-between"
+              alignItems="flex-start"
+            >
+              <Box sx={{ width: 'calc(100% - 20px)', textAlign: 'justify' }}>
+                {task.title}
+              </Box>
+              <BarIcon priority={task.priority} />
+            </Stack>
+            <Stack direction="row" spacing={0.2} mb={2} flexWrap="wrap">
+              {selectedLabels.map((label) => (
+                <StyledChip
+                  key={label.id.toString()}
+                  label={label.text}
+                  size="small"
+                />
+              ))}
+            </Stack>
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="flex-end"
+              justifyContent="space-between"
+            >
+              {task.due_date ? (
+                <TimeStack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  priority={
+                    differenceInDays(Date.parse(task.due_date), new Date()) < 1
+                  }
+                >
+                  <ScheduleIcon fontSize="small" />
+                  <p>{format(Date.parse(task.due_date), 'dd MMM')}</p>
+                </TimeStack>
+              ) : (
+                <div />
+              )}
+
+              <Stack direction="row" spacing={0.5}>
+                {task.assignee ? <User user={task.assignee} /> : null}
+                {task.author ? <User user={task.author} /> : null}
+              </Stack>
+            </Stack>
+          </Container>
+        )}
+      </Draggable>
+    </>
   );
 };
 
-export default Task;
+export default React.memo(Task);

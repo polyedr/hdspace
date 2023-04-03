@@ -3,20 +3,19 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { mutateTree, TreeData } from '@atlaskit/tree';
 import { useSelector } from 'react-redux';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+import { Box } from '@mui/material';
 import {
   selectCurrentRootId,
   selectAllElements,
 } from '@Redux/project/selectors/element';
 import Tree from '@Components/LeftPanel/Navigator/components/Tree';
 import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
-import { makeTree, updateTree, convertElements } from './utils';
 import {
   StyledAccordion,
   StyledAccordionDetails,
-  StyledAccordionSummary,
 } from '../../styledComponents';
+import { makeTree, updateTree, convertElements } from './utils';
 
 const Navigator: React.FC = () => {
   const elements = useSelector(selectAllElements);
@@ -36,29 +35,32 @@ const Navigator: React.FC = () => {
   const expandParents = useCallback(
     (itemId) => {
       if (itemId === 'root') return;
-      // @ts-ignore
+      // @ts-expect-error
       const parentId = tree.items[itemId]?.parent;
       if (!parentId) return;
-      setTree((prevTree) => {
-        return mutateTree(prevTree, parentId, { isExpanded: true });
-      });
-
+      setTree((prevTree) =>
+        mutateTree(prevTree, parentId, { isExpanded: true }),
+      );
       expandParents(parentId);
     },
     [tree],
   );
-
+  const styles = {
+    '& .MuiAccordionDetails-root': {
+      boxShadow: 'none',
+      backgroundColor: '#ffffff',
+      padding: 0,
+    },
+  };
   return (
-    <StyledAccordion defaultExpanded>
-      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
-        Navigator
-      </StyledAccordionSummary>
-
-      <StyledAccordionDetails>
-        <Tree tree={tree} setTree={setTree} elements={elements} />
-      </StyledAccordionDetails>
-    </StyledAccordion>
+    <Box>
+      <StyledAccordion defaultExpanded sx={styles}>
+        <StyledAccordionDetails>
+          <Tree tree={tree} setTree={setTree} elements={elements} />
+        </StyledAccordionDetails>
+      </StyledAccordion>
+    </Box>
   );
 };
 
-export default Navigator;
+export default React.memo(Navigator);

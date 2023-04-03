@@ -15,11 +15,10 @@ export const selectCurrentScreen = createSelector(
 export const selectScreensWithoutMaster = createSelector(
   (state: AppReduxState) => state.project.data.screens,
   (state: AppReduxState) => state.project.edit.masterScreenId,
-  (screens, masterScreenId) => {
-    return Object.values(screens)
+  (screens, masterScreenId) =>
+    Object.values(screens)
       .filter((screen) => screen.id !== masterScreenId)
-      .sort((a, b) => a.buoyancy - b.buoyancy);
-  },
+      .sort((a, b) => a.buoyancy - b.buoyancy),
 );
 
 export const selectScreens = (state: AppReduxState) =>
@@ -29,6 +28,41 @@ export const selectSortedScreens = createSelector(
   selectScreens,
   (unsortedScreens: Normalized<Screen>) =>
     Object.values(unsortedScreens).sort((a, b) => a.buoyancy - b.buoyancy),
+);
+
+export const selectFolders = (state: AppReduxState) =>
+  state.project.data.screenFolders;
+
+export const selectSortedFolders = createSelector(selectFolders, (folders) => {
+  return Object.values(folders)
+    .map((folder) => {
+      return {
+        ...folder,
+        ctscreens: Object.values(folder.ctscreens).sort(
+          (a, b) => a.buoyancy - b.buoyancy,
+        ),
+      };
+    })
+    .sort((a, b) => a.buoyancy - b.buoyancy);
+});
+
+export const selectUncategoriesScreens = createSelector(
+  selectSortedFolders,
+  selectScreensWithoutMaster,
+  (folders, screens) => {
+    let categoriesScreensIds = [];
+
+    folders.forEach((folder) => {
+      categoriesScreensIds = [
+        ...categoriesScreensIds,
+        ...folder.ctscreens.map((screen) => screen.id),
+      ];
+    });
+
+    return screens.filter(
+      (screen) => !categoriesScreensIds.includes(screen.id),
+    );
+  },
 );
 
 export const selectScreensLength = createSelector(
@@ -62,9 +96,8 @@ export const selectMasterScreen = (state: AppReduxState) => {
 export const selectMasterScreenEnabled = createSelector(
   selectCurrentScreenId,
   selectMasterScreenId,
-  (currentScreenId: number | null, masterScreenId: number | null) => {
-    return currentScreenId === masterScreenId;
-  },
+  (currentScreenId: number | null, masterScreenId: number | null) =>
+    currentScreenId === masterScreenId,
 );
 
 export const selectNewScreenModalOpen = ({ project }: AppReduxState) =>

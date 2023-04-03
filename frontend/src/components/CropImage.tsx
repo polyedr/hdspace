@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
@@ -7,13 +7,13 @@ function ImageCropper(props) {
 
   const [cropConfig, setCropConfig] = useState({
     unit: '%',
-    height: 25,
+    height: 100,
     aspect: 1 / 1,
   });
 
   const [imageRef, setImageRef] = useState();
 
-  function getCroppedImage(sourceImage, cropConfig, fileName) {
+  async function getCroppedImage(sourceImage, cropConfig, fileName) {
     const canvas = document.createElement('canvas');
     const scaleX = sourceImage.naturalWidth / sourceImage.width;
     const scaleY = sourceImage.naturalHeight / sourceImage.height;
@@ -35,8 +35,7 @@ function ImageCropper(props) {
 
     const base64Image = canvas.toDataURL('image/jpeg', 1);
 
-    setResult(base64Image);
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       canvas.toBlob((blob: any) => {
         if (!blob) {
           reject(new Error('Canvas is empty'));
@@ -44,6 +43,8 @@ function ImageCropper(props) {
         }
 
         blob.name = fileName;
+        setResult(base64Image, blob);
+
         const croppedImageUrl = window.URL.createObjectURL(blob);
 
         resolve(croppedImageUrl);
@@ -66,11 +67,11 @@ function ImageCropper(props) {
   return (
     <ReactCrop
       src={imageToCrop || ''}
-      // @ts-ignore
+      // @ts-expect-error
       crop={cropConfig}
       ruleOfThirds
       onImageLoaded={(imageRef: any) => setImageRef(imageRef)}
-      onComplete={(cropConfig) => cropImage(cropConfig)}
+      onComplete={async (cropConfig) => await cropImage(cropConfig)}
       onChange={(cropConfig: any) => setCropConfig(cropConfig)}
       crossorigin="anonymous"
       minHeight={25}

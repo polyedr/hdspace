@@ -1,49 +1,37 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import { AccordionDetails } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useDispatch } from 'react-redux';
 import { splitWords } from '@Utils/stringHelper';
 import {
-  StyledAccordion,
-  StyledAccordionDetails,
-  StyledAccordionSummary,
+  PropertyAccordianSummary,
+  PropertyAccordion,
 } from '@Components/styledComponents';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+// import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { setImageList } from '@Redux/project/actions';
 
-const useStyles = makeStyles({
-  section: {},
-  title: {
-    textTransform: 'capitalize',
-    '& .MuiAccordionSummary-content': {
-      padding: '0 1em',
-    },
-  },
-  content: {
-    padding: '0.5em',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'stretch',
-  },
-});
-
-type Props = {
+interface Props {
   title: string;
-};
+  expanded: boolean;
+}
 
-const ControlSection: React.FC<Props> = ({ title, children }) => {
-  const classes = useStyles();
+const ControlSection: React.FC<Props> = ({ title, children, expanded }) => {
+  const [isCollapse, setIsCollapse] = useState(expanded);
+  const dispatch = useDispatch();
+
+  const toggle = () => {
+    setIsCollapse(!isCollapse);
+    dispatch(setImageList(false));
+  };
 
   return (
-    <StyledAccordion className={classes.section} defaultExpanded>
-      <StyledAccordionSummary
-        expandIcon={<ArrowDropDownIcon />}
-        className={classes.title}
-      >
+    <PropertyAccordion expanded={isCollapse} onChange={() => toggle()}>
+      <PropertyAccordianSummary expandIcon={<ExpandMoreIcon />}>
         {splitWords(title)}
-      </StyledAccordionSummary>
+      </PropertyAccordianSummary>
 
-      <StyledAccordionDetails className={classes.content}>
-        {children}
-      </StyledAccordionDetails>
-    </StyledAccordion>
+      <AccordionDetails>{children}</AccordionDetails>
+    </PropertyAccordion>
   );
 };
 

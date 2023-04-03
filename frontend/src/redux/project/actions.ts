@@ -1,4 +1,5 @@
 import React from 'react';
+import { XYCoord } from 'react-dnd';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import {
   ChildEntity,
@@ -36,8 +37,8 @@ import {
   VIARegions,
   canvasData,
   ParsedImagePalette,
+  NestedIndices,
 } from '@Src/types';
-import { XYCoord } from 'react-dnd';
 import {
   UpdateUISettingsParameters,
   Action,
@@ -48,7 +49,6 @@ import {
   AddElements,
   CreateProject,
   CreateScreen,
-  ChangeScreensOrder,
   ClearAfterPrevScreen,
   CopyActiveElement,
   CopyElementStyles,
@@ -59,6 +59,7 @@ import {
   DuplicateScreen,
   ElementHistoryMeta,
   GetProject,
+  GetSharedProject,
   HistoryMeta,
   LoadProjects,
   LoadProjectsSuccess,
@@ -151,6 +152,8 @@ import {
   ReplaceMultipleElementsParameters,
   WrapMultipleElementsIntoContainer,
   UploadImageByUrl,
+  AddImageList,
+  AddBackgroundImageList,
   UpdateStateAssetImage,
   SetSelectedAssetListId,
   RestoreMultipleElementsChildren,
@@ -203,6 +206,11 @@ import {
   GenerateImagePalette,
   SetImagePalette,
   UpdateLayoutProjects,
+  ProjectError,
+  PasteCopiedElementAtIndex,
+  ElementMetaIndex,
+  ScreenFolder,
+  SetActiveEditingElementId,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -256,6 +264,12 @@ export const getProject = (id: number): GetProject => ({
   type: TYPES.GET_PROJECT,
   payload: { id },
 });
+export const getSharedProject = (
+  shortuuid_token: string,
+): GetSharedProject => ({
+  type: TYPES.GET_SHARED_PROJECT,
+  payload: { shortuuid_token },
+});
 
 export const setCurrentProjectId = (
   projectId: number,
@@ -285,18 +299,23 @@ export const updateCurrentUIFramework = (
   payload: { uiFramework },
 });
 
-export const updateCurrentUIFrameworkVariables = (variables: {
-  [name: string]: string;
-}) => ({
+export const updateCurrentUIFrameworkVariables = (
+  variables: Record<string, string>,
+) => ({
   type: TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
   payload: variables,
+});
+
+export const setProjectError = (errorResponse): ProjectError => ({
+  type: TYPES.SET_PROJECT_ERROR,
+  payload: { errorResponse },
 });
 
 export const resetCurrentUIFrameworkVariables = () => ({
   type: TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES,
 });
 
-export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({
+export const changeScreensOrder = (indices: NestedIndices) => ({
   type: TYPES.CHANGE_SCREENS_ORDER,
   payload: indices,
 });
@@ -304,7 +323,7 @@ export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({
 export const updateNameAndTagsProject = (
   projectID: number,
   name: string,
-  tags: string,
+  tags: any,
 ): UpdateNameAndTagsProject => ({
   type: TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
   payload: { projectID, name, tags },
@@ -505,7 +524,7 @@ export const updateStateElement = (
 
 // add new elements to existing ones
 export const addStateElements = (
-  stateElementsToAdd: StateElementsToAdd<Entity>[],
+  stateElementsToAdd: Array<StateElementsToAdd<Entity>>,
   meta: ElementHistoryMeta,
 ): AddStateElements => ({
   type: TYPES.ADD_STATE_ELEMENTS,
@@ -727,9 +746,7 @@ export const updateMultipleStateElements = (
 
 export const updateMultipleElementsStyles = (
   ids: string[],
-  styles: {
-    [id: string]: React.CSSProperties;
-  },
+  styles: Record<string, React.CSSProperties>,
   meta: ElementHistoryMeta,
 ): UpdateMultipleElementsStyles => ({
   type: TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
@@ -739,9 +756,7 @@ export const updateMultipleElementsStyles = (
 
 export const replaceMultipleElementsStyles = (
   ids: string[],
-  styles: {
-    [id: string]: React.CSSProperties;
-  },
+  styles: Record<string, React.CSSProperties>,
   meta: ElementHistoryMeta,
 ): ReplaceMultipleElementsStyles => ({
   type: TYPES.REPLACE_MULTIPLE_ELEMENTS_STYLES,
@@ -803,7 +818,7 @@ export const uploadElementAsset = (
 
 export const updateElementParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters']
+  K extends LibraryElement<T>['parameters'],
 >(
   elementId: string,
   parameters: K,
@@ -819,7 +834,7 @@ export const updateElementParameters = <
 
 export const replaceElementParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters']
+  K extends LibraryElement<T>['parameters'],
 >(
   elementId: string,
   parameters: K,
@@ -835,12 +850,10 @@ export const replaceElementParameters = <
 
 export const updateMultipleElementsParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters']
+  K extends LibraryElement<T>['parameters'],
 >(
   ids: string[],
-  parameters: {
-    [id: string]: K;
-  },
+  parameters: Record<string, K>,
   meta: ElementHistoryMeta,
 ): UpdateMultipleElementsParameters => ({
   type: TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
@@ -853,12 +866,10 @@ export const updateMultipleElementsParameters = <
 
 export const replaceMultipleElementsParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters']
+  K extends LibraryElement<T>['parameters'],
 >(
   ids: string[],
-  parameters: {
-    [id: string]: K;
-  },
+  parameters: Record<string, K>,
   meta: ElementHistoryMeta,
 ): ReplaceMultipleElementsParameters => ({
   type: TYPES.REPLACE_MULTIPLE_ELEMENTS_PARAMETERS,
@@ -948,10 +959,10 @@ export const createElements = (
 });
 
 export const addChildrenToElement = (
-  children: {
+  children: Array<{
     childType: ChildEntity;
     parameters: ReturnType<ChildrenElements[ChildEntity]>['parameters'];
-  }[],
+  }>,
   elementId: string,
   meta: ElementHistoryMeta,
 ): AddChildrenToElement => ({
@@ -1058,6 +1069,13 @@ export const setHoveredElementId = (
   payload: id,
 });
 
+export const setActiveEditingElementId = (
+  id: string | null,
+): SetActiveEditingElementId => ({
+  type: TYPES.SET_ACTIVE_EDITING_ELEMENT,
+  payload: id,
+});
+
 export const setMasterCoreElementId = (id = '-1'): SetMasterCoreElementId => ({
   type: TYPES.SET_MASTER_CORE_ELEMENT_ID,
   payload: { id },
@@ -1094,6 +1112,13 @@ export const pasteCopiedElement = (
   meta: ElementHistoryMeta,
 ): PasteCopiedElement => ({
   type: TYPES.PASTE_COPIED_ELEMENT,
+  meta,
+});
+
+export const pasteElementAtIndex = (
+  meta: ElementMetaIndex,
+): PasteCopiedElementAtIndex => ({
+  type: TYPES.PASTE_COPIED_ELEMENT_AT_INDEX,
   meta,
 });
 
@@ -1167,7 +1192,7 @@ export const redoWrapIntoContainer = (
 });
 
 export const addElements = (
-  elements: LibraryElement<any>[],
+  elements: Array<LibraryElement<any>>,
   parentId?: string,
 ): AddElements => ({
   type: TYPES.ADD_ELEMENTS,
@@ -1512,6 +1537,18 @@ export const uploadImageByUrl = (
   meta,
 });
 
+export const setImageList = (valueImage: boolean): AddImageList => ({
+  type: TYPES.SET_IMAGE_LIST,
+  payload: { valueImage },
+});
+
+export const setBackgroundList = (
+  backGroundValue: boolean,
+): AddBackgroundImageList => ({
+  type: TYPES.SET_BACKGROUND_LIST,
+  payload: { backGroundValue },
+});
+
 export const updateStateAssetImage = (
   assetId: string,
   listId: string,
@@ -1725,14 +1762,6 @@ export const setSidebarHost = (host: string): SetSidebarHost => ({
   payload: host,
 });
 
-export const sidebarLogout = () => ({
-  type: TYPES.SIDEBAR_LOGOUT,
-});
-
-export const sidebarLogoutSuccess = () => ({
-  type: TYPES.SIDEBAR_LOGOUT_SUCCESS,
-});
-
 export const updateUISettingsParameters = (
   uiParameters: Partial<ProfileDataUIParameters>,
 ): UpdateUISettingsParameters => ({
@@ -1796,4 +1825,62 @@ export const setImagePalette = (
 ): SetImagePalette => ({
   type: TYPES.SET_IMAGE_PALETTE,
   payload: imagePalette,
+});
+
+export const createScreenFolder = (name: string, projectId: number) => ({
+  type: TYPES.CREATE_SCREEN_FOLDER,
+  payload: {
+    name,
+    projectId,
+  },
+});
+
+export const fetchScreenFolders = (projectId: number) => ({
+  type: TYPES.FETCH_SCREEN_FOLDERS,
+  payload: {
+    projectId,
+  },
+});
+
+export const fetchedScreenFolders = (folders: ScreenFolder[]) => ({
+  type: TYPES.FETCHED_SCREEN_FOLDERS,
+  payload: {
+    folders,
+  },
+});
+
+export const createdScreenFolder = (folder: ScreenFolder) => ({
+  type: TYPES.SCREEN_FOLDER_CREATED,
+  payload: { folder },
+});
+
+export const changeScreenFolderOrder = (indices: Indices) => ({
+  type: TYPES.CHANGE_SCREEN_FOLDER_ORDER,
+  payload: {
+    indices,
+  },
+});
+
+export const updateScreenFolder = (
+  params: Partial<ScreenFolder> & { id: ScreenFolder['id'] },
+) => ({
+  type: TYPES.UPDATE_SCREEN_FOLDER,
+  payload: { params },
+});
+
+export const updatedScreenFolder = (
+  folder: Partial<ScreenFolder> & { id: ScreenFolder['id'] },
+) => ({
+  type: TYPES.SCREEN_FOLDER_UPDATED,
+  payload: { folder },
+});
+
+export const deleteScreenFolder = (id: number) => ({
+  type: TYPES.DELETE_SCREEN_FOLDER,
+  payload: { id },
+});
+
+export const deletedScreenFolder = (id: number) => ({
+  type: TYPES.DELETED_SCREEN_FOLDER,
+  payload: { id },
 });

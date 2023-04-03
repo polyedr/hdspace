@@ -27,12 +27,36 @@ const dataReducer = produce(
         };
         break;
       }
+      case TYPES.FETCHED_SCREEN_FOLDERS: {
+        draft.screenFolders = action.payload.folders;
+        break;
+      }
+      case TYPES.SCREEN_FOLDER_CREATED: {
+        draft.screenFolders = [...draft.screenFolders, action.payload.folder];
+        break;
+      }
+      case TYPES.SCREEN_FOLDER_UPDATED: {
+        const folderIndex = draft.screenFolders.findIndex(
+          (folder) => folder.id === action.payload.folder.id,
+        );
 
+        draft.screenFolders[folderIndex] = {
+          ...draft.screenFolders[folderIndex],
+          ...action.payload.folder,
+        };
+
+        break;
+      }
+      case TYPES.DELETED_SCREEN_FOLDER: {
+        draft.screenFolders = draft.screenFolders.filter(
+          (folder) => folder.id !== action.payload.id,
+        );
+        break;
+      }
       case TYPES.SET_IMAGE_PALETTE: {
         draft.imagePalette = action.payload;
         break;
       }
-
       case TYPES.MOVE_STATE_ELEMENT: {
         const { elementId, indices, parents } = action.payload;
         draft.elements = moveMapElement(
@@ -80,7 +104,19 @@ const dataReducer = produce(
 
       case TYPES.ADD_STATE_ELEMENTS: {
         const { elements } = action.payload;
-        draft.elements = addMapElements(draft.elements, elements);
+
+        const index = action.meta?.index;
+
+        if (!index) {
+          draft.elements = addMapElements(draft.elements, elements);
+        } else {
+          elements.forEach((element) => {
+            element.index = index;
+          });
+
+          draft.elements = addMapElements(draft.elements, elements);
+        }
+
         break;
       }
 
@@ -92,6 +128,12 @@ const dataReducer = produce(
           parentId,
           childId,
         );
+        break;
+      }
+
+      case TYPES.SET_PROJECT_ERROR: {
+        const { errorResponse } = action.payload;
+        draft.createProjectError = errorResponse;
         break;
       }
 
@@ -223,9 +265,10 @@ const dataReducer = produce(
         ];
         break;
       case TYPES.REMOVE_CUSTOM_ELEMENT:
-        draft.customElementsData.results = draft.customElementsData.results.filter(
-          (elementData) => elementData.id !== action.payload.id,
-        );
+        draft.customElementsData.results =
+          draft.customElementsData.results.filter(
+            (elementData) => elementData.id !== action.payload.id,
+          );
         break;
 
       case TYPES.ADD_FILE_INPUT: {
@@ -293,6 +336,18 @@ const dataReducer = produce(
           1,
         );
         delete draft.assetResults[action.payload];
+        break;
+      }
+
+      case TYPES.SET_IMAGE_LIST: {
+        const { valueImage } = action.payload;
+        draft.assetImageList = valueImage;
+        break;
+      }
+
+      case TYPES.SET_BACKGROUND_LIST: {
+        const { backGroundValue } = action.payload;
+        draft.backGroundAssetsList = backGroundValue;
         break;
       }
 

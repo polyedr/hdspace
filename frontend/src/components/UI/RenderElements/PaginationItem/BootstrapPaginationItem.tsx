@@ -1,11 +1,11 @@
 import React, { LegacyRef } from 'react';
-import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
-import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
-import { useHistory } from 'react-router';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -19,14 +19,8 @@ const BootstrapPaginationItem = React.forwardRef<HTMLElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [groupClass] = element.styles.classNames;
-    const {
-      textContent,
-      link,
-      isActiveLink,
-      isLink,
-      screenLink,
-      screenName,
-    } = element.parameters;
+    const { textContent, link, isActiveLink, isLink, screenLink, screenName } =
+      element.parameters;
     const classes = useStyles(props);
 
     const history = useHistory();

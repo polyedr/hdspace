@@ -1,6 +1,10 @@
 // @ts-nocheck
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import logger from 'loglevel';
+import ToggleButton from '@mui/material/ToggleButton';
+import { ToggleButtonGroup } from '@mui/material';
 import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';
 import {
   selectActiveElement,
@@ -16,6 +20,7 @@ import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
 import {
   CONTROLS_AFFECT_ON_PARAMS,
+  CONTROLS_AFFECT_ON_STYLES,
   Entity,
   Params,
   PropertyName,
@@ -42,23 +47,73 @@ import {
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { makeStyles } from '@material-ui/core/styles';
 
-import logger from 'loglevel';
+import Scrollbar from '../../UI/Scrollbar';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
-import Scrollbar from '../../UI/Scrollbar';
 import ControlSection from './helperComponents/ControlSection';
 import PseudoSelectorsSection from './PseudoSelectorsSection';
 import ElementType from './Controls/ElementType/ElementType';
+
+enum PROPERTIES_TYPES {
+  SETTINGS = 'settings',
+  STYLES = 'styles',
+}
+
+enum CollapseTypes {
+  COLLAPSE = 'Collapse All',
+  EXPAND = 'Expand All',
+}
 
 const useStyles = makeStyles({
   propertiesTab: {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
+    borderLeft: '1px solid #E4E6EB',
+  },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '10px 16px',
+  },
+  toggleButtonsContainer: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  activeToggleButton: {
+    color: '#2A2A2D',
+    fontWeight: 'bold',
+    fontSize: '12px',
+    letterSpacing: '145%',
+  },
+  rightEmptyPanel: {
+    color: '#fff',
+    height: '100%',
+    display: 'flex',
+    overflow: 'hidden',
+    transition: 'width 250ms ease',
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+  },
+  toggleButton: {
+    color: '#81818E',
+    fontWeight: 'bold',
+    fontSize: '12px',
+    letterSpacing: '145%',
   },
 });
+
+const toggleButtonStyles = {
+  height: '32px',
+  width: '113.5px',
+  border: '1px solid #F3F4F6',
+  fontWeight: 'bold',
+  fontSize: '12px',
+  letterSpacing: '145%',
+};
 
 const PropertiesTab: React.FC = () => {
   const classes = useStyles();
@@ -74,7 +129,14 @@ const PropertiesTab: React.FC = () => {
   const editableStyles = useSelector(selectEditableStyles);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const selectedElements = useSelector(selectSelectedElements);
+
+  const [propertiesType, setPropertiesType] = useState<PROPERTIES_TYPES>(
+    PROPERTIES_TYPES.STYLES,
+  );
+
   const [showRemoveGroupDialog, setShowRemoveGroupDialog] = useState(false);
+  const [isAccordianExpanded, setIsAccordianExpanded] = useState(true);
+  const [title, setTitle] = useState<CollapseTypes>(CollapseTypes.EXPAND);
   const canEdit = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
@@ -113,24 +175,27 @@ const PropertiesTab: React.FC = () => {
   const isGroupElement = !!activeElement.parameters.sourceElementId;
   const isGroupSource = !!activeElement.parameters.groupElements;
 
-  const elementsControlsCollection = Object.keys(selectedElements).map(
-    (elementId) => {
-      return AVAILABLE_CONTROLS[selectedElements[elementId].type];
-    },
-  );
+  const elementsControlsCollection = useMemo(() => {
+    return Object.keys(selectedElements)
+      .map((elementId) =>
+        selectedElements[elementId]?.type
+          ? AVAILABLE_CONTROLS[selectedElements[elementId].type]
+          : null,
+      )
+      .filter((item) => item);
+  }, [selectedElements, AVAILABLE_CONTROLS]);
 
   const SELECTION_CONTROLS = useMemo(() => {
     if (!elementsControlsCollection.length) {
       return [];
     }
     const elementsControls = elementsControlsCollection.reduce(
-      (controls, controlsList) => {
-        return controls.filter((control) => {
-          return (
-            controlsList.includes(control) && !UNIQUE_CONTROLS.includes(control)
-          );
-        });
-      },
+      (controls, controlsList) =>
+        controls.filter(
+          (control) =>
+            controlsList.includes(control) &&
+            !UNIQUE_CONTROLS.includes(control),
+        ),
     );
     return elementsControls;
   }, [elementsControlsCollection]);
@@ -386,8 +451,17 @@ const PropertiesTab: React.FC = () => {
     !activeElement ||
     [masterCoreElementId, masterGroupsElementId].includes(activeElement.id)
   ) {
-    return null;
+    return <div className={classes.rightEmptyPanel}></div>;
   }
+
+  const collapseAll = () => {
+    setIsAccordianExpanded(!isAccordianExpanded);
+    setTitle((state) =>
+      state === CollapseTypes.EXPAND
+        ? CollapseTypes.COLLAPSE
+        : CollapseTypes.EXPAND,
+    );
+  };
 
   return (
     <div className={classes.propertiesTab}>
@@ -395,10 +469,58 @@ const PropertiesTab: React.FC = () => {
         autoHeightMin="100%"
         style={{
           height: '100%',
+          backgroundColor: '#fff',
         }}
       >
+        <div className={classes.header}>
+          <div
+            style={{
+              fontStyle: 'Roboto-Medium',
+              color: '#2A2A2D',
+              fontWeight: 500,
+              fontSize: '16px',
+              lineHeight: '145%',
+            }}
+          >
+            Properties
+          </div>
+          <div
+            style={{
+              fontStyle: 'Roboto-Regular',
+              fontSize: '14px',
+              lineHeight: '135%',
+              color: '#81818E',
+              cursor: 'pointer',
+            }}
+            onClick={collapseAll}
+          >
+            {title}
+          </div>
+        </div>
         {!isPrototypeMode && (
           <>
+            <div className={classes.toggleButtonsContainer}>
+              <ToggleButtonGroup
+                value={propertiesType}
+                sx={{ height: '32px', width: '227px' }}
+              >
+                <ToggleButton
+                  value={PROPERTIES_TYPES.STYLES}
+                  onClick={() => setPropertiesType(PROPERTIES_TYPES.STYLES)}
+                  sx={toggleButtonStyles}
+                >
+                  {PROPERTIES_TYPES.STYLES}
+                </ToggleButton>
+                <ToggleButton
+                  sx={toggleButtonStyles}
+                  value={PROPERTIES_TYPES.SETTINGS}
+                  onClick={() => setPropertiesType(PROPERTIES_TYPES.SETTINGS)}
+                >
+                  {PROPERTIES_TYPES.SETTINGS}
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </div>
+
             <PseudoSelectorsSection />
             {SELECTION_CONTROLS.map((controlName) => {
               if (
@@ -413,50 +535,97 @@ const PropertiesTab: React.FC = () => {
               const controlInfo = CONTROLS[controlName];
               const { Control } = controlInfo;
 
-              return (
-                <ControlSection key={controlName} title={controlName}>
-                  <Control
-                    {...getControlStyles(controlName, currentEditableStyles)}
-                    canEdit={canEdit}
-                    controlName={controlName}
-                    activeElementId={activeElement.id}
-                    element={activeElement}
-                    removeStyles={!masterScreenEnabled && removeStyles}
-                    updateStyles={updateStyles}
-                    replaceStyles={replaceStyles}
-                    updateParams={!masterScreenEnabled && updateParams}
-                    masterScreenEnabled={masterScreenEnabled}
-                    editableStyles={editableStyles}
-                  />
-                </ControlSection>
-              );
-            })}
-
-            {type !== 'root' &&
-              elementsControlsCollection.length === 1 &&
-              !masterScreenEnabled && (
-                <>
-                  {!isGroupElement && (
-                    <ControlSection title="Share styles">
-                      <ShareStyles />
-                    </ControlSection>
-                  )}
-
-                  <ControlSection title="Element name">
-                    <RenameElement canEdit={canEdit} />
+              if (
+                propertiesType === PROPERTIES_TYPES.SETTINGS &&
+                CONTROLS_AFFECT_ON_PARAMS.includes(
+                  controlName as typeof CONTROLS_AFFECT_ON_PARAMS[number],
+                )
+              ) {
+                return (
+                  <ControlSection
+                    key={controlName}
+                    title={controlName}
+                    expanded={isAccordianExpanded}
+                  >
+                    <Control
+                      {...getControlStyles(controlName, currentEditableStyles)}
+                      canEdit={canEdit}
+                      controlName={controlName}
+                      activeElementId={activeElement.id}
+                      element={activeElement}
+                      removeStyles={!masterScreenEnabled && removeStyles}
+                      updateStyles={updateStyles}
+                      replaceStyles={replaceStyles}
+                      updateParams={!masterScreenEnabled && updateParams}
+                      masterScreenEnabled={masterScreenEnabled}
+                      editableStyles={editableStyles}
+                    />
                   </ControlSection>
-
-                  <div style={{ display: 'none' }}>test</div>
-
-                  {!isFreeCanvasMode && (
-                    <ControlSection title="Replace this element">
-                      <ElementType />
-                    </ControlSection>
-                  )}
-                </>
-              )}
+                );
+              }
+              if (
+                propertiesType === PROPERTIES_TYPES.STYLES &&
+                CONTROLS_AFFECT_ON_STYLES.includes(
+                  controlName as typeof CONTROLS_AFFECT_ON_STYLES[number],
+                )
+              ) {
+                return (
+                  <ControlSection
+                    key={controlName}
+                    title={controlName}
+                    expanded={isAccordianExpanded}
+                  >
+                    <Control
+                      {...getControlStyles(controlName, currentEditableStyles)}
+                      canEdit={canEdit}
+                      controlName={controlName}
+                      activeElementId={activeElement.id}
+                      element={activeElement}
+                      removeStyles={!masterScreenEnabled && removeStyles}
+                      updateStyles={updateStyles}
+                      replaceStyles={replaceStyles}
+                      updateParams={!masterScreenEnabled && updateParams}
+                      masterScreenEnabled={masterScreenEnabled}
+                      editableStyles={editableStyles}
+                    />
+                  </ControlSection>
+                );
+              }
+              return null;
+            })}
           </>
         )}
+        {propertiesType === PROPERTIES_TYPES.SETTINGS &&
+          type !== 'root' &&
+          elementsControlsCollection.length === 1 &&
+          !masterScreenEnabled && (
+            <>
+              {!isGroupElement && (
+                <ControlSection
+                  title="Share styles"
+                  expanded={isAccordianExpanded}
+                >
+                  <ShareStyles />
+                </ControlSection>
+              )}
+
+              <ControlSection
+                title="Element name"
+                expanded={isAccordianExpanded}
+              >
+                <RenameElement canEdit={canEdit} />
+              </ControlSection>
+
+              {!isFreeCanvasMode && (
+                <ControlSection
+                  title="Replace this element"
+                  expanded={isAccordianExpanded}
+                >
+                  <ElementType />
+                </ControlSection>
+              )}
+            </>
+          )}
       </Scrollbar>
       <BasicConfirmForm
         open={showRemoveGroupDialog}
@@ -471,4 +640,4 @@ const PropertiesTab: React.FC = () => {
   );
 };
 
-export default PropertiesTab;
+export default memo(PropertiesTab);

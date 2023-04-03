@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
+import { MenuItem } from '@mui/material';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { MenuItem } from '@material-ui/core';
 import FlexProperties from '../../helperComponents/Display/FlexProperties';
-import { DISPLAY } from './constants';
 import PlaceItemsProperties from '../../helperComponents/Display/PlaceItemsProperties';
 import { StyledTextField } from '../../../../styledComponents';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
+import { DISPLAY } from './constants';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   display?: React.CSSProperties['display'];
@@ -34,7 +34,7 @@ const Display: React.FC<Props> = ({
   );
 
   return (
-    <>
+    <div>
       <div>
         {!masterScreenEnabled && canEdit && (
           <RemoveStyles
@@ -84,7 +84,7 @@ const Display: React.FC<Props> = ({
           canEdit={canEdit}
         />
       )}
-    </>
+    </div>
   );
 };
 

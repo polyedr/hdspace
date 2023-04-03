@@ -1,35 +1,37 @@
-import GridOnIcon from '@material-ui/icons/GridOn';
-import ViewColumnIcon from '@material-ui/icons/ViewColumn';
-import SlideshowIcon from '@material-ui/icons/Slideshow';
-import LooksOneIcon from '@material-ui/icons/LooksOne';
-import ListIcon from '@material-ui/icons/List';
-import Crop169Icon from '@material-ui/icons/Crop169';
-import CodeIcon from '@material-ui/icons/Code';
-import NotesIcon from '@material-ui/icons/Notes';
-import LineWeightIcon from '@material-ui/icons/LineWeight';
-import ImageIcon from '@material-ui/icons/Image';
-import ViewModuleIcon from '@material-ui/icons/ViewModule';
-import MovieIcon from '@material-ui/icons/Movie';
-import TitleOutlinedIcon from '@material-ui/icons/TitleOutlined';
-import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
-import ToggleOffIcon from '@material-ui/icons/ToggleOff';
-import CalendarViewDayIcon from '@material-ui/icons/CalendarViewDay';
-import ArrowDropDownCircleIcon from '@material-ui/icons/ArrowDropDownCircle';
-import MessageIcon from '@material-ui/icons/Message';
-import TextFieldsIcon from '@material-ui/icons/TextFields';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
-import LabelIcon from '@material-ui/icons/Label';
-import TocIcon from '@material-ui/icons/Toc';
-import MapIcon from '@material-ui/icons/Map';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
-import CropOriginalIcon from '@material-ui/icons/CropOriginal';
-import PaymentIcon from '@material-ui/icons/Payment';
-import Crop75Icon from '@material-ui/icons/Crop75';
-import SliderIcon from '@material-ui/icons/Tune';
-import { OverridableComponent } from '@material-ui/core/OverridableComponent';
-import { SvgIconTypeMap } from '@material-ui/core';
+import {
+  GridOn as GridOnIcon,
+  ViewColumn as ViewColumnIcon,
+  Slideshow as SlideshowIcon,
+  LooksOne as LooksOneIcon,
+  List as ListIcon,
+  Crop169 as Crop169Icon,
+  Code as CodeIcon,
+  Notes as NotesIcon,
+  LineWeight as LineWeightIcon,
+  Image as ImageIcon,
+  ViewModule as ViewModuleIcon,
+  Movie as MovieIcon,
+  TitleOutlined as TitleOutlinedIcon,
+  PhotoLibrary as PhotoLibraryIcon,
+  ToggleOff as ToggleOffIcon,
+  CalendarViewDay as CalendarViewDayIcon,
+  ArrowDropDownCircle as ArrowDropDownCircleIcon,
+  TextFields as TextFieldsIcon,
+  Message as MessageIcon,
+  CheckBox as CheckBoxIcon,
+  RadioButtonChecked as RadioButtonCheckedIcon,
+  Label as LabelIcon,
+  Toc as TocIcon,
+  Map as MapIcon,
+  CalendarToday as CalendarTodayIcon,
+  QueryBuilder as QueryBuilderIcon,
+  CropOriginal as CropOriginalIcon,
+  Payment as PaymentIcon,
+  Crop75 as Crop75Icon,
+  Tune as SliderIcon,
+} from '@mui/icons-material';
+import { OverridableComponent } from '@mui/material/OverridableComponent';
+import { SvgIconTypeMap } from '@mui/material';
 import { Entity, LibraryElements, ServerElement } from '@Src/types';
 import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import {
@@ -176,11 +178,9 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   icon: makeIcon,
 };
 
-export const ICONS: Partial<
-  {
-    [key in Entity]: OverridableComponent<SvgIconTypeMap> | undefined;
-  }
-> = {
+export const ICONS: Partial<{
+  [key in Entity]: OverridableComponent<SvgIconTypeMap> | undefined;
+}> = {
   grid: GridOnIcon,
   columns: ViewColumnIcon,
   button: SlideshowIcon,

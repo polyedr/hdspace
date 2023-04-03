@@ -1,15 +1,15 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import AddIcon from '@material-ui/icons/Add';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import AddIcon from '@mui/icons-material/Add';
+import { makeStyles } from '@mui/styles';
+import { IconButton, lighten, Theme } from '@mui/material';
 import { addChildToElement } from '@Redux/project/actions';
 import { BreadcrumbItemElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { IconButton } from '@material-ui/core';
 import CarouselItem from './CarouselItem';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles<Theme>(({ palette }) => ({
   row: {
     display: 'flex',
     justifyContent: 'flex-start',
@@ -38,8 +38,7 @@ const CarouselItems: React.FC<PropertiesChangeProps<BreadcrumbItemElement>> = ({
         'carouselItem',
         element.id,
         {
-          link:
-            'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+          link: 'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
           alt: 'new image',
         },
         { screenId: currentScreenId },

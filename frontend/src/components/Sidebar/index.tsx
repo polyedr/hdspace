@@ -1,114 +1,136 @@
-import { makeStyles } from '@material-ui/core/styles';
+import React, { FC, useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Tabs, Tab, Box, SwipeableDrawer } from '@mui/material';
+import { makeStyles, styled } from '@mui/styles';
+import { components, TABS_PMTOOLS } from '@Constants/pmtools/tabsNamesSidebar';
+import { setSidebarOpen } from '@Redux/project/actions';
 import {
   selectCurrentProjectId,
   selectSidebarOpen,
 } from '@Redux/project/selectors/base';
-import React, { FC, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import cn from 'classnames';
-import { Tabs, Tab } from '@material-ui/core';
-import { TabPanel } from '@Components/styledComponents';
-import { components, TABS_PMTOOLS } from '@Constants/pmtools/tabsNamesSidebar';
-import { IMessageZulip } from '@Src/types/pmtools/types';
-import { selectMessagesZulip } from '@Redux/pmtools/chat/selectors';
 
-const useTabStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles({
   root: {
-    minWidth: 72,
-    fontWeight: 'bold',
-    flex: 1,
-  },
-  selected: {
-    borderRadius: '2px 2px 0 0',
-    backgroundColor: palette.panel.light,
-  },
-}));
+    '& > *': {
+      '&::-webkit-scrollbar': {
+        width: '4px !important',
+        background: '#F3F4F6',
+      },
 
-const useStyles = makeStyles(({ palette }) => ({
-  wrapper: {
-    background: '#fff',
-    position: 'absolute',
-    top: 0,
-    width: 0,
-    right: 0,
-    bottom: 0,
-    transition: 'width .3s ease',
-    overflow: 'hidden',
-    zIndex: 10,
+      '&::-webkit-scrollbar-thumb': {
+        background: '#B0B0BD',
+        borderRadius: 4,
+      },
+
+      '&::-webkit-scrollbar-track': {
+        borderRadius: 4,
+      },
+    },
   },
-  root: {
-    color: palette.common.white,
-    backgroundColor: palette.panel.main,
-    minHeight: '100%',
-    overflowY: 'auto',
-    maxHeight: '100%',
-    display: 'flex',
-    flexDirection: 'column',
+});
+
+const TabContent = styled('div')({
+  '& > *': {
+    '::-webkit-scrollbar': {
+      width: '4px !important',
+      background: '#F3F4F6',
+    },
+
+    '::-webkit-scrollbar-thumb': {
+      background: '#B0B0BD',
+      borderRadius: 4,
+    },
+
+    '::-webkit-scrollbar-track': {
+      borderRadius: 4,
+    },
   },
-  open: {
-    width: 310,
-  },
-  panel: {
-    flex: 1,
-    overflowY: 'auto',
-    marginBottom: 90,
-  },
-}));
+});
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  dir?: string;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      // style={{ height: 'calc(100% - 48px)' }}
+      style={{ height: '100%' }}
+      {...other}
+    >
+      {children}
+    </div>
+  );
+}
 
 const SideModule: FC = () => {
-  const messages: Array<IMessageZulip> = useSelector(selectMessagesZulip);
-  const classes = useStyles();
-  const tabClasses = useTabStyles();
   const open = useSelector(selectSidebarOpen);
   const projectId = useSelector(selectCurrentProjectId);
+  const dispatch = useDispatch();
   const [selectedTabNumber, setSelectedTabNumber] = useState(0);
+  const classes = useStyles();
 
-  useEffect(() => {
-    const tabEl = document.getElementById('simple-tabpanel-0');
-    if (tabEl) {
-      tabEl.scrollTo({
-        top: tabEl.scrollHeight,
-        behavior: 'smooth',
-      });
-    }
-  }, [messages]);
+  const handleSetSidebarOpen = useCallback(() => {
+    dispatch(setSidebarOpen(false));
+  }, []);
 
   if (projectId === -1) {
     return <p>Loading... </p>;
   }
 
   return (
-    <div className={cn(classes.wrapper, open && classes.open)}>
-      <div className={classes.root} data-testid="sidebar-container">
-        <Tabs
-          value={selectedTabNumber}
-          onChange={(e, v) => setSelectedTabNumber(v)}
-        >
-          {Object.values(TABS_PMTOOLS).map((tab) => (
-            <Tab
-              data-testid={`${tab}-tab`}
-              label={tab}
-              key={tab}
-              classes={tabClasses}
-              title={tab}
-            />
-          ))}
-        </Tabs>
-        {Object.values(TABS_PMTOOLS).map((tab, idx) => {
-          const Tab = components[tab];
-          return (
-            <TabPanel
-              value={selectedTabNumber}
-              panelClass={classes.panel}
-              key={tab}
-              index={idx}
-            >
-              <Tab />
-            </TabPanel>
-          );
-        })}
+    <SwipeableDrawer
+      anchor="right"
+      open={open}
+      onClose={handleSetSidebarOpen}
+      onOpen={() => {}}
+      className={classes.root}
+    >
+      <div
+        style={{
+          width: '90vw',
+          height: '100%',
+        }}
+      >
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs
+            value={selectedTabNumber}
+            onChange={(e, v) => setSelectedTabNumber(v)}
+            textColor="primary"
+            indicatorColor="primary"
+          >
+            {Object.values(TABS_PMTOOLS).map((tab) => (
+              <Tab
+                data-testid={`${tab}-tab`}
+                label={tab}
+                key={tab}
+                title={tab}
+              />
+            ))}
+          </Tabs>
+        </Box>
+
+        <TabContent style={{ height: 'calc(100% - 50px)' }}>
+          {Object.values(TABS_PMTOOLS).map((tab, idx) => {
+            const Tab = components[tab];
+            return (
+              <TabPanel value={selectedTabNumber} key={tab} index={idx}>
+                <Tab />
+              </TabPanel>
+            );
+          })}
+        </TabContent>
       </div>
-    </div>
+    </SwipeableDrawer>
   );
 };
 

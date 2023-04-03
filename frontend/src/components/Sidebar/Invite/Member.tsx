@@ -1,41 +1,115 @@
-/* eslint-disable react/no-unused-prop-types */
-import React from 'react';
-import { ListItem, ListItemAvatar, ListItemText, Avatar } from '@mui/material';
-import { ServerProject } from '@Src/types';
+import React, { useCallback, useState } from 'react';
+import { Switch, IconButton, FormControlLabel } from '@mui/material';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
+import { styled } from '@mui/material/styles';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { useDispatch } from 'react-redux';
+import * as Actions from '@Redux/permissions/actions';
+import { ServerProject, UserData, UserProjectPermission } from '@Src/types';
+import Avatar from '@Components/UI/Avatar';
+import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 
-type PropsType = {
+interface PropsType {
   project: ServerProject['id'];
-  userData: any;
-  permissions: Array<string>;
-};
+  userData: UserData;
+  permissions: string[];
+}
 
-const Member: React.FC<PropsType> = ({ userData, permissions }) => {
-  const { username, id, profile } = userData;
-  const rights = !!permissions.find((p: string) => p === 'change_project');
+const StyledTableCell = styled(TableCell)(() => ({
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    boxShadow: 'none',
+    textTransform: 'capitalize',
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(() => ({
+  boxShadow: 'none',
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
+
+const Member: React.FC<PropsType> = ({ userData, permissions, project }) => {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+
+  const { username, id } = userData;
+  const rights = !!permissions.find(
+    (p: string) => p === UserProjectPermission.CHANGE_PROJECT,
+  );
+  const dispatch = useDispatch();
+
+  const handleTogglePermission = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatch(
+        Actions.updateUserPermissionsForProject(
+          project,
+          id.toString(),
+          e.target.checked
+            ? [
+                UserProjectPermission.VIEW_PROJECT,
+                UserProjectPermission.CHANGE_PROJECT,
+              ]
+            : [UserProjectPermission.VIEW_PROJECT],
+        ),
+      );
+    },
+    [project, id],
+  );
+
+  const handleDelete = useCallback(() => {
+    dispatch(
+      Actions.updateUserPermissionsForProject(project, id.toString(), []),
+    );
+  }, [project, id]);
+
+  const handleRequestDelete = useCallback(
+    (show: boolean) => () => setShowDeleteConfirm(show),
+    [],
+  );
 
   return (
-    <ListItem button key={id} style={{ padding: 0 }}>
-      <ListItemAvatar>
-        <Avatar
-          src={
-            typeof profile.parameters.avatarCrop === 'string'
-              ? profile.parameters.avatarCrop
-              : ''
-          }
-          alt={username}
-          sx={{ bgcolor: '#344AF0' }}
+    <>
+      <StyledTableRow key={id}>
+        <StyledTableCell
+          component="td"
+          scope="row"
+          style={{ display: 'flex', alignItems: 'center' }}
         >
-          {username[0].toUpperCase()}
-        </Avatar>
-      </ListItemAvatar>
-      <ListItemText
-        primary={profile.role}
-        secondary={username}
-        secondaryTypographyProps={{ style: { color: '#fff' } }}
-        primaryTypographyProps={{ style: { fontSize: '14px' } }}
+          <Avatar
+            src={userData.profile.avatar ?? undefined}
+            alt={username}
+            sx={{ marginRight: '10px' }}
+          />
+          {username}
+        </StyledTableCell>
+        <StyledTableCell style={{ textTransform: 'lowercase' }}>
+          {userData.email}
+        </StyledTableCell>
+        <StyledTableCell>{userData.profile.role}</StyledTableCell>
+        <StyledTableCell>
+          <FormControlLabel
+            control={
+              <Switch onChange={handleTogglePermission} checked={rights} />
+            }
+            label={rights ? 'READ, WRITE' : 'READ'}
+          />
+        </StyledTableCell>
+        <StyledTableCell>
+          <IconButton onClick={handleRequestDelete(true)}>
+            <DeleteOutlineIcon />
+          </IconButton>
+        </StyledTableCell>
+      </StyledTableRow>
+      <ConfirmModal
+        action={handleDelete}
+        elementText={userData.email}
+        hide={handleRequestDelete(false)}
+        show={showDeleteConfirm}
+        actionText="remove"
       />
-      <p style={{ fontSize: 10 }}>{rights ? 'READ, WRITE' : 'READ'}</p>
-    </ListItem>
+    </>
   );
 };
 

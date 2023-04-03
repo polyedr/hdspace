@@ -25,7 +25,6 @@ export const useDebouncedRichInputChange = (
   const debounced = useDebouncedCallback(cb, delay);
 
   const handleChange = (value: EditorState) => {
-    // @ts-ignore
     setState({
       editor: value,
       id,
@@ -75,7 +74,7 @@ export const useDebouncedValueChange = <T>(
 
   const debounced = useDebouncedCallback(cb, delay);
 
-  const handleChange = (value: T) => {
+  const handleChange: (value: T) => void = (value) => {
     setState(value);
     if (debounced.pending()) {
       debounced.cancel();

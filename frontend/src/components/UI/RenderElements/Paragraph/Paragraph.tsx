@@ -1,10 +1,10 @@
 import React from 'react';
 import cn from 'classnames';
-import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
-import { useHistory } from 'react-router';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
@@ -19,13 +19,8 @@ const Paragraph = React.forwardRef<HTMLParagraphElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
-    const {
-      textContent,
-      isLink,
-      link,
-      screenLink,
-      screenName,
-    } = element.parameters;
+    const { textContent, isLink, link, screenLink, screenName } =
+      element.parameters;
     const classes = useStyles(props);
     const contentEditableSettings = useContentEditable(element.id, textContent);
     const eventHandlers = useEventHandlers(

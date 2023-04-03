@@ -1,5 +1,5 @@
 import { keys } from 'ramda';
-import * as Icons from '@material-ui/icons';
+import * as Icons from '@mui/icons-material';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
 import {
   ElementData,
@@ -14,21 +14,23 @@ export const createIconsList = (makeIcon: {
   (): IconServerElement;
   (arg0: string, arg1: string): any;
 }): ElementData[] => {
-  return Object.entries(Icons).map((item) => {
-    const [name, icon] = item;
+  return Object.entries(Icons)
+    .splice(0, 5)
+    .map((item) => {
+      const [name, icon] = item;
 
-    const element = makeIcon(name, name);
+      const element = makeIcon(name, name);
 
-    return {
-      id: element.id.toString(),
-      key: element.parameters.name,
-      type: element.struct_type,
-      icon,
-      name: element.parameters.name,
-      custom: false,
-      parameters: element.parameters,
-    };
-  });
+      return {
+        id: element.id.toString(),
+        key: element.parameters.name,
+        type: element.struct_type,
+        icon,
+        name: element.parameters.name,
+        custom: false,
+        parameters: element.parameters,
+      };
+    });
 };
 
 export const convertElementToData = (
@@ -93,6 +95,7 @@ export const getRightPanelCategoryTabs = (
     case 'switch':
     case 'radiobuttonGroup':
     case 'label':
+    case 'buttonGenerator':
     case 'select':
       return {
         elements: {
@@ -156,13 +159,6 @@ export const getRightPanelCategoryTabs = (
           [structType]: convertElementToData(libraryElements[structType]()),
         },
       };
-    case 'buttonGenerator':
-      return {
-        generators: {
-          ...(obj.generators || {}),
-          [structType]: convertElementToData(libraryElements[structType]()),
-        },
-      };
     case 'divBlock':
     case 'ocrtext':
     case 'dropdown':
@@ -175,10 +171,12 @@ export const getRightPanelCategoryTabs = (
 export const createElementsHierarchy = (
   libraryElements: ElementsToAdd,
 ): ElementsHierarchy =>
-  keys(libraryElements).reduce(
+  // @ts-expect-error
+  keys(libraryElements).reduce<ElementsHierarchy>(
     (acc, structType) => ({
       ...acc,
       ...getRightPanelCategoryTabs(structType, libraryElements, acc),
     }),
-    {} as ElementsHierarchy,
+    // @ts-expect-error
+    {},
   );

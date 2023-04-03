@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { put, call, select } from 'redux-saga/effects';
+import logger from 'loglevel';
 import {
   selectElementParameters,
   selectElementStyles,
@@ -36,11 +37,10 @@ import {
   StateElement,
   UpdateDataActionType,
 } from '@Src/types';
-import logger from 'loglevel';
-import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
 import { selectFreeCanvasOffsetList } from '../selectors/base';
+import { reqWrapper } from './shared';
 
 export function* updateOrReplaceMultipleElementsParameters(
   action: ReturnType<
@@ -138,7 +138,6 @@ export function* updateOrReplaceElementStyles(
 ) {
   try {
     const { id, styles } = action.payload;
-
     if (!action.meta) {
       logger.error(
         `You have to provide metainformation for action ${action.type}`,
@@ -280,7 +279,7 @@ export function* updateOrReplaceElementParameters(
 }
 
 export function* createElements<T extends Entity>(
-  elementsToCreate: ElementsToCreate<T>[],
+  elementsToCreate: Array<ElementsToCreate<T>>,
   meta: ElementHistoryMeta,
 ) {
   try {
@@ -297,25 +296,27 @@ export function* createElements<T extends Entity>(
       });
     });
 
-    // check if we can add elements
-    const allowToAdd = elementsToCreate.reduce((allowAll, elsToCreate) => {
-      const { elements, parent } = elsToCreate;
-      return (
-        allowAll &&
-        elements.reduce((allow, element) => {
-          return allow && isElementCanBeAdded(parent, element.struct_type);
-        }, true)
-      );
-    }, true);
+    if (meta.index === undefined) {
+      // check if we can add elements
+      const allowToAdd = elementsToCreate.reduce((allowAll, elsToCreate) => {
+        const { elements, parent } = elsToCreate;
+        return (
+          allowAll &&
+          elements.reduce((allow, element) => {
+            return allow && isElementCanBeAdded(parent, element.struct_type);
+          }, true)
+        );
+      }, true);
 
-    if (!allowToAdd) {
-      yield put(
-        enqueueSnackbar({
-          message: 'Creation of some elements is not allowed',
-          options: { variant: 'warning' },
-        }),
-      );
-      return;
+      if (!allowToAdd) {
+        yield put(
+          enqueueSnackbar({
+            message: 'Creation of some elements is not allowed',
+            options: { variant: 'warning' },
+          }),
+        );
+        return;
+      }
     }
 
     const parentIds = elementsToCreate.map(
@@ -360,27 +361,35 @@ export function* createElements<T extends Entity>(
         const newChildElements = newElements.filter(
           (el) => el.parameters.parentId === parent.id,
         );
+
+        let childrenIds = [];
+
+        if (meta.index === undefined) {
+          childrenIds = [
+            ...parent.children.map((childEl) => childEl.id),
+            ...newChildElements.map((childEl) => childEl.id),
+          ];
+        } else {
+          childrenIds = [...parent.children];
+          const newElementIds = newChildElements
+            .map((childEl) => childEl.id)
+            .join();
+
+          childrenIds.splice(meta.index, 0, newElementIds);
+        }
+
         return convertToRecursiveServerElement({
           id: parent.id,
           name: parent.name,
-          children: [
-            ...parent.children.map((childEl) => childEl.id),
-            ...newChildElements.map((childEl) => childEl.id),
-          ],
+          children: childrenIds,
         });
       },
     );
 
-    const {
-      result,
-      error: updateRecursiveError,
-    }: Result<RecursiveElement> = yield call(
-      reqWrapper,
-      apiChangeRecursiveMultipleElements,
-      {
+    const { result, error: updateRecursiveError }: Result<RecursiveElement> =
+      yield call(reqWrapper, apiChangeRecursiveMultipleElements, {
         elements: recursiveElements,
-      },
-    );
+      });
     if (updateRecursiveError) {
       throw new Error(updateRecursiveError);
     }
@@ -411,13 +420,16 @@ export function* createElements<T extends Entity>(
             },
           },
         }));
+
       return {
         elements,
         parentId: parent.id,
         index,
       };
     });
+
     yield put(Actions.addStateElements(stateElementsToAdd, { ...meta }));
+
     if (!useHistory) {
       yield put(
         Actions.addRedoActions(
@@ -460,7 +472,8 @@ export function* createElements<T extends Entity>(
         });
         return [...createdElements, ...childElements];
       },
-      [] as ServerElement<Entity>[],
+      // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
+      [] as Array<ServerElement<Entity>>,
     );
     const { result: createdElements, error } = yield call(
       reqWrapper,
@@ -492,7 +505,7 @@ export function* createElements<T extends Entity>(
 }
 
 export function* createLibraryElements<T extends Entity>(
-  elementsToCreate: ElementsToCreate<T>[],
+  elementsToCreate: Array<ElementsToCreate<T>>,
   meta: ElementHistoryMeta,
 ) {
   try {

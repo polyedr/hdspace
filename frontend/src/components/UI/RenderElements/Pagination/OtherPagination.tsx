@@ -1,8 +1,8 @@
 import React, { LegacyRef } from 'react';
 import cn from 'classnames';
+import { useSelector } from 'react-redux';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import { useSelector } from 'react-redux';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 
@@ -10,6 +10,9 @@ const useStyles = makeComponentStyles('pagination', {
   pagination: {
     display: 'inline-block',
     '& a': {
+      display: 'inline-block',
+    },
+    '& a span': {
       color: 'black',
       float: 'left',
       padding: '8px 16px',
@@ -51,7 +54,7 @@ const OtherPagination = React.forwardRef<HTMLElement, RendererProps>(
             }
           }}
         >
-          &laquo;
+          <span>&laquo;</span>
         </a>
         {children}
         <a
@@ -62,7 +65,7 @@ const OtherPagination = React.forwardRef<HTMLElement, RendererProps>(
             }
           }}
         >
-          &raquo;
+          <span>&raquo;</span>
         </a>
       </div>
     );

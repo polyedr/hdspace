@@ -1,0 +1,10 @@
+diff --git a/node_modules/mui-color/index.d.ts b/node_modules/mui-color/index.d.ts
+index c351108..e66e093 100644
+--- a/node_modules/mui-color/index.d.ts
++++ b/node_modules/mui-color/index.d.ts
+@@ -1,4 +1,4 @@
+-declare module 'material-ui-color' {
++declare module 'mui-color' {
+ 
+   enum ColorFormat {
+     "plain",

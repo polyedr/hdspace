@@ -1,10 +1,11 @@
+import { makeStyles } from '@mui/styles';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import logger from 'loglevel';
 import ControlSection from '@Components/RightPanel/PropertiesTab/helperComponents/ControlSection';
 import Scrollbar from '@Components/UI/Scrollbar';
 import CONTROLS from '@Constants/controls';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
-import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElement,
   selectSharedStyles,
@@ -13,7 +14,6 @@ import { updateSharedStyles } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { CONTROLS_AFFECT_ON_PARAMS, Entity } from '@Src/types';
-import logger from 'loglevel';
 
 const useStyles = makeStyles({
   root: {
@@ -23,7 +23,7 @@ const useStyles = makeStyles({
   },
 });
 
-const MasterPanel = () => {
+function MasterPanel() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const activeElement = useSelector(selectActiveElement);
@@ -63,7 +63,7 @@ const MasterPanel = () => {
           const { Control } = controlInfo;
 
           return (
-            <ControlSection key={controlName} title={controlName}>
+            <ControlSection key={controlName} title={controlName} expanded>
               <Control
                 {...sharedStyles}
                 activeElementId={id}
@@ -77,6 +77,6 @@ const MasterPanel = () => {
       </Scrollbar>
     </div>
   );
-};
+}
 
 export default MasterPanel;

@@ -6,6 +6,8 @@ import {
   select,
   fork,
 } from 'redux-saga/effects';
+import { compose } from 'redux';
+import logger from 'loglevel';
 import {
   removeProjectStyles,
   updateDefaultStyles,
@@ -30,18 +32,38 @@ import {
   setEditableScreenSaga,
   convertFreeCanvasSaga,
   clearEditableScreenSaga,
+  createScreenFolderSaga,
+  fetchScreenFoldersSaga,
+  changeScreenFolderOrderSaga,
+  updateScreenFolderSaga,
+  deleteScreenFolderSaga,
 } from '@Redux/project/sagas/screen';
 import {
   getAllUsersProjectPermissionsSaga,
   getMyPermissionsForProjectSaga,
   getUsersSaga,
   updateUserPermissionsForProjectSaga,
+  updateUsersPermissionsForProjectSaga,
 } from '@Redux/permissions/sagas';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
-import { compose } from 'redux';
-import logger from 'loglevel';
-import nnSaga from './nn';
 import { updateUISettingsParametersSaga } from '../../user/sagas';
+import TYPES from '../../actionTypes';
+import { enqueueSnackbar } from '../../notification/actions';
+import * as Actions from '../actions';
+import { selectCurrentProject } from '../selectors/base';
+import {
+  selectActiveElement,
+  selectActiveElementId,
+  selectAllElements,
+  selectElementAsTree,
+  selectItemToCopyInfo,
+  selectScreenRootElement,
+  selectScreen,
+  selectParentOfActiveElement,
+} from '../selectors/element';
+import { selectCurrentScreen } from '../selectors/screen';
+import withActionsHistory from '../wrappers/withActionsHistory';
+import nnSaga from './nn';
 import {
   moveElementSaga,
   removeElementStylesSaga,
@@ -97,22 +119,9 @@ import {
   updateCurrentUIFrameworkVariablesSaga,
   resetCurrentUIFrameworkVariablesSaga,
   updateProjectSaga,
+  getSharedProjectSaga,
 } from './project';
-import TYPES from '../../actionTypes';
 import { projectUpdateHelperSaga } from './shared';
-import { enqueueSnackbar } from '../../notification/actions';
-import * as Actions from '../actions';
-import { selectCurrentProject } from '../selectors/base';
-import {
-  selectActiveElement,
-  selectActiveElementId,
-  selectAllElements,
-  selectElementAsTree,
-  selectItemToCopyInfo,
-  selectScreenRootElement,
-  selectScreen,
-} from '../selectors/element';
-import { selectCurrentScreen } from '../selectors/screen';
 import {
   loadAssetsSaga,
   loadAssetListsSaga,
@@ -135,7 +144,6 @@ import {
   executeUndoActionsSaga,
   addHistoryActionsSaga,
 } from './control';
-import withActionsHistory from '../wrappers/withActionsHistory';
 import viaSaga from './via';
 
 const removeSharedStylesSaga = compose(
@@ -205,7 +213,6 @@ const updateDefaultStylesSaga = compose(
 
   yield call(projectUpdateHelperSaga, newProject);
 
-  // @ts-ignore
   if (!action.meta.useHistory) {
     yield put(
       Actions.addUndoActions(
@@ -216,7 +223,6 @@ const updateDefaultStylesSaga = compose(
 
   const state: Normalized<StateElement> = yield select(selectAllElements);
 
-  // @ts-ignore
   yield put(Actions.updateElementsTree(state, { ...action.meta }));
 });
 
@@ -299,16 +305,14 @@ const duplicateScreenSaga = withRequiredPermissions(
       selectScreenRootElement(screenID),
     );
     const screenData: ScreenData = yield select(selectScreen(screenID));
-    const sourceCurrentScreen: ReturnType<
-      typeof selectCurrentScreen
-    > = yield select(selectCurrentScreen);
+    const sourceCurrentScreen: ReturnType<typeof selectCurrentScreen> =
+      yield select(selectCurrentScreen);
     const duplicatedItems = sourceRoot.children.map((child) => ({
       id: child.id,
       screenID: sourceCurrentScreen.id,
     }));
-    const currentProject: ReturnType<
-      typeof selectCurrentProject
-    > = yield select(selectCurrentProject);
+    const currentProject: ReturnType<typeof selectCurrentProject> =
+      yield select(selectCurrentProject);
     const projectID = currentProject.id;
     const screensNumber = currentProject.projectscreen.length;
     const screen = yield call(
@@ -358,6 +362,75 @@ const duplicateScreenSaga = withRequiredPermissions(
   }
 });
 
+const pasteCopiedElementAtIndexSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* ({ type, meta }: ReturnType<typeof Actions.pasteCopiedElement>) {
+  try {
+    if (!meta) {
+      logger.error(`You have to provide metainformation for action ${type}`);
+      return;
+    }
+    const { screenId, useHistory, index } = meta;
+
+    const activeElementId: string = yield select(selectActiveElementId);
+
+    const activeElement: LibraryElement<any> = yield select(
+      selectElementAsTree(activeElementId),
+    );
+
+    const itemToCopyInfo: ItemToCopyInfo | null = yield select(
+      selectItemToCopyInfo,
+    );
+
+    if (!itemToCopyInfo) {
+      yield put(
+        enqueueSnackbar({
+          message: 'Nothing to paste',
+          options: { variant: 'warning' },
+        }),
+      );
+      return;
+    }
+
+    if (activeElement.type !== 'none') {
+      const rootElementofActiveNode = yield select(selectParentOfActiveElement);
+      const targetParent =
+        meta.index === undefined ? activeElement : rootElementofActiveNode;
+
+      const result = yield call(
+        duplicateElements,
+        { itemsToCopyInfo: [itemToCopyInfo], targetParent },
+        {
+          index,
+          screenId,
+          useHistory,
+        },
+      );
+      if (result) {
+        yield put(
+          enqueueSnackbar({
+            message: 'Element pasted',
+            options: { variant: 'success' },
+          }),
+        );
+      }
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          { message: e.message, options: { variant: 'error' } },
+          e,
+        ),
+      );
+    }
+  }
+});
+
 const pasteCopiedElementSaga = compose(
   withRequiredPermissions(
     UserProjectPermission.VIEW_PROJECT,
@@ -370,7 +443,7 @@ const pasteCopiedElementSaga = compose(
       logger.error(`You have to provide metainformation for action ${type}`);
       return;
     }
-    const { screenId, useHistory } = meta;
+    const { screenId, useHistory, index } = meta;
 
     const activeElementId: string = yield select(selectActiveElementId);
 
@@ -397,6 +470,7 @@ const pasteCopiedElementSaga = compose(
         duplicateElements,
         { itemsToCopyInfo: [itemToCopyInfo], targetParent: activeElement },
         {
+          index,
           screenId,
           useHistory,
         },
@@ -436,7 +510,7 @@ export default function* projectSaga() {
   );
   yield takeLatest(TYPES.UPDATE_LAYOUT_PROJECT, updateLayoutProjectSaga);
   yield takeLatest(TYPES.SEARCH_PROJECTS, searchProjectsSaga);
-
+  yield takeLatest(TYPES.GET_SHARED_PROJECT, getSharedProjectSaga);
   yield takeLatest(TYPES.ACTIVATE_SCREEN, activateScreenSaga);
   yield takeLatest(TYPES.CREATE_SCREEN, createScreenSaga);
   yield takeEvery(TYPES.DUPLICATE_SCREEN, duplicateScreenSaga);
@@ -498,6 +572,11 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.COPY_ACTIVE_ELEMENT, copyActiveElementSaga);
   yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
 
+  yield takeEvery(
+    TYPES.PASTE_COPIED_ELEMENT_AT_INDEX,
+    pasteCopiedElementAtIndexSaga,
+  );
+
   yield takeEvery(TYPES.CONVERT_FREE_CANVAS, convertFreeCanvasSaga);
 
   // history actions
@@ -554,6 +633,11 @@ export default function* projectSaga() {
     updateUserPermissionsForProjectSaga,
   );
 
+  yield takeEvery(
+    TYPES.UPDATE_USERS_PERMISSIONS_FOR_PROJECT,
+    updateUsersPermissionsForProjectSaga,
+  );
+
   yield fork(viaSaga);
   yield fork(nnSaga);
 
@@ -591,4 +675,15 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.SET_ENABLED_PSEUDO_CLASS, setEnabledPseudoClassSaga);
 
   yield takeLatest(TYPES.GENERATE_IMAGE_PALETTE, generateImagePaletteSaga);
+
+  // screen folder actions
+  yield takeEvery(TYPES.CREATE_SCREEN_FOLDER, createScreenFolderSaga);
+  yield takeLatest(TYPES.FETCH_SCREEN_FOLDERS, fetchScreenFoldersSaga);
+  yield takeEvery(
+    TYPES.CHANGE_SCREEN_FOLDER_ORDER,
+    changeScreenFolderOrderSaga,
+  );
+
+  yield takeEvery(TYPES.UPDATE_SCREEN_FOLDER, updateScreenFolderSaga);
+  yield takeEvery(TYPES.DELETE_SCREEN_FOLDER, deleteScreenFolderSaga);
 }

@@ -1,51 +1,60 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, MouseEvent } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
+import { useDispatch } from 'react-redux';
 import cn from 'classnames';
-import { useHistory } from 'react-router';
 import {
-  editScreenNameAndData,
-  setActiveElement,
-} from '@Redux/project/actions';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { ListItem, ListItemIcon } from '@material-ui/core';
+  ListItemIcon,
+  Box,
+  Modal,
+  Button,
+  Typography,
+  Theme,
+  ListItemButton,
+} from '@mui/material';
+import { editScreenNameAndData, deleteScreen } from '@Redux/project/actions';
 import { Screen } from '../../../types';
-import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
 import ScreenEditDialog from './ScreenEditDialog';
 import ScreenLongName from './ScreenLongName';
+import ContextMenu from './ContextMenu';
 
-const useStyles = makeStyles(({ palette, typography }) => ({
+const useStyles = makeStyles<Theme>(({ typography }) => ({
   listItem: {
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.3),
+    '&.MuiListItem-root': {
+      whiteSpace: 'nowrap',
+      padding: '.5em',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      '&:hover': {
+        backgroundColor: '#F3F4F6',
+      },
+      '&, &:hover, &:active, &:link, &:visited, &:focus': {
+        color: 'inherit',
+        textDecoration: 'none',
+      },
     },
-    '&, &:hover, &:active, &:link, &:visited, &:focus': {
-      color: 'inherit',
-      textDecoration: 'none',
-    },
-    whiteSpace: 'nowrap',
-    padding: '.5em',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  active: {
-    backgroundColor: lighten(palette.panel.main, 0.2),
-  },
-  screenData: {
-    display: 'flex',
-    alignItems: 'center',
   },
   icon: {
-    color: palette.common.white,
-    minWidth: 0,
-    paddingRight: '.1em',
+    '&.MuiListItemIcon-root': {
+      minWidth: 0,
+    },
   },
+  screenData: {
+    marginLeft: '6px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '15px',
+  },
+  // icon: {
+  //   color: '#81818E',
+  //   minWidth: 0,
+  //   paddingRight: '.1em',
+  // },
   name: {
     fontFamily: typography.fontFamily,
-    fontSize: typography.fontSize,
+    fontSize: 11,
   },
   popover: {
     pointerEvents: 'none',
@@ -55,20 +64,31 @@ const useStyles = makeStyles(({ palette, typography }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   screen: Screen;
   index: number;
   active: boolean;
-};
+  onSelected: (screen: Screen) => void;
+}
 
-const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
+const ScreenListItem: React.FC<Props> = ({
+  screen,
+  index,
+  active,
+  onSelected,
+}) => {
   const dispatch = useDispatch();
-  const { name, project, id, image, screenData, element } = screen;
+  const { name, project, id, image, screenData } = screen;
+
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+
   const classes = useStyles();
-  const history = useHistory();
-  const currentProjectId = useSelector(selectCurrentProjectId);
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   const handleMouseLeave = useCallback(() => setShow(false), []);
   const handleMouseOver = useCallback(() => !show && setShow(true), [show]);
@@ -91,64 +111,157 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
     );
     closeEdit();
   };
-  const handleClick = () => {
-    dispatch(setActiveElement(element));
-    history.push(`/project/${currentProjectId}/${screen.id}`);
+
+  const handleMenuOpen = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setContextMenu(
+      contextMenu === null
+        ? {
+            mouseX: e.clientX + 2,
+            mouseY: e.clientY - 6,
+          }
+        : null,
+    );
+  };
+  const handleDeleteClose = () => {
+    dispatch(deleteScreen(project, id));
+    setDeleteModal(false);
+  };
+  const handleDeleteOpen = () => {
+    setDeleteModal(true);
   };
 
+  const handleClose = () => setContextMenu(null);
+
   return (
-    <Draggable draggableId={screen.id.toString()} index={index}>
-      {(provided) => (
-        <div
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-        >
-          <ListItem
-            button
-            onClick={handleClick}
-            onMouseLeave={handleMouseLeave}
-            onMouseOver={handleMouseOver}
-            className={cn(classes.listItem, active && classes.active)}
+    <>
+      <Draggable draggableId={screen.id.toString()} index={index}>
+        {(provided) => (
+          <div
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            ref={provided.innerRef}
           >
-            <div className={classes.screenData}>
-              <ListItemIcon className={classes.icon}>
-                <ScreenLogo image={image} />
-              </ListItemIcon>
-              {name.length > 10 ? (
-                <ScreenLongName
-                  name={name}
-                  styles={{
-                    name: classes.name,
-                    popover: classes.popover,
-                    paper: classes.paper,
-                  }}
-                />
-              ) : (
-                <span className={classes.name}>{name}</span>
-              )}
-            </div>
-            {/* it's a bad practice to place interactive elements into anchor, but the app design is going to change soon */}
-            <ScreenControls
-              show={show}
-              screen={screen}
-              openEdit={openEdit}
-              closeEdit={closeEdit}
+            <ListItemButton
+              selected={active}
+              onClick={() => onSelected(screen)}
+              onMouseLeave={handleMouseLeave}
+              onMouseOver={handleMouseOver}
+              onContextMenu={handleMenuOpen}
+              className={cn(classes.listItem)}
+            >
+              <div className={classes.screenData}>
+                <ListItemIcon className={classes.icon}>
+                  <ScreenLogo image={image} />
+                </ListItemIcon>
+                {name.length > 10 ? (
+                  <ScreenLongName
+                    name={name}
+                    styles={{
+                      name: classes.name,
+                      popover: classes.popover,
+                      paper: classes.paper,
+                    }}
+                  />
+                ) : (
+                  <span className={classes.name}>{name}</span>
+                )}
+              </div>
+              <ContextMenu
+                open={contextMenu !== null}
+                screen={screen}
+                anchorPosition={
+                  contextMenu !== null
+                    ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+                    : undefined
+                }
+                onClose={handleClose}
+                openEdit={openEdit}
+                openDelete={handleDeleteOpen}
+              />
+            </ListItemButton>
+            <ScreenEditDialog
+              open={edit}
+              onSubmit={handleSubmit}
+              onClose={closeEdit}
+              titleDialog="Rename Screen"
+              initialValueName={name}
+              initialValueTags={screenData?.meta || {}}
+              currentScreenId={id}
+              project={project}
             />
-          </ListItem>
-          <ScreenEditDialog
-            open={edit}
-            onSubmit={handleSubmit}
-            onClose={closeEdit}
-            titleDialog="Rename Screen"
-            initialValueName={name}
-            initialValueTags={screenData?.meta || {}}
-            currentScreenId={id}
-            project={project}
-          />
-        </div>
-      )}
-    </Draggable>
+            <Modal open={deleteModal}>
+              <Box
+                sx={{
+                  position: 'absolute' as 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: 420,
+                  bgcolor: 'background.paper',
+                  borderRadius: '6px',
+                  boxShadow: 24,
+                  p: 4,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: '18px',
+                    fontWeight: '600',
+                    fontFamily: 'Roboto',
+                    color: '#2A2A2D',
+                  }}
+                >
+                  Delete Screen
+                </Typography>
+                <Typography
+                  sx={{
+                    marginTop: '12px',
+                    fontSize: '14px',
+                    fontFamily: 'Roboto',
+                    color: '#2A2A2D',
+                  }}
+                >
+                  Are you sure you want to delete the {screen.name} screen?
+                </Typography>
+                <Box
+                  sx={{
+                    marginTop: '20px',
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                  }}
+                  gap={2}
+                >
+                  <Button
+                    sx={{
+                      color: '#81818E',
+                      fontWeight: '500',
+                      textTransform: 'capitalize',
+                    }}
+                    onClick={() => {
+                      setDeleteModal(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: '#5064FF',
+                      fontWeight: '500',
+                      textTransform: 'capitalize',
+                    }}
+                    onClick={handleDeleteClose}
+                  >
+                    Delete
+                  </Button>
+                </Box>
+              </Box>
+            </Modal>
+          </div>
+        )}
+      </Draggable>
+    </>
   );
 };
 

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import Switch from '@mui/material/Switch';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
-import { useHistory } from 'react-router';
-import Switch from '@material-ui/core/Switch';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
+import InlineEditable from '@Components/UI/InlineEditable';
+import { useElement } from '@Src/hooks';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -43,14 +45,19 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
     const isScreenLinkInProtoModeOrExportedFlag =
       screenLink && screenName && (isProtoMode || exportScreenFlag);
 
-    const getHref = (screenName) => {
-      return isProtoMode
+    const getHref = (screenName) =>
+      isProtoMode
         ? exportScreenFlag
           ? `../${screenName}/index.html`
           : '#'
         : exportScreenFlag
         ? `../${screenName}/index.html`
         : '';
+
+    const { updateParams } = useElement(element.id);
+
+    const handleUpdateValue = (value) => {
+      updateParams({ value });
     };
 
     return (
@@ -82,11 +89,24 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
               href={link}
               style={{ textDecoration: 'none', cursor: 'pointer' }}
               rel="noreferrer"
-              dangerouslySetInnerHTML={{ __html: element.parameters.value }}
-            />
+            >
+              <InlineEditable
+                text={element.parameters.value}
+                elementId={element.id}
+                onUpdated={handleUpdateValue}
+                renderElement={(value, props) => (
+                  <span
+                    dangerouslySetInnerHTML={{ __html: value }}
+                    {...props}
+                  />
+                )}
+              />
+            </a>
           ) : isScreenLinkInProtoMode ? (
             <label
-              ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
+              ref={
+                ref as unknown as React.MutableRefObject<HTMLLabelElement | null>
+              }
               id={id}
               role="presentation"
               onClick={() =>
@@ -94,8 +114,19 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
               }
               style={{ cursor: 'pointer' }}
               data-ls-id={id}
-              dangerouslySetInnerHTML={{ __html: element.parameters.value }}
-            />
+            >
+              <InlineEditable
+                text={element.parameters.value}
+                elementId={element.id}
+                onUpdated={handleUpdateValue}
+                renderElement={(value, props) => (
+                  <span
+                    dangerouslySetInnerHTML={{ __html: value }}
+                    {...props}
+                  />
+                )}
+              />
+            </label>
           ) : isScreenLinkInProtoModeOrExportedFlag ? (
             <a
               aria-label={`Link-${element.id}`}
@@ -103,15 +134,39 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
               href={getHref(screenName)}
               style={{ textDecoration: 'none', cursor: 'pointer' }}
               rel="noreferrer"
-              dangerouslySetInnerHTML={{ __html: element.parameters.value }}
-            />
+            >
+              <InlineEditable
+                text={element.parameters.value}
+                elementId={element.id}
+                onUpdated={handleUpdateValue}
+                renderElement={(value, props) => (
+                  <span
+                    dangerouslySetInnerHTML={{ __html: value }}
+                    {...props}
+                  />
+                )}
+              />
+            </a>
           ) : (
             <label
-              ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
+              ref={
+                ref as unknown as React.MutableRefObject<HTMLLabelElement | null>
+              }
               id={id}
               data-ls-id={id}
-              dangerouslySetInnerHTML={{ __html: element.parameters.value }}
-            />
+            >
+              <InlineEditable
+                text={element.parameters.value}
+                elementId={element.id}
+                onUpdated={handleUpdateValue}
+                renderElement={(value, props) => (
+                  <span
+                    dangerouslySetInnerHTML={{ __html: value }}
+                    {...props}
+                  />
+                )}
+              />
+            </label>
           )}
         </div>
       </div>

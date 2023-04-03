@@ -1,30 +1,27 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector, batch } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import { changePrototypeMode } from '@Redux/user/actions';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import ToggleButton from '@mui/material/ToggleButton';
+import { IconButton, Theme, Tooltip } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { setBordersEnabled, exportScreenFlag } from '@Redux/project/actions';
-import { IconButton } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { changePrototypeMode } from '@Redux/user/actions';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { PANEL_TRANSITION_DURATION } from '@Src/styles/Theme';
 import {
   selectUpdateScreenImageLoader,
   selectCurrentProject,
 } from '@Redux/project/selectors/base';
-import {
-  selectFreeCanvasMode,
-  selectScreensWithoutMaster,
-} from '@Redux/project/selectors/screen';
+import { selectScreensWithoutMaster } from '@Redux/project/selectors/screen';
 
 import exportHTML from '@Src/export/app';
 import History from '@Components/Layout/History';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import Share from './Share';
 
-const useStyles = makeStyles(({ typography }) => ({
+const useStyles = makeStyles<Theme>(({ typography }) => ({
   root: {
     display: 'flex',
     flexWrap: 'nowrap',
@@ -39,9 +36,15 @@ const useStyles = makeStyles(({ typography }) => ({
     fontSize: typography.fontSize,
   },
   iconButton: {
-    width: '32px',
-    height: '32px',
-    color: '#81818E',
+    '&.MuiIconButton-root': {
+      width: '32px',
+      height: '32px',
+      color: '#81818E',
+
+      '& svg': {
+        height: '20px',
+      },
+    },
   },
   helpTextStyle: {
     textDecoration: 'none',
@@ -66,7 +69,7 @@ const useStyles = makeStyles(({ typography }) => ({
     },
   },
   icon: {
-    width: '16px !important',
+    width: '20px !important',
   },
 }));
 
@@ -75,7 +78,7 @@ const Actions: React.FC = () => {
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const dispatch = useDispatch();
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
-  const canvasMode = useSelector(selectFreeCanvasMode);
+  // const canvasMode = useSelector(selectFreeCanvasMode);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const screens = useSelector(selectScreensWithoutMaster);
   const { name: projectName } = useSelector(selectCurrentProject);
@@ -90,7 +93,7 @@ const Actions: React.FC = () => {
       dispatch(changePrototypeMode(!isProtoMode));
     });
     enableBordersDebounce.callback();
-  }, [isProtoMode]);
+  }, [dispatch, enableBordersDebounce, isProtoMode]);
 
   const handleExportScreen = () => {
     if (screens.length > 0) {
@@ -100,7 +103,7 @@ const Actions: React.FC = () => {
     } else {
       dispatch(
         enqueueSnackbar({
-          message: `Must be expert at least one screen.`,
+          message: 'Must be expert at least one screen.',
           options: {
             variant: 'error',
           },
@@ -112,24 +115,23 @@ const Actions: React.FC = () => {
   return (
     <div className={classes.root}>
       <History />
-      <ToggleButton
-        className={classes.togglebutton}
-        value="Proto mode"
-        onClick={handleToggleProtoMode}
-        title="Proto mode"
-        disabled={imageLoader || canvasMode}
-        selected={isPrototypeMode}
-      >
-        <VisibilityOutlinedIcon className={classes.icon} />
-      </ToggleButton>
+      <Tooltip title="Proto mode">
+        <ToggleButton
+          className={classes.togglebutton}
+          value="Proto mode"
+          onClick={handleToggleProtoMode}
+          disabled={imageLoader}
+          selected={isPrototypeMode}
+        >
+          <VisibilityOutlinedIcon className={classes.icon} />
+        </ToggleButton>
+      </Tooltip>
 
-      <IconButton
-        onClick={handleExportScreen}
-        title="Export screen"
-        className={classes.iconButton}
-      >
-        <FileDownloadOutlinedIcon className={classes.icon} />
-      </IconButton>
+      <Tooltip title="Export screen">
+        <IconButton onClick={handleExportScreen} className={classes.iconButton}>
+          <FileDownloadOutlinedIcon className={classes.icon} />
+        </IconButton>
+      </Tooltip>
 
       <Share />
     </div>

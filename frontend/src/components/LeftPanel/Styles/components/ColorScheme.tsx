@@ -1,11 +1,11 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
 import ColorSettingsTypes, {
   ColorStylePropertiesTypes,
   ColorStyleTypes,
 } from '@Components/LeftPanel/Styles/Enums/colorSettings';
 import { updateDefaultStyles } from '@Redux/project/actions';
-import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import CONTROLS_CLASSES from '@Components/LeftPanel/Styles/controlClasses';
 import { ColorsScheme } from '@Components/LeftPanel/Styles/types/colorsScheme';
@@ -29,13 +29,12 @@ const COLOR_FALLBACK = 'transparent';
 const formatImagePaletteColor = (
   parsedImagePalette: ParsedImagePalette,
   index: number,
-) => {
-  return parsedImagePalette?.[index]?.[0]
+) =>
+  parsedImagePalette?.[index]?.[0]
     ? `rgba(${parsedImagePalette?.[index]?.[0]}, ${parsedImagePalette?.[index]?.[1]}, ${parsedImagePalette?.[index]?.[2]}, 1)`
     : undefined;
-};
 
-const ColorScheme = () => {
+function ColorScheme() {
   const parsedImagePalette = useSelector(selectImagePalette);
 
   const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
@@ -45,20 +44,19 @@ const ColorScheme = () => {
   const [colorValue, setColorValue] = useState<ColorsScheme>(colorScheme);
 
   const getColorByKey = useCallback(
-    (key) => {
-      return (
-        defaultStyles[ColorStyleTypes[key]][ColorStylePropertiesTypes[key]] ||
-        COLOR_FALLBACK
-      );
-    },
+    (key) =>
+      defaultStyles[ColorStyleTypes[key]][ColorStylePropertiesTypes[key]] ||
+      COLOR_FALLBACK,
     [defaultStyles],
   );
 
   useEffect(() => {
     if (defaultStyles) {
-      const colorValue = (Object.keys(ColorSettingsTypes) as Array<
-        keyof typeof ColorSettingsTypes
-      >).reduce((value, key) => ({ ...value, [key]: getColorByKey(key) }), {});
+      const colorValue = (
+        Object.keys(ColorSettingsTypes) as Array<
+          keyof typeof ColorSettingsTypes
+        >
+      ).reduce((value, key) => ({ ...value, [key]: getColorByKey(key) }), {});
 
       setColorValue(colorValue);
     }
@@ -92,13 +90,12 @@ const ColorScheme = () => {
         FILL_INSIDE_COLOR: formatImagePaletteColor(parsedImagePalette, 4),
         ACCENT_COLOR: formatImagePaletteColor(parsedImagePalette, 5),
       });
-      (Object.keys(ColorSettingsTypes) as Array<
-        keyof typeof ColorSettingsTypes
-      >).forEach((key, index) => {
-        updateColor(
-          formatImagePaletteColor(parsedImagePalette, index) as string,
-          key,
-        );
+      (
+        Object.keys(ColorSettingsTypes) as Array<
+          keyof typeof ColorSettingsTypes
+        >
+      ).forEach((key, index) => {
+        updateColor(formatImagePaletteColor(parsedImagePalette, index), key);
       });
     }
     // eslint-disable-next-line
@@ -116,34 +113,31 @@ const ColorScheme = () => {
     updateColor(color, key);
   };
 
-  const currentColor = (key: keyof typeof ColorSettingsTypes): string => {
-    return (
-      defaultStyles?.[ColorStyleTypes[key]][ColorStylePropertiesTypes[key]] ||
-      (colorValue && colorValue[key]) ||
-      (colorScheme[key] as string)
-    );
-  };
+  const currentColor = (key: keyof typeof ColorSettingsTypes): string =>
+    defaultStyles?.[ColorStyleTypes[key]][ColorStylePropertiesTypes[key]] ||
+    (colorValue && colorValue[key]) ||
+    colorScheme[key];
 
   return (
     <div>
       <div>
-        {(Object.keys(ColorSettingsTypes) as Array<
-          keyof typeof ColorSettingsTypes
-        >).map((key) => {
-          return (
-            <ColorSettings
-              isDefaultStyles
-              currentColor={currentColor(key)}
-              activeElementId={ColorSettingsTypes[key]}
-              onChange={(color) => onColorChange(color, key)}
-              labelTextStyle={ColorSettingsTypes[key]}
-              key={key}
-            />
-          );
-        })}
+        {(
+          Object.keys(ColorSettingsTypes) as Array<
+            keyof typeof ColorSettingsTypes
+          >
+        ).map((key) => (
+          <ColorSettings
+            isDefaultStyles
+            currentColor={currentColor(key)}
+            activeElementId={ColorSettingsTypes[key]}
+            onChange={(color) => onColorChange(color, key)}
+            labelTextStyle={ColorSettingsTypes[key]}
+            key={key}
+          />
+        ))}
       </div>
     </div>
   );
-};
+}
 
 export default memo(ColorScheme);

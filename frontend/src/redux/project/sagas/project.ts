@@ -1,15 +1,17 @@
 import { put, call, select } from 'redux-saga/effects';
+import logger from 'loglevel';
 import {
   convertCreatedElementToRequest,
   convertCreatedProjectToRequest,
 } from '@Api/converters/toRequest';
-import generator from 'generate-password';
+import { setProjectError } from '@Redux/project/actions';
 import {
   apiCreateProject,
   apiDeleteProject,
   apiGetProjectList,
   apiUpdateProject,
   apiGetProjectWithScreens,
+  apigetSharedProject,
 } from '@Api/project';
 import { apiCreateAssetList } from '@Api/assetList';
 import { DEFAULT_ASSET_LIST_NAME } from '@Constants/defaultParams';
@@ -24,30 +26,30 @@ import {
   Result,
   Screen,
   UserProjectPermission,
+  ServerUserData,
 } from '@Src/types';
+
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import { CORE_PREVIEW_LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
-import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
-import { apiCreateNewStreams, apiDeleteStream } from '@Api/pmtools/chatApi';
-import {
-  apiGetBoard,
-  createNewBoard,
-  createOrganization,
-  deleteOrganization,
-  getAddUserToBoard,
-  getUserByEmail,
-} from '@Api/pmtools/board/boardApi';
-import logger from 'loglevel';
-import { IBoardForUI, IOrganization } from '@Src/types/pmtools/board';
-import { selectUserData } from '@Redux/user/selectors';
+// import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
+// import {
+//   apiGetBoard,
+//   createNewBoard,
+//   createOrganization,
+//   deleteOrganization,
+//   getAddUserToBoard,
+//   getUserByEmail,
+// } from '@Api/pmtools/board/boardApi';
+import { setStateCurrentUserPermissions } from '@Redux/permissions/actions';
+import { apiGetUser } from '@Api/user';
+import { setUserData, setTokenPair } from '@Redux/user/actions';
+import { convertUserDataFromResponse } from '@Api/converters/fromResponse';
 import { enqueueSnackbar } from '../../notification/actions';
-import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
 import * as PermissionsActions from '../../permissions/actions';
-import { createScreenSaga, getScreensSaga } from './screen';
 import {
   selectCurrentProject,
   selectCurrentUIFramework,
@@ -62,6 +64,8 @@ import {
   selectScreenById,
 } from '../selectors/screen';
 import { selectElementAsTree, selectElementById } from '../selectors/element';
+import { createScreenSaga, getScreensSaga } from './screen';
+import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import { createElements } from './common';
 
 export function* setMasterScreenCoreElements(screen: Screen) {
@@ -225,10 +229,6 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       },
     );
 
-    if (result?.projectTrelloJSON) {
-      yield put(successSavedBoard(result.projectTrelloJSON));
-    }
-
     if (result) {
       yield put(Actions.changeLayout(result?.projectData?.layout?.value));
       yield put(
@@ -245,11 +245,13 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
         yield call(getScreensSaga, result.projectscreen);
       }
 
+      yield put(Actions.fetchScreenFolders(id));
+
       yield put(Actions.setCurrentProjectId(result.id));
       yield put(Actions.setAssetLists(null));
       yield put(Actions.setSelectedAssetListId(null));
       const masterScreenId: number =
-        result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ||
+        result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ??
         -1;
       yield put(Actions.setMasterScreenId(masterScreenId));
 
@@ -285,39 +287,39 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 export function* createProjectSaga(
   action: ReturnType<typeof Actions.createProject>,
 ) {
-  const {
-    payload: { name },
-  } = action;
   try {
-    const generateName = generator.generate();
+    const {
+      payload: { name },
+    } = action;
+
     yield put(Actions.setProjectCreateLoader(true));
 
-    const organization: IOrganization = yield call(
-      createOrganization,
-      `${generateName}-adevi-org`,
-    );
-    const board: IBoardForUI = yield call(createNewBoard, generateName);
-    yield call(apiCreateNewStreams, generateName);
+    // const organization: IOrganization = yield call(
+    //   createOrganization,
+    //   `${generateName}-adevi-org`,
+    // );
+    // const board: IBoardForUI = yield call(createNewBoard, generateName);
+    // const boardForUI: IBoardForUI = {
+    //   organization,
+    //   ...board,
+    // };
 
-    const boardForUI: IBoardForUI = {
-      organization,
-      ...board,
-    };
-
-    const { email } = yield select(selectUserData);
-    const userTrello = yield call(getUserByEmail, email);
-    if (!userTrello.error) {
-      yield call(getAddUserToBoard, email, board.id);
-    }
+    // const { email } = yield select(selectUserData);
+    // const userTrello = yield call(getUserByEmail, email);
+    // if (!userTrello.error) {
+    //   yield call(getAddUserToBoard, email, board.id);
+    // }
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
       {
-        data: convertCreatedProjectToRequest(name, boardForUI),
+        data: convertCreatedProjectToRequest(name, {}),
       },
     );
-    yield put(successSavedBoard(boardForUI));
+
+    yield put(setProjectError(error));
+    // yield put(successSavedBoard(boardForUI));
 
     if (createdProject?.created) {
       yield put(
@@ -417,12 +419,12 @@ export function* deleteProjectSaga({
   payload: { id },
 }: ReturnType<typeof Actions.deleteProject>) {
   try {
-    const board = yield call(reqWrapper, apiGetBoard, {
-      project: id,
-    });
+    // const board = yield call(reqWrapper, apiGetBoard, {
+    //   project: id,
+    // });
 
-    yield call(deleteOrganization, JSON.parse(board).organization?.id);
-    yield call(apiDeleteStream, JSON.parse(board).name);
+    // yield call(deleteOrganization, JSON.parse(board).organization?.id);
+    // yield call(apiDeleteStream, JSON.parse(board).name);
 
     const { result, error }: Result<boolean> = yield call(
       reqWrapper,
@@ -439,7 +441,7 @@ export function* deleteProjectSaga({
       yield put(Actions.setProjectList(newProjectList));
       yield put(
         enqueueSnackbar({
-          message: `Project deleted`,
+          message: 'Project deleted',
           options: {
             variant: 'success',
           },
@@ -478,7 +480,11 @@ export const updateNameAndTagsProjectSaga = function* ({
         data: {
           id: projectID,
           name,
-          tags: typeof tags !== 'object' ? getTagsArr(tags) : tags,
+          tags: tags
+            ? typeof tags === 'string'
+              ? getTagsArr(tags)
+              : tags
+            : project.tags,
           projectscreen: project.projectscreen,
         },
       },
@@ -560,9 +566,8 @@ export function* updateProjectSaga(
       return;
     }
 
-    const currentProject: ReturnType<
-      typeof selectCurrentProject
-    > = yield select(selectCurrentProject);
+    const currentProject: ReturnType<typeof selectCurrentProject> =
+      yield select(selectCurrentProject);
 
     const success: boolean = yield call(projectUpdateHelperSaga, project);
 
@@ -652,3 +657,58 @@ export const resetCurrentUIFrameworkVariablesSaga = withRequiredPermissions(
     }),
   );
 });
+
+export function* getSharedProjectSaga(
+  action: ReturnType<typeof Actions.getSharedProject>,
+) {
+  try {
+    const { shortuuid_token } = action.payload;
+
+    yield put(Actions.setProjectLoader(true));
+
+    const { result, error }: Result = yield call(
+      reqWrapper,
+      apigetSharedProject,
+      {
+        shortuuid_token,
+      },
+    );
+    if (result) {
+      yield put(
+        setTokenPair({ access: result.results[0].access_token, refresh: '' }),
+      );
+      const id = result?.results[0].owner;
+      const userData: ServerUserData = yield call(reqWrapper, apiGetUser, {
+        id,
+      });
+      yield put(
+        setUserData({
+          ...convertUserDataFromResponse(userData),
+        }),
+      );
+      const updatedPermissions: UserProjectPermission[] = [];
+      updatedPermissions.push(UserProjectPermission.VIEW_PROJECT);
+      yield put(setStateCurrentUserPermissions(updatedPermissions));
+    }
+
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
+          },
+          e,
+        ),
+      );
+    }
+  } finally {
+    yield put(Actions.setProjectLoader(false));
+  }
+}

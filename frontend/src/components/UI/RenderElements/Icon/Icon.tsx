@@ -1,7 +1,7 @@
-import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import React from 'react';
 import cn from 'classnames';
-import * as Icons from '@material-ui/icons';
+import * as Icons from '@mui/icons-material';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 

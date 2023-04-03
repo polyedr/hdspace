@@ -3,34 +3,35 @@ import React, { useEffect, useCallback, useState, memo } from 'react';
 import { SketchPicker, ColorResult } from 'react-color';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { Popover } from '@material-ui/core';
-import transparentBg from '../../../assets/sprites/background_empty.png';
+import { createStyles, makeStyles } from '@mui/styles';
+import { Popover, Theme } from '@mui/material';
+import transparentBg from '../../../assets/sprites/transparent.png';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       position: 'relative',
-      width: '16px',
-      height: '16px',
-      borderRadius: '2px',
-      border: '1px solid grey',
+      width: '18px',
+      height: '18px',
       backgroundColor: (props: any) => props.color,
       cursor: 'pointer',
+      // border: '1px solid #E4E6EB',
+      borderRadius: 2,
     },
     transparent: {
       borderRadius: theme.shape.borderRadius,
-      background: `white url(${transparentBg})`,
+      background: `white url(${transparentBg}) 100% 100% no-repeat`,
+      backgroundSize: 'cover',
     },
   }),
 );
 
-type ColorPickerProps = {
+interface ColorPickerProps {
   color: string;
   colors?: string[];
-  onChangeComplete(color: Pick<ColorResult, 'hex'>): void;
+  onChangeComplete: (color: Pick<ColorResult, 'hex'>) => void;
   disabled?: boolean;
-};
+}
 
 const ColorPicker: React.FC<ColorPickerProps> = ({
   color,

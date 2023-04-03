@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
-import SettingsIcon from '@material-ui/icons/Settings';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import {
+  Settings,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+} from '@mui/icons-material';
+import { Divider, IconButton } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { splitWords } from '@Utils/stringHelper';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { StateElement } from '@Src/types';
-import { Divider, IconButton } from '@material-ui/core';
-
-import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   crumb: {
@@ -25,8 +26,8 @@ const useStyles = makeStyles({
     textTransform: 'capitalize',
   },
   general: {
-    backgroundColor: (props: any) => (props.isActive ? '#5A899D' : '#7a7a7a'),
-    display: 'flex',
+    backgroundColor: (props: any) => (props.isActive ? '#128A72' : '#1CC09F'),
+    display: 'none',
     flexWrap: 'nowrap',
     height: 16,
     borderBottom: '1px solid #bbb',
@@ -41,46 +42,47 @@ const useStyles = makeStyles({
     fontSize: 16,
     color: '#fff',
     borderRadius: 0,
+    // display: 'none',
   },
   divider: {
     backgroundColor: '#bbb',
   },
   border: {
     position: 'absolute',
-    backgroundColor: (props: any) => (props.isActive ? '#5A899D' : '#7a7a7a'),
+    backgroundColor: (props: any) => (props.isActive ? '#128A72' : '#1CC09F'),
     zIndex: 998,
   },
   topBorder: {
     top: 0,
     left: 0,
     right: 0,
-    height: 1,
+    height: (props: any) => (props.isActive ? '1px' : '2px'),
   },
   rightBorder: {
     top: 0,
     right: 0,
     bottom: 0,
-    width: 1,
+    width: (props: any) => (props.isActive ? '1px' : '2px'),
   },
   bottomBorder: {
     bottom: 0,
     left: 0,
     right: 0,
-    height: 1,
+    height: (props: any) => (props.isActive ? '1px' : '2px'),
   },
   leftBorder: {
     top: 0,
     left: 0,
     bottom: 0,
-    width: 1,
+    width: (props: any) => (props.isActive ? '1px' : '2px'),
   },
 });
 
-type Props = {
+interface Props {
   element: StateElement;
   hover: boolean;
   isActive: boolean;
-};
+}
 
 const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
   const {
@@ -132,7 +134,7 @@ const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
             className={classes.iconButton}
             title="Settings"
           >
-            <SettingsIcon fontSize="inherit" />
+            <Settings fontSize="inherit" />
           </IconButton>
         </div>
 
@@ -150,7 +152,7 @@ const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
               className={classes.iconButton}
               title="Move element up"
             >
-              <KeyboardArrowUpIcon fontSize="inherit" />
+              <KeyboardArrowUp fontSize="inherit" />
             </IconButton>
 
             <IconButton
@@ -159,7 +161,7 @@ const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
               title="Move element down"
               disabled={(zIndex || 0) <= 0}
             >
-              <KeyboardArrowDownIcon fontSize="inherit" />
+              <KeyboardArrowDown fontSize="inherit" />
             </IconButton>
           </div>
         </div>

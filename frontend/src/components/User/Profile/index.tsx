@@ -1,26 +1,9 @@
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
-import {
-  createStyles,
-  darken,
-  makeStyles,
-  styled,
-} from '@material-ui/core/styles';
-import Alert from '@material-ui/lab/Alert';
-import {
-  selectProfileData,
-  selectUserData,
-  selectUserGuideWatched,
-} from '@Redux/user/selectors';
-import {
-  changeProfileData,
-  setUserExperience,
-  sendResetPasswordMail,
-  changeUserData,
-} from '@Redux/user/actions';
-import { ROLES } from '@Constants/defaultParams';
-import { Experience, ProfileData } from '@Src/types';
+import { styled } from '@mui/material/styles';
+import { createStyles, makeStyles } from '@mui/styles';
+import Alert from '@mui/lab/Alert';
 import {
   Typography,
   Box,
@@ -41,13 +24,33 @@ import {
   MenuItem,
   FormHelperText,
   Grid,
-} from '@material-ui/core';
-import ImageCropper from '@Components/CropImage';
+  darken,
+  Avatar,
+  Theme,
+} from '@mui/material';
 import { useHistory } from 'react-router';
-import { Avatar } from '@mui/material';
+import {
+  selectProfileData,
+  selectSubscriptionData,
+  selectUserData,
+  selectUserGuideWatched,
+} from '@Redux/user/selectors';
+import {
+  changeProfileData,
+  setUserExperience,
+  sendResetPasswordMail,
+  changeUserData,
+  changeProfileAvatar,
+} from '@Redux/user/actions';
+import { ROLES } from '@Constants/defaultParams';
+import { Experience, ProfileData } from '@Src/types';
+import ImageCropper from '@Components/CropImage';
+import { getSubscriptionData } from '@Redux/permissions/actions';
+import { isRequired } from '@Utils/validators';
 import SubmitError from '../SubmitError';
+import { SubscriptionCard } from './SubscriptionCard';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     headerContainer: {
       paddingTop: theme.spacing(2),
@@ -137,7 +140,7 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-const TabPanel = ({ children, value, index, ...rest }) => {
+function TabPanel({ children, value, index, ...rest }) {
   return (
     <div
       role="tabpanel"
@@ -149,7 +152,7 @@ const TabPanel = ({ children, value, index, ...rest }) => {
       {value === index && children}
     </div>
   );
-};
+}
 
 const TabStyle = styled(Tab)(({ theme }) => ({
   minWidth: 'unset',
@@ -161,12 +164,10 @@ const TabPanelStyle = styled(TabPanel)(({ theme }) => ({
   padding: `${theme.spacing(3)}px 0`,
 }));
 
-const a11yProps = (index) => {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-};
+const a11yProps = (index) => ({
+  id: `simple-tab-${index}`,
+  'aria-controls': `simple-tabpanel-${index}`,
+});
 
 const Profile: React.FC = () => {
   const classes = useStyles();
@@ -174,10 +175,11 @@ const Profile: React.FC = () => {
   const history = useHistory();
 
   const [imageToCrop, setImageToCrop] = useState<any>(undefined);
-  const [croppedImage, setCroppedImage] = useState<any>(undefined);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+
+  const imageRef = useRef(null);
 
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -187,12 +189,17 @@ const Profile: React.FC = () => {
     setDialogOpen(true);
   };
 
+  useEffect(() => {
+    dispatch(getSubscriptionData());
+  }, []);
+
   const handleClose = () => {
     setDialogOpen(false);
     setCancelDialogOpen(false);
   };
 
   const userData = useSelector(selectUserData);
+
   const { firstName, lastName, email, profile, username } = userData;
   const {
     parameters: {
@@ -221,7 +228,7 @@ const Profile: React.FC = () => {
       dispatch(changeProfileData(values));
     }
   };
-
+  const userSubscriptionData = useSelector(selectSubscriptionData);
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
@@ -238,13 +245,9 @@ const Profile: React.FC = () => {
   };
 
   const handleSaved = () => {
-    dispatch(
-      changeProfileData({
-        parameters: {
-          avatarCrop: croppedImage as string,
-        },
-      } as ProfileData),
-    );
+    if (imageRef.current) {
+      dispatch(changeProfileAvatar(imageRef.current));
+    }
     setImageToCrop(undefined);
   };
 
@@ -297,6 +300,10 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handleSetCroppedImage = useCallback((_, imageBlob) => {
+    imageRef.current = imageBlob;
+  }, []);
+
   const handleCancel = () => {
     history.go(0);
   };
@@ -315,8 +322,9 @@ const Profile: React.FC = () => {
             aria-label="lab API tabs example"
           >
             <TabStyle label="Profile" {...a11yProps(0)} />
-            <TabStyle label="Security" {...a11yProps(1)} />
-            <TabStyle label="UI settings" {...a11yProps(2)} />
+            <TabStyle label="Subscription" {...a11yProps(1)} />
+            <TabStyle label="Security" {...a11yProps(2)} />
+            <TabStyle label="UI settings" {...a11yProps(3)} />
           </Tabs>
         </div>
         <TabPanelStyle value={activeTab} index={0}>
@@ -333,7 +341,7 @@ const Profile: React.FC = () => {
                   <Avatar
                     sx={{ bgcolor: '#344AF0', width: 100, height: 100 }}
                     alt={username}
-                    src={avatarCrop}
+                    src={profile.avatar ?? undefined}
                   >
                     <div className={classes.avatar}>
                       {username[0].toUpperCase()}
@@ -344,7 +352,7 @@ const Profile: React.FC = () => {
                     <>
                       <ImageCropper
                         imageToCrop={imageToCrop}
-                        setResult={setCroppedImage}
+                        setResult={handleSetCroppedImage}
                       />
                       <div>
                         <button type="button" onClick={handleSaved}>
@@ -359,17 +367,15 @@ const Profile: React.FC = () => {
                       Upload
                       <Field
                         name="avatar"
-                        render={({ input }) => {
-                          return (
-                            <input
-                              {...input}
-                              type="file"
-                              accept=".png, .jpeg"
-                              onChange={handleImageUpload}
-                              className={classes.hidden}
-                            />
-                          );
-                        }}
+                        render={({ input }) => (
+                          <input
+                            {...input}
+                            type="file"
+                            accept=".png, .jpeg"
+                            onChange={handleImageUpload}
+                            className={classes.hidden}
+                          />
+                        )}
                       />
                     </label>
                     <button
@@ -408,7 +414,7 @@ const Profile: React.FC = () => {
                       <Grid container spacing={4}>
                         <Grid container item spacing={2}>
                           <Grid item xs={12} sm={6}>
-                            <Field name="first_name" validate={fieldValidate}>
+                            <Field name="first_name" validate={isRequired}>
                               {({ input, meta }) => (
                                 <TextField
                                   {...input}
@@ -440,7 +446,7 @@ const Profile: React.FC = () => {
                             </Field>
                           </Grid>
                           <Grid item xs={12} sm={6}>
-                            <Field name="last_name" validate={fieldValidate}>
+                            <Field name="last_name" validate={isRequired}>
                               {({ input, meta }) => (
                                 <TextField
                                   {...input}
@@ -569,6 +575,24 @@ const Profile: React.FC = () => {
           </div>
         </TabPanelStyle>
         <TabPanelStyle value={activeTab} index={1} style={{ paddingBottom: 0 }}>
+          {userSubscriptionData === null ? (
+            <div className={classes.settingsPart}>
+              <div className={classes.subheader}>
+                Now you do not have a subscription you can choose a suitable
+                rate plan here
+              </div>
+              <Button
+                style={{ background: '#5064FF', color: '#FFFFFF' }}
+                variant="contained"
+              >
+                Subscription
+              </Button>
+            </div>
+          ) : (
+            <SubscriptionCard result={userSubscriptionData} />
+          )}
+        </TabPanelStyle>
+        <TabPanelStyle value={activeTab} index={2} style={{ paddingBottom: 0 }}>
           <div className={classes.settingsPart}>
             <div className={classes.subheader}>Password</div>
             <Button
@@ -580,7 +604,7 @@ const Profile: React.FC = () => {
             </Button>
           </div>
         </TabPanelStyle>
-        <TabPanelStyle value={activeTab} index={2} style={{ paddingBottom: 0 }}>
+        <TabPanelStyle value={activeTab} index={3} style={{ paddingBottom: 0 }}>
           <div className={classes.settingsPart}>
             <div className={classes.subheader}>
               Always display drop target element borders
@@ -607,7 +631,7 @@ const Profile: React.FC = () => {
             </div>
           </div>
         </TabPanelStyle>
-        {activeTab !== 1 && (
+        {activeTab !== 1 && activeTab !== 2 && (
           <Box padding="8px 0" className={classes.buttonsWrapper}>
             <Button
               color="secondary"

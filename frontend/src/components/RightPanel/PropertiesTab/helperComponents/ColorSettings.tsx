@@ -1,11 +1,10 @@
 import React, { memo, useCallback, useState, useEffect } from 'react';
 import { toState } from 'react-color/lib/helpers';
 import { ColorResult } from 'react-color';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import { makeStyles } from '@material-ui/core/styles';
-import { getPermissibleValue } from '@Utils/NumberHelper';
+import { Checkbox, styled, FormControlLabel } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import ClearIcon from '@mui/icons-material/Clear';
+import { getPermissibleValue } from '@Utils/NumberHelper';
 import { ColorPicker, normalizeColor, useColor } from '../../../UI/ColorPicker';
 import { StyledTextField } from '../../../styledComponents';
 
@@ -16,32 +15,42 @@ const useStyles = makeStyles({
     alignItems: 'flex-end',
     padding: '0.5em 0',
     flexDirection: 'row',
+    position: 'relative',
   },
   wrapper: {
-    padding: '0.5em',
+    padding: '0 5px 0 0',
   },
   input: {
-    width: '95px',
+    // width: '95px',
   },
   colorPickerBlock: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-end',
+    width: 'calc(50% - 10px)',
   },
 });
 
-type Props = {
+interface Props {
   currentColor: string;
   currentOpacity?: React.CSSProperties['opacity'];
   activeElementId: string;
-  onChange(color: string): any | void;
+  onChange: (color: string) => any | void;
   disabled?: boolean;
   labelTextStyle?: string;
   updateStyles?: any;
   propsToRemove?: string[];
-  onClick?(propsToRemove: string[] | undefined): void;
+  onClick?: (propsToRemove: string[] | undefined) => void;
   isDefaultStyles?: boolean;
-};
+}
+
+const CheckedFormControl = styled(FormControlLabel)({
+  margin: '10px 0 10px -3px',
+
+  '& .MuiCheckbox-root': {
+    padding: 0,
+  },
+});
 
 const ColorSettings: React.FC<Props> = ({
   propsToRemove,
@@ -158,7 +167,7 @@ const ColorSettings: React.FC<Props> = ({
   );
 
   const validateOpacity = () => {
-    const value = (currentOpacityState as unknown) as number;
+    const value = currentOpacityState as unknown as number;
     return value && value <= 1 && value > 0 && !Number.isNaN(value)
       ? value * 100
       : 100;
@@ -191,7 +200,7 @@ const ColorSettings: React.FC<Props> = ({
         </div>
         <StyledTextField
           className={classes.input}
-          style={{ marginLeft: '24px' }}
+          style={{ width: 'calc(50% - 10px)', paddingRight: 25 }}
           value={`${validateOpacity()}%`}
           onBlur={({ target: { value } }) => {
             setCurrentOpacityState(parseInt(value) / 100);
@@ -205,12 +214,15 @@ const ColorSettings: React.FC<Props> = ({
           disabled={disabled}
         />
         {!isDefaultStyles && (
-          <div onClick={handleRemoveClick}>
+          <div
+            onClick={handleRemoveClick}
+            style={{ position: 'absolute', bottom: 5, right: 0 }}
+          >
             <ClearIcon sx={{ width: '16px', color: '#81818E' }} />
           </div>
         )}
       </div>
-      <FormControlLabel
+      <CheckedFormControl
         control={
           <Checkbox
             checked={checked}

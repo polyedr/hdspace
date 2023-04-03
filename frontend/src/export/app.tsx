@@ -2,13 +2,12 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import ReactDOMServer from 'react-dom/server';
-import { ServerStyleSheets, ThemeProvider } from '@material-ui/core/styles';
-import {
-  ThemeProvider as MuiThemeProvider,
-  StyledEngineProvider,
-} from '@mui/material/styles';
+import { ServerStyleSheets } from '@mui/styles';
+import { StyledEngineProvider } from '@mui/material/styles';
 import JSZip from 'jszip';
-import theme from '@Src/styles/Theme';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { AppThemeProvider } from '@Src/styles/Theme';
 import { store } from '@Redux/store';
 import { AppReduxState } from '@Redux/types';
 import {
@@ -28,9 +27,9 @@ import {
 const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
 
 const createArchive = async (
-  allScreensData: Array<any>,
-  allScreensHtml: Array<any>,
-  allScreensCss: Array<any>,
+  allScreensData: any[],
+  allScreensHtml: any[],
+  allScreensCss: any[],
   state: AppReduxState,
   projectName: string,
 ) => {
@@ -49,13 +48,13 @@ const createArchive = async (
 
   const zip = new JSZip();
 
-  const zipData = allScreensData.map((data) => {
+  const zipData = allScreensData.map(async (data) => {
     const screenFolder = zip.folder(`${data.name}`);
     const cssFolder = zip.folder(`${data.name}/css`);
     const jsFolder = zip.folder(`${data.name}/js`);
     const assetsFolder = zip.folder(`${data.name}/assets`);
 
-    return Promise.all([
+    return await Promise.all([
       processHTML(allScreensHtml[data.name], assetsFolder),
       processCSS(
         allScreensHtml[data.name],
@@ -93,25 +92,25 @@ const createArchive = async (
 };
 
 const exportHTML = (allScreensData, projectName) => {
-  const state = store.getState() as AppReduxState;
-  const allScreensHtmlData: Array<any> = [];
-  const allScreensStyleData: Array<any> = [];
+  const state = store.getState() as unknown as AppReduxState;
+  const allScreensHtmlData: any[] = [];
+  const allScreensStyleData: any[] = [];
 
   allScreensData.forEach((data, index) => {
     const sheets = new ServerStyleSheets();
     const html = ReactDOMServer.renderToStaticMarkup(
       sheets.collect(
-        <Provider store={store}>
-          <StyledEngineProvider injectFirst>
-            <MuiThemeProvider theme={theme}>
-              <ThemeProvider theme={theme}>
+        <DndProvider backend={HTML5Backend}>
+          <Provider store={store}>
+            <StyledEngineProvider injectFirst>
+              <AppThemeProvider>
                 <BrowserRouter>
                   <ExportedElement elementId={data.element} state={state} />
                 </BrowserRouter>
-              </ThemeProvider>
-            </MuiThemeProvider>
-          </StyledEngineProvider>
-        </Provider>,
+              </AppThemeProvider>
+            </StyledEngineProvider>
+          </Provider>
+        </DndProvider>,
       ),
     );
     allScreensHtmlData[allScreensData[index].name] = html;

@@ -1,36 +1,40 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectLayout,
-  selectScreenRotated,
-  selectCurrentProjectDataJson,
-  selectCurrentProject,
-} from '@Redux/project/selectors/base';
 
 import {
-  changeLayout,
-  rotateScreenFormat,
-  updateLayoutProject,
-} from '@Redux/project/actions';
-
+  Select,
+  ToggleButton,
+  MenuItem,
+  FormControl,
+  Theme,
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ScreenRotationIcon from '@mui/icons-material/ScreenRotation';
+import DesktopWindowsOutlinedIcon from '@mui/icons-material/DesktopWindowsOutlined';
+import TabletIcon from '@mui/icons-material/Tablet';
+import PhoneIphoneSharpIcon from '@mui/icons-material/PhoneIphoneSharp';
+import { createStyles, makeStyles } from '@mui/styles';
 import {
   additionalLayoutPhone,
   additionalLayoutDesktop,
   additionalLayoutTablet,
   Layout,
 } from '@Src/types';
-
-import { Select, ToggleButton, MenuItem } from '@mui/material';
-import ScreenRotationIcon from '@mui/icons-material/ScreenRotation';
-import DesktopWindowsOutlinedIcon from '@mui/icons-material/DesktopWindowsOutlined';
-import TabletIcon from '@mui/icons-material/Tablet';
-import PhoneIphoneSharpIcon from '@mui/icons-material/PhoneIphoneSharp';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { FormControl } from '@material-ui/core';
+import {
+  changeLayout,
+  rotateScreenFormat,
+  updateLayoutProject,
+} from '@Redux/project/actions';
+import {
+  selectLayout,
+  selectScreenRotated,
+  selectCurrentProjectDataJson,
+  selectCurrentProject,
+} from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import ELEMENT_IDS from '@Constants/elementIds';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     formControl: {
       minWidth: 120,
@@ -42,11 +46,18 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: 'white',
       '& .MuiSelect-select': {
         display: 'flex',
+        alignItems: 'center',
+      },
+      '& .MuiInput-input': {
+        '&:focus': {
+          backgroundColor: 'transparent',
+        },
       },
     },
     root: {
       display: 'flex',
       alignItems: 'center',
+      padding: '0 !important',
     },
     rotated: {
       width: 50,
@@ -65,6 +76,7 @@ const useStyles = makeStyles((theme) =>
     dropdowntext: {
       paddingLeft: '10px',
       fontSize: '12px',
+      textTransform: 'capitalize',
     },
     icon: {
       color: '#5064FF',
@@ -117,15 +129,14 @@ const Layouts: React.FC = () => {
     if (iconType === 'Tablet') return <TabletIcon className={classes.icon} />;
     return null;
   };
-  const renderOption = (additionalLayout, iconType) => {
-    return additionalLayout.map((key) => (
+  const renderOption = (additionalLayout, iconType) =>
+    additionalLayout.map((key) => (
       <MenuItem value={key} key={key} style={{ display: 'flex' }}>
         {iconSelector(iconType)}
 
         <div className={classes.dropdowntext}>{key}</div>
       </MenuItem>
     ));
-  };
 
   return (
     <>
@@ -138,6 +149,7 @@ const Layouts: React.FC = () => {
               disableUnderline
               onChange={handleFormatChange}
               className={classes.selectEmpty}
+              IconComponent={ExpandMoreIcon}
             >
               <MenuItem disabled>Desktop</MenuItem>
               {renderOption(additionalLayoutDesktop, 'Desktop')}

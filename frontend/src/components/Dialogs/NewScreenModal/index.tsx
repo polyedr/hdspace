@@ -5,19 +5,20 @@ import {
   DialogTitle,
   Tab,
   Tabs,
-} from '@material-ui/core';
+  Theme,
+} from '@mui/material';
+import React, { ChangeEvent, FC, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@mui/styles';
 import { setNewScreenModal } from '@Redux/project/actions';
 import { setUserGuideActive } from '@Redux/user/actions';
 import { selectUserGuideWatched } from '@Redux/user/selectors';
-import React, { ChangeEvent, FC, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { selectNewScreenModalOpen } from '@Redux/project/selectors/screen';
-import { makeStyles } from '@material-ui/core/styles';
 import HtmlImportForm from './HTMLImportForm';
 import ImageRecognizeForm from './ImageRecognizeForm';
 import UseEditorForm from './UseEditorForm';
 
-const useTabPanelStyles = makeStyles(({ breakpoints, spacing }) => ({
+const useTabPanelStyles = makeStyles<Theme>(({ spacing, breakpoints }) => ({
   tabPanel: {
     flex: 1,
     padding: spacing(2),
@@ -29,7 +30,7 @@ const useTabPanelStyles = makeStyles(({ breakpoints, spacing }) => ({
   },
 }));
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles<Theme>(({ spacing }) => ({
   dialogContent: {
     minHeight: '50vh',
     display: 'flex',

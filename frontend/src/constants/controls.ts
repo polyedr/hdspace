@@ -48,13 +48,17 @@ import Text from '@Components/RightPanel/PropertiesTab/Controls/Text/Text';
 import ImagesItems from '@Components/RightPanel/PropertiesTab/Controls/ImagesItems/ImagesItems';
 import SliderSettings from '@Components/RightPanel/PropertiesTab/Controls/SliderSettings/SliderSettings';
 import DateTimePickerControls from '@Components/RightPanel/PropertiesTab/Controls/DateTimePickerControls/DateTimePickerControls';
+import OpacityBlock from '@Components/RightPanel/PropertiesTab/Controls/OpacityBlock/OpacityBlock';
+import Position from '@Components/RightPanel/PropertiesTab/Controls/Position/Position';
+import FlexConstraints from '@Components/RightPanel/PropertiesTab/Controls/FlexConstraints';
+import FlexConstraintsChild from '@Components/RightPanel/PropertiesTab/Controls/FlexConstraints/Child';
 import Icon from '@Components/RightPanel/PropertiesTab/Controls/Icon/Icon';
 
-type ControlInfo = {
+interface ControlInfo {
   Control: React.ComponentType<any>;
   styles?: Array<keyof React.CSSProperties>;
   isDefaultStyles?: boolean;
-};
+}
 
 const CONTROLS: Record<Control, ControlInfo> = {
   layouts: {
@@ -66,6 +70,26 @@ const CONTROLS: Record<Control, ControlInfo> = {
   },
   sliderSettings: {
     Control: SliderSettings,
+  },
+  constraints: {
+    Control: FlexConstraints,
+    styles: [
+      'marginTop',
+      'marginBottom',
+      'marginLeft',
+      'marginRight',
+      'paddingTop',
+      'paddingBottom',
+      'paddingLeft',
+      'paddingRight',
+      'flexDirection',
+      'alignItems',
+      'justifyContent',
+      'flexWrap',
+    ],
+  },
+  constraintsChild: {
+    Control: FlexConstraintsChild,
   },
   indents: {
     Control: IndentsBlock,
@@ -81,6 +105,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
     ],
   },
   size: { Control: SizeBlock, styles: ['width', 'height'] },
+  opacity: { Control: OpacityBlock, styles: ['opacity'] },
   typography: {
     Control: TypographyBlock,
     styles: [
@@ -97,9 +122,28 @@ const CONTROLS: Record<Control, ControlInfo> = {
   },
   border: {
     Control: BorderBlock,
-    styles: ['borderColor', 'borderWidth', 'borderRadius'],
+    styles: [
+      'borderColor',
+      'borderWidth',
+      'borderRadius',
+      'borderStyle',
+      'borderRightWidth',
+      'borderTopWidth',
+      'borderBottomWidth',
+      'borderLeftWidth',
+    ],
   },
-  background: { Control: BackgroundBlock, styles: ['backgroundColor'] },
+  background: {
+    Control: BackgroundBlock,
+    styles: [
+      'backgroundColor',
+      'backgroundImage',
+      'backgroundSize',
+      'backgroundClip',
+      'backgroundPosition',
+      'backgroundRepeat',
+    ],
+  },
   backgroundImage: { Control: BackgroundImage, styles: ['backgroundImage'] },
   mapProps: { Control: MapProps },
   placeholder: { Control: Placeholder },
@@ -167,6 +211,10 @@ const CONTROLS: Record<Control, ControlInfo> = {
   alignment: {
     Control: Alignment,
     styles: ['flexDirection'],
+  },
+  position: {
+    Control: Position,
+    styles: ['position', 'float', 'clear', 'inset', 'zIndex'],
   },
   icon: {
     Control: Icon,

@@ -2,9 +2,9 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import { render, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import TYPES from '@Redux/actionTypes';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
+import TYPES from '@Redux/actionTypes';
 import FreeCanvas from '../../../../components/Editor/FreeCanvas';
 import { mockRootElement, mockState } from '../../test-utils';
 
@@ -30,7 +30,7 @@ describe('Free Canvas', () => {
   });
 
   it('should set root as active element on click', () => {
-    const root: HTMLElement = ui.container.firstChild as HTMLElement;
+    const root: HTMLElement = ui.container.firstChild.firstChild as HTMLElement;
     fireEvent.click(root);
 
     const actions = store.getActions();

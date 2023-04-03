@@ -5,18 +5,13 @@ import { fireEvent, render, RenderResult } from '@testing-library/react';
 import { mockState, mockVIAState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import VIADescription from '@Components/Editor/VIA/VIADescription';
-import { MuiThemeProvider } from '@material-ui/core/styles';
 import TYPES from '@Redux/actionTypes';
-import theme from '../../../../styles/Theme';
+import { AppThemeProvider } from '../../../../styles/Theme';
 
 describe('VIADescription', () => {
   let store: MockStoreEnhanced<AppReduxState>;
   let ui: RenderResult;
   const region = Object.values(mockVIAState.regions.fdict)[0];
-  const {
-    region_attributes: { 'HTML element': type },
-  } = region;
-
   beforeEach(() => {
     const mockStore = configureStore<AppReduxState>([]);
     store = mockStore({
@@ -32,37 +27,15 @@ describe('VIADescription', () => {
 
     ui = render(
       <Provider store={store}>
-        <MuiThemeProvider theme={theme}>
+        <AppThemeProvider>
           <VIADescription region={region} />
-        </MuiThemeProvider>
+        </AppThemeProvider>
       </Provider>,
     );
   });
 
   it('should render a description', () => {
     expect(ui.container).toMatchSnapshot();
-  });
-
-  it('should display region type', () => {
-    const typeInput = ui.getByLabelText('Type') as HTMLInputElement;
-    expect(typeInput.value).toBe(type);
-  });
-
-  it('should change region type', () => {
-    const typeInput = ui.getByLabelText('Type') as HTMLInputElement;
-    fireEvent.change(typeInput, {
-      target: {
-        value: 'container',
-      },
-    });
-
-    const actions = store.getActions();
-    expect(actions[actions.length - 1].type).toBe(TYPES.UPDATE_VIA_REGION);
-    expect(
-      actions[actions.length - 1].payload.data.region_attributes[
-        'HTML element'
-      ],
-    ).toBe('container');
   });
 
   it('should delete element on proper button click', () => {

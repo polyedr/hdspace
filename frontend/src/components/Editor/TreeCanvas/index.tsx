@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import Scrollbars from 'react-custom-scrollbars';
 import {
   selectAllElements,
   selectCurrentRootId,
   selectMasterSourceElementId,
   selectPreSelectedElementId,
 } from '@Redux/project/selectors/element';
-import Scrollbars from 'react-custom-scrollbars';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
@@ -14,9 +14,9 @@ import { UserProjectPermission } from '@Src/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import DraggableElement from '../Draggable/DraggableElement';
 
-type Props = {
+interface Props {
   scrollRef: React.RefObject<Scrollbars>;
-};
+}
 
 const TreeCanvas: React.FC<Props> = ({ scrollRef }) => {
   const rootId = useSelector(selectCurrentRootId);

@@ -1,4 +1,3 @@
-import React from 'react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { render, fireEvent } from '@testing-library/react';
@@ -24,12 +23,12 @@ describe('Free Draggable', () => {
     );
   });
 
-  it('should render free draggable component', () => {
+  it('should render free draggable component', async () => {
     expect(ui.container).toMatchSnapshot();
   });
 
   it("should set it's id as active element id on click", () => {
-    fireEvent.click(ui.container.firstChild as HTMLElement);
+    fireEvent.click(ui.getByTestId(mockStateElement.id) as HTMLElement);
 
     const actions = store.getActions();
 

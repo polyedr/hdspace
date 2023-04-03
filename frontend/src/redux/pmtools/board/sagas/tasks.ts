@@ -1,120 +1,173 @@
-import * as Board from '@Api/pmtools/board/tasksApi';
-import {
-  addMemberToTasks,
-  deleteMemberToTasks,
-} from '@Api/pmtools/board/tasksApi';
-import { panelErrorMsg } from '@Redux/actions';
-import TYPES from '@Redux/actionTypes';
-import { requestAddHistory } from '@Redux/pmtools/activity/actions';
+import { call } from 'ramda';
+import { put, select } from 'redux-saga/effects';
+import { BoardColumn } from '@Redux/pmtools/types';
+import * as tasksApi from '@Api/pmtools/board/tasksApi';
 import { reqWrapper } from '@Redux/project/sagas/shared';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import {
-  MoveCardGenerator,
-  TasksAddSagaGenerator,
-  TasksEditSagaGenerator,
-} from '@Src/types/pmtools/generators';
-import { ServerProject } from '@Src/types';
-import { call, put, select } from 'redux-saga/effects';
-import {
-  requestAddTask,
-  requestDeleteMemberTask,
-  requestDeleteTask,
-  requestEditTask,
-  requestUpdateCardIndex,
-  successUpdateCardIndex,
-} from '../actions/tasks';
-import { selectColumn } from '../selectors';
+import { enqueueSnackbar } from '@Redux/notification/actions';
+import * as taskActions from '../actions/tasks';
+import { setColumns } from '../actions/columns';
+import { selectColumns } from '../selectors';
 
-export function* taskDeleteMemberSaga({
-  payload: { cardId, userId },
-}: ReturnType<typeof requestDeleteMemberTask>): TasksAddSagaGenerator {
+export function* fetchTaskSaga({
+  taskId,
+}: ReturnType<typeof taskActions.fetchTask>) {
   try {
-    yield call(deleteMemberToTasks, cardId, userId);
+    const { data } = yield call(reqWrapper, tasksApi.fetchTask, { taskId });
+
+    yield put(taskActions.setTask(data));
   } catch (e) {
-    yield put(panelErrorMsg(e));
-  }
-}
-
-export function* taskAddSaga({
-  payload: { project, action, email, ...payload },
-}: ReturnType<typeof requestAddTask>): TasksAddSagaGenerator {
-  try {
-    const task = yield call(reqWrapper, Board.createTask, {
-      data: payload,
-    });
-    if (email) {
-      // @ts-ignore
-      const member = yield call(addMemberToTasks, task.id, email);
-      task.idMembers = member.map((item: any) => item.id);
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
     }
-    yield put({ type: TYPES.ADD_TASK_SUCCESS, payload: task });
-    yield put(requestAddHistory({ project, ...action }));
-  } catch (e) {
-    yield put(panelErrorMsg(e));
   }
 }
 
-export function* taskEditSaga({
-  payload: { project, action, email, ...payload },
-}: ReturnType<typeof requestEditTask>): TasksEditSagaGenerator {
+export function* updateTaskSags({
+  payload: { task, fields },
+}: ReturnType<typeof taskActions.updateTask>) {
   try {
-    const project: ServerProject['id'] = yield select(selectCurrentProjectId);
-    const selectedTask = yield call(reqWrapper, Board.updateTask, {
-      data: payload,
+    yield put(taskActions.setTask({ ...task, ...fields }));
+
+    const { data } = yield call(reqWrapper, tasksApi.updateTask, {
+      taskId: task.id,
+      fields,
     });
-    if (email && !selectedTask.idMembers.find((id) => id === email)) {
-      const members = yield call(addMemberToTasks, payload.id, email);
-      selectedTask.idMembers = members.map((item: any) => item.id);
+
+    yield put(taskActions.setTask(data));
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
     }
-    yield put({ type: TYPES.EDIT_TASK_SUCCESS, payload: selectedTask });
-    yield put(requestAddHistory({ project, ...action }));
-  } catch (e) {
-    yield put(panelErrorMsg(e));
   }
 }
 
-export function* taskDeleteSaga({
-  payload: { taskId, action },
-}: ReturnType<typeof requestDeleteTask>) {
-  try {
-    const project: ServerProject['id'] = yield select(selectCurrentProjectId);
-    yield call(reqWrapper, Board.deleteTask, { taskId });
-    yield put({ type: TYPES.DELETE_TASK_SUCCESS, payload: taskId });
-    yield put(requestAddHistory({ project, ...action }));
-  } catch (e) {
-    yield put(panelErrorMsg(e));
+export function* updateTasksOrderSaga({
+  dropResult,
+}: ReturnType<typeof taskActions.updateTasksOrder>) {
+  const { source, destination, draggableId } = dropResult;
+
+  if (!destination) {
+    return null;
   }
-}
 
-export function* moveCardToList({
-  payload: { destination, source },
-}: ReturnType<typeof requestUpdateCardIndex>): MoveCardGenerator {
-  try {
-    const sourceList = yield select(selectColumn(source.droppableId));
-    const destList = yield select(selectColumn(destination.droppableId));
-    const removed = sourceList.tasks[source.index];
-    yield put(
-      successUpdateCardIndex({
-        destList,
-        removed,
-        dest: destination.index,
-        sourceList,
-        source: source.index,
-      }),
-    );
+  if (
+    source.index === destination?.index &&
+    source.droppableId === destination.droppableId
+  ) {
+    return null;
+  }
 
-    const up = destList.tasks[destination.index - 1];
-    const down = destList.tasks[destination.index + 1];
-    const start = destList.tasks[0];
-    const end = destList.tasks[destList.tasks.length - 1];
-    const pos = up && down && (up.pos + down.pos) / 2;
-    const count = removed.id === end.id ? end.pos * 2 : start.pos / 2;
-    yield call(Board.apiMoveCardToList, {
-      cardId: removed.id,
-      destination: destination.droppableId,
-      newPos: pos || count,
+  const columns: BoardColumn[] = yield select(selectColumns);
+
+  const newColumns = Array.from(columns);
+
+  const sourceColumnIndex = newColumns.findIndex(
+    (c) => c.id.toString() === source.droppableId,
+  );
+
+  const destinationColumnIndex = newColumns.findIndex(
+    (c) => c.id.toString() === destination?.droppableId,
+  );
+
+  const sourceTasks = newColumns[sourceColumnIndex].tasks;
+  const destinationTasks = newColumns[destinationColumnIndex].tasks;
+
+  destinationTasks.splice(
+    destination?.index ?? 0,
+    0,
+    sourceTasks.splice(source.index, 1)[0],
+  );
+
+  yield put(setColumns(newColumns));
+
+  if (source.droppableId !== destination.droppableId) {
+    yield call(reqWrapper, tasksApi.updateTask, {
+      taskId: draggableId,
+      fields: {
+        column: destination.droppableId,
+      },
     });
+
+    yield call(reqWrapper, tasksApi.updateTasksSequence, {
+      columnId: destination.droppableId,
+      data: {
+        children: destinationTasks.map((t) => ({ id: t.id })),
+      },
+    });
+  }
+
+  yield call(reqWrapper, tasksApi.updateTasksSequence, {
+    columnId: source.droppableId,
+    data: {
+      children: sourceTasks.map((t) => ({ id: t.id })),
+    },
+  });
+
+  return null;
+}
+
+export function* createTaskSaga({
+  task: { title, columnId },
+}: ReturnType<typeof taskActions.createTask>) {
+  try {
+    const { data: task } = yield call(reqWrapper, tasksApi.createTask, {
+      title,
+      columnId,
+    });
+
+    yield put(taskActions.addTask(task));
   } catch (e) {
-    yield put(panelErrorMsg(e));
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
+  }
+}
+
+export function* deleteTaskSaga({
+  task,
+}: ReturnType<typeof taskActions.deleteTask>) {
+  const { id } = task;
+  try {
+    yield call(reqWrapper, tasksApi.deleteTask, {
+      taskId: id,
+    });
+
+    yield put(taskActions.removeTask(task));
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }

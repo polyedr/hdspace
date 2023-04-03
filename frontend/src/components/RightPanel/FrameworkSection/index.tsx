@@ -1,16 +1,17 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import { MenuItem, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
+import styled from 'styled-components';
 import {
   FRAMEWORKS_LIST,
   NOT_SELECTED_FRAMEWORK,
 } from '@Constants/frameworks/index';
 import {
-  StyledAccordion,
-  StyledAccordionDetails,
-  StyledAccordionSummary,
+  PropertyAccordianSummary,
+  PropertyAccordion,
+  PropertyAccordionDetails,
   StyledTextField,
 } from '@Components/styledComponents';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
@@ -23,14 +24,17 @@ const useStyles = makeStyles({
     flexDirection: 'column',
   },
   selectWrapper: {
-    padding: '0 1em',
+    // padding: '0 1em',
   },
   name: {
     textTransrorm: 'capitalize',
   },
 });
 
-const FrameworkSection = () => {
+const CustomTypography = styled(Typography)`
+  font-size: '14px';
+`;
+function FrameworkSection() {
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -39,12 +43,14 @@ const FrameworkSection = () => {
   );
   const currentUIFramework = useSelector(selectCurrentUIFramework);
 
-  const availableVersions = useMemo(() => {
-    return currentUIFramework
-      ? FRAMEWORKS_LIST.find((fr) => fr.name === currentUIFramework.name)
-          ?.versions || []
-      : [];
-  }, [currentUIFramework]);
+  const availableVersions = useMemo(
+    () =>
+      currentUIFramework
+        ? FRAMEWORKS_LIST.find((fr) => fr.name === currentUIFramework.name)
+            ?.versions || []
+        : [],
+    [currentUIFramework],
+  );
 
   const [frameworkName, setFrameworkName] = useState<FrameworkName | null>(
     currentUIFramework?.name || null,
@@ -104,7 +110,7 @@ const FrameworkSection = () => {
       const newVersion =
         selectedFrameworkVersions?.find((frV) => frV.name === versionName) ||
         null;
-      const newFrameworkName = frameworkName || NOT_SELECTED_FRAMEWORK.name;
+      const newFrameworkName = frameworkName || NOT_SELECTED_FRAMEWORK?.name;
       const newUIFramework: UIFramework = {
         name: newFrameworkName,
         version: newVersion,
@@ -116,23 +122,26 @@ const FrameworkSection = () => {
   );
 
   return (
-    <StyledAccordion defaultExpanded>
-      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
-        UI Framework
-      </StyledAccordionSummary>
+    <PropertyAccordion>
+      <PropertyAccordianSummary expandIcon={<ExpandMoreIcon />}>
+        {currentUIFramework?.name === NOT_SELECTED_FRAMEWORK?.name
+          ? FRAMEWORKS_LIST[0].label
+          : currentUIFramework?.name}
+      </PropertyAccordianSummary>
 
-      <StyledAccordionDetails className={classes.details}>
+      <PropertyAccordionDetails className={classes.details}>
         <div className={classes.selectWrapper}>
           <StyledTextField
             fullWidth
             margin="dense"
             label="Framework"
             select
+            InputProps={{ disableUnderline: true }}
             disabled={!canEditProject}
             value={
               frameworkName ||
               currentUIFramework?.name ||
-              NOT_SELECTED_FRAMEWORK.name
+              NOT_SELECTED_FRAMEWORK?.name
             }
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               handleFrameworkChange(e.target.value as FrameworkName);
@@ -140,7 +149,7 @@ const FrameworkSection = () => {
           >
             {FRAMEWORKS_LIST.map((framework) => (
               <MenuItem key={framework.name} value={framework.name}>
-                {framework.label}
+                <CustomTypography>{framework.label}</CustomTypography>
               </MenuItem>
             ))}
           </StyledTextField>
@@ -151,6 +160,7 @@ const FrameworkSection = () => {
               margin="dense"
               label="Version"
               select
+              InputProps={{ disableUnderline: true }}
               disabled={!canEditProject}
               value={versionName || currentUIFramework.version.name}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,15 +169,15 @@ const FrameworkSection = () => {
             >
               {availableVersions.map((version) => (
                 <MenuItem key={version.name} value={version.name}>
-                  {version.name}
+                  <CustomTypography>{version.name}</CustomTypography>
                 </MenuItem>
               ))}
             </StyledTextField>
           )}
         </div>
-      </StyledAccordionDetails>
-    </StyledAccordion>
+      </PropertyAccordionDetails>
+    </PropertyAccordion>
   );
-};
+}
 
 export default FrameworkSection;

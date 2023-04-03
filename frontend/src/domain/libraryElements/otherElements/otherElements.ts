@@ -81,7 +81,7 @@ export const makeContainer = ({
   buoyancy = 0,
   UID = 'master',
 }: {
-  children?: ServerElement<Entity>[];
+  children?: Array<ServerElement<Entity>>;
   ownStyles?: React.CSSProperties;
   name?: string;
   buoyancy?: number;
@@ -207,9 +207,9 @@ export const makeColumns = (
     ownStyles: {},
     pseudoClassStyles: {},
   },
-  children: Array.from(Array(columnsCount)).map((_undefined, index) => {
-    return makeColumn({ UID: `${index}`, buoyancy: index });
-  }),
+  children: Array.from(Array(columnsCount)).map((_undefined, index) =>
+    makeColumn({ UID: `${index}`, buoyancy: index }),
+  ),
 });
 
 export const makeNativeColumns = (): NativeColumnsServerElement => ({
@@ -235,28 +235,26 @@ export const makeNativeColumns = (): NativeColumnsServerElement => ({
 
 export const makeDivBlock = (
   { textContent, UID = 'master' } = { textContent: 'This is a divBlock' },
-): DivBlockServerElement => {
-  return {
-    id: `divBlock-${UID}`,
-    buoyancy: 0,
-    func_type: 'divBlock',
-    struct_type: 'divBlock',
-    parameters: {
-      layouts: DEFAULT_LAYOUT_LIST,
-      group: ElementGroup.CONTAINERS,
-      freeCanvas: {
-        ...defaultFreeCanvasParams,
-      },
+): DivBlockServerElement => ({
+  id: `divBlock-${UID}`,
+  buoyancy: 0,
+  func_type: 'divBlock',
+  struct_type: 'divBlock',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    group: ElementGroup.CONTAINERS,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
     },
-    styles: {
-      classNames: ['divBlock'],
-      ownStyles: {},
-      pseudoClassStyles: {},
-    },
-    name: 'divBlock',
-    children: [makeParagraph({ textContent, UID: 'divBlock-0' })],
-  };
-};
+  },
+  styles: {
+    classNames: ['divBlock'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'divBlock',
+  children: [makeParagraph({ textContent, UID: 'divBlock-0' })],
+});
 
 export const makeImage = ({
   ownStyles = {},
@@ -289,6 +287,7 @@ export const makeImage = ({
 });
 
 export const makeImagesList = ({
+  ownStyles = {},
   UID = 'master',
 } = {}): ImagesListServerElement => ({
   id: `images-list-${UID}`,
@@ -307,7 +306,7 @@ export const makeImagesList = ({
   },
   styles: {
     classNames: ['imagesList'],
-    ownStyles: {},
+    ownStyles,
     pseudoClassStyles: {},
   },
   name: 'images list',
@@ -798,18 +797,15 @@ export const makeNavbar = (): NavbarServerElement => ({
     navbarItems: [
       // TODO research why we need items here
       {
-        link:
-          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        link: 'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
         itemName: 'text desc',
       },
       {
-        link:
-          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        link: 'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
         itemName: 'text desc',
       },
       {
-        link:
-          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        link: 'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
         itemName: 'text desc',
       },
     ],
@@ -834,8 +830,7 @@ export const makeNavbar = (): NavbarServerElement => ({
       buoyancy: 1,
     }),
     makeNavbarItem({
-      link:
-        'https://i5.walmartimages.com/asr/79b030ef-9b0d9af79d4e8b836b8d5a1c476dfe46',
+      link: 'https://i5.walmartimages.com/asr/79b030ef-9b0d9af79d4e8b836b8d5a1c476dfe46',
       itemName: 'text desc',
       UID: 'navbar-3',
       buoyancy: 2,

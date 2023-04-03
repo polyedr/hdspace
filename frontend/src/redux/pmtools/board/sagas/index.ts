@@ -1,17 +1,74 @@
-import { takeLatest } from 'redux-saga/effects';
+import { takeEvery, takeLatest } from 'redux-saga/effects';
 import TYPES from '@Redux/actionTypes';
-import * as columnSaga from './columns';
-import * as taskSaga from './tasks';
+import {
+  createChecklistItemSaga,
+  deleteChecklistItemSaga,
+  deleteChecklistSaga,
+  updateChecklistItemSaga,
+} from './checklist';
+import {
+  createColumnSaga,
+  deleteColumnSaga,
+  fetchBoard,
+  updateColumnSaga,
+  updateColumnsOrderSaga,
+} from './columns';
+import {
+  createCommentSaga,
+  deleteCommentSaga,
+  updateCommentSaga,
+} from './comments';
+import {
+  createProjectLabelSaga,
+  deleteProjectLabelsSaga,
+  updateTaskLabelsSaga,
+} from './labels';
+import {
+  createTaskSaga,
+  deleteTaskSaga,
+  fetchTaskSaga,
+  updateTaskSags,
+  updateTasksOrderSaga,
+} from './tasks';
 
 export default function* boardSaga() {
-  yield takeLatest(TYPES.UPDATE_CARD_INDEX, taskSaga.moveCardToList);
-  yield takeLatest(TYPES.REQUEST_FETCH_BOARD, columnSaga.columnsFetchSaga);
-  yield takeLatest(TYPES.UPDATE_COLUMN_INDEX, columnSaga.moveColumnToList);
-  yield takeLatest(TYPES.EDIT_TASK, taskSaga.taskEditSaga);
-  yield takeLatest(TYPES.ADD_TASK, taskSaga.taskAddSaga);
-  yield takeLatest(TYPES.DELETE_TASK, taskSaga.taskDeleteSaga);
-  yield takeLatest(TYPES.EDIT_COLUMN, columnSaga.columnEditSaga);
-  yield takeLatest(TYPES.ADD_COLUMN, columnSaga.columnAddSaga);
-  yield takeLatest(TYPES.DELETE_MEMBER_TASK, taskSaga.taskDeleteMemberSaga);
-  yield takeLatest(TYPES.DELETE_COLUMN, columnSaga.columnDeleteSaga);
+  yield takeLatest(TYPES.BOARD_FETCH, fetchBoard);
+  yield takeLatest(TYPES.BOARD_UPDATE_COLUMNS_ORDER, updateColumnsOrderSaga);
+  yield takeLatest(TYPES.BOARD_CREATE_COLUMN, createColumnSaga);
+  yield takeLatest(TYPES.BOARD_DELETE_COLUMN, deleteColumnSaga);
+  yield takeLatest(TYPES.BOARD_UPDATE_COLUMN, updateColumnSaga);
+
+  yield takeLatest(TYPES.BOARD_FETCH_TASK, fetchTaskSaga);
+  yield takeLatest(TYPES.BOARD_UPDATE_TASKS_ORDER, updateTasksOrderSaga);
+  yield takeLatest(TYPES.BOARD_CREATE_TASK, createTaskSaga);
+  yield takeLatest(TYPES.BOARD_DELETE_TASK, deleteTaskSaga);
+  yield takeEvery(TYPES.BOARD_UPDATE_TASK, updateTaskSags);
+
+  yield takeEvery(TYPES.BOARD_TASK_CREATE_COMMENT, createCommentSaga);
+  yield takeEvery(TYPES.BOARD_COMMENT_UPDATE_REQUESTED, updateCommentSaga);
+  yield takeEvery(TYPES.BOARD_TASK_DELETE_COMMENT, deleteCommentSaga);
+
+  yield takeEvery(TYPES.BOARD_CREATE_PROJECT_LABEL, createProjectLabelSaga);
+  yield takeLatest(TYPES.BOARD_UPDATE_TASK_LABELS, updateTaskLabelsSaga);
+  yield takeEvery(
+    TYPES.BOARD_DELETE_PROJECT_LABEL_REQUEST,
+    deleteProjectLabelsSaga,
+  );
+
+  yield takeLatest(
+    TYPES.BOARD_CHECKLIST_ITEM_CREATE_REQUESTED,
+    createChecklistItemSaga,
+  );
+
+  yield takeLatest(
+    TYPES.BOARD_CHECKLIST_ITEM_UPDATE_REQUESTED,
+    updateChecklistItemSaga,
+  );
+
+  yield takeLatest(
+    TYPES.BOARD_CHECKLIST_ITEM_DELETE_REQUESTED,
+    deleteChecklistItemSaga,
+  );
+
+  yield takeLatest(TYPES.BOARD_CHECKLIST_DELETE_REQUESTED, deleteChecklistSaga);
 }

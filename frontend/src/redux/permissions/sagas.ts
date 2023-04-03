@@ -9,22 +9,23 @@ import {
   apiGetAllUsersPermissionsForProject,
   apiGetPermissionsList,
   apiSetUserPermissionsForProject,
+  apiSetUsersPermissionsForProject,
 } from '@Api/permissions';
 import { selectUserData } from '@Redux/user/selectors';
 import { requestAddHistory } from '@Redux/pmtools/activity/actions';
-import { selectBoardData } from '@Redux/pmtools/board/selectors';
-import {
-  apiAddSubscribeToStream,
-  apiUnsubscribeToStream,
-} from '@Api/pmtools/chatApi';
-import {
-  apiGetBoard,
-  getAddUserToBoard,
-  getRemoveUserToBoard,
-  getUserByEmail,
-} from '@Api/pmtools/board/boardApi';
-import { apiGetMembersOfBoard } from '@Api/pmtools/board/tasksApi';
-import { successFetchMembers } from '@Redux/pmtools/board/actions/tasks';
+// import { selectBoardData } from '@Redux/pmtools/board/selectors';
+// import {
+//   apiAddSubscribeToStream,
+//   apiUnsubscribeToStream,
+// } from '@Api/pmtools/chatApi';
+// import {
+//   apiGetBoard,
+//   getAddUserToBoard,
+//   getRemoveUserToBoard,
+//   getUserByEmail,
+// } from '@Api/pmtools/board/boardApi';
+// import { apiGetMembersOfBoard } from '@Api/pmtools/board/tasksApi';
+// import { successFetchMembers } from '@Redux/pmtools/board/actions/tasks';
 import { ActionTypePM } from '@Src/types/pmtools/types';
 import {
   selectUserFromAllUsers,
@@ -158,32 +159,6 @@ export function* updateUserPermissionsForProjectSaga(
       );
       return;
     }
-
-    let board = yield select(selectBoardData);
-    if (!board) {
-      const boardData = yield call(reqWrapper, apiGetBoard, {
-        project: projectId,
-      });
-      board = JSON.parse(boardData);
-    }
-    if (user.profile.parameters.passwordZulip) {
-      const { name: streamName } = board;
-      permissions.length
-        ? yield call(apiAddSubscribeToStream, streamName, user.email)
-        : yield call(apiUnsubscribeToStream, streamName, user.email);
-    }
-
-    const userTrello = yield call(getUserByEmail, user.email);
-
-    if (!userTrello.error) {
-      permissions.length
-        ? yield call(getAddUserToBoard, user.email, board.id)
-        : yield call(getRemoveUserToBoard, userTrello.id, board.id);
-    }
-
-    const members = yield call(apiGetMembersOfBoard, board.id);
-    yield put(successFetchMembers(members));
-
     if (permissions && permissions.length) {
       const actionData: ActionTypePM = {
         action: `${user.firstName}'s rights have been changed`,
@@ -197,6 +172,37 @@ export function* updateUserPermissionsForProjectSaga(
     }
     const { error } = yield call(reqWrapper, apiSetUserPermissionsForProject, {
       username: user.username,
+      projectId,
+      permissions,
+    });
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
+  }
+}
+
+export function* updateUsersPermissionsForProjectSaga(
+  action: ReturnType<typeof Actions.updateUsersPermissionsForProject>,
+) {
+  const { users, projectId, permissions } = action.payload;
+
+  try {
+    yield put(Actions.setStateUsersPermissions(users, permissions));
+
+    const { error } = yield call(reqWrapper, apiSetUsersPermissionsForProject, {
+      emails: users.map((u) => u.email),
       projectId,
       permissions,
     });

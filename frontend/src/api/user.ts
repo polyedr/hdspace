@@ -7,25 +7,25 @@ import {
   ServerUserData,
 } from '../types';
 import { convertUserDataFromResponse } from './converters/fromResponse';
-import { handleError, parseCursor, parseResult } from './helper';
+import { handleError, parseCursor, parseData, parseResult } from './helper';
 
-type SendActivationMailData = {
+interface SendActivationMailData {
   username: string;
   password: string;
   email: string;
-};
+}
 
-type activateUserData = {
+interface activateUserData {
   uid: string;
   token: string;
-};
+}
 
-type ResetPasswordConfirmationData = {
+interface ResetPasswordConfirmationData {
   uid: string;
   token: string;
   newPassword: string;
   reNewPassword: string;
-};
+}
 
 const onAuthorizationError = ({ response }: AxiosError): Error => {
   let message = '';
@@ -53,34 +53,34 @@ const onAuthorizationError = ({ response }: AxiosError): Error => {
   throw new Error(message);
 };
 
-export const apiGetToken = (data: LoginFormData) =>
-  myAxios({
+export const apiGetToken = async (data: LoginFormData) =>
+  await myAxios({
     data,
     method: 'POST',
     url: '/djauth/jwt/create/',
   }).then(parseResult);
 
-export const apiRefreshToken = (refresh: string) =>
-  myAxios({
+export const apiRefreshToken = async (refresh: string) =>
+  await myAxios({
     data: { refresh },
     method: 'POST',
     url: '/djauth/jwt/refresh/',
   }).then(parseResult);
 
-export const registerUser = (data: SendActivationMailData) =>
-  myAxios({
+export const registerUser = async (data: SendActivationMailData) =>
+  await myAxios({
     data,
     method: 'POST',
     url: '/djauth/users/',
   }).then(parseResult);
 
-export const apiResetPasswordConfirmation = ({
+export const apiResetPasswordConfirmation = async ({
   uid,
   token,
   newPassword,
   reNewPassword,
 }: ResetPasswordConfirmationData) =>
-  myAxios({
+  await myAxios({
     data: {
       uid,
       token,
@@ -91,8 +91,8 @@ export const apiResetPasswordConfirmation = ({
     url: '/djauth/users/reset_password_confirm/',
   }).then(parseResult);
 
-export const apiRegisterWithGoogle = () =>
-  myAxios({
+export const apiRegisterWithGoogle = async () =>
+  await myAxios({
     method: 'GET',
     url: '/djauth/o/google-oauth2/',
     params: {
@@ -102,8 +102,8 @@ export const apiRegisterWithGoogle = () =>
     .then(parseResult)
     .catch(onAuthorizationError);
 
-export const apiActivateUser = ({ uid, token }: activateUserData) =>
-  myAxios({
+export const apiActivateUser = async ({ uid, token }: activateUserData) =>
+  await myAxios({
     data: {
       uid,
       token,
@@ -112,16 +112,16 @@ export const apiActivateUser = ({ uid, token }: activateUserData) =>
     url: '/djauth/users/activation/',
   }).then(parseResult);
 
-export const apiRestorePassword = (email: string) =>
-  myAxios({
+export const apiRestorePassword = async (email: string) =>
+  await myAxios({
     data: { email },
     method: 'POST',
     url: '/djauth/users/reset_password/',
   }).then(parseResult);
 
-export const apiGetUsers = (props: MyAxiosProps & { search: string }) => {
+export const apiGetUsers = async (props: MyAxiosProps & { search: string }) => {
   const { search, ...axiosProps } = props;
-  return myAxios({
+  return await myAxios({
     ...axiosProps,
     method: 'GET',
     url: '/accounts/users/',
@@ -140,22 +140,22 @@ export const apiGetUsers = (props: MyAxiosProps & { search: string }) => {
     .catch(handleError);
 };
 
-export const apiGetUser = ({ id, ...props }) =>
-  myAxios({
+export const apiGetUser = async ({ id, ...props }) =>
+  await myAxios({
     ...props,
     method: 'GET',
     url: `/accounts/users/${id}/`,
   }).then(parseResult);
 
-export const apiChangeUserData = ({ id, ...props }) =>
-  myAxios({
+export const apiChangeUserData = async ({ id, ...props }) =>
+  await myAxios({
     ...props,
     method: 'PATCH',
     url: `/accounts/users/${id}/`,
   }).then(parseResult);
 
-export const apiChangeProfileData = ({ id, ...props }) =>
-  myAxios({
+export const apiChangeProfileData = async ({ id, ...props }) =>
+  await myAxios({
     ...props,
     method: 'PATCH',
     url: `/accounts/profiles/${id}/`,
@@ -163,9 +163,25 @@ export const apiChangeProfileData = ({ id, ...props }) =>
     .then(parseResult)
     .catch(handleError);
 
-export const apiIdentifyUser = (props) =>
-  myAxios({
+export const apiChangeProfileAAvatar = async ({ id, data }) =>
+  await myAxios({
+    method: 'PATCH',
+    url: `/accounts/profiles/${id}/`,
+    data,
+  })
+    .then(parseResult)
+    .catch(handleError);
+
+export const apiIdentifyUser = async (props) =>
+  await myAxios({
     ...props,
     method: 'GET',
     url: '/djauth/users/me/',
   }).then(parseResult);
+
+export const apiGetSubscriptionData = async (props) =>
+  await myAxios({
+    ...props,
+    method: 'GET',
+    url: '/stripe/my-subscription-items/',
+  }).then(parseData);

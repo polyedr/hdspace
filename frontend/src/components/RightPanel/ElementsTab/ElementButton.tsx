@@ -1,8 +1,17 @@
-import React, { useEffect, useRef, MutableRefObject, useState } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  MutableRefObject,
+  useState,
+  memo,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
 import ReactTooltip from 'react-tooltip';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+import { Button, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import Scrollbars from 'react-custom-scrollbars';
 import { splitWords } from '@Utils/stringHelper';
 import { isAvailableChild } from '@Utils/AvailableChildrenHelper';
 import { createElements } from '@Redux/project/actions';
@@ -13,64 +22,66 @@ import {
 } from '@Redux/project/selectors/element';
 import { ElementType } from '@Constants/dragAndDrop';
 import { ElementData } from '@Src/types';
-import { Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import Scrollbars from 'react-custom-scrollbars';
 import PreviewCanvas from '@Components/Editor/PreviewCanvas/index';
 import ElementButtonIcon from './ElementButtonIcon';
 
-const styles = require('./ElementButton.scss');
+import styles from './ElementButton.module.scss';
 
-type Props = {
+interface Props {
   elementData: ElementData;
-};
+}
 
-const useButtonStyles = makeStyles(({ palette }) => ({
+const useButtonStyles = makeStyles(() => ({
   root: {
-    color: palette.grey.A100,
-    '&:hover': {
-      color: palette.common.white,
-      backgroundColor: palette.panel.dark,
-      boxShadow:
-        '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
+    '&.MuiButton-root': {
+      width: '100%',
+      minHeight: '65px',
+      padding: '2px 8px',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      textTransform: 'capitalize',
+      cursor: 'crosshair',
+
+      '&:hover': {
+        color: 'black',
+        backgroundColor: 'transparent',
+
+        '& span': {
+          color: 'black',
+        },
+
+        '& svg': {
+          fill: 'black',
+        },
+      },
     },
-  },
-  text: {
-    padding: '2px 8px',
-  },
-  label: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textTransform: 'capitalize',
-    fontSize: '0.8em',
-    height: '100%',
   },
 }));
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   iconSection: {
     display: 'flex',
-    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'flex-end',
-    height: '45%',
     width: '100%',
+
+    '& svg': {
+      height: 30,
+      fill: '#81818E',
+    },
   },
   nameSection: (props: Props) => ({
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
     lineHeight: 1.5,
     width: '100%',
     height: props.elementData.icon ? '55%' : '100%',
-    textAlign: 'center',
   }),
   name: {
-    fontSize: theme.typography.fontSize,
+    fontSize: theme.typography.fontSize - 3,
     fontFamily: theme.typography.fontFamily,
     lineHeight: 1.2,
+    color: '#81818E',
+    fontWeight: 400,
   },
 }));
 
@@ -92,19 +103,22 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     const isLibraryTab = useSelector(checkIsLibraryTab);
     const buttonClasses = useButtonStyles();
     const classes = useStyles(props);
-    const ref = (outerRef === null
-      ? React.createRef<HTMLButtonElement>()
-      : outerRef) as MutableRefObject<HTMLButtonElement>;
+    const ref = (
+      outerRef === null ? React.createRef<HTMLButtonElement>() : outerRef
+    ) as MutableRefObject<HTMLButtonElement>;
     const imgRef = useRef<SVGSVGElement | null>(null);
     const [over, setOver] = useState(false);
-    const [, drag, preview] = useDrag({
-      item: {
+    const [, drag, preview] = useDrag(
+      () => ({
         type: ElementType.CONSTRUCTOR,
-        original: elementData,
-      },
-      canDrag: () => true,
-      end: () => ref.current && ref.current.blur(),
-    });
+        item: {
+          original: elementData,
+        },
+        canDrag: () => true,
+        end: () => ref.current && ref.current.blur(),
+      }),
+      [elementData],
+    );
 
     useEffect(() => {
       preview(imgRef.current ? imgRef : getEmptyImage(), {
@@ -185,4 +199,4 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
   },
 );
 
-export default ElementButton;
+export default memo(ElementButton);

@@ -1,10 +1,10 @@
 import React, { LegacyRef } from 'react';
 import cn from 'classnames';
-import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
-import { useHistory } from 'react-router';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -57,9 +57,10 @@ const useStyles = makeComponentStyles('navbar', {
           width: '50px',
           height: '50px',
           padding: '13px',
-          [`&:hover,.nav #nav-check-${props.element.id}:checked~ .nav-btn> label`]: {
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-          },
+          [`&:hover,.nav #nav-check-${props.element.id}:checked~ .nav-btn> label`]:
+            {
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            },
           '&> span': {
             display: 'block',
             width: '25px',

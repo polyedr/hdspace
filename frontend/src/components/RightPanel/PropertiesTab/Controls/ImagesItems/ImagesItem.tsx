@@ -1,7 +1,7 @@
 import React from 'react';
-import { IconButton } from '@material-ui/core';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { IconButton, lighten, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { deleteElement } from '@Redux/project/actions';
@@ -14,7 +14,7 @@ import {
 } from '@Components/styledComponents';
 import { Entity, LibraryElement, Params } from '@Src/types';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles<Theme>(({ spacing }) => ({
   title: {
     '& .MuiAccordionSummary-content': {
       padding: '0.5em 1em',
@@ -32,9 +32,11 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     alignItems: 'center',
   },
   iconButton: {
-    color: palette.common.white,
+    color: '#81818e',
+    marginLeft: 15,
     '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
+      color: 'rgba(80, 100, 255, 1)',
+      backgroundColor: lighten('rgba(80, 100, 255, 0.3)', 0.1),
     },
   },
   wrapperCheckbox: {
@@ -42,13 +44,13 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   id: string;
   parameters: Params<LibraryElement<Entity>>;
   updateParams: (params: Params<LibraryElement<Entity>>, id) => void;
   isLast: boolean;
   canEdit: boolean;
-};
+}
 
 const ImagesItem: React.FC<Props> = ({
   id,

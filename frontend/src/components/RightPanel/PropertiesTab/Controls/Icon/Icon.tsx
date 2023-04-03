@@ -1,12 +1,12 @@
 import React from 'react';
+import * as MIcons from '@mui/icons-material';
+import { MenuItem } from '@mui/material';
 import { StyledTextField } from '@Components/styledComponents';
 import { IconElement, PropertiesChangeProps } from '@Src/types';
 import {
   useDebouncedInputChange,
   useDebouncedValueChange,
 } from '@Utils/debounceHooks';
-import * as MIcons from '@material-ui/icons';
-import { MenuItem } from '@material-ui/core';
 import ColorSettings from '../../helperComponents/ColorSettings';
 
 const Icon: React.FC<PropertiesChangeProps<IconElement>> = ({
@@ -30,7 +30,7 @@ const Icon: React.FC<PropertiesChangeProps<IconElement>> = ({
   const [size, handleSizeChange] = useDebouncedInputChange(
     initialSize || '',
     (value) => {
-      updateParams({ size: value });
+      updateParams({ size: Number(value) });
     },
   );
 

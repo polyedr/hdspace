@@ -1,15 +1,16 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import AddIcon from '@material-ui/icons/Add';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import AddIcon from '@mui/icons-material/Add';
+import { lighten } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+import { IconButton, Theme } from '@mui/material';
 import { addChildToElement } from '@Redux/project/actions';
 import { BreadcrumbItemElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { IconButton } from '@material-ui/core';
 import BreadcrumbsItem from './BreadcrumbsItem';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles<Theme>(({ palette }) => ({
   row: {
     display: 'flex',
     justifyContent: 'flex-start',

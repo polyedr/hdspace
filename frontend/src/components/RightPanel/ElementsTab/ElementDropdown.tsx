@@ -1,11 +1,11 @@
-import React from 'react';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import React, { memo } from 'react';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { ButtonGroup, MenuItem, Menu } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
-import { ButtonGroup, MenuItem, Menu } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import ElementButton from './ElementButton';
 import Button from '../../UI/Button';
+import ElementButton from './ElementButton';
 
 const useStyles = makeStyles({
   menu: {
@@ -19,16 +19,34 @@ const useStyles = makeStyles({
     fontSize: '1em',
   },
   elementDropdown: {
-    '& *:first-child': {
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0,
-      '& span': {
-        lineHeight: 1.2,
+    // width: '33%',
+    cursor: 'pointer',
+    display: 'flex !important',
+    // '& *:first-child': {
+    //   borderBottomLeftRadius: 0,
+    //   borderBottomRightRadius: 0,
+    //   '& span': {
+    //     lineHeight: 1.2,
+    //   },
+    // },
+    '& .MuiButton-root': {
+      border: 'none',
+      paddingTop: 10,
+
+      '&:hover': {
+        border: 'none',
       },
     },
   },
   dropdownButton: {
-    padding: 0,
+    padding: '0 !important',
+    minWidth: 'auto',
+    width: 10,
+    backgroundColor: 'transparent !important',
+
+    '& svg': {
+      fill: '#000 !important',
+    },
   },
   dropdownButtonIcon: {
     height: 16,
@@ -70,11 +88,11 @@ const ElementDropdown: React.FC<Props> = ({ options }) => {
       <ButtonGroup
         ref={anchorRef}
         className={classes.elementDropdown}
-        orientation="vertical"
+        onClick={handleToggle}
       >
         <ElementButton elementData={options[selectedIndex]} />
 
-        <Button onClick={handleToggle} className={classes.dropdownButton}>
+        <Button className={classes.dropdownButton}>
           <ArrowDropDownIcon className={classes.dropdownButtonIcon} />
         </Button>
       </ButtonGroup>
@@ -99,4 +117,4 @@ const ElementDropdown: React.FC<Props> = ({ options }) => {
   );
 };
 
-export default ElementDropdown;
+export default memo(ElementDropdown);

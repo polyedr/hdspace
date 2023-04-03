@@ -1,13 +1,13 @@
 import React from 'react';
+import { MenuItem } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import { StyledTextField } from '@Components/styledComponents';
-import { MenuItem } from '@material-ui/core';
 import {
   updateElement,
   updateElementParameters,
   setActiveElement,
   addChildToElement,
 } from '@Redux/project/actions';
-import { useDispatch, useSelector } from 'react-redux';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import IMAGES from '@Constants/images';
@@ -123,19 +123,22 @@ const ElementType: React.FC = () => {
   };
 
   return (
-    <StyledTextField
-      margin="dense"
-      label="New element type"
-      onChange={handleDropdownChange}
-      select
-      value=""
-    >
-      {TYPE.map(({ label, value }) => (
-        <MenuItem value={value} key={value} dense>
-          {label}
-        </MenuItem>
-      ))}
-    </StyledTextField>
+    <div>
+      <StyledTextField
+        fullWidth
+        margin="dense"
+        label="New element type"
+        onChange={handleDropdownChange}
+        select
+        value=""
+      >
+        {TYPE.map(({ label, value }) => (
+          <MenuItem value={value} key={value} dense>
+            {label}
+          </MenuItem>
+        ))}
+      </StyledTextField>
+    </div>
   );
 };
 

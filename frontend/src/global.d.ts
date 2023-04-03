@@ -1,10 +1,16 @@
 interface Window {
   renderTreeInfo: any;
+  wireframeCanvas: any;
 }
-declare namespace NodeJS {
-  export interface ProcessEnv {
-    NODE_ENV: 'development' | 'production';
-  }
+
+declare module '*.module.scss?inline' {
+  const styles: Record<string, string>;
+  export default styles;
+}
+
+declare module '*.module.scss' {
+  const styles: Record<string, string>;
+  export default styles;
 }
 
 declare module 'react-color/lib/helpers' {

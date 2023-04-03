@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unused-prop-types */
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { ContainerElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { useSelector } from 'react-redux';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
 import RemoveStyles from '../../helperComponents/RemoveStyles';

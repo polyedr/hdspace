@@ -1,7 +1,7 @@
 import sagaHelper from 'redux-saga-testing';
+import { select, call, put } from 'redux-saga/effects';
 import { updateNameAndTagsProjectSaga } from '@Redux/project/sagas/project';
 import * as Actions from '@Redux/project/actions';
-import { select, call, put } from 'redux-saga/effects';
 import { selectProjectById } from '@Redux/project/selectors/base';
 import { apiUpdateProject } from '@Api/project';
 import { reqWrapper } from '@Redux/project/sagas/shared';
@@ -20,7 +20,6 @@ describe('update name and tags project saga', () => {
     tags,
   );
   describe('under normal behavior', () => {
-    // @ts-expect-error saga type is not compatible with IterableIterator
     const it = sagaHelper(updateNameAndTagsProjectSaga(action));
 
     it('should select project', (result) => {
@@ -50,7 +49,6 @@ describe('update name and tags project saga', () => {
   });
 
   describe('if api request fails', () => {
-    // @ts-expect-error saga type is not compatible with IterableIterator
     const it = sagaHelper(updateNameAndTagsProjectSaga(action));
     const errorMessage = 'Error message';
     const error = new Error(errorMessage);

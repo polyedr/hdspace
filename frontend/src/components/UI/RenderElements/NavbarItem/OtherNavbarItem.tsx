@@ -1,9 +1,9 @@
 import React, { LegacyRef } from 'react';
 import cn from 'classnames';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
-import { useHistory } from 'react-router';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
@@ -19,13 +19,8 @@ const OtherNavbarItem = React.forwardRef<HTMLElement, RendererProps>(
   (props, ref) => {
     const { element } = props;
     const [groupClass] = element.styles.classNames;
-    const {
-      itemName,
-      link,
-      isLink,
-      screenLink,
-      screenName,
-    } = element.parameters;
+    const { itemName, link, isLink, screenLink, screenName } =
+      element.parameters;
     const classes = useStyles(props);
 
     const history = useHistory();

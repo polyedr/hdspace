@@ -1,18 +1,18 @@
+import { AxiosResponse } from 'axios';
 import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps, ServerProject } from '@Src/types';
-import { AxiosResponse } from 'axios';
 
 type ToServerActionApi = { data: ServerProject } & MyAxiosProps & {
     project: ServerProject['id'];
   };
 
-export const apiAddActions = ({
+export const apiAddActions = async ({
   data,
   project,
   ...axiosProps
 }: ToServerActionApi) =>
-  myAxios({
+  await myAxios({
     ...axiosProps,
     data,
     method: 'PATCH',
@@ -21,11 +21,11 @@ export const apiAddActions = ({
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-export const apiGetActions = ({
+export const apiGetActions = async ({
   project,
   ...axiosProps
 }: MyAxiosProps & { project: ServerProject['id'] }) =>
-  myAxios({
+  await myAxios({
     ...axiosProps,
     method: 'GET',
     url: `/projects/projects/${project}/`,
@@ -33,11 +33,11 @@ export const apiGetActions = ({
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-export const apiClearHistory = ({
+export const apiClearHistory = async ({
   project,
   ...axiosProps
 }: MyAxiosProps & { project: ServerProject['id'] }) =>
-  myAxios({
+  await myAxios({
     ...axiosProps,
     method: 'PATCH',
     url: `/projects/projects/${project}/`,

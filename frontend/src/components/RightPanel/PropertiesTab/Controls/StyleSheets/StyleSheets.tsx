@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { makeStyles } from '@material-ui/core/styles';
 import CodeEditor from '@Components/UI/CodeEditor';
 import { cssCamelize, cssDecamelize } from '@Utils/CSSConverter';
 
 import 'highlight.js/styles/dracula.css';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   editorWrapper: {
     margin: '7px 0',
     '& textarea': {
@@ -20,11 +21,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const transformToEditorStyles = (styles: React.CSSProperties) => {
-  return Object.keys(styles).reduce((stringStyles, styleName) => {
-    return `${stringStyles}${styleName}: ${styles[styleName]};\r\n`;
-  }, '');
-};
+const transformToEditorStyles = (styles: React.CSSProperties) =>
+  Object.keys(styles).reduce(
+    (stringStyles, styleName) =>
+      `${stringStyles}${styleName}: ${styles[styleName]};\r\n`,
+    '',
+  );
 
 const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   removeStyles,
@@ -77,9 +79,8 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
                   if (!styleRule.trim().length) {
                     return json;
                   }
-                  const [ruleName, ruleValue, ...otherValues] = styleRule.split(
-                    ':',
-                  );
+                  const [ruleName, ruleValue, ...otherValues] =
+                    styleRule.split(':');
                   if (!ruleName || !ruleValue || otherValues.length) {
                     throw new Error(
                       `Invalid CSS input: '${styleRule.replaceAll('\n', '')}'`,

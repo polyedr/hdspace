@@ -17,6 +17,9 @@ export const selectVIARegionsAsArray = createSelector(
 export const selectActiveVIARegionId = ({ project }: AppReduxState) =>
   project.edit.VIAMode.activeRegionId;
 
+export const selectProjectError = ({ project }: AppReduxState) =>
+  project.data.createProjectError;
+
 export const selectActiveVIARegion = createSelector(
   selectVIARegions,
   selectActiveNNModel,
@@ -25,9 +28,7 @@ export const selectActiveVIARegion = createSelector(
 );
 
 export const selectIsRegionActive = (regionId: string) =>
-  createSelector(selectActiveVIARegionId, (activeId) => {
-    return activeId === regionId;
-  });
+  createSelector(selectActiveVIARegionId, (activeId) => activeId === regionId);
 
 export const selectAnnotatedElementId = ({ project }: AppReduxState) =>
   project.edit.VIAMode.annotatedElementId;

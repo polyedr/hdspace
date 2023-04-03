@@ -1,29 +1,32 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import React from 'react';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 import {
-  Grid,
   Typography,
   ListItem,
   ListItemIcon,
   ListItemText,
   List,
-} from '@material-ui/core';
+  Theme,
+} from '@mui/material';
 
 import arrowright from '../../../assets/images/arrow-right.png';
 import pluses from '../../../assets/images/pluses.png';
 import lightbulb from '../../../assets/images/lightbulb.png';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     containerCenter: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
+      height: '100%',
     },
     list: {
-      alignItems: 'baseline',
+      '&.MuiListItem-root': {
+        alignItems: 'baseline',
+      },
     },
     img: {
       maxHeight: 380,
@@ -33,7 +36,9 @@ const useStyles = makeStyles((theme) =>
       maxWidth: 635,
     },
     listItemIcon: {
-      minWidth: 15,
+      '&.MuiListItemIcon-root': {
+        minWidth: 15,
+      },
     },
     containerLeft: {
       background: theme.palette.secondary.main,
@@ -47,9 +52,11 @@ const useStyles = makeStyles((theme) =>
       },
     },
     title: {
-      fontSize: '1.875rem',
-      textAlign: 'center',
-      maxWidth: 680,
+      '&.MuiTypography-root': {
+        fontSize: '1.875rem',
+        textAlign: 'center',
+        maxWidth: 680,
+      },
     },
     arrow: {
       height: 15,
@@ -57,22 +64,16 @@ const useStyles = makeStyles((theme) =>
     },
     pluses: {
       height: 160,
-      alignSelf: 'end',
-      marginRight: 20,
-      top: '-25px',
-      position: 'relative',
+      right: 0,
+      bottom: 0,
+      position: 'absolute',
     },
   }),
 );
 const Info = ({ title, list, img }) => {
   const classes = useStyles();
   const screen = (title, list, img) => (
-    <Grid
-      item
-      xs={12}
-      sm={7}
-      className={`${classes.containerLeft} ${classes.containerCenter} `}
-    >
+    <div className={`${classes.containerLeft} ${classes.containerCenter} `}>
       <img src={img} alt="image" className={classes.img} />
       {Array.isArray(title) ? (
         <>
@@ -92,7 +93,7 @@ const Info = ({ title, list, img }) => {
 
       <List>
         {list.map((text) => (
-          <ListItem className={classes.list}>
+          <ListItem key={text} className={classes.list}>
             <ListItemIcon className={classes.listItemIcon}>
               <img src={arrowright} className={classes.arrow} alt="arrow" />
             </ListItemIcon>
@@ -103,7 +104,7 @@ const Info = ({ title, list, img }) => {
         ))}
       </List>
       <img src={pluses} className={classes.pluses} alt="background img" />
-    </Grid>
+    </div>
   );
 
   return screen(title, list, img);

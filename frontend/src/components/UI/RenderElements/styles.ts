@@ -1,19 +1,17 @@
 import React from 'react';
-import { Styles } from '@material-ui/core/styles/withStyles';
+import { makeStyles, Styles } from '@mui/styles';
 import { omit } from 'ramda';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material';
 import { RendererProps } from './types';
 
 const getComputedStyle = (
   style: React.CSSProperties = {},
-  stylesToOmit: Array<string> = [],
-) => {
-  return stylesToOmit.length ? omit(stylesToOmit, style) : style;
-};
+  stylesToOmit: string[] = [],
+) => (stylesToOmit.length ? omit(stylesToOmit, style) : style);
 
 export const getComputedComponentStyles = (
   props: RendererProps,
-  stylesToOmit?: Array<string>,
+  stylesToOmit?: string[],
 ) => ({
   ownStyles: getComputedStyle(props.element.styles.ownStyles, stylesToOmit),
 });
@@ -21,14 +19,15 @@ export const getComputedComponentStyles = (
 export const makeComponentStyles: any = (
   name: string,
   style: Styles<Theme, any, string> = {},
-  stylesToOmit?: Array<string>,
+  stylesToOmit?: string[],
 ) =>
-  makeStyles(
+  makeStyles<Theme>(
     (theme) => ({
       ownStyles: (props: RendererProps) => {
         const { element } = props;
         const { styles } = element;
         return {
+          zIndex: 1,
           ...getComputedStyle(
             styles.pseudoClassViewStyles || styles.ownStyles,
             stylesToOmit,
@@ -57,7 +56,7 @@ export const makeComponentStyles: any = (
         cursor: 'default',
         transition: 'none',
         '& > *': {
-          pointerEvents: 'none !important',
+          pointerEvents: 'none',
         },
       },
       ...(style instanceof Function ? style(theme) : style),

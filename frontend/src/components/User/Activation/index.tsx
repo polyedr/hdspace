@@ -2,9 +2,9 @@
 import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
+import Alert from '@mui/lab/Alert';
 import * as Actions from '@Redux/user/actions';
 import { AppReduxState } from '@Redux/types';
-import Alert from '@material-ui/lab/Alert';
 import { selectConfirmMessage } from '@Redux/user/selectors';
 import LoginForm from '../LoginForm';
 import Spinner from '../../UI/Spinner';
@@ -30,7 +30,7 @@ const Activation: React.FC<IProps> = ({ activateUser, isSignLoader }) => {
   const confirmMessage = useSelector(selectConfirmMessage);
   const match = useRouteMatch<{ params: any }>('/activate/:uid/:token');
 
-  const { uid, token } = (match?.params as unknown) as {
+  const { uid, token } = match?.params as unknown as {
     uid: string;
     token: string;
   };

@@ -1,25 +1,25 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import AddIcon from '@material-ui/icons/Add';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import AddIcon from '@mui/icons-material/Add';
+import { makeStyles } from '@mui/styles';
+import { IconButton, lighten } from '@mui/material';
+import { useDebouncedCallback } from 'use-debounce';
 import { addChildToElement } from '@Redux/project/actions';
 import { BreadcrumbItemElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { IconButton } from '@material-ui/core';
 import ImagesItem from '@Components/RightPanel/PropertiesTab/Controls/ImagesItems/ImagesItem';
 import { StyledTextField } from '@Components/styledComponents';
-import { useDebouncedCallback } from 'use-debounce';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(() => ({
   row: {
     display: 'flex',
     justifyContent: 'flex-start',
   },
   iconButton: {
-    color: palette.common.white,
+    color: '#5064FF',
     '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
+      backgroundColor: lighten('rgba(80, 100, 255, 0.3)', 0.1),
     },
   },
   columnsCountBlock: {

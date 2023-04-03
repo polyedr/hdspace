@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
+import cn from 'classnames';
+import { makeStyles } from '@mui/styles';
+import { HotKeys } from 'react-hotkeys';
 import {
   setActiveElement,
   updateElementParameters,
@@ -14,8 +17,6 @@ import {
   selectIncludesActiveElement,
   selectIsElementActive,
 } from '@Redux/project/selectors/element';
-import cn from 'classnames';
-import { makeStyles } from '@material-ui/core/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import Borders from './Borders';
 
@@ -32,6 +33,7 @@ const notDraggableElements: Entity[] = [
 const useStyles = makeStyles({
   rnd: {
     position: 'absolute',
+    cursor: 'default !important',
     zIndex: ({
       isActive,
       zIndex,
@@ -41,8 +43,9 @@ const useStyles = makeStyles({
   },
   imageView: {
     position: 'absolute',
-    width: 'auto !important',
-    height: 'auto !important',
+    width: 'auto',
+    height: 'auto',
+    cursor: 'default !important',
     zIndex: ({
       isActive,
       zIndex,
@@ -51,24 +54,74 @@ const useStyles = makeStyles({
       isActive || includesActiveElement ? 1000 : zIndex,
   },
   resizeHande: {
-    borderRadius: '4px',
+    // borderRadius: '4px',
     zIndex: 1000,
-    '&:hover': {
-      backgroundColor: 'rgba(136, 136, 136, 0.5)',
-    },
+    // '&:hover': {
+    //   backgroundColor: 'rgba(136, 136, 136, 0.5)',
+    // },
   },
   activeResizeHandle: {
-    backgroundColor: 'rgba(136, 136, 136, 0.5)',
+    // backgroundColor: 'rgba(136, 136, 136, 0.5)',
+  },
+  resizeHandeSquare: {
+    // border: '1px solid #1CC09F',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    // borderColor: '#128A72',
+    borderColor: (props: any) => (props.isActive ? '#128A72' : 'transparent'),
+    height: '8px !important',
+    width: '8px !important',
+    backgroundColor: (props: any) => (props.isActive ? '#fff' : 'transparent'),
+  },
+  resizeBottomHande: {
+    bottom: '-4px !important',
+  },
+  resizeLeftHande: {
+    left: '-4px !important',
+    // cursor: 'url(../../../assets/images/cursor_diagonal.svg)',
+  },
+  resizeTopHande: {
+    top: '-4px !important',
+  },
+  resizeRightHande: {
+    right: '-4px !important',
+  },
+  // eResizeCursor: {
+  //   cursor: 'e-resize !important',
+  // },
+  // nResizeCursor: {
+  //   cursor: 'n-resize !important',
+  // },
+  resizeBottomLeftHande: {
+    cursor:
+      'url(../../../../src/assets/images/cursor_diagonal.svg) 15 15, auto !important',
+  },
+  ResizeTopBottomCursor: {
+    cursor:
+      'url(../../../../src/assets/images/cursor_top.svg) 4 12, auto !important',
+  },
+  resizeLeftRightHande: {
+    cursor:
+      'url(../../../../src/assets/images/cursor_left_right.svg) 15 10, auto !important',
+  },
+  resizeBottomRightHande: {
+    cursor:
+      'url(../../../../src/assets/images/cursor_rotate.svg) 5 5, auto !important',
+  },
+  resizeTopLeftHande: {
+    cursor:
+      'url(../../../../src/assets/images/cursor_diagonal_left.svg) 15 15, auto !important',
   },
 });
 
-type Props = {
+interface Props {
   elementId: StateElement['id'];
   includesActiveElement?: boolean;
   lockAspectRatio?: boolean;
-};
+  disabled?: boolean;
+}
 
-const FreeDraggable: React.FC<Props> = ({ elementId }) => {
+const FreeDraggable: React.FC<Props> = ({ elementId, disabled = false }) => {
   const dispatch = useDispatch();
   const disableInteractions = useSelector(selectIsPrototypeMode);
 
@@ -78,6 +131,11 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   );
   const isActive = useSelector(selectIsElementActive(elementId));
 
+  const rndRef = useRef<Rnd>(null);
+
+  const longPressIntervalRef = useRef(null);
+  const longPressTimeoutRef = useRef(null);
+
   const {
     id,
     parameters: {
@@ -86,6 +144,8 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
     },
     type,
   } = element;
+
+  const [position, setPosition] = useState({ x: left, y: top });
 
   const lockedAspectRatioElements: [string] = ['radiobutton'];
   const selectedElementType: string = type;
@@ -110,10 +170,10 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   };
 
   const handleResizeStop: RndResizeCallback = (
-    e,
-    dir,
+    _e,
+    _dir,
     ref,
-    delta,
+    _delta,
     position,
   ) => {
     if (
@@ -134,6 +194,8 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
             zIndex,
             width: parseInt(ref.style.width),
             height: parseInt(ref.style.height),
+            // width: parseInt(ref.style.width),
+            // height: parseInt(ref.style.height),
             left: position.x,
             top: position.y,
           },
@@ -145,8 +207,10 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
       updateElementStyles(
         id,
         {
-          width: ref.style.width,
-          height: ref.style.height,
+          // width: ref.style.width,
+          // height: ref.style.height,
+          width: '100%',
+          height: '100%',
         },
         { screenId: currentScreenId },
       ),
@@ -154,7 +218,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
     setResizeDir(false);
   };
 
-  const handleDragStop: RndDragCallback = (e, { x, y, node }) => {
+  const handleDragStop: RndDragCallback = (_, { x, y, node }) => {
     if (x === left && y === top) return;
     const { width, height } = node.getBoundingClientRect();
 
@@ -174,6 +238,8 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
         { screenId: currentScreenId },
       ),
     );
+
+    setPosition({ x, y });
   };
 
   const Renderer = RENDERERS[type as Entity];
@@ -184,66 +250,195 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   const renderElement = () => (
     <Renderer element={element} isDisabled={!disableInteractions}>
       {element.children.map((childId) => (
-        <FreeDraggable key={childId} elementId={childId} />
+        <FreeDraggable disabled={disabled} key={childId} elementId={childId} />
       ))}
     </Renderer>
   );
 
+  const handleCancelTimer = () => {
+    if (longPressIntervalRef.current) {
+      clearInterval(longPressIntervalRef.current);
+      longPressIntervalRef.current = null;
+    }
+
+    if (longPressTimeoutRef.current) {
+      clearInterval(longPressTimeoutRef.current);
+      longPressTimeoutRef.current = null;
+    }
+
+    // update position in db
+    if (left !== position.x || top !== position.y) {
+      dispatch(
+        updateElementParameters(
+          id,
+          {
+            ...element.parameters,
+            freeCanvas: {
+              zIndex,
+              width,
+              height,
+              left: position.x,
+              top: position.y,
+            },
+          },
+          { screenId: currentScreenId },
+        ),
+      );
+    }
+  };
+
+  const longKeyHandler = (fn: () => void) => {
+    fn();
+
+    longPressTimeoutRef.current = setTimeout(() => {
+      longPressIntervalRef.current = setInterval(fn, 10);
+    }, 500);
+  };
+
+  const handlers = {
+    MOVE_UP: (e: KeyboardEvent) => {
+      e.preventDefault();
+      longKeyHandler(() => {
+        setPosition((position) => ({
+          x: position.x,
+          y: position.y - 1,
+        }));
+      });
+    },
+    MOVE_DOWN: (e: KeyboardEvent) => {
+      e.preventDefault();
+      longKeyHandler(() => {
+        setPosition((position) => ({
+          x: position.x,
+          y: position.y + 1,
+        }));
+      });
+    },
+    MOVE_LEFT: (e: KeyboardEvent) => {
+      e.preventDefault();
+      longKeyHandler(() => {
+        setPosition((position) => ({
+          x: position.x - 1,
+          y: position.y,
+        }));
+      });
+    },
+    MOVE_RIGHT: (e: KeyboardEvent) => {
+      e.preventDefault();
+      longKeyHandler(() => {
+        setPosition((position) => ({
+          x: position.x + 1,
+          y: position.y,
+        }));
+      });
+    },
+  };
+
   return notDraggableElements.includes(type as Entity) ? (
     renderElement()
   ) : (
-    <Rnd
-      onClick={handleInteractionStart}
-      className={element.type === 'image' ? classes.imageView : classes.rnd}
-      onResizeStop={handleResizeStop}
-      onDragStop={handleDragStop}
-      position={{
-        x: left as number,
-        y: top as number,
-      }}
-      {...(width &&
-        height && {
-          size: {
-            width,
-            height,
-          },
-        })}
-      onResizeStart={(ev, dir) => {
-        handleInteractionStart(ev);
-        setResizeDir(dir);
-      }}
-      onDragStart={handleInteractionStart}
-      lockAspectRatio={lockedAspectRatioElements.includes(type as Entity)}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      resizeHandleClasses={{
-        bottom: cn(classes.resizeHande, activeHandle('bottom')),
-        bottomLeft: cn(classes.resizeHande, activeHandle('bottomLeft')),
-        bottomRight: cn(classes.resizeHande, activeHandle('bottomRight')),
-        left: cn(classes.resizeHande, activeHandle('left')),
-        top: cn(classes.resizeHande, activeHandle('top')),
-        right: cn(classes.resizeHande, activeHandle('right')),
-        topLeft: cn(classes.resizeHande, activeHandle('topLeft')),
-        topRight: cn(classes.resizeHande, activeHandle('topRight')),
-      }}
-      disableDragging={disableInteractions}
-      enableResizing={{
-        bottom: !disableInteractions,
-        bottomLeft: !disableInteractions,
-        bottomRight: !disableInteractions,
-        left: !disableInteractions,
-        top: !disableInteractions,
-        right: !disableInteractions,
-        topLeft: !disableInteractions,
-        topRight: !disableInteractions,
-      }}
-    >
-      {renderElement()}
+    <HotKeys handlers={handlers} onKeyUp={handleCancelTimer}>
+      <Rnd
+        data-testid={elementId}
+        ref={rndRef}
+        onClick={handleInteractionStart}
+        className={element.type === 'image' ? classes.imageView : classes.rnd}
+        onResizeStop={handleResizeStop}
+        onDragStop={handleDragStop}
+        position={position}
+        {...(width &&
+          height && {
+            size: {
+              width,
+              height,
+            },
+          })}
+        onResizeStart={(ev, dir) => {
+          handleInteractionStart(ev);
+          setResizeDir(dir);
+        }}
+        onDragStart={handleInteractionStart}
+        lockAspectRatio={lockedAspectRatioElements.includes(type as Entity)}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        resizeHandleClasses={{
+          bottom: cn(
+            classes.resizeHande,
+            // classes.nResizeCursor,
+            classes.ResizeTopBottomCursor,
+            activeHandle('bottom'),
+          ),
+          bottomLeft: cn(
+            classes.resizeHande,
+            classes.resizeHandeSquare,
+            classes.resizeBottomHande,
+            classes.resizeLeftHande,
+            classes.resizeBottomLeftHande,
+            activeHandle('bottomLeft'),
+          ),
+          bottomRight: cn(
+            classes.resizeHande,
+            classes.resizeHandeSquare,
+            classes.resizeBottomHande,
+            classes.resizeRightHande,
+            classes.resizeBottomRightHande,
+            activeHandle('bottomRight'),
+          ),
+          left: cn(
+            classes.resizeHande,
+            classes.resizeLeftRightHande,
+            // classes.eResizeCursor,
+            activeHandle('left'),
+          ),
+          top: cn(
+            classes.resizeHande,
+            // classes.nResizeCursor,
+            classes.ResizeTopBottomCursor,
+            activeHandle('top'),
+          ),
+          right: cn(
+            classes.resizeHande,
+            classes.resizeLeftRightHande,
+            // classes.eResizeCursor,
+            activeHandle('right'),
+          ),
+          topLeft: cn(
+            classes.resizeHande,
+            classes.resizeHandeSquare,
+            classes.resizeTopHande,
+            classes.resizeLeftHande,
+            classes.resizeTopLeftHande,
+            activeHandle('topLeft'),
+          ),
+          topRight: cn(
+            classes.resizeHande,
+            classes.resizeHandeSquare,
+            classes.resizeTopHande,
+            classes.resizeRightHande,
+            classes.resizeBottomLeftHande,
+            activeHandle('topRight'),
+          ),
+        }}
+        disableDragging={disableInteractions || disabled}
+        enableResizing={{
+          bottom: !disableInteractions,
+          bottomLeft: !disableInteractions,
+          bottomRight: !disableInteractions,
+          left: !disableInteractions,
+          top: !disableInteractions,
+          right: !disableInteractions,
+          topLeft: !disableInteractions,
+          topRight: !disableInteractions,
+        }}
+      >
+        {renderElement()}
 
-      {!disableInteractions ? (
-        <Borders element={element} hover={hover} isActive={isActive} />
-      ) : null}
-    </Rnd>
+        {!disableInteractions ? (
+          // <Borders element={element} hidden={!hover && !isActive} />
+          <Borders element={element} hover={hover} isActive={isActive} />
+        ) : null}
+      </Rnd>
+    </HotKeys>
   );
 };
 

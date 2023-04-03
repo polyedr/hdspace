@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import PATH_NAMES from '@Constants/pathNames';
-import { logoutStart } from '@Redux/user/actions';
-import { selectProfileData, selectUserData } from '@Redux/user/selectors';
 import {
   Tooltip,
   IconButton,
@@ -12,7 +9,10 @@ import {
   Divider,
   Avatar as MuiAvatar,
 } from '@mui/material';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
+import PATH_NAMES from '@Constants/pathNames';
+import { logoutStart } from '@Redux/user/actions';
+import { selectProfileData, selectUserData } from '@Redux/user/selectors';
 
 const useStyles = makeStyles({
   menu: {
@@ -33,11 +33,8 @@ const Avatar: React.FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
-
   const { username } = useSelector(selectUserData);
-  const {
-    parameters: { avatarCrop: avatar },
-  } = useSelector(selectProfileData);
+  const { avatar } = useSelector(selectProfileData);
 
   const handleAvatarClick = (ev: React.MouseEvent<HTMLButtonElement>) =>
     setMenuAnchorEl(ev.currentTarget);
@@ -52,7 +49,11 @@ const Avatar: React.FC = () => {
     <div>
       <Tooltip title={username} arrow enterDelay={500}>
         <IconButton size="small" onClick={handleAvatarClick}>
-          <MuiAvatar alt={username} src={avatar} sx={{ bgcolor: '#344AF0' }}>
+          <MuiAvatar
+            alt={username}
+            src={avatar ?? undefined}
+            sx={{ bgcolor: '#344AF0' }}
+          >
             {username[0]?.toUpperCase()}
           </MuiAvatar>
         </IconButton>
