@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   ContextMenu,
-  PropertyAccordianSummary,
+  PropertyAccordionSummary,
   PropertyAccordion,
 } from '@Components/styledComponents';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
@@ -100,9 +100,9 @@ const FolderListItem = ({ children, folder, index }) => {
               onContextMenu={handleContextMenu}
               defaultExpanded
             >
-              <PropertyAccordianSummary expandIcon={<ExpandMoreIcon />}>
+              <PropertyAccordionSummary expandIcon={<ExpandMoreIcon />}>
                 {folder.name}
-              </PropertyAccordianSummary>
+              </PropertyAccordionSummary>
               <AccordionDetails style={{ padding: 0 }}>
                 {children}
               </AccordionDetails>

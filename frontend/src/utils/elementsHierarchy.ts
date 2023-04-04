@@ -1,12 +1,35 @@
 import { keys } from 'ramda';
+import * as Icons from '@mui/icons-material';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
 import {
   ElementData,
   ElementEntity,
   ElementsHierarchy,
   ElementsToAdd,
+  IconServerElement,
   ServerElement,
 } from '../types';
+
+export const createIconsList = (makeIcon: {
+  (): IconServerElement;
+  (arg0: string, arg1: string): any;
+}): ElementData[] => {
+  return Object.entries(Icons).map((item) => {
+    const [name, icon] = item;
+
+    const element = makeIcon(name, name);
+
+    return {
+      id: element.id.toString(),
+      key: element.parameters.name,
+      type: element.struct_type,
+      icon,
+      name: element.parameters.name,
+      custom: false,
+      parameters: element.parameters,
+    };
+  });
+};
 
 export const convertElementToData = (
   element: ServerElement<any>,
@@ -81,6 +104,14 @@ export const getRightPanelCategoryTabs = (
           },
         },
       };
+    case 'icon': {
+      return {
+        elements: {
+          ...(obj.elements || {}),
+          icon: createIconsList(libraryElements[structType]),
+        },
+      };
+    }
     case 'map':
     case 'calendar':
     case 'clock':
@@ -105,7 +136,6 @@ export const getRightPanelCategoryTabs = (
           },
         },
       };
-
     case 'pageTemplate':
     case 'emptyPageTemplate':
       return {

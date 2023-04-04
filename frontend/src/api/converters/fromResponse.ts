@@ -65,6 +65,7 @@ export const convertElementFromResponse = <
   type: struct_type || 'container',
   buoyancy,
   image,
+  // @ts-expect-error
   parameters: {
     ...defaultParameters,
     ...parameters,

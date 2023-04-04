@@ -9,7 +9,7 @@ import {
   NOT_SELECTED_FRAMEWORK,
 } from '@Constants/frameworks/index';
 import {
-  PropertyAccordianSummary,
+  PropertyAccordionSummary,
   PropertyAccordion,
   PropertyAccordionDetails,
   StyledTextField,
@@ -123,11 +123,11 @@ function FrameworkSection() {
 
   return (
     <PropertyAccordion>
-      <PropertyAccordianSummary expandIcon={<ExpandMoreIcon />}>
+      <PropertyAccordionSummary expandIcon={<ExpandMoreIcon />}>
         {currentUIFramework?.name === NOT_SELECTED_FRAMEWORK?.name
           ? FRAMEWORKS_LIST[0].label
           : currentUIFramework?.name}
-      </PropertyAccordianSummary>
+      </PropertyAccordionSummary>
 
       <PropertyAccordionDetails className={classes.details}>
         <div className={classes.selectWrapper}>

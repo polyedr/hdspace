@@ -46,7 +46,7 @@ export const ContextMenu = MuiStyled(Menu)(({ theme }) => ({
   },
 }));
 
-export const PropertyAccordianSummary = MuiStyled(AccordionSummary)({
+export const PropertyAccordionSummary = MuiStyled(AccordionSummary)({
   flexDirection: 'row-reverse',
 
   '&.MuiAccordionSummary-root': {
@@ -147,7 +147,7 @@ const MuiAccordionSummary = styled(AccordionSummary)`
   }
 `;
 
-const CustomTextField = styled(TextField)`
+export const CustomTextField = styled(TextField)`
   .MuiTextField-root {
     flex-direction: column-reverse;
   }

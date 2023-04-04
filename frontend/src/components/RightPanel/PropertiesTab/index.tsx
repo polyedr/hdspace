@@ -135,7 +135,7 @@ const PropertiesTab: React.FC = () => {
   );
 
   const [showRemoveGroupDialog, setShowRemoveGroupDialog] = useState(false);
-  const [isAccordianExpanded, setIsAccordianExpanded] = useState(true);
+  const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
   const [title, setTitle] = useState<CollapseTypes>(CollapseTypes.EXPAND);
   const canEdit = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
@@ -455,7 +455,7 @@ const PropertiesTab: React.FC = () => {
   }
 
   const collapseAll = () => {
-    setIsAccordianExpanded(!isAccordianExpanded);
+    setIsAccordionExpanded(!isAccordionExpanded);
     setTitle((state) =>
       state === CollapseTypes.EXPAND
         ? CollapseTypes.COLLAPSE
@@ -545,7 +545,7 @@ const PropertiesTab: React.FC = () => {
                   <ControlSection
                     key={controlName}
                     title={controlName}
-                    expanded={isAccordianExpanded}
+                    expanded={isAccordionExpanded}
                   >
                     <Control
                       {...getControlStyles(controlName, currentEditableStyles)}
@@ -573,7 +573,7 @@ const PropertiesTab: React.FC = () => {
                   <ControlSection
                     key={controlName}
                     title={controlName}
-                    expanded={isAccordianExpanded}
+                    expanded={isAccordionExpanded}
                   >
                     <Control
                       {...getControlStyles(controlName, currentEditableStyles)}
@@ -603,7 +603,7 @@ const PropertiesTab: React.FC = () => {
               {!isGroupElement && (
                 <ControlSection
                   title="Share styles"
-                  expanded={isAccordianExpanded}
+                  expanded={isAccordionExpanded}
                 >
                   <ShareStyles />
                 </ControlSection>
@@ -611,7 +611,7 @@ const PropertiesTab: React.FC = () => {
 
               <ControlSection
                 title="Element name"
-                expanded={isAccordianExpanded}
+                expanded={isAccordionExpanded}
               >
                 <RenameElement canEdit={canEdit} />
               </ControlSection>
@@ -619,7 +619,7 @@ const PropertiesTab: React.FC = () => {
               {!isFreeCanvasMode && (
                 <ControlSection
                   title="Replace this element"
-                  expanded={isAccordianExpanded}
+                  expanded={isAccordionExpanded}
                 >
                   <ElementType />
                 </ControlSection>

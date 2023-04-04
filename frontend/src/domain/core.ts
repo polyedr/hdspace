@@ -51,6 +51,7 @@ export const ENTITIES: {
   carousel: 'carousel',
   navbar: 'navbar',
   hyperlink: 'hyperlink',
+  icon: 'icon',
 };
 
 export const rootStyleControls = ['background'] as const;
@@ -127,6 +128,8 @@ export const textareaStyleControls = [
   'border',
   'opacity',
 ] as const;
+
+export const iconStyleControls = ['indents', 'size', 'border'] as const;
 
 export const sliderStyleControls = ['indents', 'size', 'opacity'] as const;
 
@@ -559,6 +562,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     ...textinputStyleControls,
     'layouts',
   ],
+  icon: ['icon', ...iconStyleControls],
   textinput: [
     'text',
     'type',
@@ -893,6 +897,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   navbarItem: {},
   hyperlink: {},
+  icon: {},
 };
 
 export const defaultFreeCanvasParams: Partial<FreeCanvasElementParams> = {

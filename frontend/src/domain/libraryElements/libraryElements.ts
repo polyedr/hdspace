@@ -100,6 +100,7 @@ import {
   makeEmptyPageTemplate,
   makeSection,
 } from './blocksTemplates/blocksTemplates';
+import { makeIcon } from './iconElements/iconElements';
 
 const PREVIEW_LIBRARY_ELEMENTS = [
   makeSubscribeForm(),
@@ -174,6 +175,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   navbar: makeNavbar,
   navbarItem: makeNavbarItem,
   hyperlink: makeLabel,
+  icon: makeIcon,
 };
 
 export const ICONS: Partial<{

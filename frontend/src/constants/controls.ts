@@ -52,6 +52,7 @@ import OpacityBlock from '@Components/RightPanel/PropertiesTab/Controls/OpacityB
 import Position from '@Components/RightPanel/PropertiesTab/Controls/Position/Position';
 import FlexConstraints from '@Components/RightPanel/PropertiesTab/Controls/FlexConstraints';
 import FlexConstraintsChild from '@Components/RightPanel/PropertiesTab/Controls/FlexConstraints/Child';
+import Icon from '@Components/RightPanel/PropertiesTab/Controls/Icon/Icon';
 
 interface ControlInfo {
   Control: React.ComponentType<any>;
@@ -214,6 +215,9 @@ const CONTROLS: Record<Control, ControlInfo> = {
   position: {
     Control: Position,
     styles: ['position', 'float', 'clear', 'inset', 'zIndex'],
+  },
+  icon: {
+    Control: Icon,
   },
 };
 
