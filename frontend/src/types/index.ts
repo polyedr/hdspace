@@ -412,21 +412,21 @@ export interface LibraryElement<
     pseudoClassViewStyles?: React.CSSProperties | null;
   };
   children: Children;
-  parameters: Params &
-    Omit<
-      {
-        group?: string;
-        titleName?: string;
-        titleLink?: string;
-        size: string;
-        isLink?: boolean;
-        link?: string;
-        screenName?: string;
-        screenLink?: string;
-        columns?: number;
-      },
-      keyof Params
-    >;
+  parameters: Omit<
+    {
+      group?: string;
+      titleName?: string;
+      titleLink?: string;
+      size: string;
+      isLink?: boolean;
+      link?: string;
+      screenName?: string;
+      screenLink?: string;
+      columns?: number;
+    },
+    keyof Params
+  > &
+    Params;
   shared?: boolean;
 }
 

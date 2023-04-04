@@ -29,7 +29,7 @@ const Icon: React.FC<PropertiesChangeProps<IconElement>> = ({
   const [size, handleSizeChange] = useDebouncedInputChange(
     initialSize || '',
     (value) => {
-      updateParams({ size: Number(value) });
+      updateParams({ size: value });
     },
   );
 
