@@ -4,7 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useDispatch } from 'react-redux';
 import { splitWords } from '@Utils/stringHelper';
 import {
-  PropertyAccordianSummary,
+  PropertyAccordionSummary,
   PropertyAccordion,
 } from '@Components/styledComponents';
 // import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -26,9 +26,9 @@ const ControlSection: React.FC<Props> = ({ title, children, expanded }) => {
 
   return (
     <PropertyAccordion expanded={isCollapse} onChange={() => toggle()}>
-      <PropertyAccordianSummary expandIcon={<ExpandMoreIcon />}>
+      <PropertyAccordionSummary expandIcon={<ExpandMoreIcon />}>
         {splitWords(title)}
-      </PropertyAccordianSummary>
+      </PropertyAccordionSummary>
 
       <AccordionDetails>{children}</AccordionDetails>
     </PropertyAccordion>

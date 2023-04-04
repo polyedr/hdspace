@@ -6,7 +6,7 @@ import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
 import {
   PropertyAccordion,
-  PropertyAccordianSummary,
+  PropertyAccordionSummary,
   PropertyAccordionDetails,
 } from '../../styledComponents';
 import ElementButton from './ElementButton';
@@ -87,12 +87,12 @@ const ElementsBlock: React.FC<Props> = ({
 
   return expandable ? (
     <PropertyAccordion defaultExpanded>
-      <PropertyAccordianSummary
+      <PropertyAccordionSummary
         className={classes.title}
         expandIcon={<ExpandMoreIcon />}
       >
         {splitWords(title)}
-      </PropertyAccordianSummary>
+      </PropertyAccordionSummary>
 
       <PropertyAccordionDetails>{content}</PropertyAccordionDetails>
     </PropertyAccordion>

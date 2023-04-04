@@ -14,23 +14,21 @@ export const createIconsList = (makeIcon: {
   (): IconServerElement;
   (arg0: string, arg1: string): any;
 }): ElementData[] => {
-  return Object.entries(Icons)
-    .splice(0, 5)
-    .map((item) => {
-      const [name, icon] = item;
+  return Object.entries(Icons).map((item) => {
+    const [name, icon] = item;
 
-      const element = makeIcon(name, name);
+    const element = makeIcon(name, name);
 
-      return {
-        id: element.id.toString(),
-        key: element.parameters.name,
-        type: element.struct_type,
-        icon,
-        name: element.parameters.name,
-        custom: false,
-        parameters: element.parameters,
-      };
-    });
+    return {
+      id: element.id.toString(),
+      key: element.parameters.name,
+      type: element.struct_type,
+      icon,
+      name: element.parameters.name,
+      custom: false,
+      parameters: element.parameters,
+    };
+  });
 };
 
 export const convertElementToData = (

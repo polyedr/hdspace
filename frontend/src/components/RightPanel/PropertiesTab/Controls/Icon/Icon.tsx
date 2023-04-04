@@ -1,6 +1,4 @@
 import React from 'react';
-import * as MIcons from '@mui/icons-material';
-import { MenuItem } from '@mui/material';
 import { StyledTextField } from '@Components/styledComponents';
 import { IconElement, PropertiesChangeProps } from '@Src/types';
 import {
@@ -8,6 +6,7 @@ import {
   useDebouncedValueChange,
 } from '@Utils/debounceHooks';
 import ColorSettings from '../../helperComponents/ColorSettings';
+import IconAutocomplete from './IconAutocomplete';
 
 const Icon: React.FC<PropertiesChangeProps<IconElement>> = ({
   updateParams,
@@ -20,7 +19,7 @@ const Icon: React.FC<PropertiesChangeProps<IconElement>> = ({
     iconColor = '#000',
   } = element.parameters;
 
-  const [name, handleNameChange] = useDebouncedInputChange(
+  const [name, handleNameChange] = useDebouncedValueChange(
     initialName || '',
     (value) => {
       updateParams({ name: value });
@@ -43,24 +42,14 @@ const Icon: React.FC<PropertiesChangeProps<IconElement>> = ({
 
   return (
     <>
-      <StyledTextField
-        variant="outlined"
+      <IconAutocomplete
+        onChange={(_, newValue) => {
+          handleNameChange(newValue);
+        }}
         value={name}
-        onChange={handleNameChange}
-        label="Name"
-        margin="dense"
-        fullWidth
-        select
-        disabled={!canEdit}
-      >
-        {Object.keys(MIcons).map((name) => (
-          <MenuItem key={name} value={name}>
-            {name}
-          </MenuItem>
-        ))}
-      </StyledTextField>
+      />
       <StyledTextField
-        variant="outlined"
+        variant="standard"
         value={size}
         onChange={handleSizeChange}
         label="Size"

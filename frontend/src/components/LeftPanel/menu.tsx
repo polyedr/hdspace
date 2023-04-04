@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import ElementsBlock from '@Components/RightPanel/ElementsTab/ElementsBlock';
+// import ElementsBlock from '@Components/RightPanel/ElementsTab/ElementsBlock';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
 import Scrollbar from '@Components/UI/Scrollbar';
@@ -22,19 +22,20 @@ import {
 import LibraryMenu from './LibraryMenu';
 import Styles from './Styles';
 import VIANavigator from './VIANavigator';
+import { ElementsMenu } from './ElementsMenu';
 
 const { elements, templates, library } =
   createElementsHierarchy(LIBRARY_ELEMENTS);
 
-function RenderElementGrid({ elements }: { elements: object }) {
-  return (
-    <>
-      {Object.entries(elements).map(([key, value]) => (
-        <ElementsBlock key={key} title={key} elements={value} expandable />
-      ))}
-    </>
-  );
-}
+// function RenderElementGrid({ elements }: { elements: object }) {
+//   return (
+//     <>
+//       {Object.entries(elements).map(([key, value]) => (
+//         <ElementsBlock key={key} title={key} elements={value} expandable />
+//       ))}
+//     </>
+//   );
+// }
 
 function Layers() {
   const viaMode = useSelector(selectVIAModeEnabled);
@@ -73,9 +74,10 @@ export const mainMenu = [
     label: 'Elements',
     icon: ElementsIcon,
     component: () => (
-      <Scrollbar>
-        <RenderElementGrid elements={elements} />
-      </Scrollbar>
+      // <Scrollbar>
+      //   <RenderElementGrid elements={elements} />
+      // </Scrollbar>
+      <ElementsMenu elements={elements} />
     ),
   },
   {
