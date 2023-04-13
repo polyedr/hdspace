@@ -50,7 +50,7 @@ exports[`Searchbar > should render a searchbar 1`] = `
         class="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root makeStyles-input-1 makeStyles-parameterInput-4 makeStyles-capitalize-6 css-4mzek5-MuiFormControl-root-MuiTextField-root"
       >
         <label
-          class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-hcxejd-MuiFormLabel-root-MuiInputLabel-root"
+          class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-zfiznc-MuiFormLabel-root-MuiInputLabel-root"
           data-shrink="true"
           for="parameter_name_input"
           id="mui-2-label"
@@ -73,6 +73,7 @@ exports[`Searchbar > should render a searchbar 1`] = `
           </div>
           <input
             aria-hidden="true"
+            aria-invalid="false"
             class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
             id="parameter_name_input"
             tabindex="-1"
