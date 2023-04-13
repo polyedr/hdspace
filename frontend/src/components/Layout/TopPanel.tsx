@@ -8,6 +8,7 @@ import {
   Box,
   Theme,
   Tooltip,
+  Chip,
 } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
 import { makeStyles } from '@mui/styles';
@@ -46,7 +47,7 @@ import TopBar from './TopBar';
 import History from './History';
 import Avatar from './Avatar';
 // import { ShowGridIcon, ShowBlockIcon } from './icons';
-import ToggleMode from './TopBar/ToggleMode';
+// import ToggleMode from './TopBar/ToggleMode';
 
 const Appbar = styled(MUIAppbar)({
   '&.MuiAppBar-root': {
@@ -177,6 +178,7 @@ function TopPanel() {
       <Toolbar variant="dense" className={classes.toolbar}>
         <Box className={classes.topbarsections}>
           <Logo className={classes.icon} />
+
           {projectName && (
             <RenameProjectBar
               projectName={projectName}
@@ -185,10 +187,10 @@ function TopPanel() {
               handleEditClick={handleEditClick}
             />
           )}
+          {currentScreen?.name && <Chip label={currentScreen?.name} />}
         </Box>
-        <Box className={classes.selectedScreen}>{currentScreen?.name}</Box>
         <Box className={classes.topbarsections}>
-          {projectName && <ToggleMode />}
+          {/* {projectName && <ToggleMode />} */}
           {projectName && !isWireframeMode && <Layouts />}
         </Box>
         <Box className={classes.toolbar}>
