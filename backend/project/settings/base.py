@@ -295,8 +295,8 @@ ANYMAIL = {
 ANYMAIL = {
     "AMAZON_SES_CLIENT_PARAMS": {
         # Caution: checking secrets into settings.py is really insecure!
-        "aws_access_key_id": "AKIATDSOCWITYJBFW5GL",
-        "aws_secret_access_key": "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",
+        "aws_access_key_id": "AKIAZRT64EMNTROKJXIV",
+        "aws_secret_access_key": "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",
         "region_name": 'ap-southeast-2',
     },
 }
