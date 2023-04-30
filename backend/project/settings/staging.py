@@ -2,15 +2,15 @@ import os
 import sys
 from .base import BASE_DIR, white_list
 
-SITE_NAME = "www.staging.adevi.info"
-DOMAIN = ('staging.adevi.info')
+SITE_NAME = "app-staging.adevi.io"
+DOMAIN = ('app-staging.adevi.io')
 # Djoser settings
 DJOSER = {
     'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": "username/reset/confirm/{uid}/{token}",
-    "DOMAIN": "staging.adevi.info",
+    "DOMAIN": "app-staging.adevi.io",
     "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {'activation': 'apps.accounts.serializers.MyActivationSerializer',

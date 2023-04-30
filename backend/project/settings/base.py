@@ -264,7 +264,7 @@ EMAIL_BACKEND_CONFIG = ENV.str(
 )
 # DEFAULT_FROM_EMAIL = "demo@178-21-8-79.xen.vps.regruhosting.ru"
 
-SITE_NAME = "www.adevi.info"
+SITE_NAME = "app.adevi.io"
 BASE_URL = ENV.str("BASE_URL", "http://localhost:8000")
 LOGIN_REDIRECT_URL = "/"
 
@@ -305,7 +305,7 @@ EMAIL_BACKEND = (
     "anymail.backends.amazon_ses.EmailBackend"
 )  # or sendgrid.EmailBackend, or...
 # DEFAULT_FROM_EMAIL = "demo@178-21-8-79.xen.vps.regruhosting.ru"  # if you don't already have this in settings
-DEFAULT_FROM_EMAIL = "info@adevi.info"  # if you don't already have this in settings
+DEFAULT_FROM_EMAIL = "info@adevi.io"  # if you don't already have this in settings
 
 # Django PayPal settings
 """
@@ -386,11 +386,12 @@ SIMPLE_JWT = {
 
 white_list = [
     "http://localhost:8080/projects",
-    "https://staging.adevi.info/projects",
-    "https://adevi.info/projects",
+    "https://app-staging.adevi.io/projects",
+    "https://app.adevi.io/projects",
 ]
 
-DOMAIN = ('adevi.info')
+
+DOMAIN = ('app.adevi.io')
 
 # https://getstream.io/dashboard/
 STREAM_API_KEY = ENV.str("STREAM_API_KEY", "qa83st6cgefj")
@@ -402,7 +403,7 @@ DJOSER = {
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": "username/reset/confirm/{uid}/{token}",
-    "DOMAIN": "adevi.info",
+    "DOMAIN": "app.adevi.io",
     "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {'activation': 'apps.accounts.serializers.MyActivationSerializer',
