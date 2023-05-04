@@ -391,6 +391,8 @@ white_list = [
 ]
 
 
+STAGING_URL = 'https://api-staging.adevi.io'
+
 DOMAIN = ('app.adevi.io')
 
 # https://getstream.io/dashboard/

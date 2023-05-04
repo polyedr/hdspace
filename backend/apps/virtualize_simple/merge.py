@@ -24,13 +24,14 @@ from apps.utils.fset1 import (
     SQUARES_OVERLAP_THRESHOLD_CONTOUR,
 )
 
+from project.settings import STAGING_URL
 if os.environ.get("ENV_NAME") == 'Staging':
     # This should be changed for the command line interface
     from project.settings import (
         model_forms,
         model_headers,
         model_footers,
-    )
+)
 
 
 # Writing the element text value based on its id
@@ -621,7 +622,7 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
         # results = model_forms.detect([img], verbose=1)
         # Request the external MaskRCNN API
         # call another api for POST
-        url = 'https://api-staging.adevi.info/api/v1/virtualize_simple/maskrcnn/' # The staging
+        url = STAGING_URL + '/api/v1/virtualize_simple/maskrcnn/' # The staging
         picture = open(imgpath, "rb")
         data = {"block_type":region_dataset}  # post data
         api_call = requests.post(url, headers={}, data=data, files = {"image": picture})
