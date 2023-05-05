@@ -15,9 +15,11 @@ from rest_framework.views import APIView
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import CursorPagination
+
 # from rest_framework.decorators import permission_classes, action
 from rest_framework_guardian import filters  # Django-Guardian
 from guardian.shortcuts import assign_perm, remove_perm, get_perms, get_users_with_perms
+
 # from rest_framework_tracking.mixins import LoggingMixin
 
 from apps.accounts.serializers import UserSerializer
@@ -40,8 +42,16 @@ from .models import (
     ScenarioElement,
     elements,
     scenarios,
-    ElementComment, ProjectIllustrationSet, ProjectImage, ProjectColumn, ColumnTask, ColumnTaskComment,
-    ColumnTaskCheckitem, ColumnTaskLabel, PCategory)
+    ElementComment,
+    ProjectIllustrationSet,
+    ProjectImage,
+    ProjectColumn,
+    ColumnTask,
+    ColumnTaskComment,
+    ColumnTaskCheckitem,
+    ColumnTaskLabel,
+    PCategory,
+)
 from .serializers import (
     ProjectSerializer,
     ProjectMemberSerializer,
@@ -69,27 +79,39 @@ from .serializers import (
     ElementCommentSerializer,
     IllustrationSetSerializer,
     ImageSerializer,
-    ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer, ImagePaletteSerializer,
-    duplicate_model_with_descendants, copy_element_node, copy_children, ColumnTaskCommentSerializer,
-    ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer,  # ProjectScreenExportSerializer,
-    ProjectScreenImportSerializer, ScreenScenarioExportSerializer, ScreenScenarioImportSerializer,
-    ProjectImportExportSerializer, ProjectScreenTagsSerializer, PCategoryDetailSerializer, ProjectWithCategoriesSerializer)
+    ScenarioElementMultipleRecursiveSerializer,
+    ProjectWithMembersSerializer,
+    ImagePaletteSerializer,
+    duplicate_model_with_descendants,
+    copy_element_node,
+    copy_children,
+    ColumnTaskCommentSerializer,
+    ColumnTaskCheckitemSerializer,
+    ColumnTaskLabelSerializer,  # ProjectScreenExportSerializer,
+    ProjectScreenImportSerializer,
+    ScreenScenarioExportSerializer,
+    ScreenScenarioImportSerializer,
+    ProjectImportExportSerializer,
+    ProjectScreenTagsSerializer,
+    PCategoryDetailSerializer,
+    ProjectWithCategoriesSerializer,
+)
 
 
 class IsOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-            print('is owner ? : ' + obj.owner == request.user)
-            return obj.owner == request.user
+        print("is owner ? : " + obj.owner == request.user)
+        return obj.owner == request.user
 
 
 class ProjectCursorSetPagination(CursorPagination):
     page_size = 10
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
 
 
 class ScenarioElementCursorSetPagination(CursorPagination):
     page_size = 10
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -98,10 +120,17 @@ class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     pagination_class = ProjectCursorSetPagination
     permission_classes = [CustomObjectPermissions]  # Django-Guardian
-    filter_backends = [DjangoFilterBackend, filters.ObjectPermissionsFilter]  # Django-Guardian and DjangoFilterBackend
-    filterset_fields = {'tags__name': ['exact'], 'name': ['exact'],
-                        'status': ['exact'], 'created': ['lte', 'gte', 'lt', 'gt'],
-                        'updated': ['lte', 'gte', 'lt', 'gt']}
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.ObjectPermissionsFilter,
+    ]  # Django-Guardian and DjangoFilterBackend
+    filterset_fields = {
+        "tags__name": ["exact"],
+        "name": ["exact"],
+        "status": ["exact"],
+        "created": ["lte", "gte", "lt", "gt"],
+        "updated": ["lte", "gte", "lt", "gt"],
+    }
 
     def get_queryset(self):
         # user = self.request.user
@@ -124,11 +153,18 @@ class ProjectWithScreensViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectWithScreensSerializer
     pagination_class = ProjectCursorSetPagination
     permission_classes = [CustomObjectPermissions]  # Django-Guardian
-    filter_backends = [DjangoFilterBackend, filters.ObjectPermissionsFilter]  # Django-Guardian and DjangoFilterBackend
-    filterset_fields = {'tags__name': ['exact'], 'name': ['exact'],
-                        'status': ['exact'], 'created': ['lte', 'gte', 'lt', 'gt'],
-                        'updated': ['lte', 'gte', 'lt', 'gt']}
-    http_method_names = ['get', 'head']
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.ObjectPermissionsFilter,
+    ]  # Django-Guardian and DjangoFilterBackend
+    filterset_fields = {
+        "tags__name": ["exact"],
+        "name": ["exact"],
+        "status": ["exact"],
+        "created": ["lte", "gte", "lt", "gt"],
+        "updated": ["lte", "gte", "lt", "gt"],
+    }
+    http_method_names = ["get", "head"]
 
     def get_queryset(self):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
@@ -153,6 +189,7 @@ class ProjectWithColumnsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
+
     #
     # def perform_create(self, serializer):
     #     serializer.save(user=self.request.user)
@@ -181,11 +218,14 @@ class PCategoryViewSet(viewsets.ModelViewSet):
     queryset = PCategory.objects.all()
     serializer_class = PCategoryDetailSerializer
     filter_backends = [DjangoFilterBackend]  # Django-Guardian and DjangoFilterBackend
-    filterset_fields = {'project': ['exact'], 'name': ['exact'],
-                        'created': ['lte', 'gte', 'lt', 'gt'],
-                        'modified': ['lte', 'gte', 'lt', 'gt']}
-    ordering_fields = ['buyoancy', 'id']
-    ordering = ['buyoancy']
+    filterset_fields = {
+        "project": ["exact"],
+        "name": ["exact"],
+        "created": ["lte", "gte", "lt", "gt"],
+        "modified": ["lte", "gte", "lt", "gt"],
+    }
+    ordering_fields = ["buyoancy", "id"]
+    ordering = ["buyoancy"]
 
 
 class ColumnWithTasksViewSet(viewsets.ModelViewSet):
@@ -193,9 +233,9 @@ class ColumnWithTasksViewSet(viewsets.ModelViewSet):
     queryset = ProjectColumn.objects.all()
     serializer_class = ColumnWithTasksSerializer
     pagination_class = None
-    http_method_names = ['get', 'head']
+    http_method_names = ["get", "head"]
 
-    '''
+    """
     def get_queryset(self):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
 
@@ -205,7 +245,7 @@ class ColumnWithTasksViewSet(viewsets.ModelViewSet):
     def filter_queryset(self, queryset):
         queryset = queryset.filter(user=self.request.user)
         return queryset
-    '''
+    """
 
 
 class ElementViewSet(viewsets.ViewSet):
@@ -260,7 +300,7 @@ class ScenarioElementMultipleViewSet(BulkModelViewSet):
 class ScenarioElementMultipleRecursiveViewSet(BulkModelViewSet):
     serializer_class = ScenarioElementMultipleRecursiveSerializer
     queryset = ScenarioElement.objects.all()
-    http_method_names = ['patch', 'head']
+    http_method_names = ["patch", "head"]
 
 
 class ProjectMemberList(generics.ListCreateAPIView):
@@ -291,7 +331,7 @@ class ProjectWithMembersViewSet(viewsets.ModelViewSet):
     pagination_class = None
     permission_classes = [CustomObjectPermissions]  # Django-Guardian
     filter_backends = [filters.ObjectPermissionsFilter]  # Django-Guardian
-    http_method_names = ['get', 'head']
+    http_method_names = ["get", "head"]
 
     def get_queryset(self):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
@@ -308,10 +348,16 @@ class ProjectScreenList(generics.ListCreateAPIView):
     """
     List all project screens, or create a new project screen.
     """
+
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = {'tags__name': ['exact'], 'name': ['exact'], 'project': ['exact'],
-                        'status': ['exact'], 'created': ['lte', 'gte', 'lt', 'gt'],
-                        'updated': ['lte', 'gte', 'lt', 'gt']}
+    filterset_fields = {
+        "tags__name": ["exact"],
+        "name": ["exact"],
+        "project": ["exact"],
+        "status": ["exact"],
+        "created": ["lte", "gte", "lt", "gt"],
+        "updated": ["lte", "gte", "lt", "gt"],
+    }
 
     queryset = ProjectScreen.objects.all()
     serializer_class = ProjectScreenSerializer
@@ -321,12 +367,13 @@ class ProjectScreenTags(viewsets.ViewSet):
     """
     List all project screens, or create a new project screen.
     """
-    '''
+
+    """
     filter_backends = [DjangoFilterBackend]
     filterset_fields = {'tags__name': ['exact'], 'name': ['exact'], 'project': ['exact'],
                         'status': ['exact'], 'created': ['lte', 'gte', 'lt', 'gt'],
                         'updated': ['lte', 'gte', 'lt', 'gt']}
-    '''
+    """
 
     def list(self, request):
         # queryset = ProjectScreen.objects.all()
@@ -404,7 +451,7 @@ class ProjectColumnList(generics.ListCreateAPIView):
     queryset = ProjectColumn.objects.all()
     serializer_class = ProjectColumnSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['title', 'project']
+    filterset_fields = ["title", "project"]
 
 
 class ProjectColumnDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -433,12 +480,13 @@ class ColumnTaskList(generics.ListCreateAPIView):
     """
     List all column tasks, or create a new column task.
     """
+
     queryset = ColumnTask.objects.all()
     serializer_class = ColumnTaskSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ['title', 'status', 'column__project', 'column']
-    ordering_fields = ['buyoancy', 'id']
-    ordering = ['buyoancy']
+    filterset_fields = ["title", "status", "column__project", "column"]
+    ordering_fields = ["buyoancy", "id"]
+    ordering = ["buyoancy"]
 
     # Inject current user at the point of saving the instance
     def perform_create(self, serializer):
@@ -453,12 +501,18 @@ def send_email_confirmation(instance):
         to_email = []
         for user in instance.subscribers.all():
             if user.email:
-                to_email += ['{}'.format(user.email)]
+                to_email += ["{}".format(user.email)]
         from_email = "Adevi Admin <info@adevi.info>"
 
         # message = get_template('email/email.html').render(order_information)
-        message = "The task " + str(instance.id) + " " + str(instance.description) + \
-                  " subscription list have been changed recently. " + ",".join(to_email)
+        message = (
+            "The task "
+            + str(instance.id)
+            + " "
+            + str(instance.description)
+            + " subscription list have been changed recently. "
+            + ",".join(to_email)
+        )
         send_mail(subject, message, from_email, to_email, fail_silently=False)
     except IOError as e:
         return e
@@ -565,7 +619,7 @@ class ProjectIllustrationSetList(generics.ListCreateAPIView):
     queryset = ProjectIllustrationSet.objects.all()
     serializer_class = IllustrationSetSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['project']
+    filterset_fields = ["project"]
 
 
 class ProjectIllustrationSetDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -585,7 +639,7 @@ class IllustrationSetImageList(generics.ListCreateAPIView):
     queryset = ProjectImage.objects.all()
     serializer_class = ImageSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['illustration_set']
+    filterset_fields = ["illustration_set"]
 
 
 class IllustrationSetImageDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -605,7 +659,7 @@ class IllustrationSetImagePaletteList(generics.ListCreateAPIView):
     queryset = ProjectImage.objects.all()
     serializer_class = ImagePaletteSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['illustration_set']
+    filterset_fields = ["illustration_set"]
 
 
 class IllustrationSetImagePaletteDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -625,6 +679,9 @@ class ScreenCommentList(generics.ListCreateAPIView):
     queryset = ScreenComment.objects.all()
     serializer_class = ScreenCommentSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class ScreenCommentDetail(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -633,6 +690,9 @@ class ScreenCommentDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = ScreenComment.objects.all()
     serializer_class = ScreenCommentSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class CommentList(generics.ListCreateAPIView):
@@ -662,7 +722,7 @@ class ScreeScenarioViewSet(viewsets.ModelViewSet):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
 
     def filter_queryset(self, queryset):
-        screen_id = self.request.query_params.get('screenId')
+        screen_id = self.request.query_params.get("screenId")
 
         if screen_id and screen_id.isdigit():
             queryset = queryset.filter(screen=screen_id)
@@ -722,11 +782,11 @@ class ScenarioElementViewSet(viewsets.ModelViewSet):
     pagination_class = None
 
     def filter_queryset(self, queryset):
-        ids = self.request.query_params.get('scenariosIds')
-        is_shared = self.request.query_params.get('is_shared')
+        ids = self.request.query_params.get("scenariosIds")
+        is_shared = self.request.query_params.get("is_shared")
 
         if ids:
-            scenarios_ids = ids.split(',')
+            scenarios_ids = ids.split(",")
             if all(sid.isdigit() for sid in scenarios_ids):
                 queryset = queryset.filter(scenario__in=scenarios_ids)
 
@@ -765,10 +825,11 @@ class ScenarioElementRecursiveViewSet(viewsets.ModelViewSet):
     """
     List all scenario elements, or single element, or PATCH the element via the children array
     """
+
     queryset = ScenarioElement.objects.all()
     # queryset = ScenarioElement.objects.root_nodes()
     serializer_class = ScenarioElementSerializerRecursive
-    http_method_names = ['get', 'patch', 'head']
+    http_method_names = ["get", "patch", "head"]
 
 
 class ElementCommentList(generics.ListCreateAPIView):
@@ -802,8 +863,8 @@ class ColumnTaskCommentList(generics.ListCreateAPIView):
     serializer_class = ColumnTaskCommentSerializer
 
     filter_backends = [OrderingFilter]
-    ordering_fields = ['created']
-    ordering = ['-created']
+    ordering_fields = ["created"]
+    ordering = ["-created"]
 
     # Inject current user at the point of saving the instance
     def perform_create(self, serializer):
@@ -832,8 +893,9 @@ class ColumnTaskCheckitemDelete(APIView):
     """
     Delete a checklist
     """
+
     def delete(self, request):
-        task_id = request.query_params.get('task_id', None)
+        task_id = request.query_params.get("task_id", None)
         if task_id:
             ColumnTaskCheckitem.objects.filter(columntask=task_id).delete()
 
@@ -853,15 +915,16 @@ class ColumnTaskLabelList(generics.ListCreateAPIView):
     """
     List all column task labels, or create a new column task label.
     """
+
     queryset = ColumnTaskLabel.objects.all()
     serializer_class = ColumnTaskLabelSerializer
 
     # Inject current project at the point of saving the instance
     def perform_create(self, serializer):
         try:
-            if self.request.data['columntask']:
+            if self.request.data["columntask"]:
                 # Take a first columntask from the array
-                columntask_id = self.request.data['columntask'][0]
+                columntask_id = self.request.data["columntask"][0]
                 columntask = ColumnTask.objects.get(id=columntask_id)
                 serializer.save(project=columntask.column.project)
         except Exception:
@@ -894,9 +957,9 @@ class AssignPermissionsmapProject(APIView):
     )
 
     def post(self, request):
-        username = request.data['username']
-        projectid = request.data['projectid']
-        permissions = request.data['permissions']
+        username = request.data["username"]
+        projectid = request.data["projectid"]
+        permissions = request.data["permissions"]
         user = User.objects.get(username=username)
         project = Project.objects.get(pk=projectid)
         current_profile = user.profile
@@ -937,7 +1000,10 @@ class AssignPermissionsmapProject(APIView):
                     print("with teams")
                     teams.remove(str(project.id))
                     schat_client.update_user_partial(
-                        {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
+                        {
+                            "id": str(user.id),
+                            "set": {"name": username, "image": avatar, "teams": teams},
+                        }
                     )
             except Exception:
                 pass
@@ -954,7 +1020,10 @@ class AssignPermissionsmapProject(APIView):
                     teams.append(str(project.id))
                     # print("teams1", teams)
                     schat_client.update_user_partial(
-                        {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
+                        {
+                            "id": str(user.id),
+                            "set": {"name": username, "image": avatar, "teams": teams},
+                        }
                     )
             except Exception:
                 pass
@@ -979,9 +1048,9 @@ class AssignPermissionsmapsProject(APIView):
     )
 
     def post(self, request):
-        user_emails = request.data['emails']
-        projectid = request.data['projectid']
-        permissions = request.data['permissions']
+        user_emails = request.data["emails"]
+        projectid = request.data["projectid"]
+        permissions = request.data["permissions"]
         project = Project.objects.get(pk=projectid)
 
         for user_email in user_emails:
@@ -1025,7 +1094,14 @@ class AssignPermissionsmapsProject(APIView):
                         print("with teams")
                         teams.remove(str(project.id))
                         schat_client.update_user_partial(
-                            {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
+                            {
+                                "id": str(user.id),
+                                "set": {
+                                    "name": username,
+                                    "image": avatar,
+                                    "teams": teams,
+                                },
+                            }
                         )
                 except Exception:
                     pass
@@ -1042,7 +1118,14 @@ class AssignPermissionsmapsProject(APIView):
                         teams.append(str(project.id))
                         # print("teams1", teams)
                         schat_client.update_user_partial(
-                            {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
+                            {
+                                "id": str(user.id),
+                                "set": {
+                                    "name": username,
+                                    "image": avatar,
+                                    "teams": teams,
+                                },
+                            }
                         )
                 except Exception:
                     pass
@@ -1061,14 +1144,14 @@ class AssignPermissionsProject(APIView):
     )
 
     def post(self, request):
-        username = request.data['username']
-        projectid = request.data['projectid']
-        permission = request.data['permission']
+        username = request.data["username"]
+        projectid = request.data["projectid"]
+        permission = request.data["permission"]
         user = User.objects.get(username=username)
         project = Project.objects.get(pk=projectid)
         assign_perm(permission, user, project)
         rp = get_perms(user, project)
-        if(rp):
+        if rp:
             return Response({"permissions": rp}, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -1083,14 +1166,14 @@ class RemovePermissionsProject(APIView):
     )
 
     def post(self, request):
-        username = request.data['username']
-        projectid = request.data['projectid']
-        permission = request.data['permission']
+        username = request.data["username"]
+        projectid = request.data["projectid"]
+        permission = request.data["permission"]
         user = User.objects.get(username=username)
         project = Project.objects.get(pk=projectid)
         remove_perm(permission, user, project)
         rp = get_perms(user, project)
-        if(rp):
+        if rp:
             return Response({"permissions": rp}, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -1105,8 +1188,8 @@ class DisplayPermissionsProject(APIView):
     )
 
     def post(self, request):
-        username = request.data['username']
-        projectid = request.data['projectid']
+        username = request.data["username"]
+        projectid = request.data["projectid"]
         user = User.objects.get(username=username)
         project = Project.objects.get(pk=projectid)
         rp = get_perms(user, project)
@@ -1125,13 +1208,13 @@ class DisplayPermissionsAllusers(APIView):
     )
 
     def post(self, request):
-        projectid = request.data['projectid']
+        projectid = request.data["projectid"]
         project = Project.objects.get(pk=projectid)
         users_list = get_users_with_perms(project)
         rp_users_list = []
         for user in users_list:
             userseries = UserSerializer(user)
-            '''
+            """
             avatar = ""
             try:
                 o = urlparse(request.build_absolute_uri())
@@ -1139,19 +1222,21 @@ class DisplayPermissionsAllusers(APIView):
                 print("avatar", avatar)
             except Exception:
                 pass
-            '''
+            """
             # user.profile.avatar = avatar
             rp = get_perms(user, project)
-            avatar = userseries.data['profile'].pop("avatar")
+            avatar = userseries.data["profile"].pop("avatar")
             if avatar:
                 try:
                     o = urlparse(request.build_absolute_uri())
-                    avatar = "https://" + o.netloc + MEDIA_URL + str(user.profile.avatar)
+                    avatar = (
+                        "https://" + o.netloc + MEDIA_URL + str(user.profile.avatar)
+                    )
                     # print("avatar", avatar)
                 except Exception:
                     pass
 
-            userseries.data['profile']['avatar'] = avatar
+            userseries.data["profile"]["avatar"] = avatar
             # print(avatar)
             rdictionary = {"permissions": rp, "userdata": userseries.data}
             rp_users_list.append(rdictionary)
@@ -1177,9 +1262,16 @@ class ProjectcopyView(APIView):
     # user = serializers.PrimaryKeyRelatedField(default=serializers.CurrentUserDefault())
 
     def post(self, request, format=None):
-        WHITELIST = ['projects', 'projectscreen', 'screenscenario', 'elements', 'children', 'projectillustrationset',
-                     'images']
-        projectid = request.data['projectid']
+        WHITELIST = [
+            "projects",
+            "projectscreen",
+            "screenscenario",
+            "elements",
+            "children",
+            "projectillustrationset",
+            "images",
+        ]
+        projectid = request.data["projectid"]
         project = Project.objects.get(pk=projectid)
         project_clone = duplicate_model_with_descendants(project, WHITELIST)
 
@@ -1198,8 +1290,8 @@ class ScreencopyView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
-        WHITELIST = ['screenscenario', 'elements', 'children']
-        screenid = request.data['screenid']
+        WHITELIST = ["screenscenario", "elements", "children"]
+        screenid = request.data["screenid"]
         screen = ProjectScreen.objects.get(pk=screenid)
         screen_clone = duplicate_model_with_descendants(screen, WHITELIST)
 
@@ -1214,9 +1306,11 @@ class ElementmpttcopyView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
-        elementid = request.data['elementid']
+        elementid = request.data["elementid"]
         element = ScenarioElement.objects.get(pk=elementid)
-        element_clone, counter = copy_children(element, parent=element.parent, new_node=True)
+        element_clone, counter = copy_children(
+            element, parent=element.parent, new_node=True
+        )
         # print("POST")
         # print("counter", counter)
         if element_clone:
@@ -1230,8 +1324,8 @@ class ElementcopyView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
-        WHITELIST = ['elements', 'children']
-        elementid = request.data['elementid']
+        WHITELIST = ["elements", "children"]
+        elementid = request.data["elementid"]
         element = ScenarioElement.objects.get(pk=elementid)
         # element_clone = duplicate_model_with_descendants(element, WHITELIST)
         element_clone = duplicate_model_with_descendants(element, WHITELIST)
@@ -1244,7 +1338,6 @@ class ElementcopyView(APIView):
 
 
 class ColumnsReorder(APIView):
-
     def patch(self, request, pk=None):
         """
         Update the order of the columns by the parent project id
@@ -1252,13 +1345,13 @@ class ColumnsReorder(APIView):
         column pk is in data.children.{n}.id
         """
         # because the data is expected to be nested dictionary
-        decoded = request.body.decode('utf8')
+        decoded = request.body.decode("utf8")
         data = json.loads(decoded)
         # print(data)
 
         sorted_dict = {}
-        for key, value in enumerate(data['children']):
-            sorted_dict[value['id']] = key
+        for key, value in enumerate(data["children"]):
+            sorted_dict[value["id"]] = key
 
         # sorted dict uses column pk as key and new order as value
         # print(pk)
@@ -1267,14 +1360,13 @@ class ColumnsReorder(APIView):
         for column in columns:
             print(column.id)
             column.buyoancy = sorted_dict[column.id]
-        affected_rows = bulk_update(columns, update_fields=['buyoancy'])
+        affected_rows = bulk_update(columns, update_fields=["buyoancy"])
         if affected_rows:
-            return Response({'affected_rows': affected_rows})
+            return Response({"affected_rows": affected_rows})
         return Response({}, status.HTTP_204_NO_CONTENT)
 
 
 class TasksReorder(APIView):
-
     def patch(self, request, pk=None):
         """
         Update the order of the tasks by the parent column id
@@ -1282,13 +1374,13 @@ class TasksReorder(APIView):
         task pk is in data.children.{n}.id
         """
         # because the data is expected to be nested dictionary
-        decoded = request.body.decode('utf8')
+        decoded = request.body.decode("utf8")
         data = json.loads(decoded)
         # print(data)
 
         sorted_dict = {}
-        for key, value in enumerate(data['children']):
-            sorted_dict[value['id']] = key
+        for key, value in enumerate(data["children"]):
+            sorted_dict[value["id"]] = key
 
         # sorted dict uses task pk as key and new order as value
         # print(pk)
@@ -1297,11 +1389,10 @@ class TasksReorder(APIView):
         for task in tasks:
             print(task.id)
             task.buyoancy = sorted_dict[task.id]
-        affected_rows = bulk_update(tasks, update_fields=['buyoancy'])
+        affected_rows = bulk_update(tasks, update_fields=["buyoancy"])
         if affected_rows:
-            return Response({'affected_rows': affected_rows})
+            return Response({"affected_rows": affected_rows})
         return Response({}, status.HTTP_204_NO_CONTENT)
-
 
 
 class CategoriesReorder(APIView):
@@ -1311,26 +1402,25 @@ class CategoriesReorder(APIView):
         request.data is in the expected structure:
         category pk is in data.children.{n}.id
         """
-        decoded = request.body.decode('utf8')
+        decoded = request.body.decode("utf8")
         data = json.loads(decoded)
 
         sorted_dict = {}
-        for key, value in enumerate(data['children']):
-            sorted_dict[value['id']] = key
+        for key, value in enumerate(data["children"]):
+            sorted_dict[value["id"]] = key
 
         categories = PCategory.objects.filter(project=pk)
         for category in categories:
             print(category.id)
             category.buoyancy = sorted_dict[category.id]
 
-        affected_rows = bulk_update(categories, update_fields=['buoyancy'])
+        affected_rows = bulk_update(categories, update_fields=["buoyancy"])
         if affected_rows:
-            return Response({'affected_rows': affected_rows})
+            return Response({"affected_rows": affected_rows})
         return Response({}, status.HTTP_204_NO_CONTENT)
 
 
 class ScreensReorder(APIView):
-
     def patch(self, request, pk=None):
         """
         Update the order of the screens by the parent category id
@@ -1338,13 +1428,13 @@ class ScreensReorder(APIView):
         screen pk is in data.children.{n}.id
         """
         # because the data is expected to be nested dictionary
-        decoded = request.body.decode('utf8')
+        decoded = request.body.decode("utf8")
         data = json.loads(decoded)
         # print(data)
 
         sorted_dict = {}
-        for key, value in enumerate(data['children']):
-            sorted_dict[value['id']] = key
+        for key, value in enumerate(data["children"]):
+            sorted_dict[value["id"]] = key
 
         # sorted dict uses task pk as key and new order as value
         # print(pk)
@@ -1353,9 +1443,7 @@ class ScreensReorder(APIView):
         for screen in screens:
             screen.buoyancy = sorted_dict[screen.id]
             # print(screen.id, screen.buoyancy)
-        affected_rows = bulk_update(screens, update_fields=['buoyancy'])
+        affected_rows = bulk_update(screens, update_fields=["buoyancy"])
         if affected_rows:
-            return Response({'affected_rows': affected_rows})
+            return Response({"affected_rows": affected_rows})
         return Response({}, status.HTTP_204_NO_CONTENT)
-
-

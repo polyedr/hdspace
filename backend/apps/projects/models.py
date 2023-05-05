@@ -107,9 +107,7 @@ class Project(TimeStampedModel):
     # User needs to be part of a group that has the following permission:
     # Add custom permissions here
     class Meta:
-        permissions = [
-            ("assign_project", "Can Assign Projects"),
-        ]
+        permissions = [("assign_project", "Can Assign Projects")]
 
 
 class PCategory(TimeStampedModel):
@@ -118,6 +116,7 @@ class PCategory(TimeStampedModel):
     project = models.ForeignKey(
         Project, related_name="projectcategory", on_delete=models.CASCADE, null=True
     )
+
     def __str__(self):
         return self.name
 
@@ -142,7 +141,9 @@ class ProjectScreen(TimeStampedModel):
     project = models.ForeignKey(
         Project, related_name="projectscreen", on_delete=models.CASCADE, null=True
     )
-    category = models.ForeignKey(PCategory, related_name='ctscreens', on_delete=models.PROTECT, null=True)
+    category = models.ForeignKey(
+        PCategory, related_name="ctscreens", on_delete=models.PROTECT, null=True
+    )
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -155,7 +156,7 @@ class ProjectScreen(TimeStampedModel):
     screen_data_text = models.TextField(blank=True)
     screen_data_json = JSONField(blank=True, default=[])
 
-    history = HistoricalRecords(excluded_fields=['category'])
+    history = HistoricalRecords(excluded_fields=["category"])
 
     def get_screen_url(self):
         return reverse(
@@ -213,7 +214,7 @@ class ScreenEvent(TimeStampedModel):
 class ScreenComment(TimeStampedModel):
     x = models.IntegerField()
     y = models.IntegerField()
-
+    text = models.TextField(null=True, blank=True)
     screen = models.ForeignKey(ProjectScreen, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
@@ -247,12 +248,16 @@ class ProjectMember(TimeStampedModel):
     status = models.CharField(
         choices=MEMBER_STATUS, default=STATUS_MEMBER, max_length=32
     )
-    project = models.ForeignKey(Project, related_name="projectmember", on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        Project, related_name="projectmember", on_delete=models.CASCADE
+    )
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['project', 'user'], name='unique_membership')
+            models.UniqueConstraint(
+                fields=["project", "user"], name="unique_membership"
+            )
         ]
 
     def __str__(self):
@@ -262,7 +267,9 @@ class ProjectMember(TimeStampedModel):
 class ProjectColumn(TimeStampedModel):
     title = models.CharField(max_length=250)
     description = models.TextField(null=True, blank=True)
-    project = models.ForeignKey(Project, related_name="projectcolumn", on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        Project, related_name="projectcolumn", on_delete=models.CASCADE
+    )
     buyoancy = models.IntegerField(default=0)
     colour = models.CharField(max_length=16, null=True, blank=True)
 
@@ -270,7 +277,7 @@ class ProjectColumn(TimeStampedModel):
         return self.title
 
     class Meta:
-        ordering = ['buyoancy', 'pk']
+        ordering = ["buyoancy", "pk"]
 
 
 class ColumnTaskCustomTag(TagBase):
@@ -301,32 +308,73 @@ class ColumnTask(TimeStampedModel):
     TASK_PAUSED = "paused"
     TASK_ACCEPTED = "accepted"
     TASK_WAITINGFORREVIEW = "waiting for review"
-    TASK_STATUS = ((TASK_INPROGRESS, "INPROGRESS"), (TASK_PAUSED, "PAUSED"), (TASK_ACCEPTED, "ACCEPTED"), (TASK_WAITINGFORREVIEW, "WAITINGFORREVIEW"))
+    TASK_STATUS = (
+        (TASK_INPROGRESS, "INPROGRESS"),
+        (TASK_PAUSED, "PAUSED"),
+        (TASK_ACCEPTED, "ACCEPTED"),
+        (TASK_WAITINGFORREVIEW, "WAITINGFORREVIEW"),
+    )
 
     TASK_MEDIUM = "medium"
     TASK_HIGHEST = "highest"
     TASK_HIGH = "high"
     TASK_LOW = "low"
     TASK_LOWEST = "lowest"
-    TASK_PRIORITY = ((TASK_MEDIUM, "MEDIUM"), (TASK_HIGHEST, "HIGHEST"), (TASK_HIGH, "HIGH"), (TASK_LOW, "LOW"), (TASK_LOWEST, "LOWEST"))
+    TASK_PRIORITY = (
+        (TASK_MEDIUM, "MEDIUM"),
+        (TASK_HIGHEST, "HIGHEST"),
+        (TASK_HIGH, "HIGH"),
+        (TASK_LOW, "LOW"),
+        (TASK_LOWEST, "LOWEST"),
+    )
 
     title = models.CharField(max_length=250)
     colour = models.CharField(max_length=16, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    status = models.CharField(choices=TASK_STATUS, default=TASK_INPROGRESS, max_length=32)
-    priority = models.CharField(choices=TASK_PRIORITY, default=TASK_MEDIUM, max_length=32)
+    status = models.CharField(
+        choices=TASK_STATUS, default=TASK_INPROGRESS, max_length=32
+    )
+    priority = models.CharField(
+        choices=TASK_PRIORITY, default=TASK_MEDIUM, max_length=32
+    )
     buyoancy = models.IntegerField(default=0)
     tags = TaggableManager(through=TaggedWhatever, blank=True)
 
-    column = models.ForeignKey(ProjectColumn, related_name="columntask", on_delete=models.CASCADE)
-
-    author = models.ForeignKey(get_user_model(), related_name="author", null=True, blank=True, on_delete=models.CASCADE)
-    assignee = models.ForeignKey(get_user_model(), related_name="assignee", null=True, blank=True, on_delete=models.CASCADE)
-    responsible = models.ForeignKey(
-        get_user_model(), related_name="responsible", null=True, blank=True, on_delete=models.CASCADE
+    column = models.ForeignKey(
+        ProjectColumn, related_name="columntask", on_delete=models.CASCADE
     )
-    subscribers = models.ManyToManyField(get_user_model(), related_name="set_subscribers")
-    related_task = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="relatedtask")
+
+    author = models.ForeignKey(
+        get_user_model(),
+        related_name="author",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    assignee = models.ForeignKey(
+        get_user_model(),
+        related_name="assignee",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    responsible = models.ForeignKey(
+        get_user_model(),
+        related_name="responsible",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    subscribers = models.ManyToManyField(
+        get_user_model(), related_name="set_subscribers"
+    )
+    related_task = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="relatedtask",
+    )
     story_points = models.IntegerField(default=0)
     due_date = models.DateTimeField(null=True, blank=True)
     time = models.DurationField(null=True, blank=True)
@@ -337,7 +385,7 @@ class ColumnTask(TimeStampedModel):
         return self.title
 
     class Meta:  # Only people with the following permissions can work on this task.
-        ordering = ['buyoancy', 'pk']
+        ordering = ["buyoancy", "pk"]
         permissions = (
             ("Dummy permission 1", "Can do dummy action 1"),
             ("Dummy permission 2", "Can do dummy action 2"),
@@ -350,14 +398,18 @@ class ColumnTask(TimeStampedModel):
 class ColumnTaskComment(TimeStampedModel):
     text = models.TextField()
 
-    columntask = models.ForeignKey(ColumnTask, related_name="comments", on_delete=models.CASCADE, null=True)
+    columntask = models.ForeignKey(
+        ColumnTask, related_name="comments", on_delete=models.CASCADE, null=True
+    )
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
 
 class ColumnTaskCheckitem(TimeStampedModel):
     text = models.TextField()
 
-    columntask = models.ForeignKey(ColumnTask, related_name="checklist", on_delete=models.CASCADE, null=True)
+    columntask = models.ForeignKey(
+        ColumnTask, related_name="checklist", on_delete=models.CASCADE, null=True
+    )
     status = models.IntegerField(default=0)
     buyoancy = models.IntegerField(default=0)
 
@@ -367,7 +419,9 @@ class ColumnTaskLabel(TimeStampedModel):
     colour = models.CharField(max_length=16, null=True, blank=True)
 
     columntask = models.ManyToManyField(ColumnTask, related_name="labels", blank=True)
-    project = models.ForeignKey(Project, related_name="tasklabels", on_delete=models.CASCADE, null=True)
+    project = models.ForeignKey(
+        Project, related_name="tasklabels", on_delete=models.CASCADE, null=True
+    )
 
 
 class TaskTime(TimeStampedModel):
@@ -387,7 +441,13 @@ class ProjectIllustrationSet(TimeStampedModel):
     illustrationList = models.ImageField(
         upload_to="uploads/", blank=True, null=True, max_length=256
     )
-    project = models.ForeignKey(Project, related_name="projectillustrationset", null=True, blank=True, on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        Project,
+        related_name="projectillustrationset",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
 
 
 class ProjectImage(TimeStampedModel):
@@ -397,7 +457,12 @@ class ProjectImage(TimeStampedModel):
     palette = JSONField(blank=True)
     image_url = models.CharField(max_length=255, null=True, blank=True)
     illustration_set = models.ForeignKey(
-        ProjectIllustrationSet, default=None, related_name="images", null=True, blank=True, on_delete=models.CASCADE
+        ProjectIllustrationSet,
+        default=None,
+        related_name="images",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
     )
 
 
@@ -694,13 +759,13 @@ scenarios = {
 class Element(object):
     def __init__(self, **kwargs):
         for field in (
-                "id",
-                "struct_type",
-                "func_type",
-                "buoyancy",
-                "image",
-                "parameters",
-                "styles",
+            "id",
+            "struct_type",
+            "func_type",
+            "buoyancy",
+            "image",
+            "parameters",
+            "styles",
         ):
             setattr(self, field, kwargs.get(field, None))
 
@@ -1003,7 +1068,9 @@ def delete_files_when_file_changed(sender, instance, **kwargs):
             instance_in_db_file_field = getattr(instance_in_db, field.name)
             instance_file_field = getattr(instance, field.name)
             if instance_in_db_file_field.name != instance_file_field.name:
-                delete_file_if_unused(sender, instance, field, instance_in_db_file_field)
+                delete_file_if_unused(
+                    sender, instance, field, instance_in_db_file_field
+                )
 
 
 """ Only delete the file if no other instances of that model are using it"""
@@ -1012,6 +1079,8 @@ def delete_files_when_file_changed(sender, instance, **kwargs):
 def delete_file_if_unused(model, instance, field, instance_file_field):
     dynamic_field = {}
     dynamic_field[field.name] = instance_file_field.name
-    other_refs_exist = model.objects.filter(**dynamic_field).exclude(pk=instance.pk).exists()
+    other_refs_exist = (
+        model.objects.filter(**dynamic_field).exclude(pk=instance.pk).exists()
+    )
     if not other_refs_exist:
         instance_file_field.delete(False)

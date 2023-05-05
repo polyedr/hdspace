@@ -46,7 +46,8 @@ from .models import (
     ColumnTask,
     ColumnTaskComment,
     ColumnTaskCheckitem,
-    ColumnTaskLabel, PCategory,
+    ColumnTaskLabel,
+    PCategory,
 )
 
 from collections import OrderedDict
@@ -164,12 +165,12 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 class ProjectScreenTagsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        '''
+        """
         fields = (
             "id",
             "name",
         )
-        '''
+        """
         fields = "__all__"
 
 
@@ -730,18 +731,18 @@ class ProjectPermissionsSerializer(
 class PCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = PCategory
-        fields = ('id', 'name', 'project', 'buoyancy',)
+        fields = ("id", "name", "project", "buoyancy")
 
 
 class PCategoryDetailSerializer(serializers.ModelSerializer):
     # ctscreens = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     ctscreens = ProjectScreenSerializer(many=True, read_only=True)
+
     class Meta:
         model = PCategory
-        fields = ('id', 'name', 'project', 'buoyancy', 'ctscreens')
-        extra_kwargs = {
-            "ctscreens": {"read_only": True},
-        }
+        fields = ("id", "name", "project", "buoyancy", "ctscreens")
+        extra_kwargs = {"ctscreens": {"read_only": True}}
+
 
 class ProjectWithScreensSerializer(TaggitSerializer, serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -792,8 +793,7 @@ class ProjectWithCategoriesSerializer(serializers.ModelSerializer):
             # "user",
             "id",
         )
-        extra_kwargs = {
-        }
+        extra_kwargs = {}
 
 
 class ScreenEventSerializer(serializers.ModelSerializer):
@@ -836,7 +836,8 @@ class ScenarioSerializer(serializers.Serializer):
 class ScreenCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScreenComment
-        fields = ("x", "y")
+        fields = ("id", "screen", "user", "x", "y", "text")
+        extra_kwargs = {"id": {"read_only": True}, "user": {"read_only": True}}
 
 
 class CommentSerializer(serializers.ModelSerializer):
