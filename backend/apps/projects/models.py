@@ -149,7 +149,7 @@ class ProjectScreen(TimeStampedModel):
     tags = TaggableManager(blank=True)
 
     image = models.ImageField(
-        upload_to=utils.get_file_path, blank=True, null=True, max_length=256
+        upload_to="uploads/", blank=True, null=True, max_length=256
     )
 
     screen_data_text = models.TextField(blank=True)

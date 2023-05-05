@@ -37,7 +37,7 @@ def elements_rootblock_create(
     # Function elements creation, loop through the root_block
     if (serializing == "assemble"):
         # Display the region assembled. Hide this for the production.
-        if (o.netloc != "adevi.info"):
+        if (o.netloc != "adevi.io"):
             for pre, fill, node in RenderTree(root_block):
                 if node == root_block:
                     # Create a new Scenario Element for the elements chain
@@ -334,6 +334,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
         # fname = ""
         # imgpath = ""
 
+        print(validated_data, MEDIA_ROOT)
         # Create the opencv recognition start
         if validated_data.get("image"):
             image_recognize = validated_data.pop("image")
@@ -342,7 +343,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             imgpath = MEDIA_ROOT + "/uploads/" + fname
         else:
             node = ProjectScreen.objects.create(**validated_data)
-
+        # node.save()
         # Calculate a chain of functions for merging
         # if imgpath:
         sdj = pipeline_merge(imgpath, region_dataset, fname)
