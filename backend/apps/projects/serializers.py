@@ -1194,7 +1194,8 @@ class ProjectActivitySerializer(serializers.ModelSerializer):
 class ElementCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ElementComment
-        fields = ("text", "element", "user")
+        fields = ("id", "text", "element", "user")
+        extra_kwargs = {"id": {"read_only": True}, "user": {"read_only": True}}
 
 
 """

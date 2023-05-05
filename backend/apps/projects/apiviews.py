@@ -842,7 +842,7 @@ class ElementCommentList(generics.ListCreateAPIView):
 
     # Inject current user at the point of saving the instance
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        serializer.save(user=self.request.user)
 
 
 class ElementCommentDetail(generics.RetrieveUpdateDestroyAPIView):
