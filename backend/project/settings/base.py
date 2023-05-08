@@ -37,6 +37,7 @@ INTERNAL_IPS = ENV.list("INTERNAL_IPS", default=("127.0.0.1",))
 
 # Application definition
 INSTALLED_APPS = [
+    "silk",
     "apps",
     'model_clone',
     "django.contrib.admin",
@@ -94,12 +95,14 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    'silk.middleware.SilkyMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
 
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
     "social_django.middleware.SocialAuthExceptionMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
 ]

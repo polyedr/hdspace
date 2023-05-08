@@ -1,0 +1,1478 @@
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-drag-drop/core-drag-drop.html">
+<link rel="import" href="../core-tooltip/core-tooltip.html">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+<script rel="import" href="../../js/modify.js"></script>
+
+<polymer-element name="drag-resize"
+	style="left:{{left}}px;top:{{top}}px;width:{{width}}px;height:{{height}}px;"
+	class="drag-resize"
+	on-track="{{ontrack}}"
+	on-tap="{{ontap}}"
+  attributes="drag-resize, aspectRatio"
+	>
+
+  <template>
+    <link rel="stylesheet" href="drag-resize.css">
+    <link rel="stylesheet" href="../../css/font-awesome.css" >
+    <link rel="stylesheet" href="../../css/material-icon.css" >
+
+		<core-drag-drop></core-drag-drop>
+		<div id="resizable_handlers"> <!--ondblclick ="changeText(document.getElementById('test').innerHTML)" -->
+  		<div class="drag-resize-handlers" data-direction="tl"></div>
+    	<div class="drag-resize-handlers" data-direction="tm"></div>
+    	<div class="drag-resize-handlers" data-direction="tr"></div>
+    	<div class="drag-resize-handlers" data-direction="mr"></div>
+    	<div class="drag-resize-handlers" data-direction="ml"></div>
+    	<div class="drag-resize-handlers" data-direction="bl"></div>
+    	<div class="drag-resize-handlers" data-direction="bm"></div>
+    	<div class="drag-resize-handlers" data-direction="br"></div>
+
+    	<core-tooltip id="coreTool" class="fancy debug-info">
+            <div id="editingTools">
+                <div id="edtitingButtons">
+                    <!--link-->
+                    <!--<button id="changeLink"><i class="fa fa-link" aria-hidden="true"></i></button>-->
+                    <!--unlink-->
+                    <!--<button><i class="fa fa-chain-broken" aria-hidden="true"></i></button>-->
+                    <!--prediction-->
+                    <!--<button id="checkPredicition" onclick="toggleShowPredictions(document.getElementById('test').innerHTML);"><i class="fa fa-line-chart" aria-hidden="true"></i></button>-->
+                    <!--Widget Active-->
+                    <button id="widgetlock" onclick="lockWidget(document.getElementById('test').innerHTML)" class="select" style="background-color:transparent;border:none">
+                        <i class="fa fa-lock drag-color" aria-hidden="true" style="font-size: 12px;"></i>
+                    </button>
+                    <button id="widgetActive" onclick="activateWidget(document.getElementById('test').innerHTML)" class="select" style="background-color:transparent;border:none">
+                        <i class="material-icons drag-color" style="font-size: 12px;">mouse</i>
+                    </button>
+                    <!--edit-->
+                    <button id="changeTextId" onclick="changeText(document.getElementById('test').innerHTML, this);" class="select" style="background-color:transparent;border:none"><i class="fa fa-edit drag-color" aria-hidden="true"></i></button>
+                    <!--lock-->
+                    <button id="elementLock" onclick="lockElement(document.getElementById('test').innerHTML);" class="select" style="background-color:transparent;border:none"><i class="fa fa-lock drag-color" aria-hidden="true"></i></button>
+                    <!--delete-->
+                    <button onclick="showPopUpDeleteElement();" class="select" style="background-color:transparent;border:none"><i class="fa fa-trash drag-color" aria-hidden="true"></i></button>
+                    <!--edit tools-->
+                    <!--duplicate-->
+                    <button id="duplicateElcement" onclick="duplicateElement(document.getElementById('test').innerHTML);" class="select" style="background-color:transparent;border:none"><i class="fa fa-lock drag-color" aria-hidden="true"></i></button>
+
+                    <!--<button id="editTools" onclick=""><i class="fa fa-pencil-square" aria-hidden="true"></i></button>-->
+                </div>
+            </div>
+      </core-tooltip>
+      <style>
+  			#resizable_handlers {
+  				-webkit-transform: scale({{zoomRatio}});
+  				transform: scale({{zoomRatio}});
+  			}
+      </style>
+    </div>
+
+  </template>
+  <script>
+      var moved = false;
+      var moveBbox = true;
+      var snap = true;
+      var tempx = 0, tempy = 0,tempw = 0,temph = 0;
+
+      function alignTool(state, event) {
+          document.getElementById('objectx').style.display = 'none';
+          document.getElementById('objecty').style.display = 'none';
+          var offset = $("#classContainer-selector").offset();
+
+          if (snap ==  true){
+              var inst = document.getElementById('classContainer-selector').getElementsByClassName('main');
+              //var inst = $(this).data("drag-resize");
+              var d = 1;
+              var ui = document.getElementById('drag-resizeId');
+              var uiheight = ui.height;
+
+              var element = document.getElementById(document.getElementById('test').innerHTML);
+              if (element.tagName == "A"|| element.tagName =="P"){
+                  uiheight = (parseFloat(uiheight)/100)*125;
+              }
+
+              var x0 = ui.left, x1 = x0 + ui.width,
+                  y0 = ui.top, y1 = y0 + uiheight,
+                  xc = (x0 + x1) / 2, yc = (y0 + y1) / 2;
+
+              for (var i = inst.length - 1; i >= 0; i--) {
+                  if (document.getElementById('test').innerHTML != inst[i].id) {
+                      var curElm = document.getElementById(document.getElementById('test').innerHTML);
+                      var elm = document.getElementById(inst[i].id);
+                      var l = parseFloat(window.getComputedStyle(elm, null).getPropertyValue('left'), 10),
+                          r = l + parseFloat(window.getComputedStyle(elm, null).getPropertyValue('width'), 10),
+                          t = parseFloat(window.getComputedStyle(elm, null).getPropertyValue('top'), 10),
+                          b = t + parseFloat(window.getComputedStyle(elm, null).getPropertyValue('height'), 10),
+                          hc = (l + r) / 2, vc = (t + b) / 2;
+
+                      var ls = Math.abs(parseFloat(l, 10) - parseFloat(x1, 10)) <= d;
+                      var rs = Math.abs(parseFloat(r, 10) - parseFloat(x0, 10)) <= d;
+                      var ll = Math.abs(parseFloat(l, 10) - parseFloat(x0, 10)) <= d;
+                      var rr = Math.abs(parseFloat(r, 10) - parseFloat(x1, 10)) <= d;
+
+                      var ts = Math.abs(parseFloat(t, 10) - parseFloat(y1, 10)) <= d;
+                      var bs = Math.abs(parseFloat(b, 10) - parseFloat(y0, 10)) <= d;
+                      var tt = Math.abs(parseFloat(t, 10) - parseFloat(y0, 10)) <= d;
+                      var bb = Math.abs(parseFloat(b, 10) - parseFloat(y1, 10)) <= d;
+
+
+                      var hs = Math.abs(parseInt(hc, 10) - parseInt(xc, 10)) <= d;
+                      var vs = Math.abs(parseInt(vc, 10) - parseInt(yc, 10)) <= d;
+
+                      var curMarLeft = (window.getComputedStyle(curElm,null).getPropertyValue('margin-left'));
+                      var curMarTop = (window.getComputedStyle(curElm,null).getPropertyValue('margin-top'));
+
+                      // ls is to check RIGHT vertical alignment of selected element against LEFT of any other element
+                      if (ls) {
+                          document.getElementById('objectx').style.left = l+'px';
+                          document.getElementById('objectx').style.display = 'block';
+
+                          if (state == 'mouse') {
+                              ui.left = l - curElm.width - curMarLeft;
+                              ui.bbox.elmX = l - ui.width;
+                              curElm.left = l - ui.width - curMarLeft;
+                          }
+                      }
+                      // rs is to check LEFT vertical alignment of selected element against RIGHT of any other element
+                      if (rs) {
+                          document.getElementById('objectx').style.left = r+'px';
+                          document.getElementById('objectx').style.display = 'block';
+                          if (state == 'mouse') {
+                              ui.left = r - curMarLeft;
+                              ui.bbox.elmX = r;
+                              curElm.left = r - curMarLeft;
+                          }
+                      }
+                      // ll is to check LEFT vertical alignment of selected element against LEFT of any other element
+                      if (ll) {
+                          document.getElementById('objectx').style.left = l+'px';
+                          document.getElementById('objectx').style.display = 'block';
+                          if (state == 'mouse') {
+                              ui.left = l - curMarLeft;
+                              ui.bbox.elmX = l;
+                              curElm.left = l - curMarLeft;
+                          }
+                      }
+                      // rr is to check RIGHT vertical alignment of selected element against RIGHT of any other element
+                      if (rr) {
+                          document.getElementById('objectx').style.left = r+'px';
+                          document.getElementById('objectx').style.display = 'block';
+                          if (state == 'mouse') {
+                              ui.left = r - curElm.width - curMarLeft;
+                              ui.bbox.elmX = r - ui.width;
+                              curElm.left = r -ui.width - curMarLeft;
+                          }
+                      }
+
+                      // ts is to check BOTTOM vertical alignment of selected element against TOP of any other element
+                      if (ts) {
+                          document.getElementById('objecty').style.top = t+'px';
+                          document.getElementById('objecty').style.display = 'block';
+                          if(state=='mouse') {
+                              ui.top = t - curElm.height - curMarTop;
+                              ui.bbox.elmY = t - uiheight;
+                              curElm.top = t - uiheight - curMarTop;
+                          }
+                      }
+                      // bs is to check TOP vertical alignment of selected element against BOTTOM of any other element
+                      if (bs) {
+                          document.getElementById('objecty').style.top = b+'px';
+                          document.getElementById('objecty').style.display = 'block';
+                          if(state=='mouse') {
+                              ui.top = b - curMarTop;
+                              ui.bbox.elmY = b;
+                              curElm.top = b - curMarTop;
+                          }
+                      }
+                      // tt is to check TOP vertical alignment of selected element against TOP of any other element
+                      if (tt) {
+                          document.getElementById('objecty').style.top = t+'px';
+                          document.getElementById('objecty').style.display = 'block';
+                          if(state=='mouse') {
+                              ui.top = t - curMarTop;
+                              ui.bbox.elmY = t ;
+                              curElm.top = t - curMarTop;
+                          }
+                      }
+                      // bb is to check BOTTOM vertical alignment of selected element against BOTTOM of any other element
+                      if (bb) {
+                          document.getElementById('objecty').style.top = b+'px';
+                          document.getElementById('objecty').style.display = 'block';
+                          if(state=='mouse') {
+                              ui.top = b - curElm.height - curMarTop;
+                              ui.bbox.elmY = b - uiheight;
+                              curElm.top = b - uiheight - curMarTop;
+                          }
+                      }
+                      // hs is to check VERTICAL CENTER alignment of selected elemnt against VERTICAL CENTER of any other element
+                      if (hs) {
+                          document.getElementById('objectx').style.left = hc+'px';
+                          document.getElementById('objectx').style.display = 'block';
+                          if(state=='mouse') {
+                              ui.left = hc - curElm.width / 2;
+                              ui.bbox.elmX = hc - ui.width / 2;
+                              curElm.left = hc - ui.width / 2;
+                          }
+                      }
+                      // vs is to check HORIZONTAL CENTER alignment of selected elemnt against HORIZONTAL CENTER of any other element
+                      if (vs) {
+                          document.getElementById('objecty').style.top = vc+'px';
+                          document.getElementById('objecty').style.display = 'block';
+                          if(state=='mouse') {
+                              ui.top = vc - curElm.height / 2;
+                              ui.bbox.elmY = vc - uiheight / 2;
+                              curElm.top = vc - uiheight / 2;
+                          }
+                      }
+                  }
+
+              }
+          }
+      }
+
+      Polymer({
+
+
+    editText: false,
+    /**
+     * `aspectRatio` is a property that preserves the aspectRatio.
+     *
+     * @property aspectRatio
+     * @type bool
+     * @default false
+     */
+  	aspectRatio: false,
+
+  	/**
+  	 *  `selectedElement` is the current selected element.
+  	 *
+     * @property selectedElement
+     * @type DOMElement
+     * @default null
+  	 */
+  	selectedElement: null,
+
+    /**
+     * `resizeHandle` is the resize handler of the element.
+     *
+     * @property resizeHandle
+     * @type DOMElement
+     * @default null
+  	 */
+  	resizeHandle: null,
+
+    /**
+     * `allowBlur` is the attributes that allows automatic blur onclick.
+     *
+     * @property allowBlur
+     * @type bool
+     * @default true
+     */
+  	allowBlur: false,
+
+    /**
+     * `enable` is the attribute that toggles globally the resize.
+     *
+     * @property enable
+     * @type bool
+     * @default true
+     */
+    enable: true,
+
+    /**
+     * `zIndex` is the highest Z-Index allocated.
+     *
+     * @property zIndex
+     * @type number
+     * @default 1
+     */
+  	zIndex: 1,
+
+  	/**
+  	 * `bbox` is the Bounding box area, in pixels.
+     *
+     * @property bbox
+     * @type object
+     * @default { elmX: 0, elmY: 0, elmH: 0, elmW: 0 }
+  	 */
+  	bbox: {
+  		elmX: 0,
+  		elmY: 0,
+  		elmH: 0,
+  		elmW: 0
+  	},
+
+  	/**
+  	 * `mouse` is the mouse information.
+     *
+     * @property mouse
+     * @type object
+     * @default { x: 0, y: 0, last: { x: 0, y: 0 }, offset: { x: 0, y: 0 } }
+  	 */
+  	mouse: {
+  		x: 0,
+  		y: 0,
+  		last: {
+  			x: 0,
+  			y: 0
+  		},
+  		offset: {
+  			x: 0,
+  			y: 0
+  		}
+  	},
+
+  	/**
+     * `minWidth` is the minimum pixel width of the element.
+     *
+     * @property minWidth
+     * @type number
+     * @default 30
+     */
+  	minWidth: 1,
+
+    /**
+     * `minHeight` is the minimum pixel height of the element.
+     *
+     * @property minHeight
+     * @type number
+     * @default 30
+     */
+    minHeight: 1,
+
+    /**
+     * `minLeft` is the minimum left position, in pixels.
+     *
+     * @property minLeft
+     * @type number
+     * @default -9999
+     */
+    minLeft: -9999,
+
+    /**
+     * `maxLeft` is the maximum left position, in pixels.
+     *
+     * @property maxLeft
+     * @type number
+     * @default 9999
+     */
+    maxLeft: 9999,
+
+    /**
+     * `minTop` is the minimum top position, in pixels.
+     *
+     * @property minTop
+     * @type number
+     * @default -9999
+     */
+    minTop: -9999,
+
+    /**
+     * `maxTop` is the minimum top position, in pixels.
+     *
+     * @property maxTop
+     * @type number
+     * @default 9999
+     */
+    maxTop: 9999,
+
+    /**
+     * `zoomRatio` is the zoom ratio used to scale the element.
+     *
+     * @property zoomRatio
+     * @type number
+     * @default 1
+     */
+    zoomRatio: 1,
+
+    /**
+     * `zoomLevel` is the original zoom level.
+     *
+     * @property zoomLevel
+     * @type number
+     * @default 1
+     */
+    zoomLevel: 1,
+
+    /**
+     * Set the zoom level. This value is used to make sure
+     * the resizable component is always visible and usable
+     * when the user zoom in.
+     *
+     * @method setZoom
+     * @param {Number} zoom values from 0.1 to 2
+     */
+    setZoom: function(zoom) {
+    	this.zoomLevel = zoom;
+
+    	if (zoom < 0.6) {
+	    	this.zoomRatio = 1/zoom;
+    		this.displayHandlers(['bm', 'tm', 'mr', 'ml']);
+    		this.style.border = '0 none';
+    	}
+    	else {
+    		this.zoomRatio = 1;
+    		this.displayHandlers();
+	    	this.style.border = '';
+    	}
+    },
+
+    /**
+     * Toggle the debug info tooltip
+     *
+     * @method toggleDebugInfo
+     */
+    toggleDebugInfo: function(){
+    	this.$.debug_info.classList.toggle('hidden');
+    },
+
+    /**
+     * This method returns the floor value from a decimal value.
+     *
+     * @method ToFloor
+     * @param {Number} value The decimal value to compute.
+     * @return {Number} the floor value.
+     */
+    ToFloor: function(value) {
+			return value | 0;
+		},
+
+    /**
+     * This method is used to show all or a subset of the resize handlers.
+     *
+     * @method displayHandlers
+     * @param {Array} filters An array of the handlers to show. If the array is empty or not provided, then all the handlers are shown.
+     */
+    displayHandlers: function(filters){
+
+    	var handlersContainer = this.$.resizable_handlers;
+    	var handlers = [].slice.call(handlersContainer.querySelectorAll('[data-direction]'));
+
+    	if(filters && filters.length>0){
+
+    		// first, hide all
+	    	handlers.forEach(function(handler, index, self){
+  				handler.style.visibility = 'hidden';
+  			});
+
+	    	// show filtered only
+    		filters.map(function(filter, index, self){
+    			var dom = handlersContainer.querySelector('[data-direction="'+filter+'"]');
+    			if(dom){
+    				dom.style.visibility = 'visible';
+    			}
+  				return dom;
+  			});
+
+    	}
+    	else {
+    		// show all
+    		handlers.forEach(function(handler, index, self){
+  				handler.style.visibility = 'visible';
+  			});
+    	}
+    },
+
+  	/**
+  	 * Adgjusts the font size of the resized element.
+  	 *
+  	 * @method adjustFontSize
+  	 * @param  {DOMElement} elem The element whose font size should be adjusted.
+  	 */
+    adjustFontSize: function(elem){
+      var compressor = 3.5;
+      var minFontSize = 8;
+      var maxFontSize = 100;
+      var val = elem.getBoundingClientRects().width / (compressor*10);
+      elem.style.fontSize = Math.max(Math.min(val, parseFloat(maxFontSize)), parseFloat(minFontSize));
+    },
+
+    /**
+     * Extra callbacks usefull when resizing the element.
+     *
+     * @method dragfocus
+     */
+    dragfocus: function() {},
+
+    /**
+     * Extra callbacks usefull when resizing the element.
+     *
+     * @method dragstart
+     */
+    dragstart: function() {},
+
+    /**
+     * Extra callbacks usefull when resizing the element.
+     *
+     * @method dragmove
+     */
+    dragmove: function() {},
+
+    /**
+     * Extra callbacks usefull when resizing the element.
+     *
+     * @method dragend
+     */
+    dragend: function() {},
+
+    /**
+     * Extra callbacks usefull when resizing the element.
+     *
+     * @method dragblur
+     */
+    dragblur: function() {},
+
+    /**
+     * The `ontap` handler.
+     *
+     * @method ontap
+     * @param  {Event} event The `ontap` event.
+     */
+    ontap: function(event){
+        var elm = event.target;
+	    if (elm.dataset.direction) {
+	      this.resizeHandle = elm;
+	      if (this.resizeHandle && this.dragstart) {
+	        this.dragstart(elm, this.resizeHandle.dataset.direction);
+	      }
+	    }
+	    else {
+	    	this.resizeHandle = null;
+	    }
+
+	    // Stop mouse selections if we're dragging a handle.
+      event.preventDefault();
+      event.stopPropagation();
+    },
+
+    /**
+     * The `ontrack` handler.
+     *
+     * @method ontrack
+     * @param  {Event} event The `ontrack` event.
+     */
+    ontrack: function(event){
+
+    	var direction;
+
+	    if (this.resizeHandle) {
+
+				direction = this.resizeHandle.dataset.direction;
+	    	this.resizeHandleDrag(event.ddx, event.ddy, direction)
+	    }
+
+    	this.updateStyle();
+
+	    if (this.dragmove) {
+	      this.dragmove(this);
+	    }
+
+	    event.stopPropagation();
+    	event.preventDefault();
+
+    },
+
+    /**
+     * Update either the position or the dimension styling of both the selected element and drag-resize element.
+     *
+     * @method updateStyle
+     * @param {String} updateConfig Pass `'dimension'` to update the dimension values.
+     *                              Pass `'position'` to update the position values.
+     */
+    updateStyle: function(updateConfig){
+
+    	var element = this.selectedElement;
+
+			function updatePosition(){
+
+      	this.left = this.bbox.elmX;
+	      this.top = this.bbox.elmY;
+
+	      if(element){
+		      element.left = this.left | 0;
+		      element.top = this.top | 0;
+	      }
+      }
+
+      function updateDimension(){
+
+      	this.width = this.bbox.elmW;
+	      this.height = this.bbox.elmH;
+
+	      if(element){
+
+		      element.width = this.width | 0;
+		      element.height = this.height | 0;
+	    	}
+      }
+
+			switch(updateConfig){
+				case 'dimension':
+					updateDimension.apply(this);
+					break;
+
+				case 'position':
+					updatePosition.apply(this);
+					break;
+
+				default:
+					updatePosition.apply(this);
+					updateDimension.apply(this);
+					break;
+			}
+
+    },
+
+    /**
+     * Focus (select) the active element.
+     *
+     * @method focus
+     * @param  {DOMElement} newElement The element to be selected.
+     */
+
+    focus: function(newElement){
+        console.log('I am this: '+this.editText );
+        window.history.pushState("tempstring", "temp", "/index/");
+
+        enableTable(newElement);
+        predTable(newElement);
+    	var style = null;
+    	var position = null;
+    	var id = document.getElementById('test').innerHTML;
+        var elm = document.getElementById(id);
+
+        var core = this.$.coreTool;
+        moveBbox = true;
+        core.style.marginBottom = '0px';
+        core.style.top = 'auto';
+
+    	if ( this.enable && newElement && !newElement.classList.contains('drag-resize-selected') ) {
+    		this.selectedElement = newElement;
+            changeElement(newElement);
+            getCurFamily(newElement);
+            getCurrentEditing();
+	      // Show handle set
+	      this.classList.add('drag-resize-selected');
+	      this.selectedElement.classList.add('drag-resize-focus');
+
+	      // Record element attributes for mouseMove().
+	      style = newElement.currentStyle || window.getComputedStyle(newElement, '');
+	      this.margin = {
+	      	left: 0, //parseInt(style.margins.left, 10),
+	      	top: 0 //parseInt(style.margins.top, 10),
+	      };
+
+	      position = this.position(newElement);
+	      dimension = this.dimension(newElement);
+
+	      var id = document.getElementById('test').innerHTML;
+	      var elm = document.getElementById(id);
+
+	      this.bbox.elmX = position.left - this.margin.left;
+	      this.bbox.elmY = position.top - this.margin.top;
+
+	      this.$.edtitingButtons.style.display = 'block';
+
+          if((elm.tagName == 'IMG')||(elm.tagName == 'DIV')){
+              var widgetCheck = id.substring(6,0);
+              console.log(widgetCheck);
+              console.log('widgetCheck');
+              console.log(id);
+              console.log('id');
+              var widgetId = '';
+
+              console.log(widgetId);
+              console.log('elmental watson');
+              if (widgetCheck !== 'widget'){
+                  var x =  this.$.changeTextId.style;
+                  x.display = 'none';
+                  var w =  this.$.widgetActive.style;
+                  w.display = 'none';
+                  var z =  this.$.widgetlock.style;
+                  z.display = 'none';
+                  core.style.width = '150px';
+                  core.style.marginLeft = '-32.5px';
+              }
+              else {
+                  var x =  this.$.changeTextId.style;
+                  x.display = 'none';
+                  var w =  this.$.widgetActive.style;
+                  w.display = '';
+                  var z =  this.$.widgetlock.style;
+                  z.display = '';
+                  var l =  this.$.elementLock.style;
+                  l.display = 'none';
+                  core.style.width = '150px';
+                  core.style.marginLeft = '-50px';
+              }
+          }
+          else{
+              var x =  this.$.changeTextId.style;
+              x.display = '';
+              var w =  this.$.widgetActive.style;
+              w.display = 'none';
+              var z =  this.$.widgetlock.style;
+              z.display = 'none';
+              core.style.width = '150px';
+              core.style.marginLeft = '-50px';
+          }
+
+	      if ((elm.tagName == "P")||(elm.tagName == "A")||(elm.tagName == "IMG" && elm.border != '')){
+              this.bbox.elmW = dimension.width;
+              this.bbox.elmH = dimension.height;
+          }
+          else{
+              this.bbox.elmW = dimension.width + 2;
+              this.bbox.elmH = dimension.height + 2;
+          }
+
+	      // Make sure the styles are correctly set
+	      // this will put the drag-resize ontop of the selected element.
+	      this.updateStyle();
+
+	      if (this.dragfocus) {
+	        this.dragfocus();
+	      }
+	    }
+
+    },
+
+    /**
+     * Blur (deselect) the active element.
+     *
+     * @method blur
+     * @param  {DOMElement} delHandles The active element to be blured
+     */
+    /** */
+    blur: function(delHandles){
+        setEvent(this);
+        showAllTools();
+        disableTable();
+        document.getElementById('objectx').style.display = 'none';
+        document.getElementById('objecty').style.display = 'none';
+	    if (delHandles) {
+	      if (this.dragblur) {
+	        this.dragblur();
+	      }
+	     this.classList.remove('drag-resize-selected');
+	    }
+
+	    if(this.selectedElement){
+	    	this.selectedElement.selected = false;
+	    	this.selectedElement.classList.remove('drag-resize-focus');
+	    }
+	    this.resizeHandle = null;
+	    this.selectedElement = null;
+
+	    this.mouse.offset.x = 0;
+	    this.mouse.offset.y = 0;
+
+	    this.bbox.elmW = 0;
+	    this.bbox.elmH = 0;
+	    this.bbox.elmX = 0;
+	    this.bbox.elmY = 0;
+
+    },
+    /** */
+    /**
+     * A convenient function that computes the exact position of an element.
+     *
+     * @method position
+     * @param {DOMElement} element The element to compute.
+     * @return {Object} The current top/left position of an element.
+     */
+    position: function(element){
+			var offsetParent, offset,
+	      parentOffset = {
+	        top: 0,
+	        left: 0
+	      };
+	    //offsetParent = this.selectedElement.offsetParent;
+	    offset = this.offset(element);
+	    return {
+	      top: offset.top - parentOffset.top,
+	      left: offset.left - parentOffset.left
+	    };
+    },
+
+    /**
+     * A convenient function that computes the correct offset position of an element.
+     *
+     * @method offset
+     * @param {DOMElement} element The element to compute.
+     * @return {Object} The current top/left offset position of an element.
+     */
+    offset: function(element){
+    	var docElem;
+    	var o = {
+    		top: 0,
+    		left: 0
+    	};
+    	element = element || this.selectedElement;
+    	if(element){
+		    docElem = element.ownerDocument.documentElement;
+		    o = {
+		      top: this.selectedElement.offsetTop - docElem.clientTop,
+		      left: this.selectedElement.offsetLeft - docElem.clientLeft
+		    }
+    	}
+	    return o;
+    },
+
+    /**
+     * A convenient function that computes the correct dimension of an element.
+     *
+     * @method dimension
+     * @param {DOMElement} element The element to compute.
+     * @return {Object} The current width/height of an element.
+     */
+    dimension: function(element){
+
+    	function getDisplayType(element) {
+		    return (element.currentStyle || window.getComputedStyle(element, '')).display;
+			}
+
+			var displayType = getDisplayType(element);
+
+    	if(displayType === 'inline' || displayType === ''){
+    		return element.getBoundingClientRect();
+    	}
+    	else {
+    		return {
+    			width: element.clientWidth,
+	      	height: element.clientHeight
+    		}
+    	}
+    },
+
+	  /**
+	   * Changes the stored element dimensions and mouse offset X and Y.
+	   *
+	   * @method resizeHandleDrag
+	   * @param  {Number} diffX The mouse movement amounts for X axe
+	   * @param  {Number} diffY The mouse movement amounts for Y axe
+	   * @param  {String} direction The resize handles that indicates wich direction is being resized.
+	   * @return {Boolean} True if dimensions have been processed.
+	   */
+    resizeHandleDrag: function(diffX, diffY, direction) {
+	    // If the direction is one of the resize handles, resize one or two dimensions.
+	    // Bounds checking is the hard bit -- basically for each edge, check that the
+	    // element doesn't go under minimum size, and doesn't go beyond its boundary.
+
+	    var dY = diffY, dX = diffX, processed = false;
+
+	    if(!direction){
+	      return false;
+	    }
+
+	    if (direction.indexOf('t') >= 0) {
+	      if (this.bbox.elmH - dY < this.minHeight) {
+	        diffY = this.bbox.elmH - this.minHeight;
+	        this.mouse.offset.y = dY - diffY;
+	      } else if (this.bbox.elmY + dY < this.minTop) {
+	        diffY = this.minTop - this.bbox.elmY;
+	        this.mouse.offset.y = dY - diffY;
+	      }
+	      this.bbox.elmY += diffY;
+	      this.bbox.elmH -= diffY;
+	      processed = true;
+	    }
+	    if (direction.indexOf('b') >= 0) {
+	      if (this.bbox.elmH + dY < this.minHeight) {
+	        diffY = this.minHeight - this.bbox.elmH;
+	        this.mouse.offset.y = dY - diffY;
+	      } else if (this.bbox.elmY + this.bbox.elmH + dY > this.maxTop) {
+	        diffY = this.maxTop - this.bbox.elmY - this.bbox.elmH;
+	        this.mouse.offset.y = dY - diffY;
+	      }
+	      this.bbox.elmH += diffY;
+	      processed = true;
+	    }
+	    if (direction.indexOf('l') >= 0) {
+	      if (this.bbox.elmW - dX < this.minWidth) {
+	        diffX = this.bbox.elmW - this.minWidth;
+	        this.mouse.offset.x = dX - diffX;
+	      } else if (this.bbox.elmX + dX < this.minLeft) {
+	        diffX = this.minLeft - this.bbox.elmX;
+	        this.mouse.offset.x = dX - diffX;
+	      }
+	      this.bbox.elmX += diffX;
+	      this.bbox.elmW -= diffX;
+	      processed = true;
+	    }
+	    if (direction.indexOf('r') >= 0) {
+	      if (this.bbox.elmW + dX < this.minWidth) {
+	        diffX = this.minWidth - this.bbox.elmW;
+	        this.mouse.offset.x = dX - diffX;
+	      } else if (this.bbox.elmX + this.bbox.elmW + dX > this.maxLeft) {
+	        diffX = this.maxLeft - this.bbox.elmX - this.bbox.elmW;
+	        this.mouse.offset.x = dX - diffX;
+	      }
+	      this.bbox.elmW += diffX;
+	      processed = true;
+	    }
+	    return processed;
+	  },
+
+	  /**
+	   * OnDrag event (triggered during the "drag-start" event).
+	   *
+	   * @method drag
+	   * @param  {Event} e The `ondragstart` event.
+	   */
+    drag: function(e){
+          console.log('DRAG STARTS');
+
+          tempx = this.bbox.elmX;
+          tempy = this.bbox.elmY;
+          tempw = this.bbox.elmW;
+          temph = this.bbox.elmH;
+          alignTool('mouse', event);
+          var dragInfo = e.detail;
+          var elem = dragInfo.event.target;
+          if (elem.dataset.direction) {
+	        this.resizeHandle = elem;
+	      if (this.resizeHandle && this.dragstart) {
+	        this.dragstart(elem, this.resizeHandle.dataset.direction);
+	      }
+	    }
+	    dragInfo.drag = this.dragging.bind(this);
+      dragInfo.drop = function() {};
+
+  	},
+
+  	/**
+  	 * OnDragging event (triggered when dragging an element)
+  	 *
+  	 * @method dragging
+  	 * @param  {Event} dragInfo The Dragging event which contains some usefull informaiton.
+  	 */
+	 /**
+      * tl---tm---tr
+      * |          |
+      * ml         mr
+      * |          |
+      * bl---bm---br
+      */
+  	dragging: function(dragInfo){
+  	    if (moveBbox == true) {
+  	        alignTool('mouse', event);
+
+            var elem = dragInfo.event.target;
+            var dir = elem.dataset.direction;
+
+            if(dir == 'tl'){
+                this.bbox.elmX = tempx + tempw - this.bbox.elmW;
+                this.bbox.elmY = tempy + temph - this.bbox.elmH;
+            }
+            if(dir == 'tm'){
+                this.bbox.elmX = tempx;
+                this.bbox.elmY = tempy + temph - this.bbox.elmH;
+                this.bbox.elmW = tempw;
+            }
+            if(dir == 'tr'){
+                this.bbox.elmX = tempx;
+                this.bbox.elmY = tempy + temph - this.bbox.elmH;
+            }
+            if(dir == 'ml') {
+                this.bbox.elmX = tempx + tempw - this.bbox.elmW;
+                this.bbox.elmY = tempy;
+                this.bbox.elmH = temph;
+            }
+            if(dir == 'mr') {
+                this.bbox.elmX = tempx;
+                this.bbox.elmY = tempy;
+                this.bbox.elmH = temph;
+            }
+            if(dir == 'bl'){
+                this.bbox.elmX = tempx + tempw - this.bbox.elmW;
+                this.bbox.elmY = tempy;
+            }
+            if(dir == 'bm'){
+                this.bbox.elmX = tempx;
+                this.bbox.elmY = tempy;
+                this.bbox.elmW = tempw;
+            }
+            if(dir == 'br'){
+                this.bbox.elmX = tempx;
+                this.bbox.elmY = tempy;
+            }
+
+
+            var w = document.getElementById('classContainer-selector').offsetWidth;
+            var h = document.getElementById('classContainer-selector').offsetHeight;
+
+            moved = true;
+
+            if (this.position().top <= 0) {
+                this.bbox.elmY = 0;
+            }
+            if (this.position().left <= 0) {
+                this.bbox.elmX = 0;
+            }
+            if ((this.position().left + this.width) >= w) {
+                this.bbox.elmX = w - this.width;
+            }
+            if ((this.position().top + this.height) >= h) {
+                this.bbox.elmY = h - this.height;
+            }
+
+            var element = this.selectedElement;
+            var ratio = 1 / this.zoomLevel;
+            var ddx = (dragInfo.event.ddx * ratio) | 0;
+            var ddy = (dragInfo.event.ddy * ratio) | 0;
+
+            if (element) {
+
+                this.left = this.bbox.elmX + ddx;
+                this.top = this.bbox.elmY + ddy;
+
+                if (this.resizeHandle) {
+                    this.updateStyle('dimension');
+                }
+                else {
+                    this.bbox.elmX = this.left;
+                    this.bbox.elmY = this.top;
+                    this.updateStyle('position');
+                }
+            }
+
+        }
+  	},
+
+    /* Polymer methods (life cycle) */
+
+  	observe: {
+      'width height left top': 'onDimensionsChange'
+    },
+
+    onDimensionsChange: function(width, height, left, top) {
+
+      var element = this.selectedElement;
+      var widthSection = document.getElementById('classContainer-selector').clientWidth;
+      var heightSection = document.getElementById('classContainer-selector').clientHeight;
+      if(element){
+          this.bbox.elmW = this.width;
+          this.bbox.elmH = this.height;
+          this.bbox.elmX = this.left;
+          this.bbox.elmY = this.top;
+
+          this.style.width = this.width +'px'; //92%
+          this.style.height = this.height +'px'; //87%
+          this.style.left = this.left +'px';
+          this.style.top = this.top + 'px';
+
+          if (element.tagName == "A"|| element.tagName =="P"){
+              this.style.height = (parseFloat(this.style.height)/100)*125;
+          }
+
+          if (element.tagName == "IMG") {
+              element.style.height = 'auto';
+              element.style.width = 'auto';
+              element.style.maxWidth = this.width / widthSection * 100 + '%';
+              element.style.maxHeight = this.height / heightSection * 100 + '%';
+              element.style.left = this.left / widthSection * 100 + '%';
+              element.style.top = this.top / heightSection * 100 + '%';
+          }
+          else {
+              element.style.width = this.width / widthSection * 100 + '%';
+              element.style.height = this.height / heightSection * 100 + '%';
+              element.style.left = this.left / widthSection * 100 + '%';
+              element.style.top = this.top / heightSection * 100 + '%';
+          }
+
+      }
+    },
+
+    aspectRatioChanged: function(){
+    	if(this.aspectRatio === true){
+    		this.displayHandlers(['br']);
+    	}
+    	else {
+    		this.displayHandlers();
+    	}
+    },
+
+    created: function(){},
+
+    attached: function() {
+      Polymer.addEventListener(this, 'drag-start', this.drag.bind(this));
+    },
+
+    domReady: function() {
+      Polymer.addEventListener(document, 'keydown', function(event){
+          if (event.keyCode == 27){
+              document.getElementById('objectx').style.display = 'none';
+              document.getElementById('objecty').style.display = 'none';
+              this.blur(true);
+              //document.getElementById('predictionChange').style.display = 'none';
+              //document.getElementById('predictions').style.display = 'none';
+          }
+          if (moveBbox ==  true && this.editText == false && document.getElementById('test').innerHTML != 'None selected') {
+              if(window.event.shiftKey){
+                  alignTool('mouse',event);
+              }
+              else {
+                  alignTool('keyboard',event);
+              }
+              if (event.keyCode == 37) {
+                  //left
+                  event.preventDefault();
+                  moved = true;
+                  this.bbox.elmX = this.bbox.elmX - 1;
+              }
+              if (event.keyCode == 38) {
+                  //up
+                  event.preventDefault();
+                  moved = true;
+                  this.bbox.elmY = this.bbox.elmY - 1;
+              }
+              if (event.keyCode == 39) {
+                  //right
+                  event.preventDefault();
+                  moved = true;
+                  this.bbox.elmX = this.bbox.elmX + 1;
+              }
+              if (event.keyCode == 40) {
+                  //down
+                  event.preventDefault();
+                  moved = true;
+                  this.bbox.elmY = this.bbox.elmY + 1;
+              }
+
+              var w = document.getElementById('classContainer-selector').offsetWidth;
+              var h = document.getElementById('classContainer-selector').offsetHeight;
+
+              if (this.position().top < 0) {
+                  this.bbox.elmY = 0;
+              }
+              if (this.position().left < 0) {
+                  this.bbox.elmX = 0;
+              }
+              if ((this.position().left + this.width) > w) {
+                  this.bbox.elmX = w - this.width;
+              }
+              if ((this.position().top + this.height) > h) {
+                  this.bbox.elmY = h - this.height;
+              }
+              this.left = this.bbox.elmX;
+              this.top = this.bbox.elmY;
+              this.updateStyle('position');
+          }
+
+      }.bind(this));
+      $('#test').bind("DOMSubtreeModified",function(event){
+
+      });
+      Polymer.addEventListener(document, 'mousedown', function(event){
+        var element = event.srcElement || event.target;
+        var filteredElements = element.classList.contains('drag-resize') || element.classList.contains('drag-resize-handlers') || element.getAttribute('drag-resize') !== null;
+        var widgetActivating = (element.id == ("move"));
+
+        if(element.classList.contains('fa-laptop')||element.classList.contains('fa-tablet')||
+            element.classList.contains('fa-mobile')||element.classList.contains('fa-mobile-rotate')||
+            element.id == ('tab1')||element.id == ('tab2')||element.id == ('tab3')||element.id == ('tab4')||
+            element.id == ('tab5')||element.id == ('tab6')||element.id == ('tab7')){
+            this.blur(true);
+            return;
+        }
+
+        //some stuff for checkbox checkBoxSnap
+        var check = document.getElementById("checkBoxSnap").checked;
+        if (check){
+            snap = true;
+            document.getElementById('objectx').style.display = 'none';
+            document.getElementById('objecty').style.display = 'none';
+        }
+        else{
+            snap = false;
+            document.getElementById('objectx').style.display = 'none';
+            document.getElementById('objecty').style.display = 'none';
+        }
+
+        if (event.target.id == "classContainer-selector" || $(event.target).parents("#classContainer-selector").length) {
+
+            if (!element.classList.contains('drag-resize')) {
+                // filteredElements happens whe you select any element
+                if (filteredElements) {
+                    //removes any previously selected element
+                    this.blur(element);
+                    //selects clicked element
+                    this.focus(element);
+                    moved = false;
+
+                }else if(widgetActivating){//when move is pressed
+                    this.blur(true);
+                    //do we need this?
+
+                }else{//when move is not presssed
+
+                    this.blur(true);
+                    document.getElementById('test').innerHTML = 'None selected';
+                }
+            }
+        }
+
+      }.bind(this));
+
+      $( ".overlay" ).mousedown(function( event ) {
+          console.log('this');
+          event.stopPropagation();
+          console.log(this);
+        var see =event.srcElement || event.target;
+        console.log('see');
+        console.log(see);
+        var element = event.target.parentNode;
+        var filteredElements = element.classList.contains('drag-resize') || element.classList.contains('drag-resize-handlers') || element.getAttribute('drag-resize') !== null;
+        var widgetActivating = (element.id == ("move"));
+
+            console.log('element');
+            console.log(element);
+            if (!element.classList.contains('drag-resize')) {
+                console.log('memema');
+                // filteredElements happens whe you select any element
+                if (filteredElements) {
+                    console.log('barbacoa');
+
+                    //removes any previously selected element
+                    this.blur(element);
+                    //selects clicked element
+                    this.focus(element);
+                    moved = false;
+                    console.log(document.getElementById('test').innerHTML);
+
+
+                }else if(widgetActivating){//when move is pressed
+                    console.log('alalalalalaarr');
+                    this.blur(true);
+                    console.log('alalalalalaarr');
+                    console.log(document.getElementById('test').innerHTML);
+
+
+                }else{//when move is not presssed
+                    console.log(document.getElementById('test').innerHTML);
+                    this.blur(true);
+                    document.getElementById('test').innerHTML = 'None selected';
+
+                }
+            }
+
+      }.bind(this));
+    }
+  });
+      $(document).ready(function() {
+
+          $('input').focus(function() {
+              var id = this.id;
+              if (id.indexOf('id') > -1){
+                  console.log('This is an element');
+              }
+              else{
+                  console.log('Prevent Moving');
+
+              }
+          });
+      });
+
+  function setEvent(elm){
+
+      console.log('elmemento');
+      console.log(elm);
+      var elementWidth = elm.style['width'];
+      var elementHeight = elm.style['height'];
+      var elementLeft = elm.style['left'];
+      var elementTop = elm.style['top'];
+
+      var parentWidth = document.getElementById('container-inside-frame').offsetWidth;
+      var parentHeight = document.getElementById('container-inside-frame').offsetHeight;
+      var elemId = document.getElementById('test').innerHTML;
+      if (elemId == ''|| elemId =='None selected') {
+          console.log('this element does not exist: ' + elemId);
+      }
+      else if (moved == false){
+          console.log('this element has not moved yet: ' + elemId);
+          var widget = document.getElementById(elemId).getAttribute('name');
+
+          if(widget === 'widget'){
+              console.log('widgets if not dragged')
+          }
+          else {
+
+              var fcolor = getStyleElement(document.getElementById(elemId), 'color');
+              var fontSize = getCurFontSize(document.getElementById(elemId));
+              var fFamily = getCurFamily(document.getElementById(elemId));
+              var bordercolor = getStyleElement(document.getElementById(elemId), 'border-Color');
+              var borderRadius = getStyleElement(document.getElementById(elemId), 'border-Radius');
+              var bgcolor = getStyleElement(document.getElementById(elemId), 'background-Color');
+              var textAlign = getStyleElement(document.getElementById(elemId), 'text-Align');
+              var element = document.getElementById(elemId).tagName;
+              var textIndent = getStyleElement(document.getElementById(elemId), 'text-indent');
+              var curname = document.getElementById(elemId).innerHTML;
+              if (curname == ''){
+                  curname = document.getElementById(elemId).placeholder;
+              }
+              $.ajax({
+                  type:'GET',
+                  url: '/index/',
+                  data: {
+                      'elemId': elemId,
+                      'fontColor':fcolor,
+                      'fontSize':fontSize,
+                      'fontFamily':fFamily,
+                      'borderColor':bordercolor,
+                      'borderRadius':borderRadius,
+                      'bgcolor':bgcolor,
+                      'textAlign':textAlign,
+                      'name': 'updateStyle',
+                      'currentName': curname,
+                      'element':element,
+                      'textIndent':textIndent,
+                      'type': 'fontSize'
+                  },
+                  success: function(data){
+                      var getHeaderFDATA, found, getHREF;
+                      getHeaderFDATA = data;
+                      found = $(getHeaderFDATA).filter(".getMeOnAddNewEle");
+                      getHREF = found.attr('href');
+                      $('.getMeOnAddNewEle').attr('href', getHREF);
+                  }
+              });
+          }
+
+
+
+      }
+      else
+      {
+          // update on move
+          console.log('update this element: ' + elemId);
+          var widget = document.getElementById(elemId).getAttribute('name');
+
+          if(widget === 'widget'){
+              console.log('a widget has been  dragged');
+              var width = elementWidth.substring(0,(elementWidth.length - 2));
+              var height = elementHeight.substring(0,(elementHeight.length - 2));
+
+              var percentileWidth = (width * 100 / parentWidth);
+              var percentileHeight = (height * 100 / parentHeight);
+              var left = elementLeft.substring(0, elementLeft.length - 2);
+              var top = elementTop.substring(0, elementTop.length - 2);
+              var x0 = left * 100 / parentWidth;
+              var y0 = top * 100 / parentHeight;
+              var x1 = (parseInt(left) + parseInt(width)) * 100 / parentWidth;
+              var y1 = (parseInt(top) + parseInt(height)) * 100 / parentHeight;
+              var elementt = 'widget';
+              var unset = 'unset';
+              var widgetId = 'id'+(elemId.substring(6));
+              console.log('beloww');
+              console.log(widgetId);
+
+              $.ajax({
+                  type:'GET',
+                  url: '/index/',
+                  data: {
+                      'x1': x1,
+                      'x0': x0,
+                      'y1': y1,
+                      'y0': y0,
+                      'height': percentileHeight,
+                      'elemId': widgetId,
+                      'width': percentileWidth,
+                      'fontColor': unset,
+                      'fontSize': unset,
+                      'fontFamily': unset,
+                      'borderColor': unset,
+                      'borderRadius': unset,
+                      'bgcolor': unset,
+                      'textAlign': unset,
+                      'name': 'saveMove',
+                      'element': elementt,
+                      'textIndent': unset,
+                      'type': 'location'
+                  },
+                  success: function (data) {
+                      var getHeaderFDATA, found, getHREF;
+                      getHeaderFDATA = data;
+                      found = $(getHeaderFDATA).filter(".getMeOnAddNewEle");
+                      getHREF = found.attr('href');
+                      $('.getMeOnAddNewEle').attr('href', getHREF);
+                      if (data.is_taken) {
+                          alert("A user with this username already exists.");
+                      }
+                  }
+              });
+          }
+          else{
+
+              var width = elementWidth.substring(0, elementWidth.length - 2);
+              var height = elementHeight.substring(0, elementHeight.length - 2);
+              var element = document.getElementById(elemId);
+              if (element.tagName == "A"|| element.tagName =="P"){
+                  height = (parseFloat(height)/125)*100;
+              }
+              var percentileWidth = (width * 100 / parentWidth);
+              var percentileHeight = (height * 100 / parentHeight);
+              var left = elementLeft.substring(0, elementLeft.length - 2);
+              var top = elementTop.substring(0, elementTop.length - 2);
+              var x0 = left * 100 / parentWidth;
+              var y0 = top * 100 / parentHeight;
+              var x1 = (parseInt(left) + parseInt(width)) * 100 / parentWidth;
+              var y1 = (parseInt(top) + parseInt(height)) * 100 / parentHeight;
+              var fcolor = getStyleElement(document.getElementById(elemId), 'color');
+              var fontSize = getCurFontSize(document.getElementById(elemId));
+              var fFamily = getCurFamily(document.getElementById(elemId));
+              var bordercolor = getStyleElement(document.getElementById(elemId), 'border-Color');
+              var borderRadius = getStyleElement(document.getElementById(elemId), 'border-Radius');
+              var bgcolor = getStyleElement(document.getElementById(elemId), 'background-Color');
+              var textAlign = getStyleElement(document.getElementById(elemId), 'text-Align');
+              var element = document.getElementById(elemId).tagName;
+              var textIndent = getStyleElement(document.getElementById(elemId), 'text-indent');
+              console.log("current f family " + fFamily);
+              console.log("current f size " + fontSize);
+              console.log(left);
+              console.log(top);
+              console.log(x1);
+              console.log(y1);
+              $.ajax({
+                  type:'GET',
+                  url: '/index/',
+                  data: {
+                      'x1': x1,
+                      'x0': x0,
+                      'y1': y1,
+                      'y0': y0,
+                      'height': percentileHeight,
+                      'elemId': elemId,
+                      'width': percentileWidth,
+                      'fontColor': fcolor,
+                      'fontSize': fontSize,
+                      'fontFamily': fFamily,
+                      'borderColor': bordercolor,
+                      'borderRadius': borderRadius,
+                      'bgcolor': bgcolor,
+                      'textAlign': textAlign,
+                      'name': 'saveMove',
+                      'element': element,
+                      'textIndent': textIndent,
+                      'type': 'location'
+                  },
+                  success: function (data) {
+                      var getHeaderFDATA, found, getHREF;
+                      getHeaderFDATA = data;
+                      found = $(getHeaderFDATA).filter(".getMeOnAddNewEle");
+                      getHREF = found.attr('href');
+                      $('.getMeOnAddNewEle').attr('href', getHREF);
+                      if (data.is_taken) {
+                          alert("A user with this username already exists.");
+                      }
+                  }
+              });
+          }
+      }
+}
+
+
+  </script>
+</polymer-element>

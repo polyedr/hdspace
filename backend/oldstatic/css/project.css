@@ -1,0 +1,413 @@
+:root {
+	--black-color: #1C1F28;
+	--green-color: #1ab394;
+	--white-color: #ffffff;
+}
+
+.project-bg {
+	background-color: var(--black-color);
+}
+
+.border-r-0 {
+	border-radius: 0;
+}
+
+@-moz-keyframes spin {
+	100% {
+		-moz-transform: rotate(360deg);
+	}
+}
+
+@-webkit-keyframes spin {
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+@keyframes spin {
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
+}
+
+/* welcome section */
+
+.welcome-screen {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding-left: 150px;
+	color: var(--white-color);
+	height: 50vh;
+	margin-top: 25vh;
+}
+
+.welcome-screen h1 {
+	font-size: 72px;
+}
+
+.welcome-screen h2 {
+	font-size: 56px;
+}
+
+.welcome-screen p {
+	padding-left: 8px;
+	font-size: 16px;
+	font-weight: normal;
+}
+
+.welcome-screen .title-description {
+	padding-left: 0;
+	font-size: 24px;
+}
+
+/* end welcome section */
+
+/* login section */
+
+.login-wrapper {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	height: 100vh;
+	background-color: var(--green-color);
+	padding-left: 80px;
+	padding-right: 80px;
+	color: var(--black-color);
+}
+
+.login-wrapper h2 {
+	font-weight: 600;
+}
+
+.login-wrapper form .form-group {
+	margin-top: 30px;
+}
+
+.login-wrapper form .btn {
+	margin-top: 10px;
+}
+
+.login-wrapper form .btn i {
+	animation: spin 0.5s linear infinite;
+	-webkit-animation: spin 0.5s linear infinite;
+	-moz-animation: spin 0.5s linear infinite;
+}
+
+.transparent-input {
+	background-color: transparent;
+	border: none;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+	font-size: 15px;
+	color: var(--black-color);
+}
+
+.transparent-input::placeholder {
+	transition: all 0.2s;
+	color: var(--black-color);
+}
+
+.transparent-input:focus {
+	border: none;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+	color: var(--white-color);
+}
+
+.transparent-input:focus::placeholder {
+	color: var(--white-color);
+}
+
+p.tip-block a {
+	font-size: smaller;
+	color: white;
+}
+
+p.tip-login a {
+	font-size: smaller;
+	color: var(--green-color);
+}
+
+.validate_error, .back_error {
+	padding-top: 3px;
+}
+
+/* end login section */
+
+.profile-element .dropdown-toggle {
+	background-color: transparent !important;
+}
+
+.left .message-avatar-wrap {
+	float: left;
+	margin-right: 10px;
+	position: relative;
+}
+
+.right .message-avatar-wrap {
+	float: right;
+	margin-left: 10px;
+	position: relative;
+}
+
+.message-avatar-wrap .message-avatar {
+	margin-right: 0 !important;
+	margin-left: 0 !important;
+}
+
+.message-avatar-wrap:after {
+	content: '';
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	right: -2px;
+	bottom: 40px;
+	border-radius: 100%;
+}
+
+.message-content {
+	border: solid 1px #dbdbdb;
+	border-radius: 3px;
+	width: 100%;
+	padding: 4px;
+}
+
+.message-content[disabled] {
+	border: none;
+	padding: 0;
+	background-color: transparent;
+}
+
+.message-avatar-wrap.online:after {
+	background-color: #6db237;
+}
+
+.message-avatar-wrap.offline:after {
+	background-color: #dbdbdb;
+}
+
+.mb-0 {
+	margin-bottom: 0;
+}
+
+.flex-1 {
+	flex: 1;
+}
+
+.flex {
+	display: flex;
+}
+
+.flex-row {
+	flex-direction: row;
+}
+
+.flex-center-main-axis {
+	align-items: center;
+}
+
+.flex-space-between {
+	justify-content: space-between;
+}
+
+.right-panels .panel-heading {
+	background-color: #fff;
+	color: #18a689;
+}
+
+.right-panels .panel {
+	margin-bottom: 5px;
+}
+
+.right-border {
+	border-right: solid 1px #dbdbdb;
+}
+
+.layout-variations>.panel {
+	flex: 1;
+	width: 50%;
+	border-radius: 0;
+}
+
+.layout-variations>.panel:first-child {
+	border-right: 0;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+	background-color: #fff;
+}
+
+.tab-heading h5 {
+	margin-top: 0;
+	margin-bottom: 0;
+	color: #18a689;
+	font-size: 16px;
+	font-weight: 400;
+}
+
+.tab-heading .align-btn {
+	border: none;
+	background-color: transparent;
+	padding: 0;
+}
+
+.tab-heading .align-btn i {
+	color: #18a689;
+}
+
+.rotate-buttons button {
+	border: solid 1px #dbdbdb;
+	background-color: transparent;
+	width: 26px;
+	height: 26px;
+	-webkit-border-radius: 100%;
+	-moz-border-radius: 100%;
+	border-radius: 100%;
+}
+
+.w-100 {
+	width: 100%;
+	height: auto;
+}
+
+.msg-textarea-wrapper {
+	position: relative;
+}
+
+.msg-textarea-wrapper .btn-primary {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	z-index: 1;
+}
+
+.search-result .row {
+	max-height: 155px;
+	overflow-y: auto;
+}
+
+.search-result-img {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.task-actions {
+	color: #fff;
+}
+
+.dropdown-menu.dropdown-menu-right {
+	right: 0;
+	left: auto;
+}
+
+.dropdown-menu li {
+	padding: 0 !important;
+	color: #333;
+}
+
+.dropdown-menu li a {
+	margin: 0;
+}
+
+.chat-discussion .chat-message.right .message {
+	text-align: left;
+}
+
+.chat-discussion .chat-message.right .message-date {
+	float: right;
+}
+
+.sidebar-container {
+	height: 100vh;
+}
+
+.chat-view {
+	margin-bottom: 0;
+}
+
+.tab-content {
+	height: calc(100% - 40px);
+}
+
+.tab-content>div {
+	height: 100%;
+}
+
+.chat-discussion {
+	height: auto;
+}
+
+.chat-view {
+	position: relative;
+	margin-bottom: 0;
+	padding-top: 50px;
+	padding-bottom: 95px;
+	/*display: flex;*/
+	/*flex-direction: column;*/
+	height: calc(100% - 135px);
+}
+
+.sidebar-open.sidebar-top .chat-view {
+	height: calc(100% - 70px);
+}
+
+.chat-view .ibox-content {
+	overflow-y: auto;
+	max-height: 100%;
+}
+
+.chat-view .ibox-title {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+.chat-message-form {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+
+.dropdown-wrap {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-links {
+	position: absolute;
+	z-index: 2;
+	top: 100%;
+	left: 0;
+	background-color: #fff;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	-webkit-box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, .2);
+	-moz-box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, .2);
+	box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, .2);
+	display: none;
+}
+
+.dropdown-links li {
+	cursor: pointer;
+	padding: 3px 7px;
+}
+
+.dropdown-links li:hover {
+	color: #fff;
+	background-color: #1ab394;
+}
+
+.not-selected-msg {
+	margin-left: 11px;
+}
+
+.add-to-task {
+	margin-top: 17px !important;
+}
+
+.share-modal {
+	padding: 20px 30px 30px 70px !important;
+}

@@ -1,0 +1,97 @@
+.class597d34226d5075031cf168de {
+    position: absolute; left: 0.1388888888888889%;
+    top: 0.3125%; width: 99.72222222222223%; height: 3.671875%;
+    background-color:rgb(58, 58, 58); border-radius: 10px
+}
+#id597d34226d5075031cf168de {
+}
+.class597d34226d5075031cf168ec{
+    position: absolute; left: 87.91666666666667%;
+    top: 93.125%; width: 6.666666666666657%; height: 3.828125%;
+    background-color:rgb(40, 66, 124);
+    border-radius: 10px
+}
+#id597d34226d5075031cf168ec{
+}
+.class597d34226d5075031cf168e9{
+    height:6.40625%;
+    width:88.88888888888889%;
+    border-radius: 10px;
+    border: 1px solid rgb(53, 80, 138);
+    background-color: rgb(34, 59, 115);
+    color: white;
+    position:absolute;
+    left:5.555555555555555%;
+    top:57.96875%;
+}
+#id597d34226d5075031cf168e9{
+    overflow: auto!important;
+}
+.class597d34226d5075031cf168e1{
+    overflow: auto!important;
+    position:absolute; left:25.555555555555557%;
+    top:18.671875%;
+    margin: 0px; font-size: 66px;
+}
+#id597d34226d5075031cf168e1{
+    overflow: auto!important;
+}
+.class597d34226d5075031cf168e1 > a {
+    color : white
+}
+.class597d34226d5075031cf168ee{
+    position:absolute;
+    left:33.75%;
+    top:93.984375%;
+    margin: 0px;
+    font-size: 17px;
+}
+#id597d34226d5075031cf168ee{
+}
+.class597d34226d5075031cf168ee > a {
+    border: 1px solid white !important;
+    color : white
+}
+.class597d34226d5075031cf168df{
+    overflow: auto!important;
+    position:absolute;
+    left:80.0%;
+    top:0.78125%;
+    margin : 0px;
+    font-size: 19px;
+    color: black
+}
+#id597d34226d5075031cf168df{
+    overflow: auto!important;
+}
+.class597d34226d5075031cf168e5{
+    overflow: auto!important;
+    height:6.484375%;
+    width:88.88888888888889%;
+    border-radius: 0px;
+    border: 0px;
+    position:absolute;
+    left:5.555555555555555%;
+    top:39.609375%;
+    background-color: rgb(255, 255, 255)
+}
+#id597d34226d5075031cf168e5{
+    overflow: auto!important;
+}
+.class597d34226d5075031cf168e7{
+    overflow: auto!important;
+    height:6.484375%;
+    width:88.88888888888889%;
+    border-radius: 0px;
+    border: 0px;
+    position:absolute;
+    left:5.555555555555555%;
+    top:48.671875%;
+    background-color: rgb(255, 255, 255)
+}
+#id597d34226d5075031cf168e7{
+}
+.classContainer{
+    background-color:rgb(44, 73, 136)!important;
+    height: inherit;
+}
