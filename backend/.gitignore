@@ -85,7 +85,7 @@ venv.bak/
 # Confirmation files
 google63e8b69f84f0ab59.html
 
-# Complite user progects
+# Complete user projects
 static/users
 media/users
 apps/virtualize_simple/mask_rcnn/trained_models/mask_rcnn_form_login_0026.h5
@@ -99,6 +99,9 @@ apps/virtualize_simple/ScenarioElementFreecanvasSerializer.py
 apps/virtualize_simple/ScenarioElementSerializer.py
 *.png
 out*.txt
+
+# Static files
+static/
 
 # erd diagram
 erd.dot
