@@ -20,7 +20,10 @@ DJOSER = {
 }
 
 # Mask R-CNN model initial load
-ROOT_DIR = os.path.abspath(BASE_DIR + "/apps/virtualize_simple/mask_rcnn")
+#ROOT_DIR = os.path.abspath(BASE_DIR + "/apps/virtualize_simple/mask_rcnn")
+PARENT_BASE_DIR = os.path.dirname(BASE_DIR)
+ROOT_DIR = os.path.abspath(PARENT_BASE_DIR + "/mask_rcnn")
+
 # Import Mask RCNN
 sys.path.append(ROOT_DIR)  # To find local version of the library
 from apps.virtualize_simple.mask_rcnn.mrcnn.config import Config
