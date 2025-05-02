@@ -90,7 +90,7 @@ class ProfileAPITest(APITestCase):
         data = self.serializer.data
 
         self.assertEqual(
-            set(data.keys()), set(["id", "approved", "role", "hourly_rate", "avatar"])
+            set(data.keys()), set(["id", "approved", "role", "hourly_rate", "avatar", "experienced", "parameters"])
         )
 
     def test_approved_field_content(self):
@@ -112,7 +112,7 @@ class ProfileAPITest(APITestCase):
 
         self.assertFalse(serializer.is_valid())
         self.assertEqual(set(serializer.errors.keys()), set(serializer.errors.keys()))
-        self.assertEqual(set(serializer.errors.keys()), set(["avatar", "role"]))
+        self.assertEqual(set(serializer.errors.keys()), set(["avatar", "role", "parameters"]))
 
     def tearDown(self):
         for profile in Profile.objects.all():
