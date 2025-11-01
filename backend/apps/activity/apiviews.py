@@ -170,13 +170,15 @@ class UHistoryView(APIView):
 
 
 class HistoryListApi(generics.ListAPIView):
-    history_managers = []
-    for model in django_apps.get_models():
-        if "Historical" in model._meta.object_name:
-            history_managers.append(model)
+    # Moved DB queries to get_queryset() to avoid execution during import
+    def get_queryset(self):
+        history_managers = []
+        for model in django_apps.get_models():
+            if "Historical" in model._meta.object_name:
+                history_managers.append(model)
 
-    history_objects = []
-    for manager in history_managers:
-        history_objects += list(manager.objects.all())
+        history_objects = []
+        for manager in history_managers:
+            history_objects += list(manager.objects.all())
 
-    queryset = history_objects
+        return history_objects

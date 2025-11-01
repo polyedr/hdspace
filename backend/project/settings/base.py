@@ -93,6 +93,7 @@ INSTALLED_APPS.extend(EXTERNAL_APPS + PROJECT_APPS)
 MIDDLEWARE = [
     "sesame.middleware.AuthenticationMiddleware",  # django-sesame
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Serve static files
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     'silk.middleware.SilkyMiddleware',
@@ -235,6 +236,9 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR.child("static")]
 STATIC_ROOT = BASE_DIR.child("collectstatic")
+
+# WhiteNoise configuration for serving static files with Gunicorn
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_ROOT = BASE_DIR.child("media")
 MEDIA_URL = "/media/"

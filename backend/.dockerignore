@@ -1,0 +1,93 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info
+.eggs
+dist
+build
+.venv
+venv
+ENV
+env
+.pytest_cache
+.coverage
+htmlcov
+.tox
+.hypothesis
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*.swn
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Environment
+.env
+.env.*
+!env.example
+
+# Static and Media (will be collected)
+static/
+oldstatic/
+media/
+collectstatic/
+
+# Logs
+*.log
+logs/
+
+# Tests
+htmlcov/
+.coverage
+.pytest_cache/
+
+# Documentation
+*.md
+docs/
+README.md
+
+# Temporary files
+*.bak
+*.tmp
+*~
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+bitbucket-pipelines.yml
+
+# ML Models - keeping them for virtualize_simple
+# apps/virtualize_simple/mask_rcnn/trained_models/*.h5
+
+# Database
+*.sqlite3
+db.sqlite3
+
+# Misc
+tesseract_opencl_profile_devices.dat
+erd.dot
+pre-commit
+setup.py
+setup.cfg
+pytest.ini
+

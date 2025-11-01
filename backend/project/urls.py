@@ -25,6 +25,7 @@ from drf_yasg import openapi
 
 # drf_yasg SchemaView
 from apps.schat.apiviews import CustomObtainPairView
+from project.health import health_check, simple_health_check
 
 SchemaView = get_schema_view(
     openapi.Info(
@@ -42,6 +43,9 @@ def trigger_error(request):
     division_by_zero = 1 / 0
 
 urlpatterns = [
+    # Health checks
+    path("health/", simple_health_check, name="health"),
+    path("health/detailed/", health_check, name="health_detailed"),
     # path("oauth/", include("social_django.urls", namespace="social")),
     path("admin/", admin.site.urls),
     path(
