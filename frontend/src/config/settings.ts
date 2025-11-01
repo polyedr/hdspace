@@ -5,13 +5,13 @@ export const env = import.meta.env.MODE;
 const settings = {
   development: {
     api: {
-      host: 'https://api-staging.adevi.io',
+      host: 'http://localhost:18000',
       version: 1,
     },
   },
   staging: {
     api: {
-      host: 'https://api-staging.adevi.io',
+      host: 'http://localhost:18000',
       version: 1,
     },
   },
