@@ -1,0 +1,367 @@
+{
+  "info": {
+    "_postman_id": "adevi-virtualize-collection",
+    "name": "Adevi Backend - Virtualize Simple (ML)",
+    "description": "Коллекция эндпоинтов для работы с ML моделями: распознавание элементов интерфейса, Mask R-CNN, сборка сценариев",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Recognize - Project Screen Creation",
+      "item": [
+        {
+          "name": "Create Project Screen with Recognition",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"project\": {{project_id}},\n    \"name\": \"Recognized Screen\",\n    \"image\": \"/path/to/image.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/virtualize_simple/recognize/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "virtualize_simple",
+                "recognize",
+                ""
+              ]
+            },
+            "description": "Создание нового project screen с аннотацией изображения через ML"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mask R-CNN",
+      "item": [
+        {
+          "name": "Detect Elements (Forms)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Изображение для распознавания"
+                },
+                {
+                  "key": "block_type",
+                  "type": "text",
+                  "value": "forms",
+                  "description": "Тип блока: forms, headers, footers"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/virtualize_simple/maskrcnn/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "virtualize_simple",
+                "maskrcnn",
+                ""
+              ]
+            },
+            "description": "Распознавание элементов интерфейса (forms) с помощью Mask R-CNN модели.\n\n**Параметры**:\n- `image`: файл изображения\n- `block_type`: \"forms\", \"headers\" или \"footers\"\n\n**Ответ**: JSON с результатами детекции (rois, class_ids, scores)"
+          }
+        },
+        {
+          "name": "Detect Elements (Headers)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "block_type",
+                  "type": "text",
+                  "value": "headers"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/virtualize_simple/maskrcnn/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "virtualize_simple",
+                "maskrcnn",
+                ""
+              ]
+            },
+            "description": "Распознавание header элементов с помощью Mask R-CNN"
+          }
+        },
+        {
+          "name": "Detect Elements (Footers)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "block_type",
+                  "type": "text",
+                  "value": "footers"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/virtualize_simple/maskrcnn/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "virtualize_simple",
+                "maskrcnn",
+                ""
+              ]
+            },
+            "description": "Распознавание footer элементов с помощью Mask R-CNN"
+          }
+        },
+        {
+          "name": "Detect Elements (JSON Body)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"image\": \"/path/to/image.jpg\",\n    \"block_type\": \"forms\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/virtualize_simple/maskrcnn/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "virtualize_simple",
+                "maskrcnn",
+                ""
+              ]
+            },
+            "description": "Альтернативный способ вызова Mask R-CNN через JSON (если image уже загружен)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Assemble - Scenario Element Assembly",
+      "item": [
+        {
+          "name": "Assemble Scenario Elements",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"screen_scenario\": {{screen_scenario_id}},\n    \"annotation_data\": {},\n    \"element_type\": \"div\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/virtualize_simple/assemble/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "virtualize_simple",
+                "assemble",
+                ""
+              ]
+            },
+            "description": "Создание DOM элементов на основе предопределенной аннотации через нейронную сеть"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Freecanvas - Free Canvas Assembly",
+      "item": [
+        {
+          "name": "Assemble from Free Canvas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"screen_scenario\": {{screen_scenario_id}},\n    \"canvas_data\": {},\n    \"element_type\": \"div\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/virtualize_simple/freecanvas/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "virtualize_simple",
+                "freecanvas",
+                ""
+              ]
+            },
+            "description": "Создание DOM элементов на основе free canvas через нейронную сеть"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:18000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "project_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "screen_scenario_id",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

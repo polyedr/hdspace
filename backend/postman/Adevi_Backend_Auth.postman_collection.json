@@ -1,0 +1,194 @@
+{
+"info": {
+"_postman_id": "adevi-auth-collection",
+"name": "Adevi Backend - Authentication & Authorization",
+"description": "Коллекция эндпоинтов для аутентификации и авторизации",
+"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+},
+"item": [
+{
+"name": "Health Checks",
+"item": [
+{
+"name": "Simple Health Check",
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{base_url}}/health/",
+"host": ["{{base_url}}"],
+"path": ["health", ""]
+}
+}
+},
+{
+"name": "Detailed Health Check",
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{base_url}}/health/detailed/",
+"host": ["{{base_url}}"],
+"path": ["health", "detailed", ""]
+}
+}
+}
+]
+},
+{
+"name": "JWT Authentication",
+"item": [
+{
+"name": "Login (JWT) - Obtain Token Pair",
+"event": [{
+"listen": "test",
+"script": {
+"exec": [
+"if (pm.response.code === 200) {",
+"    var jsonData = pm.response.json();",
+"    if (jsonData.access) {",
+"        pm.environment.set('access_token', jsonData.access);",
+"        pm.collectionVariables.set('access_token', jsonData.access);",
+"    }",
+"    if (jsonData.refresh) {",
+"        pm.environment.set('refresh_token', jsonData.refresh);",
+"    }",
+"}"
+],
+"type": "text/javascript"
+}
+}],
+"request": {
+"method": "POST",
+"header": [{"key": "Content-Type", "value": "application/json"}],
+"body": {
+"mode": "raw",
+"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}"
+},
+"url": {
+"raw": "{{base_url}}/api/v1/djauth/jwt/create/",
+"host": ["{{base_url}}"],
+"path": ["api", "v1", "djauth", "jwt", "create", ""]
+}
+}
+},
+{
+"name": "Refresh Token",
+"request": {
+"method": "POST",
+"header": [{"key": "Content-Type", "value": "application/json"}],
+"body": {
+"mode": "raw",
+"raw": "{\n    \"refresh\": \"{{refresh_token}}\"\n}"
+},
+"url": {
+"raw": "{{base_url}}/api/v1/djauth/jwt/refresh/",
+"host": ["{{base_url}}"],
+"path": ["api", "v1", "djauth", "jwt", "refresh", ""]
+}
+}
+},
+{
+"name": "Verify Token",
+"request": {
+"method": "POST",
+"header": [{"key": "Content-Type", "value": "application/json"}],
+"body": {
+"mode": "raw",
+"raw": "{\n    \"token\": \"{{access_token}}\"\n}"
+},
+"url": {
+"raw": "{{base_url}}/api/v1/djauth/jwt/verify/",
+"host": ["{{base_url}}"],
+"path": ["api", "v1", "djauth", "jwt", "verify", ""]
+}
+}
+}
+]
+},
+{
+"name": "Djoser - User Management",
+"item": [
+{
+"name": "User Registration",
+"request": {
+"method": "POST",
+"header": [{"key": "Content-Type", "value": "application/json"}],
+"body": {
+"mode": "raw",
+"raw": "{\n    \"username\": \"newuser\",\n    \"email\": \"newuser@example.com\",\n    \"password\": \"securepassword123\",\n    \"re_password\": \"securepassword123\"\n}"
+},
+"url": {
+"raw": "{{base_url}}/api/v1/djauth/users/",
+"host": ["{{base_url}}"],
+"path": ["api", "v1", "djauth", "users", ""]
+}
+}
+},
+{
+"name": "Get Current User",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{"key": "token", "value": "{{access_token}}", "type": "string"}]
+},
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{base_url}}/api/v1/djauth/users/me/",
+"host": ["{{base_url}}"],
+"path": ["api", "v1", "djauth", "users", "me", ""]
+}
+}
+},
+{
+"name": "Update Current User",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{"key": "token", "value": "{{access_token}}", "type": "string"}]
+},
+"method": "PATCH",
+"header": [{"key": "Content-Type", "value": "application/json"}],
+"body": {
+"mode": "raw",
+"raw": "{\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\"\n}"
+},
+"url": {
+"raw": "{{base_url}}/api/v1/djauth/users/me/",
+"host": ["{{base_url}}"],
+"path": ["api", "v1", "djauth", "users", "me", ""]
+}
+}
+},
+{
+"name": "Change Password",
+"request": {
+"auth": {
+"type": "bearer",
+"bearer": [{"key": "token", "value": "{{access_token}}", "type": "string"}]
+},
+"method": "POST",
+"header": [{"key": "Content-Type", "value": "application/json"}],
+"body": {
+"mode": "raw",
+"raw": "{\n    \"new_password\": \"newsecurepassword123\",\n    \"re_new_password\": \"newsecurepassword123\",\n    \"current_password\": \"oldpassword123\"\n}"
+},
+"url": {
+"raw": "{{base_url}}/api/v1/djauth/users/set_password/",
+"host": ["{{base_url}}"],
+"path": ["api", "v1", "djauth", "users", "set_password", ""]
+}
+}
+}
+]
+}
+],
+"variable": [
+{"key": "base_url", "value": "http://localhost:18000", "type": "string"},
+{"key": "username", "value": "admin", "type": "string"},
+{"key": "password", "value": "changeme123", "type": "string"},
+{"key": "access_token", "value": "", "type": "string"},
+{"key": "refresh_token", "value": "", "type": "string"}
+]
+}
