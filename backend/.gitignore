@@ -102,6 +102,7 @@ out*.txt
 
 # Static files
 static/
+collectstatic/
 
 # erd diagram
 erd.dot
