@@ -41,6 +41,8 @@ media/
 static/users
 media/users
 *.h5
+*.pb
+stats.json
 *.log
 db.sqlite3
 celerybeat-schedule
