@@ -1,0 +1,414 @@
+import { configureStylePreferences } from './modules/stylePreference';
+import { addEventListeners } from './modules/addEventListeners';
+import * as picker from './modules/picker/picker';
+import * as monthPicker from './modules/picker/month/monthPicker';
+import * as yearPicker from './modules/picker/year/yearPicker';
+import * as header from './modules/header/header';
+import * as weekday from './modules/weekday/weekday';
+import * as day from './modules/day/day';
+
+import {
+  LayoutModifier,
+  CalendarOptions,
+  Day,
+  MonthDisplayType,
+  WeekdayDisplayType,
+  Weekdays,
+  StartWeekday,
+} from './CalendarOptions';
+
+export default class Calendar {
+  /* Constants */
+  readonly CAL_NAME = 'color-calendar';
+  readonly DAYS_TO_DISPLAY = 42;
+
+  /* Options */
+  id: string;
+  calendarSize?: string; // CalendarSize;
+  layoutModifiers: LayoutModifier[];
+  theme: string;
+  primaryColor?: string;
+  headerColor?: string;
+  headerBackgroundColor?: string;
+  weekdaysColor?: string;
+  weekdayDisplayType: WeekdayDisplayType;
+  monthDisplayType: MonthDisplayType;
+  startWeekday: StartWeekday;
+  fontFamilyHeader?: string;
+  fontFamilyWeekdays?: string;
+  fontFamilyBody?: string;
+  dropShadow?: string;
+  border?: string;
+  borderRadius?: string;
+  disableMonthYearPickers: boolean;
+  disableDayClick: boolean;
+  disableMonthArrowClick: boolean;
+  monthChanged?: (currentDate?: Date) => void;
+  dateChanged?: (currentDate?: Date) => void;
+
+  /* State */
+  weekdayDisplayTypeOptions = {
+    short: ['S', 'M', 'T', 'W', 'T', 'F', 'S'] as Weekdays,
+    'long-lower': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as Weekdays,
+    'long-upper': ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'] as Weekdays,
+  };
+
+  weekdays: Weekdays;
+  today: Date;
+  currentDate: Date;
+  pickerType: string;
+  eventDayMap: any;
+  oldSelectedNode: [HTMLElement, number] | null;
+  daysIn_PrevMonth: Day[];
+  daysIn_CurrentMonth: Day[];
+  daysIn_NextMonth: Day[];
+  firstDay_PrevMonth: StartWeekday;
+  firstDay_CurrentMonth: StartWeekday;
+  firstDay_NextMonth: StartWeekday;
+  numOfDays_PrevMonth: number;
+  numOfDays_CurrentMonth: number;
+  numOfDays_NextMonth: number;
+  yearPickerOffset: number;
+  yearPickerOffsetTemporary: number;
+
+  /* Elements */
+  calendar: HTMLElement;
+  calendarRoot: HTMLElement;
+  calendarHeader: HTMLElement;
+  calendarWeekdays: HTMLElement;
+  calendarDays: HTMLElement;
+  prevButton: HTMLElement;
+  nextButton: HTMLElement;
+  pickerContainer: HTMLElement;
+  pickerMonthContainer: HTMLElement;
+  pickerYearContainer: HTMLElement;
+  yearPickerChevronLeft: HTMLElement;
+  yearPickerChevronRight: HTMLElement;
+  monthyearDisplay: HTMLElement;
+  monthDisplay: HTMLElement;
+  yearDisplay: HTMLElement;
+  document: Document;
+
+  /* Methods */
+  // Event Listeners
+  addEventListeners!: () => void;
+  // Style Preference
+  configureStylePreferences!: () => void;
+  // Picker
+  togglePicker!: (shouldOpen?: boolean) => void;
+  // Picker - Month
+  handleMonthPickerClick!: (e: any) => void;
+  updateMonthPickerSelection!: (newMonthValue: number) => void;
+  removeMonthPickerSelection!: () => void;
+  // Picker - Year
+  handleYearPickerClick!: (e: any) => void;
+  updateYearPickerSelection!: (
+    newYearValue: number,
+    newYearIndex?: number,
+  ) => void;
+
+  updateYearPickerTodaySelection!: () => void;
+  removeYearPickerSelection!: () => void;
+  generatePickerYears!: () => void;
+  handleYearChevronLeftClick!: () => void;
+  handleYearChevronRightClick!: () => void;
+  // Header
+  setMonthDisplayType!: (monthDisplayType: MonthDisplayType) => void;
+  handleMonthYearDisplayClick!: (e: any) => void;
+  handlePrevMonthButtonClick!: () => void;
+  handleNextMonthButtonClick!: () => void;
+  updateMonthYear!: () => void;
+  // Weekday
+  setWeekdayDisplayType!: (weekdayDisplayType: WeekdayDisplayType) => void;
+  generateWeekdays!: () => void;
+  // Day
+  setDate!: (date: Date) => void;
+  getSelectedDate!: () => Date;
+  clearCalendarDays!: () => void;
+  updateCalendar!: (isMonthChanged?: boolean) => void;
+  setOldSelectedNode!: () => void;
+  selectDayInitial!: (setDate?: boolean) => void;
+  handleCalendarDayClick!: (e: any) => void;
+  removeOldDaySelection!: () => void;
+  updateCurrentDate!: (
+    monthOffset: number,
+    newDay?: number,
+    newMonth?: number,
+    newYear?: number,
+  ) => void;
+
+  generateDays!: () => void;
+  renderDays!: () => void;
+  rerenderSelectedDay!: (
+    element: HTMLElement,
+    dayNum: number,
+    storeOldSelected?: boolean,
+  ) => void;
+
+  constructor(options: CalendarOptions = {}) {
+    /* Initialize Options */
+    this.id = options.id ?? '#color-calendar';
+    this.calendarSize = options?.calendarSize; // ?? 'large'
+    this.layoutModifiers = options.layoutModifiers ?? [];
+    this.theme = options.theme ?? 'basic';
+    this.primaryColor = options.primaryColor;
+    this.headerColor = options.headerColor;
+    this.headerBackgroundColor = options.headerBackgroundColor;
+    this.weekdaysColor = options.weekdaysColor;
+    this.weekdayDisplayType = options.weekdayDisplayType ?? 'long-lower';
+    this.monthDisplayType = options.monthDisplayType ?? 'long';
+    this.startWeekday = options.startWeekday ?? 0; // 0 (Sun), 1 (Mon), 2 (Tues), 3 (Wed), 4 (Thu), 5 (Fri), 6 (Sat)
+    this.fontFamilyHeader = options.fontFamilyHeader;
+    this.fontFamilyWeekdays = options.fontFamilyWeekdays;
+    this.fontFamilyBody = options.fontFamilyBody;
+    this.dropShadow = options.dropShadow;
+    this.border = options.border;
+    this.borderRadius = options.borderRadius;
+    this.disableMonthYearPickers = options.disableMonthYearPickers ?? false;
+    this.disableDayClick = options.disableDayClick ?? false;
+    this.disableMonthArrowClick = options.disableMonthArrowClick ?? false;
+    this.monthChanged = options.monthChanged;
+    this.dateChanged = options.dateChanged;
+
+    /* Initialize State */
+    this.weekdays =
+      this.weekdayDisplayTypeOptions[this.weekdayDisplayType] ??
+      this.weekdayDisplayTypeOptions.short;
+    this.today = new Date();
+    this.currentDate = new Date();
+    this.pickerType = 'month';
+    this.eventDayMap = {};
+    this.oldSelectedNode = null;
+    this.daysIn_PrevMonth = [];
+    this.daysIn_CurrentMonth = [];
+    this.daysIn_NextMonth = [];
+    this.firstDay_PrevMonth = 0;
+    this.firstDay_CurrentMonth = 0;
+    this.firstDay_NextMonth = 0;
+    this.numOfDays_PrevMonth = 0;
+    this.numOfDays_CurrentMonth = 0;
+    this.numOfDays_NextMonth = 0;
+    this.yearPickerOffset = 0;
+    this.yearPickerOffsetTemporary = 0;
+    this.document = options.document || document;
+
+    // Check if HTML element with given selector exists in DOM
+    this.calendar = this.document.querySelector(this.id);
+    if (!this.calendar) {
+      // eslint-disable-next-line no-console
+      console.error(
+        `[COLOR-CALENDAR] Element with selector '${this.id}' not found`,
+      );
+      return;
+    }
+
+    // Initialize initial HTML layout
+    this.calendar.innerHTML = `
+      <div class="${this.CAL_NAME} ${this.theme} color-calendar--${this.calendarSize}">
+        <div class="calendar__header">
+          <div class="calendar__arrow calendar__arrow-prev"><div class="calendar__arrow-inner"></div></div>
+          <div class="calendar__monthyear">
+            <span class="calendar__month"></span>&nbsp;
+            <span class="calendar__year"></span>
+          </div>
+          <div class="calendar__arrow calendar__arrow-next"><div class="calendar__arrow-inner"></div></div>
+        </div>
+        <div class="calendar__body">
+          <div class="calendar__weekdays"></div>
+          <div class="calendar__days"></div>
+          <div class="calendar__picker">
+            <div class="calendar__picker-month">
+              <div class="calendar__picker-month-option" data-value="0">Jan</div>
+              <div class="calendar__picker-month-option" data-value="1">Feb</div>
+              <div class="calendar__picker-month-option" data-value="2">Mar</div>
+              <div class="calendar__picker-month-option" data-value="3">Apr</div>
+              <div class="calendar__picker-month-option" data-value="4">May</div>
+              <div class="calendar__picker-month-option" data-value="5">Jun</div>
+              <div class="calendar__picker-month-option" data-value="6">Jul</div>
+              <div class="calendar__picker-month-option" data-value="7">Aug</div>
+              <div class="calendar__picker-month-option" data-value="8">Sep</div>
+              <div class="calendar__picker-month-option" data-value="9">Oct</div>
+              <div class="calendar__picker-month-option" data-value="10">Nov</div>
+              <div class="calendar__picker-month-option" data-value="11">Dec</div>
+            </div>
+            <div class="calendar__picker-year">
+              <div class="calendar__picker-year-option" data-value="0"></div>
+              <div class="calendar__picker-year-option" data-value="1"></div>
+              <div class="calendar__picker-year-option" data-value="2"></div>
+              <div class="calendar__picker-year-option" data-value="3"></div>
+              <div class="calendar__picker-year-option" data-value="4"></div>
+              <div class="calendar__picker-year-option" data-value="5"></div>
+              <div class="calendar__picker-year-option" data-value="6"></div>
+              <div class="calendar__picker-year-option" data-value="7"></div>
+              <div class="calendar__picker-year-option" data-value="8"></div>
+              <div class="calendar__picker-year-option" data-value="9"></div>
+              <div class="calendar__picker-year-option" data-value="10"></div>
+              <div class="calendar__picker-year-option" data-value="11"></div>
+              <div class="calendar__picker-year-arrow calendar__picker-year-arrow-left">
+                <div class="chevron-thin chevron-thin-left"></div>
+              </div>
+              <div class="calendar__picker-year-arrow calendar__picker-year-arrow-right">
+                <div class="chevron-thin chevron-thin-right"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Store HTML element references
+    this.calendarRoot = this.document.querySelector(
+      `${this.id} .${this.CAL_NAME}`,
+    );
+    this.calendarHeader = this.document.querySelector(
+      `${this.id} .calendar__header`,
+    );
+    this.calendarWeekdays = this.document.querySelector(
+      `${this.id} .calendar__weekdays`,
+    );
+    this.calendarDays = this.document.querySelector(
+      `${this.id} .calendar__days`,
+    );
+    this.pickerContainer = this.document.querySelector(
+      `${this.id} .calendar__picker`,
+    );
+    this.pickerMonthContainer = this.document.querySelector(
+      `${this.id} .calendar__picker-month`,
+    );
+    this.pickerYearContainer = this.document.querySelector(
+      `${this.id} .calendar__picker-year`,
+    );
+    this.yearPickerChevronLeft = this.document.querySelector(
+      `${this.id} .calendar__picker-year-arrow-left`,
+    );
+    this.yearPickerChevronRight = this.document.querySelector(
+      `${this.id} .calendar__picker-year-arrow-right`,
+    );
+
+    // Mark today's month in month picker
+    this.pickerMonthContainer.children[this.today.getMonth()].classList.add(
+      'calendar__picker-month-today',
+    );
+
+    // Apply Layout Modifiers
+    this.layoutModifiers.forEach((item) => {
+      this.calendarRoot.classList.add(item);
+    });
+
+    // Shifts month and year header UI to be left aligned
+    if (this.layoutModifiers.includes('month-left-align')) {
+      this.calendarHeader.innerHTML = `
+        <div class="calendar__monthyear">
+          <span class="calendar__month"></span>&nbsp;
+          <span class="calendar__year"></span>
+        </div>
+        <div class="calendar__arrow calendar__arrow-prev"><div class="calendar__arrow-inner"></div></div>
+        <div class="calendar__arrow calendar__arrow-next"><div class="calendar__arrow-inner"></div></div>
+      `;
+    }
+
+    this.monthyearDisplay = this.document.querySelector(
+      `${this.id} .calendar__monthyear`,
+    );
+    this.monthDisplay = this.document.querySelector(
+      `${this.id} .calendar__month`,
+    );
+    this.yearDisplay = this.document.querySelector(
+      `${this.id} .calendar__year`,
+    );
+    this.prevButton = this.document.querySelector(
+      `${this.id} .calendar__arrow-prev .calendar__arrow-inner`,
+    );
+    this.nextButton = this.document.querySelector(
+      `${this.id} .calendar__arrow-next .calendar__arrow-inner`,
+    );
+
+    // Set initial picker styles
+    this.togglePicker(false);
+
+    // Set CSS Variables based on options given
+    this.configureStylePreferences();
+
+    // Apply click listeners to HTML elements
+    this.addEventListeners();
+
+    this.reset(new Date());
+  }
+
+  reset(date: Date) {
+    this.currentDate = date || new Date();
+    this.clearCalendarDays();
+    this.updateMonthYear();
+    this.updateMonthPickerSelection(this.currentDate.getMonth());
+    this.generatePickerYears();
+    this.updateYearPickerSelection(this.currentDate.getFullYear(), 4);
+    this.updateYearPickerTodaySelection();
+    this.generateWeekdays();
+    this.generateDays();
+    this.selectDayInitial(!!date);
+    this.renderDays();
+    this.setOldSelectedNode();
+    if (this.dateChanged) {
+      this.dateChanged(this.currentDate);
+    }
+    if (this.monthChanged) {
+      this.monthChanged(this.currentDate);
+    }
+  }
+
+  enable() {
+    this.addEventListeners();
+  }
+}
+
+/* Methods */
+// Add Event Listeners
+Calendar.prototype.addEventListeners = addEventListeners;
+// Style Preference
+Calendar.prototype.configureStylePreferences = configureStylePreferences;
+// Picker
+Calendar.prototype.togglePicker = picker.togglePicker;
+// Picker - Month
+Calendar.prototype.handleMonthPickerClick = monthPicker.handleMonthPickerClick;
+Calendar.prototype.updateMonthPickerSelection =
+  monthPicker.updateMonthPickerSelection;
+Calendar.prototype.removeMonthPickerSelection =
+  monthPicker.removeMonthPickerSelection;
+// Picker - Year
+Calendar.prototype.handleYearPickerClick = yearPicker.handleYearPickerClick;
+Calendar.prototype.updateYearPickerSelection =
+  yearPicker.updateYearPickerSelection;
+Calendar.prototype.updateYearPickerTodaySelection =
+  yearPicker.updateYearPickerTodaySelection;
+Calendar.prototype.removeYearPickerSelection =
+  yearPicker.removeYearPickerSelection;
+Calendar.prototype.generatePickerYears = yearPicker.generatePickerYears;
+Calendar.prototype.handleYearChevronLeftClick =
+  yearPicker.handleYearChevronLeftClick;
+Calendar.prototype.handleYearChevronRightClick =
+  yearPicker.handleYearChevronRightClick;
+// Header
+Calendar.prototype.setMonthDisplayType = header.setMonthDisplayType;
+Calendar.prototype.handleMonthYearDisplayClick =
+  header.handleMonthYearDisplayClick;
+Calendar.prototype.handlePrevMonthButtonClick =
+  header.handlePrevMonthButtonClick;
+Calendar.prototype.handleNextMonthButtonClick =
+  header.handleNextMonthButtonClick;
+Calendar.prototype.updateMonthYear = header.updateMonthYear;
+// Weekday
+Calendar.prototype.setWeekdayDisplayType = weekday.setWeekdayDisplayType;
+Calendar.prototype.generateWeekdays = weekday.generateWeekdays;
+// Day
+Calendar.prototype.setDate = day.setDate;
+Calendar.prototype.getSelectedDate = day.getSelectedDate;
+Calendar.prototype.clearCalendarDays = day.clearCalendarDays;
+Calendar.prototype.updateCalendar = day.updateCalendar;
+Calendar.prototype.setOldSelectedNode = day.setOldSelectedNode;
+Calendar.prototype.selectDayInitial = day.selectDayInitial;
+Calendar.prototype.handleCalendarDayClick = day.handleCalendarDayClick;
+Calendar.prototype.removeOldDaySelection = day.removeOldDaySelection;
+Calendar.prototype.updateCurrentDate = day.updateCurrentDate;
+Calendar.prototype.generateDays = day.generateDays;
+Calendar.prototype.renderDays = day.renderDays;
+Calendar.prototype.rerenderSelectedDay = day.rerenderSelectedDay;

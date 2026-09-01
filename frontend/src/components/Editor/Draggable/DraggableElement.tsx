@@ -1,0 +1,307 @@
+import React, {
+  useMemo,
+  useRef,
+  useEffect,
+  useCallback,
+  memo,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
+import logger from 'loglevel';
+import { useDebouncedCallback } from 'use-debounce';
+import Scrollbars from 'react-custom-scrollbars';
+import { MenuItem } from '@mui/material';
+import {
+  pasteCopiedElement,
+  processDropElement,
+  processDropTargetParams,
+  setActiveElement,
+  setCurrentDropTargetParams,
+  setHoveredElementId,
+  setMasterSourceElementId,
+  toggleSelectedElement,
+} from '@Redux/project/actions';
+import {
+  ElementData,
+  Normalized,
+  ProjectClass,
+  StateElement,
+  SyntheticElement,
+} from '@Src/types';
+
+import { ElementType } from '@Constants/dragAndDrop';
+import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
+import useLayout from '@Components/Editor/hooks/useLayout';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import { ContextMenu } from '@Components/styledComponents';
+import ELEMENT_IDS from '@Constants/elementIds';
+import { selectItemToCopyInfo } from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import RENDERERS from '../../UI/RenderElements';
+import { DOMHandler } from '../Workspace/DOMHandler';
+
+interface DraggableElementProps {
+  screenId: number;
+  elementId: string;
+  allElements: Normalized<StateElement>;
+  isDisabled: boolean;
+  preSelectedElementId: string | null;
+  masterSourceElementId: string | null;
+  canDragAndDrop: boolean;
+  projectClasses: ProjectClass[];
+  parentIds?: string[];
+  scrollRef: React.RefObject<Scrollbars>;
+}
+
+const DraggableElement: React.FC<DraggableElementProps> = ({
+  screenId,
+  elementId,
+  allElements,
+  isDisabled,
+  preSelectedElementId,
+  masterSourceElementId,
+  canDragAndDrop,
+  projectClasses,
+  parentIds = [],
+  scrollRef,
+}) => {
+  const dispatch = useDispatch();
+  const isProto = useSelector(selectIsPrototypeMode);
+  const currentScreenId = useSelector(selectCurrentScreenId);
+
+  const frame = useMemo(() => {
+    return window.parent.document.getElementById(
+      ELEMENT_IDS.canvas,
+    ) as HTMLIFrameElement;
+  }, []);
+
+  const copiedItemInfo = useSelector(selectItemToCopyInfo);
+
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+
+  const element = allElements[elementId];
+  const parent = useMemo(
+    () => (element?.parent ? allElements[element.parent] : null),
+    [allElements, element?.parent],
+  );
+
+  const parentElementClass = useMemo(
+    () =>
+      !parent
+        ? null
+        : projectClasses.find(
+            (projectClass: ProjectClass) =>
+              projectClass.className === parent.type,
+          ),
+    [parent, projectClasses],
+  );
+
+  const ref = useRef<HTMLElement | null>(null);
+
+  const isDisplayed = useLayout(element?.parameters.layouts);
+
+  const parentsIdsForChildren = useMemo(
+    () => [...parentIds, elementId],
+    [elementId, parentIds],
+  );
+
+  const [, drag, preview] = useDrag(
+    () => ({
+      type: ElementType.ELEMENT,
+      item: {
+        original: element,
+        parent,
+      } as SyntheticElement<StateElement>,
+      canDrag: () =>
+        !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
+        !!parent &&
+        !element.parameters.sourceElementId &&
+        canDragAndDrop &&
+        !isProto,
+      end: (_, monitor) => {
+        if (!monitor.didDrop()) {
+          dispatch(setCurrentDropTargetParams(null));
+        }
+      },
+    }),
+    [element, canDragAndDrop, isProto],
+  );
+
+  const [, drop] = useDrop({
+    accept: [ElementType.ELEMENT, ElementType.CONSTRUCTOR],
+    drop: (
+      dragSource: SyntheticElement<StateElement | ElementData>,
+      monitor: DropTargetMonitor,
+    ) => {
+      const clientOffset = monitor.getClientOffset();
+      const rect = ref.current.getBoundingClientRect();
+      const display = !parent
+        ? null
+        : parent.styles.ownStyles.display || parentElementClass?.rules.display;
+      const flexDirection = !parent
+        ? null
+        : parent.styles.ownStyles.flexDirection ||
+          parentElementClass?.rules.flexDirection;
+      if (clientOffset) {
+        dispatch(
+          processDropTargetParams(
+            elementId,
+            rect,
+            display === 'flex' && flexDirection === 'row',
+            clientOffset,
+          ),
+        );
+      }
+      if (
+        monitor.didDrop() ||
+        (dragSource.type === ElementType.ELEMENT &&
+          dragSource.original.id === elementId)
+      ) {
+        return;
+      }
+      dispatch(processDropElement(dragSource.original, dragSource.type));
+    },
+  });
+
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, [preview]);
+
+  useEffect(
+    () => () => {
+      DOMHandler.INSTANCE.removeElementDom(elementId);
+    },
+    [elementId],
+  );
+
+  const clickHandler = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      if (event.ctrlKey || event.metaKey) {
+        dispatch(toggleSelectedElement(element.id));
+      } else {
+        dispatch(setActiveElement(element.id));
+      }
+    },
+    [dispatch, element],
+  );
+
+  const handleContextMenu = (event: React.MouseEvent<HTMLElement>) => {
+    if (element.type !== 'root') {
+      return;
+    }
+
+    event.preventDefault();
+
+    setContextMenu(
+      contextMenu === null
+        ? {
+            mouseX: event.clientX,
+            mouseY: event.clientY,
+          }
+        : null,
+    );
+  };
+
+  const handleCloseContextMenu = () => {
+    setContextMenu(null);
+  };
+
+  const handlePasteElement = () => {
+    handleCloseContextMenu();
+    dispatch(setActiveElement(element.id));
+    dispatch(pasteCopiedElement({ screenId: currentScreenId }));
+  };
+
+  const mouseEnterHandler = useCallback(() => {
+    dispatch(setHoveredElementId(elementId));
+  }, [dispatch, elementId]);
+
+  const handleScrollIntoView = useDebouncedCallback((dom: HTMLElement) => {
+    if ([preSelectedElementId, masterSourceElementId].includes(elementId)) {
+      dom.scrollIntoView();
+      if (masterSourceElementId === elementId) {
+        dispatch(setMasterSourceElementId(null));
+        dispatch(setActiveElement(elementId));
+      }
+    }
+  }, 0); // delay to allow all elements to render correctly first
+
+  if (!element || (!isDisplayed && element?.name !== 'Root')) {
+    return null;
+  }
+
+  // handling div element with divBlock as server using div elements
+  const ElementRenderer =
+    // @ts-expect-error
+    RENDERERS[element.type === 'div' ? 'divBlock' : element.type];
+
+  if (!ElementRenderer) {
+    // eslint-disable-next-line no-console
+    logger.warn(`Element dose not exists: ${element.type}`);
+    return null;
+  }
+
+  return (
+    <ElementRenderer
+      element={element}
+      onContextMenu={handleContextMenu}
+      isDisabled={isDisabled}
+      ref={(dom: HTMLElement) => {
+        if (dom && !ref.current) {
+          handleScrollIntoView.callback(dom); // need to call inside a timeout to wait for elements to be rendered correctly
+        }
+        ref.current = dom;
+
+        DOMHandler.INSTANCE.addElementDom(elementId, dom);
+        if (!NOT_DRAGGABLE_COMPONENTS.includes(element.type)) {
+          drag(ref);
+          drop(ref);
+        }
+      }}
+      onMouseEnter={mouseEnterHandler}
+      // onMouseLeave={mouseLeaveHandler}
+      onClick={clickHandler}
+    >
+      {element.type === 'root' && (
+        <ContextMenu
+          container={frame.contentDocument.body}
+          open={contextMenu !== null}
+          onClose={handleCloseContextMenu}
+          anchorReference="anchorPosition"
+          anchorPosition={
+            contextMenu !== null
+              ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+              : undefined
+          }
+        >
+          <MenuItem disabled={!copiedItemInfo} onClick={handlePasteElement}>
+            Paste
+          </MenuItem>
+        </ContextMenu>
+      )}
+      {element.children.map((childId: string) => (
+        <DraggableElement
+          key={childId.toString()}
+          elementId={childId}
+          parentIds={parentsIdsForChildren}
+          scrollRef={scrollRef}
+          isDisabled={isDisabled}
+          screenId={screenId}
+          allElements={allElements}
+          preSelectedElementId={preSelectedElementId}
+          masterSourceElementId={masterSourceElementId}
+          canDragAndDrop={canDragAndDrop}
+          projectClasses={projectClasses}
+        />
+      ))}
+    </ElementRenderer>
+  );
+};
+
+export default memo(DraggableElement);

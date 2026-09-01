@@ -1,0 +1,14 @@
+.mapMarker {
+  display: block;
+  width: 55px;
+  height: 55px;
+
+  background-color: rgb(240, 119, 21);
+  border-radius: 50%;
+
+  & > p {
+    font-size: 14px;
+    line-height: 55px;
+    text-align: center;
+  }
+}

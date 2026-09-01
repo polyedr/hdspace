@@ -1,0 +1,22 @@
+:global(.addedItem) {
+  position: relative;
+  //outline: none;
+}
+
+.disabled {
+  cursor: default;
+  transition: none;
+
+  & > * {
+    pointer-events: none;
+  }
+
+  &:global(.hovered) {
+    outline: $secondBorderColor solid 1px;
+  }
+
+  &:global(.activated),
+  &:global(.activated):active {
+    outline: red solid 1px;
+  }
+}

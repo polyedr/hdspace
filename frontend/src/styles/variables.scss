@@ -1,0 +1,33 @@
+@import 'colors';
+@import 'mixins';
+
+$main-font: 'Open Sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$main-input-hover-shadow: 0 0 3px 0 $mainColor;
+$main-input-focus-shadow: 0 0 0 1px $mainColor;
+
+$mainPadding: 10px;
+$leftPanel_fullWidth: 220px;
+$leftPanel_minWidth: 64px;
+$rightPanel_width: 300px;
+$workWindowMaxWidth: calc(
+  #{$leftPanel_fullWidth} + #{$rightPanel_width} + (#{$mainPadding} * 3) + 2px
+);
+$workWindowMaxWidthMinimized: calc(
+  #{$leftPanel_minWidth} + #{$rightPanel_width} + (#{$mainPadding} * 3) + 2px
+);
+$header_height: 50px;
+$boxShadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.16),
+  0 0.3rem 0.6rem rgba(0, 0, 0, 0.23);
+$tabletHeight: 1024px;
+$tabletWidth: 768px;
+$mobileHeight: 568px;
+$mobileWidth: 320px;
+
+$prototypeLaptopHeight: 680px;
+$prototypeTabletHeight: 638px;
+$prototypeMobileHeight: 520px;
+$prototypeTabletWindowHeight: calc(#{$prototypeTabletHeight} / 1.23);
+$prototypeMobileWindowHeight: calc(#{$prototypeMobileHeight} / 1.41);
+
+$modalFontSize: 12px;
+$propsPanelInputsPadding: 6px 12px;

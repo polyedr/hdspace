@@ -1,0 +1,20 @@
+// eslint-disable-next-line import/prefer-default-export
+export const BLACKLIST_TAGS = [
+  'html',
+  'area',
+  'base',
+  'br',
+  'col',
+  'command',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'keygen',
+  'link',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr',
+];

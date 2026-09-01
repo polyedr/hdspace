@@ -1,0 +1,76 @@
+.channel-preview__wrapper {
+    height: 37px;
+    display: flex;
+    align-items: center;
+    border-left: 2px solid transparent;
+  }
+
+  .channel-preview__wrapper__selected {
+    height: 37px;
+    display: flex;
+    align-items: center;
+    background: rgba(80, 100, 255, 0.1);
+    border-left: 2px solid #5064FF;
+    cursor: pointer;
+  }
+
+  .channel-preview__wrapper:hover {
+    background: rgba(80, 100, 255, 0.1);
+    border-left: 2px solid #5064FF;
+    cursor: pointer;
+  }
+
+  .channel-preview__item {
+    font-size: 14px;
+    color: #2A2A2D;
+    padding-left: 15px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .channel-preview__item.multi {
+    max-width: 220px;
+    display: flex;
+    align-items: center;
+  }
+
+  .channel-preview__item.single .str-chat__avatar {
+    margin-right: 12px;
+    font-size: 12px;
+  }
+
+  .channel-preview__item.multi .str-chat__avatar {
+    margin-right: 0;
+    font-size: 12px;
+  }
+
+  .channel-preview__item.multi span:first-child {
+    position: relative;
+    z-index: 2;
+    bottom: 6px;
+  }
+
+  .channel-preview__item.multi div:nth-child(2) {
+    position: relative;
+    right: 10px;
+    z-index: 1;
+    margin-bottom: 0px;
+  }
+
+  .channel-preview__item.multi p {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* custom css */
+
+  .channel-preview__item.single {
+    display: flex;
+    align-items: center;
+  }
+
+  .team-channel-list .channel-preview__item.single p, .team-channel-list .channel-preview__item.multi p {
+    padding: 0;
+  }

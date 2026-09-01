@@ -1,0 +1,73 @@
+// Vitest Snapshot v1
+
+exports[`ImageRecognizeForm > should render properly 1`] = `
+<div>
+  <div
+    class="makeStyles-wrapper-1"
+  >
+    <div
+      class="makeStyles-content-2"
+    >
+      <div
+        class="makeStyles-inputContainer-3"
+      >
+        <h3>
+          Select an image to recognize
+        </h3>
+        <input
+          accept="image/*"
+          id="fileinput-recognize-image"
+          multiple=""
+          style="display: none;"
+          type="file"
+        />
+        <label
+          for="fileinput-recognize-image"
+        >
+          <span
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-ygaals-MuiButtonBase-root-MuiButton-root"
+            role="button"
+            tabindex="0"
+          >
+            Upload
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </span>
+        </label>
+      </div>
+      <div
+        class="makeStyles-imageContainer-4"
+      >
+        <div
+          class="makeStyles-placeholder-7"
+        >
+          No image selected
+        </div>
+      </div>
+    </div>
+    <div
+      class="makeStyles-actions-6"
+    >
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-ygaals-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
+      >
+        Cancel
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium css-19k23w-MuiButtonBase-root-MuiButton-root"
+        disabled=""
+        tabindex="-1"
+        type="button"
+      >
+        Create
+      </button>
+    </div>
+  </div>
+</div>
+`;

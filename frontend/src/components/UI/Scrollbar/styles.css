@@ -1,0 +1,11 @@
+.removeNativeScrollbars::-webkit-scrollbar {
+  display: none;
+}
+.removeNativeScrollbars {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.element::-webkit-scrollbar {
+  width: 0;
+}

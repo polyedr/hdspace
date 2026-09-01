@@ -1,0 +1,91 @@
+// Vitest Snapshot v1
+
+exports[`HTMLImportForm > should render properly 1`] = `
+<div>
+  <div>
+    <h3>
+      Provide a URL
+    </h3>
+    <div>
+      <div
+        class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root css-1z10yd4-MuiFormControl-root-MuiTextField-root"
+      >
+        <div
+          class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-j06tu8-MuiInputBase-root-MuiOutlinedInput-root"
+        >
+          <input
+            aria-invalid="false"
+            class="MuiInputBase-input MuiOutlinedInput-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
+            id="mui-1"
+            placeholder="URL"
+            type="text"
+            value=""
+          />
+          <fieldset
+            aria-hidden="true"
+            class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+          >
+            <legend
+              class="css-ihdtdm"
+            >
+              <span
+                class="notranslate"
+              >
+                ​
+              </span>
+            </legend>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+    <h3>
+      Or upload an HTML, IMAGE and CSS files
+    </h3>
+    <div>
+      <form
+        class="makeStyles-form-1"
+      >
+        <label
+          class="makeStyles-label-2 makeStyles-label-9"
+          for="html-input"
+        >
+          <div
+            class="makeStyles-placeholder-8"
+          >
+            Click or drop file here to upload
+          </div>
+          <input
+            accept="text/html,text/css,image/jpeg,image/png,image/webp"
+            hidden=""
+            id="html-input"
+            multiple=""
+            type="file"
+          />
+        </label>
+      </form>
+    </div>
+    <div
+      class="makeStyles-formActions-7"
+    >
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-ygaals-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
+      >
+        Cancel
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium css-19k23w-MuiButtonBase-root-MuiButton-root"
+        disabled=""
+        tabindex="-1"
+        type="button"
+      >
+        Check Import Site
+      </button>
+    </div>
+  </div>
+</div>
+`;

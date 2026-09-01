@@ -1,0 +1,77 @@
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import AddIcon from '@mui/icons-material/Add';
+import { lighten } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+import { IconButton, Theme } from '@mui/material';
+import { addChildToElement } from '@Redux/project/actions';
+import { BreadcrumbItemElement, PropertiesChangeProps } from '@Src/types';
+import { selectActiveItemChildren } from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import BreadcrumbsItem from './BreadcrumbsItem';
+
+const useStyles = makeStyles<Theme>(({ palette }) => ({
+  row: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+  },
+  iconButton: {
+    color: palette.common.white,
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.1),
+    },
+  },
+}));
+
+const BreadcrumbItems: React.FC<
+  PropertiesChangeProps<BreadcrumbItemElement>
+> = ({ updateParams, element, canEdit }) => {
+  const dispatch = useDispatch();
+  const classes = useStyles();
+  const breadcrumbItems = useSelector(
+    selectActiveItemChildren('breadcrumbItem'),
+  );
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const handleAddButtonClick = () => {
+    dispatch(
+      addChildToElement(
+        'breadcrumbItem',
+        element.id,
+        {
+          textContent: 'breadcrumb',
+          isLink: false,
+        },
+        { screenId: currentScreenId },
+      ),
+    );
+  };
+
+  return (
+    <div>
+      {breadcrumbItems.map(({ id, parameters }) => (
+        <BreadcrumbsItem
+          key={id}
+          id={id}
+          parameters={parameters}
+          updateParams={updateParams}
+          isLast={breadcrumbItems.length <= 1}
+          canEdit={canEdit}
+        />
+      ))}
+
+      {canEdit && (
+        <div className={classes.row}>
+          <IconButton
+            onClick={handleAddButtonClick}
+            title="Add new item"
+            className={classes.iconButton}
+          >
+            <AddIcon />
+          </IconButton>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default BreadcrumbItems;
