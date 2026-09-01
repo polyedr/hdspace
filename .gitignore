@@ -1,0 +1,65 @@
+# Secrets and local env
+.env
+.env.local
+.env.*.local
+gkeys/
+*.pem
+*.p12
+credentials.json
+service-account*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Django / app data
+collectstatic/
+media/
+static/users
+media/users
+*.h5
+*.log
+db.sqlite3
+celerybeat-schedule
+local_settings.py
+
+# ML weights (keep out of git; copy separately if needed)
+**/mask_rcnn/trained_models/
+**/trained_models/*.h5
+
+# OS / IDE
+.idea/
+.vscode/
+.DS_Store
+*.swp
+*~
+
+# Local originals / build leftovers (not part of this repo)
+_mono_build/
+hdspace-sources/
+adevi-backend-django/
+adeviio-frontend/
+adevi-ml-django/

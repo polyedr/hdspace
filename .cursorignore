@@ -1,0 +1,15 @@
+# Keep backend and frontend source visible. Ignore heavy/generated trees.
+**/node_modules/**
+**/.venv/**
+**/venv/**
+**/__pycache__/**
+**/.pytest_cache/**
+**/htmlcov/**
+**/collectstatic/**
+**/dist/**
+**/.vite/**
+**/.git/**
+**/mask_rcnn/trained_models/**
+**/*.h5
+**/.coverage
+**/package-lock.json
