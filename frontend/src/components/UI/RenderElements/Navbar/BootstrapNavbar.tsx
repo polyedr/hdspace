@@ -1,7 +1,7 @@
 import React, { LegacyRef } from 'react';
 import cn from 'classnames';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useHistory } from '@/compat/router';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';

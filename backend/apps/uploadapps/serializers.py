@@ -11,8 +11,17 @@ from rest_framework.renderers import JSONRenderer
 from apps.uploadapps.models import Fileupload, WebpageSaved, WpgSaved, ObjectMove
 import subprocess
 import shutil
-import scrapy
-from scrapy_splash import SplashRequest
+try:
+    import scrapy
+    from scrapy_splash import SplashRequest
+except ImportError:
+    # Webpage crawl extras are out of core cutover scope.
+    class _ScrapyStub:
+        class Spider:
+            pass
+
+    scrapy = _ScrapyStub()
+    SplashRequest = object
 import urllib.robotparser
 import json
 

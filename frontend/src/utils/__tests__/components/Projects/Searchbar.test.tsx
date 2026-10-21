@@ -1,4 +1,5 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { render, RenderResult, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
@@ -18,11 +19,11 @@ describe('Searchbar', () => {
     store = mockStore(mockState);
 
     ui = render(
-      <Provider store={store}>
+      <MemoryRouter><Provider store={store}>
         <AppThemeProvider>
           <Searchbar />
         </AppThemeProvider>
-      </Provider>,
+      </Provider></MemoryRouter>,
     );
   });
 

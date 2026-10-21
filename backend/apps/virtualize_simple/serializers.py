@@ -1,7 +1,7 @@
 import os
 from urllib.parse import urlparse, parse_qs
 from anytree import RenderTree
-from rest_framework_recursive.fields import RecursiveField
+from apps.compat.recursive import RecursiveField
 from project.settings import BASE_DIR, MEDIA_ROOT
 from rest_framework import serializers
 from apps.projects.models import ScenarioElement, ProjectScreen

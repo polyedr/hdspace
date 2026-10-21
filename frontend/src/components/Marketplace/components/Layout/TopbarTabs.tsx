@@ -1,7 +1,8 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Tab, Tabs, Container } from '@mui/material';
 import styled from 'styled-components';
+import { useHistory } from '@/compat/router';
 
 function TabProps(index) {
   return {
@@ -57,7 +58,9 @@ const NavBarItem = {
   '/marketplace': 2,
 };
 
-function TopbarTabs({ location, history }) {
+function TopbarTabs() {
+  const location = useLocation();
+  const history = useHistory();
   const [value, setValue] = React.useState(NavBarItem[location.pathname]);
   const handleChange = (newValue) => {
     setValue(newValue);
@@ -94,4 +97,4 @@ function TopbarTabs({ location, history }) {
   );
 }
 
-export default withRouter(TopbarTabs);
+export default TopbarTabs;

@@ -20,12 +20,11 @@ class TestVirtualizeSimpleEndpoints:
         # POST endpoint, GET should return 405 Method Not Allowed
         assert response.status_code == 405
 
-    def test_maskrcnn_endpoint_exists(self, authenticated_client):
-        """Test maskrcnn endpoint is accessible"""
+    def test_maskrcnn_endpoint_is_disabled(self, authenticated_client):
+        """Mask R-CNN is no longer exposed by the API."""
         response = authenticated_client.get('/api/v1/virtualize_simple/maskrcnn/')
-        
-        # POST endpoint, GET should return 405
-        assert response.status_code == 405
+
+        assert response.status_code == 404
 
     def test_assemble_endpoint_exists(self, authenticated_client):
         """Test assemble endpoint is accessible"""
@@ -91,6 +90,7 @@ class TestRecognizeEndpoint:
 
 
 @pytest.mark.django_db  
+@pytest.mark.skip(reason="Mask R-CNN is disabled")
 class TestMaskRCNNEndpoint:
     """Test MaskRCNN endpoint"""
 
@@ -174,6 +174,7 @@ class TestMaskRCNNEndpoint:
 class TestVirtualizeSimpleIntegration:
     """Integration tests for virtualize_simple workflow"""
 
+    @pytest.mark.skip(reason="Mask R-CNN is disabled")
     def test_ml_models_configuration(self):
         """Test ML models are properly configured"""
         # Check if models directory exists
@@ -194,7 +195,6 @@ class TestVirtualizeSimpleIntegration:
         """Test all virtualize_simple endpoints are registered in URLs"""
         endpoints = [
             '/api/v1/virtualize_simple/recognize/',
-            '/api/v1/virtualize_simple/maskrcnn/',
             '/api/v1/virtualize_simple/assemble/',
             '/api/v1/virtualize_simple/freecanvas/',
         ]

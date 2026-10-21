@@ -1,4 +1,5 @@
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from '@/compat/router';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import Screens from '@Components/LeftPanel/Screens';

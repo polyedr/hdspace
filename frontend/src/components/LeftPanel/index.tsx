@@ -12,34 +12,34 @@ import {
 } from './icons';
 import { mainMenu } from './menu';
 
-const IconButton = styled(ButtonBase)<{ active: boolean }>(
-  ({ active, theme }) => ({
-    width: theme.spacing(9),
-    // height: 50,
-    padding: 4,
-    flexDirection: 'column',
-    opacity: active ? 1 : 0.6,
-    margin: '0 !important',
+const IconButton = styled(ButtonBase, {
+  shouldForwardProp: (prop) => prop !== 'active',
+})<{ active?: boolean }>(({ active, theme }) => ({
+  width: theme.spacing(9),
+  // height: 50,
+  padding: 4,
+  flexDirection: 'column',
+  opacity: active ? 1 : 0.6,
+  margin: '0 !important',
 
-    '& svg': {
-      height: 30,
-      color: '#B0B0BD',
-    },
+  '& svg': {
+    height: 30,
+    color: '#B0B0BD',
+  },
 
-    '& path': {
-      fill: active ? 'black' : '',
-    },
+  '& path': {
+    fill: active ? 'black' : '',
+  },
 
-    '& h5': {
-      color: active ? 'black' : '#838995',
-    },
+  '& h5': {
+    color: active ? 'black' : '#838995',
+  },
 
-    label: {
-      color: '#838995',
-      fontSize: 12,
-    },
-  }),
-);
+  label: {
+    color: '#838995',
+    fontSize: 12,
+  },
+}));
 
 const Boxstacked = styled(Box)({
   backgroundColor: 'white',

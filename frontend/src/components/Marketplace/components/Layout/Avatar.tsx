@@ -68,10 +68,10 @@ const Avatar: React.FC = () => {
         anchorEl={menuAnchorEl}
         keepMounted
       >
-        <CustomeNavLink to={PATH_NAMES.profile} exact>
+        <CustomeNavLink to={PATH_NAMES.profile} end>
           <MenuItem onClick={handleMenuClose}>My Profile</MenuItem>
         </CustomeNavLink>
-        <CustomeNavLink to={PATH_NAMES.projects} exact>
+        <CustomeNavLink to={PATH_NAMES.projects} end>
           <MenuItem onClick={handleMenuClose}>My Projects</MenuItem>
         </CustomeNavLink>
         <Divider />

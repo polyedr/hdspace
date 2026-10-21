@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class VirtualizeEmulationConfig(AppConfig):
-    name = 'virtualize_emulation'
+class VirtualizeSimpleConfig(AppConfig):
+    name = "apps.virtualize_simple"

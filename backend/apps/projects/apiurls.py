@@ -2,7 +2,7 @@
 
 from django.urls import path, include
 from rest_framework import routers
-from rest_framework_bulk.routes import BulkRouter
+from apps.compat.bulk import BulkRouter
 
 from .apiviews import (
     ProjectScreenList,
@@ -237,26 +237,63 @@ api_update_screens_order = [
 ]
 
 router = routers.DefaultRouter()
-router.register(r"screen-scenarios", ScreeScenarioViewSet)
-router.register(r"screen-scenarioimportexports", ScreeScenarioImportExportViewSet)
-router.register(r"scenario-elements", ScenarioElementViewSet)
-router.register(r"scenario-elements-recursive", ScenarioElementRecursiveViewSet)
-router.register(r"projects", ProjectViewSet)
-router.register(r"projectimportexports", ProjectImportExportViewSet)
-router.register(r"projectcategories", PCategoryViewSet)
-# router.register(r"projects-copying", ProjectCopyingViewSet, base_name="projects_copying")
-router.register(r"screens-for-project", ProjectWithScreensViewSet)
-router.register(r"columns-for-project", ProjectWithColumnsViewSet)
-router.register(r"categories-for-project", ProjectWithCategoriesViewSet)
-router.register(r"members-for-project", ProjectWithMembersViewSet)
-router.register(r"tasks-for-column", ColumnWithTasksViewSet)
+router.register(r"screen-scenarios", ScreeScenarioViewSet, basename="screenscenario")
+router.register(
+    r"screen-scenarioimportexports",
+    ScreeScenarioImportExportViewSet,
+    basename="screenscenarioimportexport",
+)
+router.register(r"scenario-elements", ScenarioElementViewSet, basename="scenarioelement")
+router.register(
+    r"scenario-elements-recursive",
+    ScenarioElementRecursiveViewSet,
+    basename="scenarioelementrecursive",
+)
+router.register(r"projects", ProjectViewSet, basename="project")
+router.register(
+    r"projectimportexports",
+    ProjectImportExportViewSet,
+    basename="projectimportexport",
+)
+router.register(r"projectcategories", PCategoryViewSet, basename="projectcategory")
+# router.register(r"projects-copying", ProjectCopyingViewSet, basename="projects_copying")
+router.register(
+    r"screens-for-project",
+    ProjectWithScreensViewSet,
+    basename="projectwithscreens",
+)
+router.register(
+    r"columns-for-project",
+    ProjectWithColumnsViewSet,
+    basename="projectwithcolumns",
+)
+router.register(
+    r"categories-for-project",
+    ProjectWithCategoriesViewSet,
+    basename="projectwithcategories",
+)
+router.register(
+    r"members-for-project",
+    ProjectWithMembersViewSet,
+    basename="projectwithmembers",
+)
+router.register(
+    r"tasks-for-column",
+    ColumnWithTasksViewSet,
+    basename="columnwithtasks",
+)
 
-router.register(r"library-elements", ElementViewSet,
-                base_name="api_library_elements")
+router.register(
+    r"library-elements",
+    ElementViewSet,
+    basename="api_library_elements",
+)
 # api_library_element_patterns = router.urls
 
 router.register(
-    r"library-scenarios", ScenarioViewSet, base_name="api_library_scenarios"
+    r"library-scenarios",
+    ScenarioViewSet,
+    basename="api_library_scenarios",
 )
 api_library_scenario_element_patterns = router.urls
 
@@ -264,10 +301,13 @@ router = BulkRouter()
 router.register(
     r"scenario-elements-multi",
     ScenarioElementMultipleViewSet,
-    base_name="api_scenario_element_multi",
+    basename="api_scenario_element_multi",
 )
-router.register(r"scenario-elements-multiple-recursive",
-                ScenarioElementMultipleRecursiveViewSet, basename="MultipleRecursive")
+router.register(
+    r"scenario-elements-multiple-recursive",
+    ScenarioElementMultipleRecursiveViewSet,
+    basename="MultipleRecursive",
+)
 
 api_scenario_element_multi_patterns = router.urls
 
@@ -275,7 +315,7 @@ router = BulkRouter()
 router.register(
     r"screen-scenarios-delete-cascade",
     ScreenScenarioDestroyCascadeViewSet,
-    base_name="api_screen_scenarios_delete_cascade",
+    basename="api_screen_scenarios_delete_cascade",
 )
 
 api_screen_scenario_cascade_multi_patterns = router.urls

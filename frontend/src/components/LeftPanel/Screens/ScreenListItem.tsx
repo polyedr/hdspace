@@ -1,5 +1,5 @@
 import React, { useState, useCallback, MouseEvent } from 'react';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable } from '@hello-pangea/dnd';
 import { makeStyles } from '@mui/styles';
 import { useDispatch } from 'react-redux';
 import cn from 'classnames';

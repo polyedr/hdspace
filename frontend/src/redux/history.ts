@@ -1,14 +1,23 @@
 import { createBrowserHistory } from 'history';
+import { createReduxHistoryContext } from 'redux-first-history';
 import PATH_NAMES from '@Constants/pathNames';
 
-const history = createBrowserHistory();
+const browserHistory = createBrowserHistory();
 
-export const openProjects = () => history.push(PATH_NAMES.projects);
+export const {
+  createReduxHistory,
+  routerMiddleware,
+  routerReducer,
+} = createReduxHistoryContext({
+  history: browserHistory,
+});
+
+export const openProjects = () => browserHistory.push(PATH_NAMES.projects);
 export const openSignScreen = (pathname: keyof typeof PATH_NAMES.user) =>
-  history.push(PATH_NAMES.user[pathname]);
+  browserHistory.push(PATH_NAMES.user[pathname]);
 
 export const openProject = (projectId: string) => {
-  history.push(`/project/${projectId}`);
+  browserHistory.push(`/project/${projectId}`);
 };
 
-export default history;
+export default browserHistory;

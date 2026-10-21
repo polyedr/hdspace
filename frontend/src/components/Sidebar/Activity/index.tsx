@@ -126,7 +126,7 @@ function ActivityTab() {
             className={classes.accordianSummary}
           />
           <AccordionDetails style={{ display: 'inherit' }}>
-            <Typography>
+            <Typography component="div">
               <FormControl fullWidth style={{ margin: 0 }}>
                 <StyledTextField
                   fullWidth

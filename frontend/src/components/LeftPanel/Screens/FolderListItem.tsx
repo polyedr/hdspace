@@ -1,7 +1,7 @@
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { AccordionDetails, MenuItem } from '@mui/material';
 import { useCallback, useState } from 'react';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable } from '@hello-pangea/dnd';
 import { useDispatch } from 'react-redux';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {

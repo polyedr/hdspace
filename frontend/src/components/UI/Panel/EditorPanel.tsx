@@ -17,7 +17,7 @@ const styles: SxProps = {
   overflow: 'hidden',
 };
 
-const EditorPanel: React.FC = ({ children }) => {
+const EditorPanel: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
     <Box sx={styles} id={ELEMENT_IDS.rightPanel}>
       {children}

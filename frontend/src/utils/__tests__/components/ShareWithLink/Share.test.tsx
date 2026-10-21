@@ -10,6 +10,7 @@ import { vi } from 'vitest';
 import { mockState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import Share from '@Components/Layout/TopBar/actions/Share';
+import { MemoryRouter } from 'react-router-dom';
 
 const mockWriteText = vi.fn();
 
@@ -27,9 +28,9 @@ describe('Share', () => {
     store = mockStore(mockState);
 
     ui = render(
-      <Provider store={store}>
+      <MemoryRouter><Provider store={store}>
         <Share />
-      </Provider>,
+      </Provider></MemoryRouter>,
     );
   });
   it('should render properly', () => {

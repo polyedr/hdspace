@@ -1,5 +1,6 @@
 import { Box, Button, ToggleButton, Tooltip, styled } from '@mui/material';
-import { NavLink, useParams, useRouteMatch } from 'react-router-dom';
+import { useRouteMatch } from '@/compat/router';
+import { NavLink, useParams } from 'react-router-dom';
 import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import React from 'react';
 import { useWireframe } from '@Src/hooks/useWireframe';

@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams, useRouteMatch } from 'react-router';
+import { useRouteMatch } from '@/compat/router';
+import { useParams } from 'react-router-dom';
 import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import { selectLayout } from '@Redux/project/selectors/base';
 import { screenSize } from '@Components/Wireframe/constants';

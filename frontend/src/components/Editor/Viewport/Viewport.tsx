@@ -19,7 +19,7 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-const Viewport: React.FC = ({ children }) => {
+const Viewport: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const styles = useStyles();
 
   const ref = useRef<HTMLDivElement>(null);

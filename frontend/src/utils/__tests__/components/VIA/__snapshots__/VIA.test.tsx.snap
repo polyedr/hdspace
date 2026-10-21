@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`VIA Region > should render VIA Regions wrapper 1`] = `
 <div>
@@ -35,11 +35,11 @@ exports[`VIA Region > should render VIA Regions wrapper 1`] = `
           />
           <div
             class="makeStyles-resizeHandle-4 makeStyles-resizeHandle-14 makeStyles-rightHandle-7"
-            style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; right: -5px; cursor: col-resize;"
+            style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; cursor: col-resize; right: -5px;"
           />
           <div
             class="makeStyles-resizeHandle-4 makeStyles-resizeHandle-14 makeStyles-bottomHandle-9"
-            style="position: absolute; user-select: none; width: 100%; height: 10px; bottom: -5px; left: 0px; cursor: row-resize;"
+            style="position: absolute; user-select: none; width: 100%; height: 10px; left: 0px; cursor: row-resize; bottom: -5px;"
           />
           <div
             class="makeStyles-resizeHandle-4 makeStyles-resizeHandle-14 makeStyles-leftHandle-11"
@@ -47,19 +47,19 @@ exports[`VIA Region > should render VIA Regions wrapper 1`] = `
           />
           <div
             class="makeStyles-resizeHandle-4 makeStyles-resizeHandle-14 makeStyles-topRightHandle-6"
-            style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; top: -10px; cursor: ne-resize;"
+            style="position: absolute; user-select: none; width: 20px; height: 20px; z-index: 1; right: -10px; top: -10px; cursor: ne-resize;"
           />
           <div
             class="makeStyles-resizeHandle-4 makeStyles-resizeHandle-14 makeStyles-bottomRightHandle-8"
-            style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; bottom: -10px; cursor: se-resize;"
+            style="position: absolute; user-select: none; width: 20px; height: 20px; z-index: 1; right: -10px; bottom: -10px; cursor: se-resize;"
           />
           <div
             class="makeStyles-resizeHandle-4 makeStyles-resizeHandle-14 makeStyles-bottomLeftHandle-10"
-            style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; bottom: -10px; cursor: sw-resize;"
+            style="position: absolute; user-select: none; width: 20px; height: 20px; z-index: 1; left: -10px; bottom: -10px; cursor: sw-resize;"
           />
           <div
             class="makeStyles-resizeHandle-4 makeStyles-resizeHandle-14 makeStyles-topLeftHandle-12"
-            style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; top: -10px; cursor: nw-resize;"
+            style="position: absolute; user-select: none; width: 20px; height: 20px; z-index: 1; left: -10px; top: -10px; cursor: nw-resize;"
           />
         </div>
       </div>

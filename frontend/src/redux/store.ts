@@ -14,7 +14,11 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import createSagaMiddleware from 'redux-saga';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
+import {
+  createReduxHistory,
+  routerMiddleware,
+  routerReducer,
+} from './history';
 import createReduxPromiseListener from 'redux-promise-listener';
 import userReducer from './user/reducer';
 import projectReducer from './project/reducers';
@@ -24,7 +28,6 @@ import marketplaceReducer from './marketplace/reducers';
 import wireframeReducer from './wireframe/wireframe';
 import projectSaga from './project/sagas';
 import userSaga from './user/sagas';
-import history from './history';
 import DevToolsOptions from './devtools';
 import activityReducer from './pmtools/activity/reducer';
 import boardReducer from './pmtools/board/reducer';
@@ -60,7 +63,7 @@ export const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
   wireframe: wireframeReducer,
   project: projectReducer,
-  router: connectRouter(history),
+  router: routerReducer,
   notification: notificationReducer,
   permissions: permissionsReducer,
   activity: activityReducer,
@@ -73,12 +76,14 @@ export const store = createStore(
   rootReducer,
   composeEnhancers(
     applyMiddleware(
-      routerMiddleware(history),
+      routerMiddleware,
       sagaMiddleware,
       reduxPromiseListener.middleware,
     ),
   ),
 );
+
+export const history = createReduxHistory(store);
 
 export const promiseListener = reduxPromiseListener;
 

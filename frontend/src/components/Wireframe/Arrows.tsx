@@ -28,13 +28,13 @@ const Arrows: React.FunctionComponent<Props> = ({ getRef }) => {
             key={c.elementId.toString()}
             color="#000"
             strokeWidth={1.5}
-            start={start}
+            start={start as any}
             path="grid"
             tailShape="circle"
             showTail
             tailSize={3}
             zIndex={0}
-            end={end}
+            end={end as any}
           />
         );
       })}

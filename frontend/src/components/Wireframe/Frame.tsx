@@ -98,7 +98,7 @@ const Head = () => {
   );
 };
 
-const Frame: React.FC = ({ children }) => {
+const Frame: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
   const projectClasses = useSelector(selectCurrentProjectClasses);
 

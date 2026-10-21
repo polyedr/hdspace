@@ -66,11 +66,11 @@ const Avatar: React.FC = () => {
         keepMounted
         className={classes.menu}
       >
-        <NavLink to={PATH_NAMES.profile} exact className={classes.navLink}>
+        <NavLink to={PATH_NAMES.profile} end className={classes.navLink}>
           <MenuItem onClick={handleMenuClose}>My Profile</MenuItem>
         </NavLink>
 
-        <NavLink to={PATH_NAMES.projects} exact className={classes.navLink}>
+        <NavLink to={PATH_NAMES.projects} end className={classes.navLink}>
           <MenuItem onClick={handleMenuClose}>My Projects</MenuItem>
         </NavLink>
 

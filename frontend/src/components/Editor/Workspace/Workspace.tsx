@@ -32,7 +32,7 @@ const StyledGridLines = styled(GridLines)({
   height: '100%',
 });
 
-const WrapInGridLine: React.FC<{ wrap: boolean }> = ({ wrap, children }) => {
+const WrapInGridLine: React.FC<{ wrap: boolean; children?: React.ReactNode }> = ({ wrap, children }) => {
   const props = wrap
     ? { backgroundColor: 'white' }
     : { style: { background: 'white' } };

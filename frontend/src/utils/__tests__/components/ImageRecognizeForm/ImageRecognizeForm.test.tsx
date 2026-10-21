@@ -1,4 +1,5 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { fireEvent, render, RenderResult } from '@testing-library/react';
 import { Provider } from 'react-redux';
@@ -28,11 +29,11 @@ describe('ImageRecognizeForm', () => {
     store = mockStore(mockState);
 
     ui = render(
-      <Provider store={store}>
+      <MemoryRouter><Provider store={store}>
         <AppThemeProvider>
           <ImageRecognizeForm onClose={closeCallback} />
         </AppThemeProvider>
-      </Provider>,
+      </Provider></MemoryRouter>,
     );
   });
   it('should render properly', () => {

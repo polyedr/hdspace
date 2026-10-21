@@ -17,16 +17,23 @@ const Marker: React.FC<IMarkerProps> = ({ text }) => (
   </div>
 );
 
+const MapComponent = GoogleMapReact as any;
+
 function GMap({ center, zoom, markerText, apiKey }: IMapProps) {
   return (
-    <GoogleMapReact
+    <MapComponent
       center={center}
       zoom={zoom}
       bootstrapURLKeys={{ key: apiKey }}
       yesIWantToUseGoogleMapApiInternals
     >
-      <Marker lat={center?.lat} lng={center?.lng} text={markerText || ''} />
-    </GoogleMapReact>
+      {/* google-map-react Marker child typing is incomplete */}
+      <Marker
+        lat={center?.lat as any}
+        lng={center?.lng as any}
+        text={markerText || ''}
+      />
+    </MapComponent>
   );
 }
 

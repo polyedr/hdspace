@@ -1,14 +1,15 @@
 import secrets
 import uuid
 from django.db import models
-from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from jsonfield import JSONField
+from tree_queries.models import TreeNode
 from simple_history.models import HistoricalRecords
 from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
 from taggit.models import TagBase, GenericTaggedItemBase
+
+JSONField = models.JSONField
 
 from apps.utils.models import TimeStampedModel
 from apps.accounts.utils import utils
@@ -87,10 +88,10 @@ class Project(TimeStampedModel):
     tags = TaggableManager(blank=True)
 
     project_data_text = models.TextField(blank=True)
-    project_data_json = JSONField(blank=True, default=[])
-    project_data_activity_json = JSONField(blank=True, default=[])
-    project_data_zulip_json = JSONField(blank=True, default=[])
-    project_data_trello_json = JSONField(blank=True, default=[])
+    project_data_json = JSONField(blank=True, default=dict)
+    project_data_activity_json = JSONField(blank=True, default=list)
+    project_data_zulip_json = JSONField(blank=True, default=list)
+    project_data_trello_json = JSONField(blank=True, default=dict)
 
     history = HistoricalRecords()
 
@@ -154,7 +155,7 @@ class ProjectScreen(TimeStampedModel):
     )
 
     screen_data_text = models.TextField(blank=True)
-    screen_data_json = JSONField(blank=True, default=[])
+    screen_data_json = JSONField(blank=True, default=list)
 
     history = HistoricalRecords(excluded_fields=["category"])
 
@@ -454,7 +455,7 @@ class ProjectImage(TimeStampedModel):
     image = models.ImageField(
         upload_to="uploads/", blank=True, null=True, max_length=256
     )
-    palette = JSONField(blank=True)
+    palette = JSONField(blank=True, default=dict)
     image_url = models.CharField(max_length=255, null=True, blank=True)
     illustration_set = models.ForeignKey(
         ProjectIllustrationSet,
@@ -547,8 +548,8 @@ class ScreenScenario(TimeStampedModel):
     name = models.CharField(max_length=250)
 
     # Styles and parameters
-    styles = JSONField(blank=True)
-    parameters = JSONField(blank=True)
+    styles = JSONField(blank=True, default=dict)
+    parameters = JSONField(blank=True, default=dict)
 
     # Image field
     image = models.ImageField(
@@ -578,7 +579,7 @@ class ScreenScenario(TimeStampedModel):
         return "{}".format(self.pk)
 
 
-class ScenarioElement(MPTTModel, TimeStampedModel):
+class ScenarioElement(TreeNode, TimeStampedModel):
     FRAME = "frame"
     WIDGET = "widget"
     CHART = "chart"
@@ -706,15 +707,11 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
         ScreenScenario, related_name="elements", on_delete=models.CASCADE, null=True
     )
 
-    parent = TreeForeignKey(
-        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
-    )
-
     name = models.CharField(max_length=250, null=True)
 
     # Styles and parameters
-    styles = JSONField(blank=True)
-    parameters = JSONField(blank=True)
+    styles = JSONField(blank=True, default=dict)
+    parameters = JSONField(blank=True, default=dict)
 
     # Order of elements, or the element weight, buoyancy
     buoyancy = models.IntegerField(null=True)
@@ -730,8 +727,8 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
     def __str__(self):
         return "{}".format(self.pk)
 
-    class MPTTMeta:
-        level_attr = "mptt_level"
+    def get_children(self):
+        return self.children.all()
 
 
 class ElementComment(TimeStampedModel):

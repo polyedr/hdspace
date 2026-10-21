@@ -1,4 +1,4 @@
-import { RouterState } from 'connected-react-router';
+import type { RouterState } from 'redux-first-history';
 import React from 'react';
 import { OptionsObject, SnackbarKey } from 'notistack';
 import { XYCoord } from 'react-dnd';

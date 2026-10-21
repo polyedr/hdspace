@@ -64,9 +64,12 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
                 responseType: 'blob',
               })
               .then((response) => {
-                if (response.headers['content-type'].includes('image')) {
+                const contentType = String(
+                  response.headers['content-type'] || '',
+                );
+                if (contentType.includes('image')) {
                   const blob = new Blob([response.data], {
-                    type: response.headers['content-type'],
+                    type: contentType,
                   });
                   assetsFolder?.file(assetName, blob, {
                     binary: true,
@@ -184,7 +187,7 @@ export const processIco = async (
     })
     .then((response) => {
       const blob = new Blob([response.data], {
-        type: response.headers['content-type'],
+        type: String(response.headers['content-type'] || ''),
       });
       assetsFolder?.file(assetName, blob, {
         binary: true,

@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useCallback, useMemo } from 'react';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import {
@@ -29,6 +29,7 @@ const useViewportHotkeys = () => {
   const masterGroupsElementId = useSelector(selectMasterGroupsElementId);
   const coreElementsIds = useSelector(
     selectTreeChildElementsIds(masterCoreElementId),
+    shallowEqual,
   );
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const canEdit = useSelector(

@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import React from 'react';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { vi } from 'vitest';
@@ -9,9 +10,14 @@ import SharedWithLink from '@Components/User/SharedWithLink';
 
 const mockHistoryPush = vi.fn();
 
-vi.mock('react-router', () => ({
+vi.mock('@/compat/router', () => ({
   useHistory: () => ({
     push: mockHistoryPush,
+    replace: vi.fn(),
+    go: vi.fn(),
+    goBack: vi.fn(),
+    goForward: vi.fn(),
+    location: { pathname: '/', search: '', hash: '', state: null },
   }),
 }));
 
@@ -19,13 +25,16 @@ describe('Share', () => {
   let store: MockStoreEnhanced<AppReduxState>;
 
   beforeEach(() => {
+    mockHistoryPush.mockClear();
     const mockStore = configureStore<AppReduxState>([]);
     store = mockStore(mockState);
 
     render(
-      <Provider store={store}>
-        <SharedWithLink />
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={store}>
+          <SharedWithLink />
+        </Provider>
+      </MemoryRouter>,
     );
   });
 

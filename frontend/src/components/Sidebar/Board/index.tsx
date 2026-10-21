@@ -1,7 +1,7 @@
 import { Stack, styled, TextField } from '@mui/material';
 import fuzzysort from 'fuzzysort';
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';

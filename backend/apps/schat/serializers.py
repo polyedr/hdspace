@@ -11,10 +11,10 @@ class TokenObtainSerializer(TokenObtainPairSerializer):
 
         try:
             streamtoken = schat_client.create_token(str(self.user.id))
-            data["streamchat"] = streamtoken
         except Exception:
-            pass
+            streamtoken = f"disabled-stream-token-{self.user.id}"
 
+        data["streamchat"] = streamtoken
         data["refresh"] = str(refresh)
         data["access"] = str(refresh.access_token)
 

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useHistory } from '@/compat/router';
 import { loadUser } from '@Redux/user/actions';
 import { selectUserData } from '@Redux/user/selectors';
 import { setPreSelectedElementId } from '@Redux/project/actions';

@@ -39,15 +39,19 @@ const History: FC = () => {
   return (
     <div className={classes.root}>
       <Tooltip title="Undo">
-        <StyledIconButton onClick={onHistoryBack} disabled={!canUndoEditor}>
-          <UndoIcon className={classes.icon} />
-        </StyledIconButton>
+        <span>
+          <StyledIconButton onClick={onHistoryBack} disabled={!canUndoEditor}>
+            <UndoIcon className={classes.icon} />
+          </StyledIconButton>
+        </span>
       </Tooltip>
 
       <Tooltip title="Redo">
-        <StyledIconButton onClick={onHistoryForward} disabled={!canRedoEditor}>
-          <RedoIcon className={classes.icon} />
-        </StyledIconButton>
+        <span>
+          <StyledIconButton onClick={onHistoryForward} disabled={!canRedoEditor}>
+            <RedoIcon className={classes.icon} />
+          </StyledIconButton>
+        </span>
       </Tooltip>
     </div>
   );

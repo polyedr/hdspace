@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable } from '@hello-pangea/dnd';
 import { Box, Chip, Stack } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { differenceInDays, format } from 'date-fns';

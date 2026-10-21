@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useHistory } from '@/compat/router';
 import Switch from '@mui/material/Switch';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';

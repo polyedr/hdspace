@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class CoreConfig(AppConfig):
-    name = "utils"
+    name = "apps.utils"
 

@@ -31,6 +31,32 @@ const defaultParameters = {
   group: ElementGroup.UNDEFINED,
   layouts: DEFAULT_LAYOUT_LIST,
 };
+
+/** JSONField may arrive as object, empty list, or (legacy) JSON string. */
+function parseJsonField<T extends object>(value: unknown, fallback: T): T {
+  if (value == null || value === '') {
+    return fallback;
+  }
+  if (typeof value === 'object') {
+    // Django default=list used to send []; treat as empty object/list fallback.
+    if (Array.isArray(value) && value.length === 0) {
+      return fallback;
+    }
+    return value as T;
+  }
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      if (parsed == null || (Array.isArray(parsed) && parsed.length === 0)) {
+        return fallback;
+      }
+      return parsed as T;
+    } catch {
+      return fallback;
+    }
+  }
+  return fallback;
+}
 const getDefaultStyles = (struct_type: Entity) => ({
   classNames: [struct_type],
   ownStyles: {},
@@ -190,8 +216,11 @@ export function convertProjectFromResponse({
   project_data_trello_json,
   tags,
 }: ServerProject): Project {
-  const projectDataJSON = JSON.parse(project_data_json);
-  const projectTrelloJSON = JSON.parse(project_data_trello_json);
+  const projectDataJSON = parseJsonField<Partial<ProjectData>>(
+    project_data_json,
+    {},
+  );
+  const projectTrelloJSON = parseJsonField(project_data_trello_json, {});
   return {
     id,
     name,
@@ -230,8 +259,11 @@ export function convertTemplatesFromResponse({
   project_data_trello_json,
   tags,
 }: ServerMarketplace): Marketplace {
-  const projectDataJSON = JSON.parse(project_data_json);
-  const projectTrelloJSON = JSON.parse(project_data_trello_json);
+  const projectDataJSON = parseJsonField<Partial<ProjectData>>(
+    project_data_json,
+    {},
+  );
+  const projectTrelloJSON = parseJsonField(project_data_trello_json, {});
   return {
     id,
     name,
@@ -269,7 +301,10 @@ export function convertScreenFromResponse({
   element,
   screen_data_json,
 }: ServerScreen): Screen {
-  const screenDataJSON = JSON.parse(screen_data_json);
+  const screenDataJSON = parseJsonField<Record<string, unknown>>(
+    screen_data_json,
+    {},
+  );
   return {
     id,
     name,
@@ -330,8 +365,11 @@ export function convertProjectWithScreensFromResponse({
   project_data_trello_json,
   tags,
 }: ServerProjectWithScreens): ProjectWithScreens {
-  const projectDataJSON = JSON.parse(project_data_json || '{}') as ProjectData;
-  const projectTrelloJSON = JSON.parse(project_data_trello_json);
+  const projectDataJSON = parseJsonField<Partial<ProjectData>>(
+    project_data_json,
+    {},
+  );
+  const projectTrelloJSON = parseJsonField(project_data_trello_json, {});
   return {
     id,
     name,

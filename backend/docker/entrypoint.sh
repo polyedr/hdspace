@@ -25,18 +25,24 @@ echo "Redis is up!"
 # Create necessary directories
 mkdir -p /app/media /app/static /app/collectstatic /app/logs
 
-# Run database migrations
-echo "Running database migrations..."
-python manage.py migrate --noinput || echo "Migration failed, continuing..."
+# Run setup once, only in the web container
+if [ "${RUN_DJANGO_SETUP:-True}" = "True" ]; then
+    echo "Ensuring baseline migrations exist..."
+    python manage.py makemigrations --noinput
 
-# Collect static files
-echo "Collecting static files..."
-python manage.py collectstatic --noinput --clear || echo "Collectstatic failed, continuing..."
+    echo "Running database migrations..."
+    python manage.py migrate --noinput
 
-# Create superuser if needed (only in development)
-if [ "$DEBUG" = "True" ] && [ ! -z "$DJANGO_SUPERUSER_EMAIL" ]; then
-    echo "Creating superuser..."
-    python manage.py shell << END
+    echo "Ensuring CommonUsers permissions..."
+    python manage.py ensure_common_users_group
+
+    echo "Collecting static files..."
+    python manage.py collectstatic --noinput --clear
+
+    # Create superuser if needed (only in development)
+    if [ "$DEBUG" = "True" ] && [ ! -z "$DJANGO_SUPERUSER_EMAIL" ]; then
+        echo "Creating superuser..."
+        python manage.py shell << END
 from django.contrib.auth import get_user_model
 User = get_user_model()
 if not User.objects.filter(email='$DJANGO_SUPERUSER_EMAIL').exists():
@@ -49,6 +55,7 @@ if not User.objects.filter(email='$DJANGO_SUPERUSER_EMAIL').exists():
 else:
     print('Superuser already exists')
 END
+    fi
 fi
 
 echo "==================================="

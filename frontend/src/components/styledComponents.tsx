@@ -305,6 +305,7 @@ export const TabPanel: React.FC<{
   index: number;
   value: number;
   panelClass?: string;
+  children?: React.ReactNode;
 }> = ({ children, value, index, panelClass }) => (
   <div
     role="tabpanel"

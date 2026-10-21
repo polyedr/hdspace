@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Profile > should render profile page 1`] = `
 <div>
@@ -108,7 +108,7 @@ exports[`Profile > should render profile page 1`] = `
               Your photo
             </div>
             <div
-              class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault css-3btahh-MuiAvatar-root"
+              class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault css-1iyz9yc-MuiAvatar-root"
             >
               <div
                 class="makeStyles-avatar-18"
@@ -163,7 +163,7 @@ exports[`Profile > should render profile page 1`] = `
                         class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-zfiznc-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
                         for="first_name_input"
-                        id="mui-1-label"
+                        id=":r2:-label"
                       >
                         First Name
                       </label>
@@ -203,8 +203,8 @@ exports[`Profile > should render profile page 1`] = `
                       <label
                         class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-zfiznc-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-2"
-                        id="mui-2-label"
+                        for=":r3:"
+                        id=":r3:-label"
                       >
                         Last Name
                       </label>
@@ -214,7 +214,7 @@ exports[`Profile > should render profile page 1`] = `
                         <input
                           aria-invalid="false"
                           class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
-                          id="mui-2"
+                          id=":r3:"
                           name="last_name"
                           placeholder="Last Name"
                           type="text"
@@ -248,8 +248,8 @@ exports[`Profile > should render profile page 1`] = `
                       <label
                         class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1gveuxi-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="false"
-                        for="mui-3"
-                        id="mui-3-label"
+                        for=":r4:"
+                        id=":r4:-label"
                       >
                         Company Name
                       </label>
@@ -259,7 +259,7 @@ exports[`Profile > should render profile page 1`] = `
                         <input
                           aria-invalid="false"
                           class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
-                          id="mui-3"
+                          id=":r4:"
                           name="company_name"
                           placeholder="Company Name"
                           type="text"
@@ -287,22 +287,23 @@ exports[`Profile > should render profile page 1`] = `
                       class="MuiFormControl-root MuiFormControl-fullWidth css-q8hpuo-MuiFormControl-root"
                     >
                       <label
-                        class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary Mui-disabled MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-zfiznc-MuiFormLabel-root-MuiInputLabel-root"
+                        class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeMedium MuiInputLabel-outlined MuiFormLabel-colorPrimary Mui-disabled MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeMedium MuiInputLabel-outlined css-zfiznc-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
                       >
                         Role
                       </label>
                       <div
-                        class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary Mui-disabled MuiInputBase-formControl  css-uz1hzv-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
+                        class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary Mui-disabled MuiInputBase-formControl css-uz1hzv-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
                       >
                         <div
+                          aria-controls=":r5:"
                           aria-disabled="true"
                           aria-expanded="false"
                           aria-haspopup="listbox"
                           aria-labelledby="mui-component-select-role"
                           class="MuiSelect-select MuiSelect-outlined Mui-disabled MuiInputBase-input MuiOutlinedInput-input Mui-disabled css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
                           id="mui-component-select-role"
-                          role="button"
+                          role="combobox"
                         >
                           STAFF
                         </div>
@@ -357,8 +358,8 @@ exports[`Profile > should render profile page 1`] = `
                       <label
                         class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary Mui-disabled MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined css-zfiznc-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-4"
-                        id="mui-4-label"
+                        for=":r6:"
+                        id=":r6:-label"
                       >
                         Email
                       </label>
@@ -369,7 +370,7 @@ exports[`Profile > should render profile page 1`] = `
                           aria-invalid="false"
                           class="MuiInputBase-input MuiOutlinedInput-input Mui-disabled MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           disabled=""
-                          id="mui-4"
+                          id=":r6:"
                           name="email"
                           placeholder="Email"
                           type="text"
@@ -424,7 +425,7 @@ exports[`Profile > should render profile page 1`] = `
         class="makeStyles-buttonsWrapper-16 MuiBox-root css-1w0ym84"
       >
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium css-19k23w-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorSecondary MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorSecondary css-19k23w-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >
@@ -434,7 +435,7 @@ exports[`Profile > should render profile page 1`] = `
           />
         </button>
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-ygaals-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-ygaals-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >

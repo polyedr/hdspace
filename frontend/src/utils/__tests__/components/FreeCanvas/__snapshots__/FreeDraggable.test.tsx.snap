@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Free Draggable > should render free draggable component 1`] = `
 <div>
@@ -51,7 +51,7 @@ exports[`Free Draggable > should render free draggable component 1`] = `
                 viewBox="0 0 24 24"
               >
                 <path
-                  d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+                  d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6"
                 />
               </svg>
               <span
@@ -113,7 +113,7 @@ exports[`Free Draggable > should render free draggable component 1`] = `
                   viewBox="0 0 24 24"
                 >
                   <path
-                    d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                    d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"
                   />
                 </svg>
               </button>
@@ -136,15 +136,15 @@ exports[`Free Draggable > should render free draggable component 1`] = `
       <div>
         <div
           class="makeStyles-resizeHande-3 makeStyles-ResizeTopBottomCursor-11"
-          style="position: absolute; user-select: none; width: 100%; height: 10px; bottom: -5px; left: 0px; cursor: row-resize;"
+          style="position: absolute; user-select: none; width: 100%; height: 10px; left: 0px; cursor: row-resize; bottom: -5px;"
         />
         <div
           class="makeStyles-resizeHande-3 makeStyles-resizeHandeSquare-5 makeStyles-resizeHandeSquare-17 makeStyles-resizeBottomHande-6 makeStyles-resizeLeftHande-7 makeStyles-resizeBottomLeftHande-10"
-          style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; bottom: -10px; cursor: sw-resize;"
+          style="position: absolute; user-select: none; width: 20px; height: 20px; z-index: 1; left: -10px; bottom: -10px; cursor: sw-resize;"
         />
         <div
           class="makeStyles-resizeHande-3 makeStyles-resizeHandeSquare-5 makeStyles-resizeHandeSquare-17 makeStyles-resizeBottomHande-6 makeStyles-resizeRightHande-9 makeStyles-resizeBottomRightHande-13"
-          style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; bottom: -10px; cursor: se-resize;"
+          style="position: absolute; user-select: none; width: 20px; height: 20px; z-index: 1; right: -10px; bottom: -10px; cursor: se-resize;"
         />
         <div
           class="makeStyles-resizeHande-3 makeStyles-resizeLeftRightHande-12"
@@ -156,15 +156,15 @@ exports[`Free Draggable > should render free draggable component 1`] = `
         />
         <div
           class="makeStyles-resizeHande-3 makeStyles-resizeLeftRightHande-12"
-          style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; right: -5px; cursor: col-resize;"
+          style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; cursor: col-resize; right: -5px;"
         />
         <div
           class="makeStyles-resizeHande-3 makeStyles-resizeHandeSquare-5 makeStyles-resizeHandeSquare-17 makeStyles-resizeTopHande-8 makeStyles-resizeLeftHande-7 makeStyles-resizeTopLeftHande-14"
-          style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; top: -10px; cursor: nw-resize;"
+          style="position: absolute; user-select: none; width: 20px; height: 20px; z-index: 1; left: -10px; top: -10px; cursor: nw-resize;"
         />
         <div
           class="makeStyles-resizeHande-3 makeStyles-resizeHandeSquare-5 makeStyles-resizeHandeSquare-17 makeStyles-resizeTopHande-8 makeStyles-resizeRightHande-9 makeStyles-resizeBottomLeftHande-10"
-          style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; top: -10px; cursor: ne-resize;"
+          style="position: absolute; user-select: none; width: 20px; height: 20px; z-index: 1; right: -10px; top: -10px; cursor: ne-resize;"
         />
       </div>
     </div>

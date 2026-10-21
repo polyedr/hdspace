@@ -179,9 +179,5 @@ export const apiIdentifyUser = async (props) =>
     url: '/djauth/users/me/',
   }).then(parseResult);
 
-export const apiGetSubscriptionData = async (props) =>
-  await myAxios({
-    ...props,
-    method: 'GET',
-    url: '/stripe/my-subscription-items/',
-  }).then(parseData);
+/** Billing/Stripe disabled in first cutover — return empty list, no network call. */
+export const apiGetSubscriptionData = async () => ({ data: [], error: null });

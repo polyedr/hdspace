@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Searchbar > should render a searchbar 1`] = `
 <div>
@@ -13,10 +13,10 @@ exports[`Searchbar > should render a searchbar 1`] = `
           class="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root makeStyles-input-1 makeStyles-queryInput-2 css-4mzek5-MuiFormControl-root-MuiTextField-root"
         >
           <label
-            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-1nti53f-MuiFormLabel-root-MuiInputLabel-root"
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined css-1nti53f-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="false"
             for="search_input"
-            id="mui-1-label"
+            id=":r2:-label"
           >
             Search project
           </label>
@@ -50,10 +50,10 @@ exports[`Searchbar > should render a searchbar 1`] = `
         class="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root makeStyles-input-1 makeStyles-parameterInput-4 makeStyles-capitalize-6 css-4mzek5-MuiFormControl-root-MuiTextField-root"
       >
         <label
-          class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-zfiznc-MuiFormLabel-root-MuiInputLabel-root"
+          class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeMedium MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeMedium MuiInputLabel-outlined css-zfiznc-MuiFormLabel-root-MuiInputLabel-root"
           data-shrink="true"
           for="parameter_name_input"
-          id="mui-2-label"
+          id=":r3:-label"
         >
           Search by
         </label>
@@ -61,12 +61,13 @@ exports[`Searchbar > should render a searchbar 1`] = `
           class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-e5d6s-MuiInputBase-root-MuiOutlinedInput-root"
         >
           <div
+            aria-controls=":r4:"
             aria-expanded="false"
             aria-haspopup="listbox"
-            aria-labelledby="mui-2-label mui-2"
+            aria-labelledby=":r3:-label :r3:"
             class="MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
-            id="mui-2"
-            role="button"
+            id=":r3:"
+            role="combobox"
             tabindex="0"
           >
             name

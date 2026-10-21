@@ -11,7 +11,7 @@ import {
   styled,
 } from '@mui/material';
 
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import Box from '@mui/material/Box';
 import {
   createScreen,

@@ -5,7 +5,16 @@ import os, sys
 import copy
 import shutil
 
-import lorem
+try:
+    import lorem
+except ImportError:
+    class _LoremStub:
+        @staticmethod
+        def get_word(count=1):
+            words = ["alpha", "beta", "gamma", "delta", "epsilon"]
+            return " ".join(words[: max(1, int(count))])
+
+    lorem = _LoremStub()
 import numpy as np
 import math
 import uuid

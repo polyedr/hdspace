@@ -28,7 +28,7 @@ import {
   Avatar,
   Theme,
 } from '@mui/material';
-import { useHistory } from 'react-router';
+import { useHistory } from '@/compat/router';
 import {
   selectProfileData,
   selectSubscriptionData,

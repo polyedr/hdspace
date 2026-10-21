@@ -1,4 +1,5 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import { render, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
@@ -15,11 +16,11 @@ describe('Navigator', () => {
     store = mockStore(mockState);
 
     ui = render(
-      <Provider store={store}>
+      <MemoryRouter><Provider store={store}>
         <AppThemeProvider>
           <Navigator />
         </AppThemeProvider>
-      </Provider>,
+      </Provider></MemoryRouter>,
     );
   });
 

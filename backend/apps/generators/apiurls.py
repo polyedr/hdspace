@@ -1,11 +1,11 @@
-from django.conf.urls import url
+from django.urls import path
 from rest_framework import routers
 from .apiviews import GeneratorAPIView
 
-app_name = 'generators'
+app_name = "generators"
 
 router = routers.DefaultRouter()
 
 urlpatterns = [
-    url('', GeneratorAPIView.as_view()),
+    path("", GeneratorAPIView.as_view()),
 ]

@@ -1,7 +1,8 @@
 /* eslint-disable import/no-unresolved */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link, useRouteMatch, useHistory } from 'react-router-dom';
+import { useRouteMatch, useHistory } from '@/compat/router';
+import { Link } from 'react-router-dom';
 import { Form } from 'react-final-form';
 import {
   Grid,
@@ -55,7 +56,7 @@ const ResetPassword: React.FC<IProps> = ({
   isSignLoader,
   authError,
 }) => {
-  const match = useRouteMatch<{ params: any }>(
+  const match = useRouteMatch(
     '/password/reset/confirm/:uid/:token',
   );
 

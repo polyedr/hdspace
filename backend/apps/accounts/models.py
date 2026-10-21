@@ -6,10 +6,10 @@ from django.contrib.postgres.fields import ArrayField
 from django.urls import reverse
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from django.core.cache import cache
 from django.conf import settings
-from jsonfield import JSONField
+from django.db.models import JSONField
 from apps.utils.models import TimeStampedModel
 from .utils import utils
 import ast
@@ -55,7 +55,7 @@ class Profile(TimeStampedModel):
     approved = models.BooleanField(default=False)
     hourly_rate = models.IntegerField(default=0)
     projects_max = models.IntegerField(default=0)
-    parameters = JSONField(blank=True)
+    parameters = JSONField(blank=True, default=dict)
 
     def get_confirmation_url(self) -> str:
         return reverse(
@@ -142,7 +142,7 @@ class SharedLink(TimeStampedModel):
         choices=VIEWER_OR_EDITOR, default=ROLE_VIEWER, max_length=64
     )
     # permissions = ArrayField(models.CharField(max_length=20, editable=False, null=True), size=10, )
-    permissions = JSONField(blank=True)
+    permissions = JSONField(blank=True, default=dict)
     shortuuid_token = models.CharField(max_length=64, editable=False, null=True)
     access_token = models.CharField(max_length=256, editable=False, null=True)
     project_id = models.IntegerField(default=0)

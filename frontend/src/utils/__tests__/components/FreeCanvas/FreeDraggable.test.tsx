@@ -1,4 +1,5 @@
 import configureStore from 'redux-mock-store';
+import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { render, fireEvent } from '@testing-library/react';
 import TYPES from '../../../../redux/actionTypes';
@@ -15,11 +16,11 @@ describe('Free Draggable', () => {
     store = mockStore(mockState);
 
     ui = render(
-      <Provider store={store}>
+      <MemoryRouter><Provider store={store}>
         <FreeDraggable elementId={mockStateElement.id}>
           {mockStateElement.parameters.textContent}
         </FreeDraggable>
-      </Provider>,
+      </Provider></MemoryRouter>,
     );
   });
 

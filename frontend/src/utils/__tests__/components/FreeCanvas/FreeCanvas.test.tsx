@@ -1,4 +1,5 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { render, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
@@ -17,11 +18,11 @@ describe('Free Canvas', () => {
     store = mockStore(mockState);
 
     ui = render(
-      <Provider store={store}>
+      <MemoryRouter><Provider store={store}>
         <DndProvider backend={HTML5Backend}>
           <FreeCanvas />
         </DndProvider>
-      </Provider>,
+      </Provider></MemoryRouter>,
     );
   });
 

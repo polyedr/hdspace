@@ -1,4 +1,5 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { render, RenderResult } from '@testing-library/react';
@@ -25,11 +26,11 @@ describe('VIANavigator', () => {
     });
 
     ui = render(
-      <Provider store={store}>
+      <MemoryRouter><Provider store={store}>
         <AppThemeProvider>
           <VIANavigator />
         </AppThemeProvider>
-      </Provider>,
+      </Provider></MemoryRouter>,
     );
   });
 

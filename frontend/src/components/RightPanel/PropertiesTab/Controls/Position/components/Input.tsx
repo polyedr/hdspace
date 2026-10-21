@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles';
 import { StyledTextField } from '@Components/styledComponents';
 
 interface Props {
+  children?: React.ReactNode;
   name: string;
   value: any;
   handleValueChange?: (name, value) => void;

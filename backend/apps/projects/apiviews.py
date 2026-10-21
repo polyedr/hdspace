@@ -12,7 +12,7 @@ from rest_framework.fields import CurrentUserDefault
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
+from apps.compat.bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import CursorPagination
 

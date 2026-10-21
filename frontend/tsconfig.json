@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "strict": false,
     "skipLibCheck": true,
@@ -16,20 +20,51 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "suppressImplicitAnyIndexErrors": true,
+    "types": [
+      "vitest/globals"
+    ],
     "baseUrl": ".",
     "paths": {
-      "@Components/*": ["src/components/*"],
-      "@Constants/*": ["src/constants/*"],
-      "@Utils/*": ["src/utils/*"],
-      "@Redux/*": ["src/redux/*"],
-      "@Api/*": ["src/api/*"],
-      "@Domain/*": ["src/domain/*"],
-      "@Src/*": ["src/*"],
-      "@/*": ["src/*"]
+      "@Components/*": [
+        "src/components/*"
+      ],
+      "@Constants/*": [
+        "src/constants/*"
+      ],
+      "@Utils/*": [
+        "src/utils/*"
+      ],
+      "@Redux/*": [
+        "src/redux/*"
+      ],
+      "@Api/*": [
+        "src/api/*"
+      ],
+      "@Domain/*": [
+        "src/domain/*"
+      ],
+      "@Src/*": [
+        "src/*"
+      ],
+      "@/*": [
+        "src/*"
+      ]
     }
   },
-  "include": ["src/**/*", "*.ts"],
-  "exclude": ["node_modules"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "src/utils/__tests__",
+    "src/stories",
+    "src/components/Sidebar/Chat"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

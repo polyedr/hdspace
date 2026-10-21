@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-prop-types */
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useHistory } from '@/compat/router';
 import { CircularProgress } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import NNProcessingModal from '@Components/Dialogs/NNProcessing';

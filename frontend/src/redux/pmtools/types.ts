@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { DefaultRootState } from 'react-redux';
+type DefaultRootState = any;
 import { ServerUserData } from '@Src/types';
 import { ActionTypePM } from '@Src/types/pmtools/types';
 import * as actionsActivity from './activity/actions';

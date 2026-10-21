@@ -1,252 +1,108 @@
-# Core Django
-Django==2.2.28
-asgiref==3.4.1
-pytz==2018.9
-sqlparse==0.2.4
+# Modern runtime for controlled big bang (Python 3.12 / Django 5.2)
+Django==5.2.1
+asgiref==3.8.1
+sqlparse==0.5.3
+pytz==2025.2
 
-# Django REST Framework
-djangorestframework==3.10.3
-djangorestframework-bulk==0.2.1
-djangorestframework-guardian==0.3.0
-djangorestframework-recursive==0.1.2
-djangorestframework-simplejwt==4.4.0
-drf-nested-routers==0.91
-drf-writable-nested==0.6.0
-drf-yasg==1.17.1
+djangorestframework==3.16.0
+djangorestframework-simplejwt==5.3.1
+drf-nested-routers==0.94.1
+drf-writable-nested==0.7.0
+drf-spectacular==0.28.0
 
-# Database
-psycopg2-binary==2.8.5
+psycopg[binary]==3.2.6
 
-# Authentication & Authorization
-django-guardian==2.3.0
-djoser==2.1.0
-PyJWT==1.7.1
-python3-openid==3.1.0
-social-auth-app-django==4.0.0
-social-auth-core==3.4.0
-oauthlib==3.0.1
-requests-oauthlib==1.2.0
+django-guardian==2.4.0
+djoser==2.2.3
+PyJWT==2.8.0
+social-auth-app-django==5.4.2
+social-auth-core==4.5.4
 
-# Django Extensions
-django-cors-headers==2.5.2
-django-environ==0.4.4
-django-extensions==3.0.9
-django-filter==2.1.0
-django-mptt==0.11.0
-django-polymorphic==2.1.2
-django-polymorphic-tree==1.5.1
-django-simple-history==3.0.0
-django-taggit==1.4.0
-django-taggit-serializer==0.1.7
+django-cors-headers==4.7.0
+django-environ==0.12.0
+django-extensions==4.1
+django-filter==25.1
+django-simple-history==3.8.0
+django-taggit==6.1.0
 django-templated-mail==1.1.1
-django-sesame==2.2
-django-clone==3.0.1
-django-bulk-update==2.2.0
-whitenoise==5.3.0
+django-sesame==3.2.2
+django-tree-queries==0.19.0
+django-clone==5.3.3
+djangorestframework-guardian==0.3.0
+whitenoise==6.9.0
 
-# Subscriptions & Payments
-django-invitations==1.9.3
-django-rest-invitations==0.1.2
-dj-stripe==2.5.1
-drf-django-flexible-subscriptions==1.0.0
-drf-stripe-subscription36==1.1.11.4
-stripe==3.5.0
+# Peripherals intentionally omitted from first cutover:
+# stripe / dj-stripe / invitations / stream-chat
 
-# Email
-django-anymail==8.4
-django-schema-graph==1.2.0
+django-anymail==11.1
 
-# API Documentation
-coreapi==2.3.3
-coreschema==0.0.4
-openapi-codec==1.3.2
-swagger-spec-validator==2.7.3
+celery==5.5.1
+redis==5.2.1
+kombu==5.5.3
+billiard==4.2.1
+vine==5.1.0
+amqp==5.3.1
 
-# Celery & Redis
-celery==4.3.0
-redis==3.2.0
-amqp==2.5.0
-billiard==3.6.0.0
-kombu==4.6.1
-vine==1.3.0
+requests==2.32.3
+urllib3==2.4.0
+certifi==2025.4.26
+idna==3.10
+charset-normalizer==3.4.2
 
-# HTTP & Async
-requests==2.27.1
-urllib3==1.25.11
-certifi==2021.5.30
-chardet==3.0.4
-idna==2.8
-aiohttp==3.8.1
-aiosignal==1.2.0
-async-timeout==4.0.2
-aiodns==3.0.0
-aiofile==3.7.4
-asynctest==0.13.0
-attrs==20.3.0
-multidict==5.2.0
-yarl==1.7.2
-frozenlist==1.2.0
-pycares==4.2.1
-charset-normalizer==2.0.12
+boto3==1.38.12
+botocore==1.38.12
+s3transfer==0.12.0
+jmespath==1.0.1
 
-# Cloud Services
-boto3==1.15.18
-botocore==1.18.18
-s3transfer==0.3.7
-jmespath==0.10.0
+google-api-core==2.24.2
+google-api-python-client==2.169.0
+google-auth==2.40.1
+google-auth-httplib2==0.2.0
+googleapis-common-protos==1.70.0
+google-cloud-vision==3.10.1
+httplib2==0.22.0
+protobuf==5.29.4
+proto-plus==1.26.1
+grpcio==1.71.0
+grpcio-status==1.71.0
 
-# Google APIs
-google-api-core==2.4.0
-google-api-python-client==2.36.0
-google-auth==2.4.1
-google-auth-httplib2==0.1.0
-googleapis-common-protos==1.54.0
-google-cloud-vision==2.6.3
-httplib2==0.20.2
-uritemplate==4.1.1
-rsa==4.8
+# Image / CV used by editor import paths (no TensorFlow)
+opencv-python-headless==4.11.0.86
+Pillow==11.2.1
+numpy==2.2.5
+scipy==1.15.2
+scikit-image==0.25.2
+scikit-learn==1.6.1
+imageio==2.37.0
+matplotlib==3.10.1
+pytesseract==0.3.13
 
-# Stream Chat (version auto-selected for compatibility)
-stream-chat>=1.5.0,<2.0.0
+beautifulsoup4==4.13.4
+lxml==5.4.0
+bleach==6.2.0
 
-# Forms & Validation
-jsonfield==3.1.0
-jsonfield2==3.0.2
-jsonschema==3.2.0
+cryptography==44.0.3
+cffi==1.17.1
+pycparser==2.22
 
-# HTML Processing
-beautifulsoup4==4.7.1
-bs4==0.0.1
-lxml==4.6.2
-bleach==1.5.0
-html5lib==0.9999999
-pyquery==1.4.3
-cssselect==1.1.0
-soupsieve==1.8
-
-# Scrapy (for data collection)
-Scrapy==2.5.0
-scrapy-splash==0.7.2
-Automat==20.2.0
-constantly==15.1.0
-hyperlink==21.0.0
-incremental==21.3.0
-parsel==1.6.0
-Protego==0.1.16
-PyDispatcher==2.0.5
-queuelib==1.5.0
-service-identity==18.1.0
-Twisted==21.2.0
-w3lib==1.22.0
-itemadapter==0.2.0
-itemloaders==1.0.4
-zope.interface==5.3.0
-
-# Cryptography & Security
-cryptography==3.1.1
-cffi==1.14.3
-pycparser==2.20
-pyOpenSSL==19.1.0
-pyasn1==0.4.8
-pyasn1-modules==0.2.8
-
-# ============================================
-# Machine Learning & Computer Vision
-# ============================================
-
-# TensorFlow & Keras (upgraded from 1.5 to 1.15)
-tensorflow==1.15.5
-Keras==2.3.1
-Keras-Applications==1.0.8
-Keras-Preprocessing==1.1.0
-h5py==2.10.0
-
-# TensorFlow dependencies
-absl-py==0.7.1
-astor==0.8.0
-gast==0.2.2
-google-pasta==0.1.7
-grpcio==1.43.0
-grpcio-status==1.43.0
-protobuf==3.19.3
-proto-plus==1.19.8
-tensorboard==1.15.0
-tensorflow-estimator==1.15.1
-termcolor==1.1.0
-Werkzeug==0.14.1
-wrapt==1.11.2
-
-# Image Processing & Computer Vision
-opencv-python==4.5.5.64
-Pillow==8.3.2
-imageio==2.5.0
-scikit-image==0.15.0
-scikit-learn==0.21.3
-scipy==1.1.0
-PyWavelets==1.0.2
-
-# Mask R-CNN dependencies
-mrcnn==0.2
-nms==0.1.6
-
-# Numerical & Scientific
-numpy==1.16.4
-matplotlib==3.1.1
-cycler==0.10.0
-kiwisolver==1.1.0
-
-# NLP
-nltk==3.5
-
-# OCR
-pytesseract==0.2.7
-
-# Utilities
-python-dateutil==2.8.0
-python-dotenv==0.10.1
-python-lorem==1.1.2
-six==1.12.0
-click==8.0.4
-fire==0.4.0
+python-dateutil==2.9.0.post0
+python-dotenv==1.1.0
+six==1.17.0
+click==8.1.8
 inflection==0.5.1
-shortuuid==1.0.9
-anytree==2.8.0
-itypes==1.1.0
+shortuuid==1.0.13
+anytree==2.12.1
 Unipath==1.1
-networkx==2.2
-joblib==0.14.0
-tqdm==4.57.0
+networkx==3.4.2
+joblib==1.5.0
+tqdm==4.67.1
+packaging==25.0
 
-# Dev & Monitoring
-django-silk==4.0.0
-sentry-sdk==1.9.0
-gprof2dot==2022.7.29
+sentry-sdk==2.27.0
+gunicorn==23.0.0
 
-# WSGI Server
-gunicorn==19.9.0
-
-# Testing
-pytest==3.5.1
-pytest-cov==2.5.1
-pytest-django==3.2.1
-factory-boy==2.11.1
-Faker==8.1.2
-mock==3.0.5
-
-# Code Quality (dev tools - minimal set)
-# flake8==3.7.9
-# autopep8==2.0.2
-# pycodestyle==2.5.0
-# pyflakes==2.1.1
-# pep8==1.7.1
-# mccabe==0.6.1
-
-# Other
-defusedxml==0.5.0
-parse==1.8.4
-pydantic==1.9.1
-PyYAML==6.0
-toml==0.10.0
-tomli==1.2.3
-graphviz==0.17
-pydot==1.4.1
+pytest==8.3.5
+pytest-cov==6.1.1
+pytest-django==4.11.1
+factory-boy==3.3.3
+Faker==37.1.0

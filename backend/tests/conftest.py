@@ -3,6 +3,7 @@ Pytest configuration and fixtures
 """
 import pytest
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from rest_framework.test import APIClient
 from apps.projects.models import Project
 
@@ -18,7 +19,8 @@ def api_client():
 
 @pytest.fixture
 def test_user(db):
-    """Create a test user"""
+    """Create a test user with core CommonUsers permissions."""
+    call_command("ensure_common_users_group")
     user = User.objects.create_user(
         username='testuser',
         email='test@example.com',
@@ -27,7 +29,6 @@ def test_user(db):
         last_name='User'
     )
     return user
-
 
 @pytest.fixture
 def authenticated_client(api_client, test_user):

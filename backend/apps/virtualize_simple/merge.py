@@ -3,12 +3,8 @@ from contextlib import redirect_stdout
 
 import cv2
 import pytesseract
-import requests
 
 import os
-
-from keras.preprocessing.image import load_img
-from keras_preprocessing.image import img_to_array
 
 from statistics import median
 
@@ -23,16 +19,6 @@ from apps.utils.fset1 import (
     calculateDistance,
     SQUARES_OVERLAP_THRESHOLD_CONTOUR,
 )
-
-from project.settings import STAGING_URL
-if os.environ.get("ENV_NAME") == 'Staging':
-    # This should be changed for the command line interface
-    from project.settings import (
-        model_forms,
-        model_headers,
-        model_footers,
-)
-
 
 # Writing the element text value based on its id
 def write_elem_value(region_dataset, class_id_recognized):
@@ -570,10 +556,6 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
     cnndict = {}  # Output dictionary to write annotation
     opencvdict = {}  # Output dictionary to write annotation
 
-    # Loading the image and converting to the numpy array
-    img = load_img(imgpath)
-    img = img_to_array(img)
-
     # Detect a size of the file uploaded
     fsize = str(os.path.getsize(imgpath))
 
@@ -617,36 +599,16 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
 
     # Detect elements for the case of "forms", "headers", "footers"
     if region_dataset in {"forms", "headers", "footers"}:
-        print(imgpath)
-        print(img)
-        # results = model_forms.detect([img], verbose=1)
-        # Request the external MaskRCNN API
-        # call another api for POST
-        url = STAGING_URL + '/api/v1/virtualize_simple/maskrcnn/' # The staging
-        picture = open(imgpath, "rb")
-        data = {"block_type":region_dataset}  # post data
-        api_call = requests.post(url, headers={}, data=data, files = {"image": picture})
-        # print(api_call.content)
-        results = json.loads(api_call.content)
-
-        # Results of the Mask R CNN recognition
-        # r = results[0]
-        r = results
-        # Detect elements with Mask R CNN model end
-
-        # Printing 4 dictionaries start
-        regions_list = print_contours(text_contours, rect_contours, region_dataset, choice = "AND", r=r)
+        regions_list = print_contours(
+            text_contours,
+            rect_contours,
+            region_dataset,
+            choice="OpenCV",
+            r=[],
+        )
         fdict[fnamesize]["regions"] = regions_list
-
-        regions_list = print_contours(text_contours, rect_contours, region_dataset, choice = "OR", r=r)
         fordict[fnamesize]["regions"] = regions_list
-
-        regions_list = print_contours(text_contours, rect_contours, region_dataset, choice = "OpenCV", r=r)
         opencvdict[fnamesize]["regions"] = regions_list
-
-        regions_list = print_contours(text_contours, rect_contours, region_dataset, choice = "MaskRCNN", r=r)
-        cnndict[fnamesize]["regions"] = regions_list
-        # Printing 4 dictionaries end
 
     # Detect elements for the case of "webpages"
     if region_dataset in {"webpages"}:

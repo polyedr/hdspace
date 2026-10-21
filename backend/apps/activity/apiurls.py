@@ -8,10 +8,26 @@ app_name = "activity"
 router = routers.DefaultRouter()
 
 # router.register('customers', views.CustomerView)
-router.register(r"columntaskhistory", views.ColumnTaskHistoryView)
-router.register(r"projectscreenhistory", views.ProjectScreenHistoryView)
-router.register(r"projecthistory", views.ProjectHistoryView)
-router.register(r"unionhistory", views.UnionHistoryView)
+router.register(
+    r"columntaskhistory",
+    views.ColumnTaskHistoryView,
+    basename="columntaskhistory",
+)
+router.register(
+    r"projectscreenhistory",
+    views.ProjectScreenHistoryView,
+    basename="projectscreenhistory",
+)
+router.register(
+    r"projecthistory",
+    views.ProjectHistoryView,
+    basename="projecthistory",
+)
+router.register(
+    r"unionhistory",
+    views.UnionHistoryView,
+    basename="unionhistory",
+)
 
 urlpatterns = [path("", include(router.urls))]
 

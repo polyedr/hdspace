@@ -11,6 +11,7 @@ import {
 import { setImageList } from '@Redux/project/actions';
 
 interface Props {
+  children?: React.ReactNode;
   title: string;
   expanded: boolean;
 }

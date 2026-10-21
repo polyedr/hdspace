@@ -1,10 +1,4 @@
-import {
-  TabsUnstyled,
-  TabUnstyled,
-  TabsListUnstyled,
-  TabPanelUnstyled,
-} from '@mui/base';
-import { styled } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import React from 'react';
 import { ElementData } from '@Src/types';
 import ElementsBlock from '@Components/RightPanel/ElementsTab/ElementsBlock';
@@ -15,67 +9,43 @@ interface Props {
   templates: Record<string, ElementData>;
 }
 
-const CustomTabsListUnstyled = styled(TabsListUnstyled)({
-  padding: 15,
-  borderBottom: '1px solid #E4E6EB',
-
-  '& button': {
-    backgroundColor: '#ffffff',
-    border: '1px solid #F3F4F6',
-    padding: '10px 0',
-    fontSize: 10,
-    textTransform: 'uppercase',
-    color: '#81818E',
-    fontWeight: 600,
-    width: '33%',
-    cursor: 'pointer',
-
-    '&:nth-child(2)': {
-      borderLeft: 'none',
-      borderRight: 'none',
-    },
-
-    '&:nth-child(1)': {
-      borderRadius: '4px 0 0 4px',
-    },
-
-    '&:nth-child(3)': {
-      borderRadius: '0 4px 4px 0',
-    },
-
-    '&.Mui-selected': {
-      backgroundColor: '#F3F4F6',
-      color: '#2A2A2D',
-    },
-  },
-});
-
 const LibraryMenu: React.FC<Props> = ({ library, templates }) => {
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
   return (
-    <TabsUnstyled value={value} onChange={handleChange}>
-      <CustomTabsListUnstyled>
-        <TabUnstyled>Assets</TabUnstyled>
-        <TabUnstyled>Layouts</TabUnstyled>
-        <TabUnstyled>Templates</TabUnstyled>
-      </CustomTabsListUnstyled>
-      <TabPanelUnstyled value={0}>
-        <AssetLists />
-      </TabPanelUnstyled>
-      <TabPanelUnstyled value={1}>
-        {Object.entries(library).map(([key, value]) => (
-          <ElementsBlock key={key} title={key} elements={value} expandable />
+    <Box>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        variant="fullWidth"
+        sx={{
+          borderBottom: '1px solid #E4E6EB',
+          px: 1.5,
+          minHeight: 40,
+          '& .MuiTab-root': {
+            minHeight: 40,
+            textTransform: 'uppercase',
+            fontSize: 10,
+            fontWeight: 600,
+            color: '#81818E',
+          },
+        }}
+      >
+        <Tab label="Assets" />
+        <Tab label="Layouts" />
+        <Tab label="Templates" />
+      </Tabs>
+      {value === 0 && <AssetLists />}
+      {value === 1 &&
+        Object.entries(library).map(([key, items]) => (
+          <ElementsBlock key={key} title={key} elements={items} expandable />
         ))}
-      </TabPanelUnstyled>
-      <TabPanelUnstyled value={2}>
-        <ElementsBlock elements={templates} expandable={false} />
-      </TabPanelUnstyled>
-    </TabsUnstyled>
+      {value === 2 && <ElementsBlock elements={templates} expandable={false} />}
+    </Box>
   );
 };
 

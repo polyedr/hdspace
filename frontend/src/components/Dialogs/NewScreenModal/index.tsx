@@ -51,7 +51,7 @@ const useStyles = makeStyles<Theme>(({ spacing }) => ({
   },
 }));
 
-const TabPanel: FC<{ index: number; value: number }> = ({
+const TabPanel: FC<{ index: number; value: number; children?: React.ReactNode }> = ({
   index,
   value,
   children,

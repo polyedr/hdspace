@@ -1,4 +1,4 @@
-import { DropResult } from 'react-beautiful-dnd';
+import { DropResult } from '@hello-pangea/dnd';
 import TYPES from '@Redux/actionTypes';
 // eslint-disable-next-line import/no-cycle
 import { BoardNewTask, BoardTask } from '@Redux/pmtools/types';

@@ -882,13 +882,16 @@ export type ElementsGroupParameters = BaseElementParams & {
   sourceElementId?: string | null;
 };
 
+/** JSONField: object from API, or legacy JSON string from older clients. */
+export type ServerJsonField = string | Record<string, unknown> | unknown[];
+
 export interface CreatedServerProject {
   name: string;
   status: string;
   project_data_text: string;
   projectscreen: number[];
-  project_data_json: string;
-  project_data_trello_json: string;
+  project_data_json: ServerJsonField;
+  project_data_trello_json: ServerJsonField;
 }
 
 export interface ServerProjectWithScreens {
@@ -899,8 +902,8 @@ export interface ServerProjectWithScreens {
   created: string;
   updated: string;
   user: ServerUserData;
-  project_data_trello_json: string;
-  project_data_json: string;
+  project_data_trello_json: ServerJsonField;
+  project_data_json: ServerJsonField;
   project_data_text: string;
   tags: string[];
 }
@@ -915,9 +918,9 @@ export interface ServerProject {
   created: string;
   updated: string;
   user: ServerUserData;
-  project_data_trello_json: string;
-  project_data_activity_json?: string;
-  project_data_json: string;
+  project_data_trello_json: ServerJsonField;
+  project_data_activity_json?: ServerJsonField;
+  project_data_json: ServerJsonField;
   project_data_text: string;
   tags: string[];
 }
@@ -931,9 +934,9 @@ export interface ServerMarketplace {
   created: string;
   updated: string;
   user: ServerUserData;
-  project_data_trello_json: string;
-  project_data_activity_json?: string;
-  project_data_json: string;
+  project_data_trello_json: ServerJsonField;
+  project_data_activity_json?: ServerJsonField;
+  project_data_json: ServerJsonField;
   project_data_text: string;
   tags: string[];
 }

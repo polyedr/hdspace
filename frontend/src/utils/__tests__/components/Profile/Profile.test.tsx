@@ -1,4 +1,5 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { render, RenderResult } from '@testing-library/react';
 import { Provider } from 'react-redux';
@@ -16,11 +17,11 @@ describe('Profile', () => {
     store = mockStore(mockState);
 
     ui = render(
-      <Provider store={store}>
+      <MemoryRouter><Provider store={store}>
         <AppThemeProvider>
           <Profile />
         </AppThemeProvider>
-      </Provider>,
+      </Provider></MemoryRouter>,
     );
   });
 

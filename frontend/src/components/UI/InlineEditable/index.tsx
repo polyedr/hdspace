@@ -1,6 +1,5 @@
 import { FC, useCallback, useEffect, useState } from 'react';
-import TextareaAutosize from '@mui/base/TextareaAutosize';
-import { styled } from '@mui/material';
+import { TextareaAutosize, styled } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectActiveElementId } from '@Redux/project/selectors/element';
@@ -17,7 +16,7 @@ interface Props {
   onUpdated: (text: string) => void;
 }
 
-const StyledTextArea = styled(TextareaAutosize)({
+const StyledTextArea = styled(TextareaAutosize as any)({
   border: 'none',
   resize: 'none',
   width: '100%',
@@ -26,7 +25,7 @@ const StyledTextArea = styled(TextareaAutosize)({
     resize: 'none',
     outline: 'none',
   },
-});
+}) as any;
 
 const InlineEditable: FC<Props> = ({
   text,

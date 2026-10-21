@@ -1,6 +1,6 @@
 import ActivityTab from '@Components/Sidebar/Activity';
 import TasksTab from '@Components/Sidebar/Board';
-import ChatTab from '@Components/Sidebar/Chat';
+import ChatTab from '@Components/Sidebar/ChatDisabled';
 import InviteTab from '@Components/Sidebar/Invite';
 
 export enum TABS_PMTOOLS {

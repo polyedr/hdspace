@@ -1,4 +1,5 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { fireEvent, render, RenderResult } from '@testing-library/react';
@@ -32,9 +33,9 @@ describe('VIA Region', () => {
     });
 
     ui = render(
-      <Provider store={store}>
+      <MemoryRouter><Provider store={store}>
         <VIA />
-      </Provider>,
+      </Provider></MemoryRouter>,
     );
   });
 

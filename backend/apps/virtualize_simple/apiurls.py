@@ -3,7 +3,6 @@ from apps.virtualize_simple.apiviews import (
     ProjectScreenList,
     ScenarioElementAssemblingList,
     ScenarioElementFreecanvasList,
-    MaskRCNNView,
 )
 
 app_name = "virtualize_simple"
@@ -11,7 +10,6 @@ app_name = "virtualize_simple"
 api_virtualize_simple_patterns = [
     # path("virtualize-simple/", ScenarioElementList.as_view(), name="virtualize_simple"),
     path("recognize/", ProjectScreenList.as_view(), name="recognize"),
-    path("maskrcnn/", MaskRCNNView.as_view(), name="maskrcnn"),
     path("assemble/", ScenarioElementAssemblingList.as_view(), name="assemble"),
     path(
         "freecanvas/",

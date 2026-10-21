@@ -22,7 +22,7 @@ const RandomRGBColor = (color = null) => {
 };
 
 // Set SetBorderWidth()
-const setBorderWidth = (width = null || String || Number) => {
+const setBorderWidth = (width: string | number | null = null) => {
   // No width given so set to random
   if (width === null) {
     return `${Math.floor(Math.random() * 14).toString()}px`;

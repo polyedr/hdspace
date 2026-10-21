@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { all, call, fork, put, select } from 'redux-saga/effects';
 import { omit, head, assoc, prepend } from 'ramda';
-import { push } from 'connected-react-router';
+import { push } from 'redux-first-history';
 import html2canvas from 'html2canvas';
 import logger from 'loglevel';
 import { compose } from 'redux';

@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Routes as RRRoutes, Route, Navigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PATH_NAMES from '@Constants/pathNames';
 import MarketplaceLayout from '@Components/Marketplace/components/Layout/index';
@@ -39,104 +39,137 @@ const Team = lazy(
   async () => await import('@Components/Marketplace/components/Team/Team'),
 );
 
-const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
+function RequireAuth({ children }: { children: React.ReactElement }) {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const url = new URL(window.location.href);
   const shortuuid_token = url?.pathname.split('/')[4];
+  if (isLoggedIn || shortuuid_token) {
+    return children;
+  }
+  return <Navigate to={PATH_NAMES.user.signin} replace />;
+}
+
+function SharedProjectRoute() {
+  const params = useParams();
   return (
-    <Route {...rest}>
-      {isLoggedIn || shortuuid_token ? (
-        children
-      ) : (
-        <Redirect to={PATH_NAMES.user.signin} />
-      )}
-    </Route>
+    <Layout>
+      <SharedProject
+        projectId={parseInt(params.projectId || '0', 10)}
+        screenId={parseInt(params.screenId || '0', 10)}
+      />
+    </Layout>
   );
-};
+}
+
+function ProjectRoute() {
+  const params = useParams();
+  return (
+    <Layout>
+      <Project
+        projectId={parseInt(params.projectId || '0', 10)}
+        screenId={parseInt(params.screenId || '0', 10)}
+      />
+    </Layout>
+  );
+}
+
+function WireframeRoute() {
+  const params = useParams();
+  return (
+    <Layout>
+      <Wireframe
+        projectId={parseInt(params.projectId || '0', 10)}
+        screenId={parseInt(params.screenId || '0', 10)}
+      />
+    </Layout>
+  );
+}
 
 const Routes: React.FC = () => (
   <Suspense fallback={<Spinner active />}>
-    <Switch>
-      <Route path={PATH_NAMES.user.signin} component={Signin} />
-
-      <Route path={PATH_NAMES.user.signup} component={Signup} />
-
-      <Route path={PATH_NAMES.user.activate} component={Activation} />
-
+    <RRRoutes>
+      <Route path={PATH_NAMES.user.signin} element={<Signin {...({} as any)} />} />
+      <Route path={PATH_NAMES.user.signup} element={<Signup {...({} as any)} />} />
       <Route
-        exact
+        path={PATH_NAMES.user.activate}
+        element={<Activation {...({} as any)} />}
+      />
+      <Route
         path={PATH_NAMES.user.password}
-        component={ResetPasswordEmail}
+        element={<ResetPasswordEmail />}
       />
-
       <Route
-        exact
         path={PATH_NAMES.user.passwordRestore}
-        component={ResetPassword}
+        element={<ResetPassword {...({} as any)} />}
       />
-
-      <Route path={PATH_NAMES.user.success} component={Success} />
-
-      <Route path="/share/" component={SharedWithLink} exact />
-      <PrivateRoute path="/share/:projectId/:screenId/">
-        {({ match: { params } }: any) => (
-          <Layout>
-            <SharedProject
-              projectId={parseInt(params.projectId)}
-              screenId={parseInt(params.screenId)}
-            />
-          </Layout>
-        )}
-      </PrivateRoute>
-
-      <PrivateRoute path={PATH_NAMES.projects}>
-        <Layout>
-          <Projects />
-        </Layout>
-      </PrivateRoute>
-
-      <PrivateRoute path="/project/:projectId/:screenId?">
-        {({ match: { params } }: any) => (
-          <Layout>
-            <Project
-              projectId={parseInt(params.projectId)}
-              screenId={parseInt(params.screenId)}
-            />
-          </Layout>
-        )}
-      </PrivateRoute>
-
-      <PrivateRoute path="/wireframe/:projectId/:screenId?">
-        {({ match: { params } }: any) => (
-          <Layout>
-            <Wireframe
-              projectId={parseInt(params.projectId)}
-              screenId={parseInt(params.screenId)}
-            />
-          </Layout>
-        )}
-      </PrivateRoute>
-
-      <PrivateRoute path={PATH_NAMES.profile}>
-        <Layout>
-          <Profile />
-        </Layout>
-      </PrivateRoute>
-
-      <PrivateRoute path={PATH_NAMES.marketplace}>
-        <MarketplaceLayout>
-          <Marketplace />
-        </MarketplaceLayout>
-      </PrivateRoute>
-
-      <PrivateRoute path={PATH_NAMES.team}>
-        <MarketplaceLayout>
-          <Team />
-        </MarketplaceLayout>
-      </PrivateRoute>
-
-      <Redirect from="/*" to={PATH_NAMES.projects} />
-    </Switch>
+      <Route path={PATH_NAMES.user.success} element={<Success />} />
+      <Route path="/share/" element={<SharedWithLink />} />
+      <Route
+        path="/share/:projectId/:screenId/"
+        element={
+          <RequireAuth>
+            <SharedProjectRoute />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path={PATH_NAMES.projects}
+        element={
+          <RequireAuth>
+            <Layout>
+              <Projects />
+            </Layout>
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/project/:projectId/:screenId?"
+        element={
+          <RequireAuth>
+            <ProjectRoute />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/wireframe/:projectId/:screenId?"
+        element={
+          <RequireAuth>
+            <WireframeRoute />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path={PATH_NAMES.profile}
+        element={
+          <RequireAuth>
+            <Layout>
+              <Profile />
+            </Layout>
+          </RequireAuth>
+        }
+      />
+      <Route
+        path={PATH_NAMES.marketplace}
+        element={
+          <RequireAuth>
+            <MarketplaceLayout>
+              <Marketplace />
+            </MarketplaceLayout>
+          </RequireAuth>
+        }
+      />
+      <Route
+        path={PATH_NAMES.team}
+        element={
+          <RequireAuth>
+            <MarketplaceLayout>
+              <Team />
+            </MarketplaceLayout>
+          </RequireAuth>
+        }
+      />
+      <Route path="*" element={<Navigate to={PATH_NAMES.projects} replace />} />
+    </RRRoutes>
   </Suspense>
 );
 

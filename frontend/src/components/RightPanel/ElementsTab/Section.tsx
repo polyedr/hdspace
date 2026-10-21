@@ -14,6 +14,7 @@ interface Props {
   title: string;
   activeSection: string;
   className?: string;
+  children?: React.ReactNode;
 }
 
 const Section: React.FC<Props> = ({

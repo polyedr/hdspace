@@ -10,15 +10,19 @@ from django.core.files.uploadedfile import UploadedFile
 import requests
 from urllib.parse import urlparse
 
-from drf_stripe.stripe_api.customers import get_or_create_stripe_user
+def get_or_create_stripe_user(*args, **kwargs):
+    """Billing disabled in first cutover."""
+    return None
+
+
 from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
-from rest_framework_recursive.fields import RecursiveField
+from apps.compat.bulk import BulkSerializerMixin, BulkListSerializer
+from apps.compat.recursive import RecursiveField
 from taggit.models import Tag
 
-from taggit_serializer.serializers import TagListSerializerField, TaggitSerializer
+from apps.compat.taggit_serializer import TagListSerializerField, TaggitSerializer
 
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
 from apps.accounts.models import User
@@ -541,7 +545,10 @@ class ProjectSerializer(
 ):
     user = UserSerializer(read_only=True)
     projectscreen = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=ProjectScreen.objects.all()
+        many=True,
+        queryset=ProjectScreen.objects.all(),
+        required=False,
+        allow_empty=True,
     )
     tags = TagListSerializerField(required=False, allow_null=True)
 
@@ -641,13 +648,14 @@ class ProjectSerializer(
                 can_create_projects = 1
 
         if can_create_projects:
-            projectscreens_data = validated_data.pop("projectscreen")
+            projectscreens_data = validated_data.pop("projectscreen", [])
             project = Project(id=None, **validated_data)
             project.preview = project.generate_preview_token()
             project.save()
             project.name = "AProject-" + str(project.id)
             project.save()
-            project.projectscreen.set(projectscreens_data, clear=True)
+            if projectscreens_data:
+                project.projectscreen.set(projectscreens_data, clear=True)
 
             try:
                 # A Stream chat connection

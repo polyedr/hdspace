@@ -116,15 +116,17 @@ const Actions: React.FC = () => {
     <div className={classes.root}>
       <History />
       <Tooltip title="Proto mode">
-        <ToggleButton
-          className={classes.togglebutton}
-          value="Proto mode"
-          onClick={handleToggleProtoMode}
-          disabled={imageLoader}
-          selected={isPrototypeMode}
-        >
-          <VisibilityOutlinedIcon className={classes.icon} />
-        </ToggleButton>
+        <span>
+          <ToggleButton
+            className={classes.togglebutton}
+            value="Proto mode"
+            onClick={handleToggleProtoMode}
+            disabled={imageLoader}
+            selected={isPrototypeMode}
+          >
+            <VisibilityOutlinedIcon className={classes.icon} />
+          </ToggleButton>
+        </span>
       </Tooltip>
 
       <Tooltip title="Export screen">
